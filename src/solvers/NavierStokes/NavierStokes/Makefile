@@ -1,12 +1,14 @@
 include ../../../../Makefile.inc
 
+.PHONY: clean
+
 SRCS=$(wildcard *.cu)
 OBJ =$(SRCS:.cu=.o)
 
 all: $(OBJ)
-	$(AR) $(ARFLAGS) ruv ../../libsolvers.a $?
-	$(RANLIB) ../../libsolvers.a
+	$(AR) $(ARFLAGS) ruv ../../libNavierStokesSolvers.a $?
+	$(RANLIB) ../../libNavierStokesSolvers.a
 
 clean:
-	-rm -f $(OBJS)
+	@rm -f *.o
 

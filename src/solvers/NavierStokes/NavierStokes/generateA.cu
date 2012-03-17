@@ -1,5 +1,11 @@
 #include <solvers/NavierStokes/NavierStokesSolver.h>
 
+void NavierStokesSolver::generateA()
+{
+}
+
+
+/*
 void NavierStokesSolver::assembleMatrices()
 {
 	generateA();
@@ -39,7 +45,7 @@ void NavierStokesSolver::stepTime()
 	
 		projectionStep();
 	}
-	time_step++;
+	timeStep++;
 }
 void NavierStokesSolver::assembleRHS1()
 {
@@ -72,5 +78,6 @@ void NavierStokesSolver::updateSolverState()
 
 bool NavierStokesSolver::finished()
 {
-	return (time_step < simPar->nt) ? false : true;
+	return (timeStep < simPar->nt) ? false : true;
 }
+*/

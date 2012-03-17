@@ -1,6 +1,6 @@
 include ../../../Makefile.inc
 
-.PHONY: clean
+.PHONY: clean NavierStokes local
 
 SRCS=$(wildcard *.cu)
 OBJS=$(SRCS:.cu=.o)
