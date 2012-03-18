@@ -4,7 +4,7 @@ include Makefile.inc
 
 main: cuibm
 
-cuibm: lib/libNavierStokesSolvers.a src/cuIBM.o
+cuibm: lib/libNavierStokesSolvers.a src/cuIBM.o src/io.o
 	nvcc $? -o bin/cuIBM
 
 #src/solvers/libsolvers.a:  force_look
