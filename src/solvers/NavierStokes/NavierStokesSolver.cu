@@ -165,8 +165,8 @@ NavierStokesSolver<Matrix, Vector>* NavierStokesSolver<Matrix, Vector>::createSo
 	return solver;
 }
 
-#include "NavierStokes/generateA.cu"
-#include "NavierStokes/generateRN.cu"
+#include "NavierStokes/generateA.inl"
+#include "NavierStokes/generateRN.inl"
 
 template class NavierStokesSolver<coo_h, vec_h>;
 template class NavierStokesSolver<coo_d, vec_d>;

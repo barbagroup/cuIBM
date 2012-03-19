@@ -32,9 +32,7 @@ void NavierStokesSolver<Matrix, Vector>::generateM()
 	{
 		for (int i=0; i < nx; i++)
 		{
-			
 			I = j*nx + i + numU;
-			printf("I: %d\n",I);
 			
 			value  = 0.5*(domInfo->dy[j+1]+domInfo->dy[j]) / domInfo->dx[i] / simPar->dt;
 			
@@ -54,7 +52,9 @@ void NavierStokesSolver<Matrix, Vector>::generateL()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
-	real Cx0, Cx1, Cy0, Cy1, scale, dx0, dx1, dy0, dy1;
+	real Cx0 = 0.0, Cx1 = 0.0, Cy0 = 0.0, Cy1 = 0.0,
+	     scale = 0.0,
+	     dx0 = 1.0, dx1 = 1.0, dy0 = 1.0, dy1 = 1.0;
 	int  numU = (nx-1)*ny;
 	int  numUV = numU + nx*(ny-1);
 	int  I,
