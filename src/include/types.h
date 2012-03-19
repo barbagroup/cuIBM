@@ -2,6 +2,10 @@
 
 #include <cusp/csr_matrix.h>
 #include <cusp/array1d.h>
+#include <cusp/transpose.h>
+#include <cusp/print.h>
+#include <cusp/elementwise.h>
+#include <cusp/multiply.h>
 
 enum bcType { DIRICHLET, NEUMANN, CONVECTIVE, PERIODIC };
 enum boundary { XMINUS, XPLUS, YMINUS, YPLUS };

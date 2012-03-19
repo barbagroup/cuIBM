@@ -210,3 +210,21 @@ void NavierStokesSolver<Matrix, Vector>::generateA()
 	generateL();
 	cusp::subtract(M, L, A);
 }
+
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::generateBN()
+{
+	BN = Minv;
+}
+/*
+template <typename Matrix, typename Vector>
+template <>
+void NavierStokesSolver<Matrix, Vector>::generateBN<3>()
+{
+	Matrix	temp1, temp2;
+	cusp::multiply(Minv, L, temp1);
+	cusp::multiply(temp1, Minv, BN);
+	cusp::add(Minv, BN, BN);
+	cusp::multiply(temp1, BN, temp2);
+	cusp::add(Minv, temp2, BN);
+}*/

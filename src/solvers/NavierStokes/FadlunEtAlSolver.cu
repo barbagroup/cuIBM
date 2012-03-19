@@ -1,5 +1,5 @@
 #include <solvers/NavierStokes/FadlunEtAlSolver.h>
-/*
+
 template <typename Matrix, typename Vector>
 void FadlunEtAlSolver<Matrix, Vector>::generateA()
 {
@@ -19,16 +19,19 @@ void FadlunEtAlSolver<Matrix, Vector>::updateBodies()
 template <typename Matrix, typename Vector>
 void FadlunEtAlSolver<Matrix, Vector>::initialise()
 {
-	initialiseArrays();
-	assembleMatrices();
+	NavierStokesSolver<Matrix, Vector>::initialiseArrays();
+	NavierStokesSolver<Matrix, Vector>::assembleMatrices();
 	initialiseBodies();
 }
 template <typename Matrix, typename Vector>
 void FadlunEtAlSolver<Matrix, Vector>::updateSolverState()
 {
-	updateBoundaryConditions();
+	NavierStokesSolver<Matrix, Vector>::updateBoundaryConditions();
 	if (B.bodiesMove) {
 		updateBodies();
 		updateA();
 	}
-}*/
+}
+
+template class FadlunEtAlSolver<coo_h, vec_h>;
+template class FadlunEtAlSolver<coo_d, vec_d>;

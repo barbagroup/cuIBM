@@ -2,59 +2,69 @@
 #include <solvers/NavierStokes/FadlunEtAlSolver.h>
 
 template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::assembleMatrices()
-{
-	generateA();
-	//generateQT();
-	// QT*BN*Q
-	//generateC();
-}
-template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::initialise()
 {
 	timeStep = simPar->startStep;
 	initialiseArrays();
 	assembleMatrices();
 }
+
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::assembleMatrices()
+{
+	generateA();
+	generateBN();
+	generateQT();
+	generateC(); // QT*BN*Q
+}
+
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::initialiseArrays()
 {
-	int numU  = (domInfo->nx-1)*domInfo->ny;
-	int numUV = numU + domInfo->nx*(domInfo->ny-1);
-	int numP  = numU + domInfo->ny;
-	int numB  = 0;
-	for(int k=0; k<flowDesc->numBodies; k++)
-		numB += flowDesc->B[k].numPoints;
+	int nx = domInfo->nx,
+		ny = domInfo->ny;
+		
+	int numU  = (nx-1)*ny;
+	int numUV = numU + nx*(ny-1);
+	int numP  = numU + ny;
+//	int numB  = 0;
+//	for(int k=0; k<flowDesc->numBodies; k++)
+//		numB += flowDesc->B[k].numPoints;
 	
-	q.resize(numUV);
+	    q.resize(numUV);
 	qStar.resize(numUV);
-	rn.resize(numUV);
-	H.resize(numUV);
-	rhs1.resize(numUV);
+	   rn.resize(numUV);
+	    H.resize(numUV);
+	 rhs1.resize(numUV);
 	
-	lambda.resize(numP+2*numB);
-	rhs2.resize(numP+2*numB);
+	//lambda.resize(numP+2*numB);
+	//rhs2.resize(numP+2*numB);
+	lambda.resize(numP);
+	  rhs2.resize(numP);
 	
 	/// Initialise velocity fluxes
 	int i;
 	for(i=0; i < numU; i++)
 	{
-		q[i] = flowDesc->initialU * domInfo->dy[i/(domInfo->nx-1)];
+		q[i] = flowDesc->initialU * domInfo->dy[i/(nx-1)];
 	}
 	for(; i < numUV; i++)
 	{
-		q[i] = flowDesc->initialV * domInfo->dx[(i-numU)%domInfo->nx];
+		q[i] = flowDesc->initialV * domInfo->dx[(i-numU)%nx];
 	}
 	qStar = q;
 }
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::generateQT()
-{
-}
+
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::generateC()
 {
+	Matrix temp;
+	cusp::multiply(QT, BN, temp);
+	cusp::multiply(temp, Q, C);
+	C.sort_by_row_and_column();
+	C.values[0] += C.values[0];
 }
+
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::stepTime()
 {
@@ -77,35 +87,42 @@ void NavierStokesSolver<Matrix, Vector>::stepTime()
 	}
 	timeStep++;
 }
+
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::generateBC1()
 {
 }
+
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::assembleRHS1()
 {
 	
 }
+
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::solveIntermediateVelocity()
 {/*
 	cusp::default_monitor<real> sys1Mon(r1, 10000);
 	cusp::krylov::cg(A, qStar, r1, sys1Mon, PC1);
 */}
+
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::generateBC2()
 {
 }
+
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::assembleRHS2()
 {
 }
+
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::solvePoisson()
 {/*
 	cusp::default_monitor<real> sys2Mon(r2, 20000);
 	cusp::krylov::cg(C, lambda, r2, sys2Mon, PC2);
 */}
+
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::projectionStep()
 {/*
@@ -114,6 +131,7 @@ void NavierStokesSolver<Matrix, Vector>::projectionStep()
 	cusp::multiply(BN, temp1, q);
 	cusp::blas::axpby(qStar, q, q, 1.0, -1.0 );
 */}
+
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::writeData()
 {
@@ -121,15 +139,18 @@ void NavierStokesSolver<Matrix, Vector>::writeData()
 	{		
 	}
 }
+
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::updateBoundaryConditions()
 {
 }
+
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::updateSolverState()
 {
 	updateBoundaryConditions();
 }
+
 template <typename Matrix, typename Vector>
 bool NavierStokesSolver<Matrix, Vector>::finished()
 {
@@ -166,6 +187,7 @@ NavierStokesSolver<Matrix, Vector>* NavierStokesSolver<Matrix, Vector>::createSo
 }
 
 #include "NavierStokes/generateA.inl"
+#include "NavierStokes/generateQT.inl"
 #include "NavierStokes/generateRN.inl"
 
 template class NavierStokesSolver<coo_h, vec_h>;

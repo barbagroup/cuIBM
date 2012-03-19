@@ -6,9 +6,6 @@
 #include <domain.h>
 #include <integrationScheme.h>
 
-#include <cusp/print.h>
-#include <cusp/elementwise.h>
-
 /**
 * Navier-Stokes solver for a rectangular domain.
 */
@@ -30,6 +27,7 @@ protected:
 	void generateM();
 	void generateL();
 	void generateA();
+	void generateBN();
 	void generateQT();
 	void generateC();
 

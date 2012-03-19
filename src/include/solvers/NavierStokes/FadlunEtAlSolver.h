@@ -18,9 +18,4 @@ private:
 	
 public:
 	void initialise();
-	//friend NavierStokesSolver* allocator::createSolver(flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info);
-	//friend class NavierStokesSolver;
 };
-
-template class FadlunEtAlSolver<coo_h, vec_h>;
-template class FadlunEtAlSolver<coo_d, vec_d>;
