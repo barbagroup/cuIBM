@@ -1,32 +1,62 @@
 #include <solvers/NavierStokes/NavierStokesSolver.h>
 #include <solvers/NavierStokes/FadlunEtAlSolver.h>
 
-void NavierStokesSolver::assembleMatrices()
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::assembleMatrices()
 {
 	generateA();
-	generateQT();
-	// QTBNQ
-	generateC();
+	//generateQT();
+	// QT*BN*Q
+	//generateC();
 }
-void NavierStokesSolver::initialise()
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::initialise()
 {
 	timeStep = simPar->startStep;
 	initialiseArrays();
 	assembleMatrices();
 }
-void NavierStokesSolver::initialiseArrays()
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::initialiseArrays()
+{
+	int numU  = (domInfo->nx-1)*domInfo->ny;
+	int numUV = numU + domInfo->nx*(domInfo->ny-1);
+	int numP  = numU + domInfo->ny;
+	int numB  = 0;
+	for(int k=0; k<flowDesc->numBodies; k++)
+		numB += flowDesc->B[k].numPoints;
+	
+	q.resize(numUV);
+	qStar.resize(numUV);
+	rn.resize(numUV);
+	H.resize(numUV);
+	rhs1.resize(numUV);
+	
+	lambda.resize(numP+2*numB);
+	rhs2.resize(numP+2*numB);
+	
+	/// Initialise velocity fluxes
+	int i;
+	for(i=0; i < numU; i++)
+	{
+		q[i] = flowDesc->initialU * domInfo->dy[i/(domInfo->nx-1)];
+	}
+	for(; i < numUV; i++)
+	{
+		q[i] = flowDesc->initialV * domInfo->dx[(i-numU)%domInfo->nx];
+	}
+	qStar = q;
+}
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::generateQT()
 {
 }
-void NavierStokesSolver::generateA()
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::generateC()
 {
 }
-void NavierStokesSolver::generateQT()
-{
-}
-void NavierStokesSolver::generateC()
-{
-}
-void NavierStokesSolver::stepTime()
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::stepTime()
 {
 	for(int i=0; i<simPar->intSch.substeps; i++)
 	{
@@ -47,45 +77,61 @@ void NavierStokesSolver::stepTime()
 	}
 	timeStep++;
 }
-void NavierStokesSolver::generateRN()
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::generateBC1()
 {
 }
-void NavierStokesSolver::generateBC1()
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::assembleRHS1()
+{
+	
+}
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::solveIntermediateVelocity()
+{/*
+	cusp::default_monitor<real> sys1Mon(r1, 10000);
+	cusp::krylov::cg(A, qStar, r1, sys1Mon, PC1);
+*/}
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::generateBC2()
 {
 }
-void NavierStokesSolver::assembleRHS1()
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::assembleRHS2()
 {
 }
-void NavierStokesSolver::solveIntermediateVelocity()
-{
-}
-void NavierStokesSolver::generateBC2()
-{
-}
-void NavierStokesSolver::assembleRHS2()
-{
-}
-void NavierStokesSolver::solvePoisson()
-{
-}
-void NavierStokesSolver::projectionStep()
-{
-}
-void NavierStokesSolver::writeData()
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::solvePoisson()
+{/*
+	cusp::default_monitor<real> sys2Mon(r2, 20000);
+	cusp::krylov::cg(C, lambda, r2, sys2Mon, PC2);
+*/}
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::projectionStep()
+{/*
+	// QUESTION: Would you create a temp1 here at every time step or have a permanent temp1?
+	cusp::multiply(Q, lambda, temp1);
+	cusp::multiply(BN, temp1, q);
+	cusp::blas::axpby(qStar, q, q, 1.0, -1.0 );
+*/}
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::writeData()
 {
 	if (timeStep % simPar->nsave == 0)
 	{		
 	}
 }
-void NavierStokesSolver::updateBoundaryConditions()
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::updateBoundaryConditions()
 {
 }
-void NavierStokesSolver::updateSolverState()
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::updateSolverState()
 {
 	updateBoundaryConditions();
 }
-
-bool NavierStokesSolver::finished()
+template <typename Matrix, typename Vector>
+bool NavierStokesSolver<Matrix, Vector>::finished()
 {
 	return (timeStep < simPar->nt) ? false : true;
 }
@@ -95,20 +141,32 @@ bool NavierStokesSolver::finished()
 * \param a Description
 * \return
 */
-NavierStokesSolver* NavierStokesSolver::createSolver(flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info)
+
+template <typename Matrix, typename Vector>
+NavierStokesSolver<Matrix, Vector>* NavierStokesSolver<Matrix, Vector>::createSolver(flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info)
 {
-	NavierStokesSolver *solver;
+	NavierStokesSolver<Matrix, Vector> *solver = 0;
 	switch(sim_par.ibmSch)
 	{
+		case SAIKI_BIRINGEN:
+			break;
+		case TAIRA_COLONIUS:
+			break;
 		case NAVIER_STOKES:
-			solver = new NavierStokesSolver;
+			solver = new NavierStokesSolver<Matrix, Vector>;
 			break;
 		case FADLUN_ET_AL:
-			solver = new FadlunEtAlSolver;
+			solver = new FadlunEtAlSolver<Matrix, Vector>;
 			break;
 	}
 	solver->flowDesc = &flow_desc;
 	solver->simPar = &sim_par;
-	solver->domainInfo = &dom_info;
+	solver->domInfo = &dom_info;
 	return solver;
 }
+
+#include "NavierStokes/generateA.cu"
+#include "NavierStokes/generateRN.cu"
+
+template class NavierStokesSolver<coo_h, vec_h>;
+template class NavierStokesSolver<coo_d, vec_d>;

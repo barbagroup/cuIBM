@@ -4,7 +4,7 @@
 CC = nvcc
 OPTS = -arch=sm_20 -O3 -Xcompiler -Wall
 PROJ_ROOT=$(dir $(lastword $(MAKEFILE_LIST)))
-INC = -I $(PROJ_ROOT)/src/include
+INC = -I $(PROJ_ROOT)src/include
 AR = ar
 ARFLAGS =
 RANLIB = ranlib

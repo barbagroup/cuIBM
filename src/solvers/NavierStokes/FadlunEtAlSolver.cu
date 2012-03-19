@@ -1,28 +1,34 @@
 #include <solvers/NavierStokes/FadlunEtAlSolver.h>
-
-void FadlunEtAlSolver::generateA()
+/*
+template <typename Matrix, typename Vector>
+void FadlunEtAlSolver<Matrix, Vector>::generateA()
 {
 }
-void FadlunEtAlSolver::updateA()
+template <typename Matrix, typename Vector>
+void FadlunEtAlSolver<Matrix, Vector>::updateA()
 {
 }
-void FadlunEtAlSolver::initialiseBodies()
+template <typename Matrix, typename Vector>
+void FadlunEtAlSolver<Matrix, Vector>::initialiseBodies()
 {
 }
-void FadlunEtAlSolver::updateBodies()
+template <typename Matrix, typename Vector>
+void FadlunEtAlSolver<Matrix, Vector>::updateBodies()
 {
 }
-void FadlunEtAlSolver::initialise()
+template <typename Matrix, typename Vector>
+void FadlunEtAlSolver<Matrix, Vector>::initialise()
 {
 	initialiseArrays();
 	assembleMatrices();
 	initialiseBodies();
 }
-void FadlunEtAlSolver::updateSolverState()
+template <typename Matrix, typename Vector>
+void FadlunEtAlSolver<Matrix, Vector>::updateSolverState()
 {
 	updateBoundaryConditions();
 	if (B.bodiesMove) {
 		updateBodies();
 		updateA();
 	}
-}
+}*/

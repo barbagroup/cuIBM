@@ -1,5 +1,6 @@
 #include <solvers/NavierStokes/NavierStokesSolver.h>
 
-void NavierStokesSolver::generateBC2()
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::generateBC2()
 {
 }

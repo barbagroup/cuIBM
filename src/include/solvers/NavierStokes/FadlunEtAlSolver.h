@@ -5,7 +5,8 @@
 /**
 * Immersed boundary method described by Fadlun et al (2000)
 */
-class FadlunEtAlSolver : public NavierStokesSolver
+template <typename Matrix, typename Vector>
+class FadlunEtAlSolver : public NavierStokesSolver<Matrix, Vector>
 {
 private:
 	bodies B;
@@ -20,3 +21,6 @@ public:
 	//friend NavierStokesSolver* allocator::createSolver(flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info);
 	//friend class NavierStokesSolver;
 };
+
+template class FadlunEtAlSolver<coo_h, vec_h>;
+template class FadlunEtAlSolver<coo_d, vec_d>;

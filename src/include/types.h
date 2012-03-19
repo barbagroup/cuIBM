@@ -12,8 +12,14 @@ using cusp::device_memory;
 using cusp::host_memory;
 using cusp::array1d;
 using cusp::csr_matrix;
+using cusp::coo_matrix;
 
 typedef float real;
-typedef csr_matrix<int, real, host_memory> matrix;
-typedef array1d<real, host_memory> vector;
+//typedef csr_matrix<int, real, host_memory> matrix;
+typedef coo_matrix<int, real, host_memory> coo_h;
+typedef array1d<real, host_memory> vec_h;
+typedef coo_matrix<int, real, device_memory> coo_d;
+typedef array1d<real, device_memory> vec_d;
 //typedef memory_space cusp::device_memory
+typedef coo_h matrix;
+typedef vec_h vector;

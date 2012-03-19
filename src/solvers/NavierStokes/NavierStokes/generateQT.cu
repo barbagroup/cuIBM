@@ -1,5 +1,6 @@
 #include <solvers/NavierStokes/NavierStokesSolver.h>
 
-void NavierStokesSolver::generateQT()
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::generateQT()
 {
 }

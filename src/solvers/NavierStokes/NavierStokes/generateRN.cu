@@ -1,5 +1,11 @@
-#include <solvers/NavierStokes/NavierStokesSolver.h>
+//#include <solvers/NavierStokes/NavierStokesSolver.h>
 
-void NavierStokesSolver::generateRN()
+template <>
+void NavierStokesSolver<coo_d, vec_d>::generateRN()
+{
+}
+
+template <>
+void NavierStokesSolver<coo_h, vec_h>::generateRN()
 {
 }

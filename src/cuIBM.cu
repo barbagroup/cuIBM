@@ -15,8 +15,9 @@ int main(int argc, char **argv)
 	domain dom_info;
 	
 	io::readInputs(argc, argv, opts, flow_desc, sim_par, dom_info);
+	io::printSimulationInfo(opts, flow_desc, sim_par, dom_info);
 	
-	NavierStokesSolver *solver = NavierStokesSolver::createSolver(flow_desc, sim_par, dom_info);
+	NavierStokesSolver<matrix,vector> *solver = NavierStokesSolver<matrix,vector>::createSolver(flow_desc, sim_par, dom_info);
 	solver->initialise();
 	
 	while (!solver->finished())

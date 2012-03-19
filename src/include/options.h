@@ -4,11 +4,11 @@
 */
 class options
 {
-	public:
-		std::string folderName,
-		            inputFile,
-		            domFile,
-		            systemFile;
-		int  cudaDevice;
-		bool writeData;
+public:
+	std::string folderName,
+	            inputFile,
+	            domFile,
+	            systemFile;
+	int  cudaDevice;
+	bool writeData;
 };

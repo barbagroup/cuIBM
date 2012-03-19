@@ -14,7 +14,6 @@ public:
 
 	real *X, *Y,	///< Reference location of boundary points
 	     *ds;	///< segment lengths
-
-
+	
 	void update();
 };
