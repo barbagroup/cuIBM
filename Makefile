@@ -4,11 +4,11 @@ include Makefile.inc
 
 main: cuibm
 
-cuibm: lib/libNavierStokesSolvers.a src/cuIBM.o src/io.o
+cuibm: lib/libNavierStokesSolvers.a src/cuIBM.o src/io.o 
 	nvcc $? -o bin/cuIBM
 
 #src/solvers/libsolvers.a:  force_look
-lib/libNavierStokesSolvers.a:
+lib/libNavierStokesSolvers.a: force_look
 	cd src/solvers; $(MAKE) $(MFLAGS)
 
 clean:
