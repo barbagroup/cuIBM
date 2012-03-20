@@ -25,8 +25,10 @@ using cusp::coo_matrix;
 typedef float real;
 //typedef csr_matrix<int, real, host_memory> matrix;
 typedef coo_matrix<int, real, host_memory> cooH;
+typedef csr_matrix<int, real, host_memory> csrH;
 typedef array1d<real, host_memory> vecH;
 typedef coo_matrix<int, real, device_memory> cooD;
+typedef csr_matrix<int, real, device_memory> csrD;
 typedef array1d<real, device_memory> vecD;
 //typedef memory_space cusp::device_memory
 typedef cooD matrix;
