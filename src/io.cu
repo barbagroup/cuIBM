@@ -6,7 +6,7 @@ namespace io
 	{
 		flow_desc = flowDescription();
 		sim_par   = simulationParameters();
-		dom_info       = domain();
+		dom_info  = domain();
 	}
 	
 	void printSimulationInfo(options &opts, flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info)

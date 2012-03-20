@@ -4,10 +4,13 @@
 #include <cusp/array1d.h>
 #include <cusp/transpose.h>
 #include <cusp/print.h>
-#include <cusp/elementwise.h>
-#include <cusp/multiply.h>
+//#include <cusp/elementwise.h>
+//#include <cusp/multiply.h>
 #include <cusp/blas.h>
 #include <cusp/krylov/cg.h>
+#include <cusp/wrapped/add.h>
+#include <cusp/wrapped/subtract.h>
+#include <cusp/wrapped/multiply.h>
 
 #include <thrust/device_ptr.h>
 

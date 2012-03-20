@@ -22,7 +22,7 @@ template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::initialiseArrays()
 {
 	int nx = domInfo->nx,
-		ny = domInfo->ny;
+	    ny = domInfo->ny;
 		
 	int numU  = (nx-1)*ny;
 	int numUV = numU + nx*(ny-1);
@@ -31,20 +31,20 @@ void NavierStokesSolver<Matrix, Vector>::initialiseArrays()
 //	for(int k=0; k<flowDesc->numBodies; k++)
 //		numB += flowDesc->B[k].numPoints;
 	
-	    q.resize(numUV);
+	q.resize(numUV);
 	qStar.resize(numUV);
-	   rn.resize(numUV);
-	    H.resize(numUV);
-	  bc1.resize(numUV);
-	 rhs1.resize(numUV);
+	rn.resize(numUV);
+	H.resize(numUV);
+	bc1.resize(numUV);
+	rhs1.resize(numUV);
 	
 	cusp::blas::fill(rn, 0.0);
 	
 	//lambda.resize(numP+2*numB);
 	//rhs2.resize(numP+2*numB);
 	lambda.resize(numP);
-	   bc2.resize(numP);
-	  rhs2.resize(numP);
+	bc2.resize(numP);
+	rhs2.resize(numP);
 	
 	/// Initialise velocity fluxes
 	int i;
@@ -99,8 +99,10 @@ template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::generateC()
 {
 	Matrix temp;
-	cusp::multiply(QT, BN, temp);
-	cusp::multiply(temp, Q, C);
+	cusp::wrapped::multiply(QT, BN, temp);
+	cusp::wrapped::multiply(temp, Q, C);
+	//cusp::multiply(QT, BN, temp);
+	//cusp::multiply(temp, Q, C);
 	C.sort_by_row_and_column();
 	C.values[0] += C.values[0];
 }

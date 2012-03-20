@@ -208,7 +208,7 @@ void NavierStokesSolver<Matrix, Vector>::generateA()
 {
 	generateM();
 	generateL();
-	cusp::subtract(M, L, A);
+	cusp::wrapped::subtract(M, L, A);
 }
 
 template <typename Matrix, typename Vector>
