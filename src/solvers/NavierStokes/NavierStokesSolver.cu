@@ -37,14 +37,25 @@ void NavierStokesSolver<Matrix, Vector>::initialiseArrays()
 	H.resize(numUV);
 	bc1.resize(numUV);
 	rhs1.resize(numUV);
+	temp1.resize(numUV);
 	
 	cusp::blas::fill(rn, 0.0);
+	cusp::blas::fill(H, 0.0);
+	cusp::blas::fill(bc1, 0.0);
+	cusp::blas::fill(rhs1, 0.0);
+	cusp::blas::fill(temp1, 0.0);
 	
 	//lambda.resize(numP+2*numB);
 	//rhs2.resize(numP+2*numB);
 	lambda.resize(numP);
 	bc2.resize(numP);
 	rhs2.resize(numP);
+	temp2.resize(numP);
+	
+	cusp::blas::fill(lambda, 0.0);
+	cusp::blas::fill(bc2, 0.0);
+	cusp::blas::fill(rhs2, 0.0);
+	cusp::blas::fill(temp2, 0.0);
 	
 	/// Initialise velocity fluxes
 	int i;
@@ -127,8 +138,6 @@ void NavierStokesSolver<Matrix, Vector>::stepTime()
 		solvePoisson();
 
 		projectionStep();
-
-		q = qStar;
 	}
 	timeStep++;
 }
@@ -147,30 +156,28 @@ void NavierStokesSolver<Matrix, Vector>::solveIntermediateVelocity()
 }
 
 template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::generateBC2()
-{
-}
-
-template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::assembleRHS2()
 {
+	// Vector temp2; 
+	cusp::wrapped::multiply(QT, qStar, temp2);
+	cusp::blas::axpby(temp2, bc2, rhs2, 1.0, -1.0 );
 }
 
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::solvePoisson()
-{/*
-	cusp::default_monitor<real> sys2Mon(r2, 20000);
-	cusp::krylov::cg(C, lambda, r2, sys2Mon, PC2);
-*/}
+{
+	cusp::default_monitor<real> sys2Mon(rhs2, 20000);
+	cusp::krylov::cg(C, lambda, rhs2, sys2Mon);//, PC2);
+}
 
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::projectionStep()
-{/*
+{
 	// QUESTION: Would you create a temp1 here at every time step or have a permanent temp1?
-	cusp::multiply(Q, lambda, temp1);
-	cusp::multiply(BN, temp1, q);
+	cusp::wrapped::multiply(Q, lambda, temp1);
+	cusp::wrapped::multiply(BN, temp1, q);
 	cusp::blas::axpby(qStar, q, q, 1.0, -1.0 );
-*/}
+}
 
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::writeData()
@@ -231,6 +238,7 @@ NavierStokesSolver<Matrix, Vector>* NavierStokesSolver<Matrix, Vector>::createSo
 #include "NavierStokes/generateQT.inl"
 #include "NavierStokes/generateRN.inl"
 #include "NavierStokes/generateBC1.inl"
+#include "NavierStokes/generateBC2.inl"
 
 template class NavierStokesSolver<cooH, vecH>;
 template class NavierStokesSolver<cooD, vecD>;

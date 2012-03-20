@@ -18,7 +18,7 @@ protected:
 	domain  *domInfo;
 	Vector  bcN[4];//, bcNP1[4];
 	Matrix  M, Minv, L, A, QT, Q, BN, C;
-	Vector  q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2;
+	Vector  q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1;
 	int     timeStep;
 	
 	void initialiseArrays();
