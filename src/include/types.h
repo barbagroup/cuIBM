@@ -6,6 +6,10 @@
 #include <cusp/print.h>
 #include <cusp/elementwise.h>
 #include <cusp/multiply.h>
+#include <cusp/blas.h>
+#include <cusp/krylov/cg.h>
+
+#include <thrust/device_ptr.h>
 
 enum bcType { DIRICHLET, NEUMANN, CONVECTIVE, PERIODIC };
 enum boundary { XMINUS, XPLUS, YMINUS, YPLUS };
@@ -20,10 +24,10 @@ using cusp::coo_matrix;
 
 typedef float real;
 //typedef csr_matrix<int, real, host_memory> matrix;
-typedef coo_matrix<int, real, host_memory> coo_h;
-typedef array1d<real, host_memory> vec_h;
-typedef coo_matrix<int, real, device_memory> coo_d;
-typedef array1d<real, device_memory> vec_d;
+typedef coo_matrix<int, real, host_memory> cooH;
+typedef array1d<real, host_memory> vecH;
+typedef coo_matrix<int, real, device_memory> cooD;
+typedef array1d<real, device_memory> vecD;
 //typedef memory_space cusp::device_memory
-typedef coo_h matrix;
-typedef vec_h vector;
+typedef cooD matrix;
+typedef vecD vector;

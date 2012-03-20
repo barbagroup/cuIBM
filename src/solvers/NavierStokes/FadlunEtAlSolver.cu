@@ -33,5 +33,5 @@ void FadlunEtAlSolver<Matrix, Vector>::updateSolverState()
 	}
 }
 
-template class FadlunEtAlSolver<coo_h, vec_h>;
-template class FadlunEtAlSolver<coo_d, vec_d>;
+template class FadlunEtAlSolver<cooH, vecH>;
+template class FadlunEtAlSolver<cooD, vecD>;

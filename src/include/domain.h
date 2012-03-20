@@ -2,12 +2,15 @@
 /**
 * Defines the domain and grid on which the problem is solved.
 */
+
 class domain
 {
 public:
 	int    nx, ny;
-	vec_h  x, y;
-	vec_h  dx, dy;
+	vecH  x, y;
+	vecH  dx, dy;
+	vecD  xD, yD;
+	vecD  dxD, dyD;
 	domain(real X0=0.0, real Y0=0.0, real X1=4.0, real Y1=4.0, int NX=4, int NY=4)
 	{
 		nx = NX;
@@ -30,5 +33,9 @@ public:
 			dy[j]  = DY;
 			y[j+1] = y[j] + dy[j];
 		}
+		xD = x;
+		yD = y;
+		dxD = dx;
+		dyD = dy;
 	}
 };

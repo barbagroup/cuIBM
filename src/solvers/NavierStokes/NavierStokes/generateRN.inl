@@ -1,9 +1,9 @@
 template <>
-void NavierStokesSolver<coo_d, vec_d>::generateRN()
+void NavierStokesSolver<cooD, vecD>::generateRN()
 {
 }
 
 template <>
-void NavierStokesSolver<coo_h, vec_h>::generateRN()
+void NavierStokesSolver<cooH, vecH>::generateRN()
 {
 }

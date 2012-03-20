@@ -16,12 +16,13 @@ protected:
 	flowDescription *flowDesc;
 	simulationParameters *simPar;
 	domain  *domInfo;
-	Vector  bcN[4], bcNP1[4];
+	Vector  bcN[4];//, bcNP1[4];
 	Matrix  M, Minv, L, A, QT, Q, BN, C;
-	Vector  q, qStar, lambda, rn, H, rhs1, rhs2;
+	Vector  q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2;
 	int     timeStep;
 	
 	void initialiseArrays();
+	void initialiseBoundaryArrays();
 	void assembleMatrices(); // contains subfunctions to calculate A, QT, BN, QTBNQ
 	
 	void generateM();
@@ -52,22 +53,3 @@ public:
 	bool finished();
 	static NavierStokesSolver<Matrix, Vector>* createSolver(flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info);
 };
-
-/*template <>
-NavierStokesSolver<coo_h, vec_h>* NavierStokesSolver<coo_h, vec_h>::createSolver(flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info)
-{
-	NavierStokesSolver<coo_h, vec_h> *solver;
-	switch(sim_par.ibmSch)
-	{
-		case NAVIER_STOKES:
-			solver = new NavierStokesSolver<coo_h, vec_h>;
-			break;
-		case FADLUN_ET_AL:
-			solver = new FadlunEtAlSolver<coo_h, vec_h>;
-			break;
-	}
-	solver->flowDesc = &flow_desc;
-	solver->simPar = &sim_par;
-	solver->domainInfo = &dom_info;
-	return solver;
-}*/
