@@ -117,6 +117,33 @@ void NavierStokesSolver<Matrix, Vector>::initialiseBoundaryArrays()
 	bcN[XPLUS][ny-1]  = flowDesc->bcInfo[XPLUS][0].second;
 }
 
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::generateA()
+{
+	generateM();
+	generateL();
+	cusp::wrapped::subtract(M, L, A);
+}
+
+template <typename Matrix, typename Vector>
+void NavierStokesSolver<Matrix, Vector>::generateBN()
+{
+	BN = Minv;
+}
+
+/*
+template <typename Matrix, typename Vector>
+template <>
+void NavierStokesSolver<Matrix, Vector>::generateBN<3>()
+{
+	Matrix	temp1, temp2;
+	cusp::multiply(Minv, L, temp1);
+	cusp::multiply(temp1, Minv, BN);
+	cusp::add(Minv, BN, BN);
+	cusp::multiply(temp1, BN, temp2);
+	cusp::add(Minv, temp2, BN);
+}*/
+
 template <>
 void NavierStokesSolver<cooD, vecD>::generateC()
 {
@@ -254,7 +281,8 @@ NavierStokesSolver<Matrix, Vector>* NavierStokesSolver<Matrix, Vector>::createSo
 	return solver;
 }
 
-#include "NavierStokes/generateA.inl"
+#include "NavierStokes/generateM.inl"
+#include "NavierStokes/generateL.inl"
 #include "NavierStokes/generateQT.inl"
 #include "NavierStokes/generateRN.inl"
 #include "NavierStokes/generateBC1.inl"

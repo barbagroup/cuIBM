@@ -18,6 +18,7 @@
 namespace io
 {
 	void readInputs(int argc, char **argv, options &opts, flowDescription &flow_desc, simulationParameters &sim_par, domain &dom);
+	void readDomainInfo(std::string domFile, domain &D);
 	void printSimulationInfo(options &opts, flowDescription &flow_desc, simulationParameters &sim_par, domain &dom);
 	void writeGrid(std::string folderName, domain &D);
 	template <typename Vector>

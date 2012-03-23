@@ -26,24 +26,5 @@ void NavierStokesSolver<Matrix, Vector>::generateBC2()
 		bc2[j*nx] -= bcN[XMINUS][j]*dy[j]; // u[j+1][0]*dy;
 		// right
 		bc2[j*nx+nx-1] += bcN[XPLUS][j]*dy[j]; // u[j+1][nx]*dy;
-	}	
-/*	int	row = np;
-	
-	/// no-slip condition on the body surface
-	for(k=0; k<B.no_of_bodies; k++)
-	{
-		for(int l=0; l<B.Body[k].no_of_points; l++)
-		{
-			rhs2[row] = B.Body[k].uB[l];
-			row++;
-		}
 	}
-	for(k=0; k<B.no_of_bodies; k++)
-	{
-		for(int l=0; l<B.Body[k].no_of_points; l++)
-		{
-			rhs2[row] = B.Body[k].vB[l];
-			row++;
-		}
-	}*/
 }

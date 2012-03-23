@@ -14,5 +14,6 @@ public:
 	options()
 	{
 		folderName = "new";
+		domFile = "domains/open_flow.dom";
 	}
 };

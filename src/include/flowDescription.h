@@ -44,7 +44,7 @@ public:
 		B.resize(numBodies);
 		for(int k=0; k<numBodies; k++)
 		{
-			B[k].numPoints = 32;
+			B[k].numPoints = 63;
 			B[k].X0_x = 0.0;
 			B[k].X0_y = 0.0;
 			B[k].Theta0 = 0.0;

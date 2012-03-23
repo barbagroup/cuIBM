@@ -15,8 +15,13 @@ real delta(real x, real y, real h)
 	return dh_roma(x, h) * dh_roma(y, h);
 }
 
-template <typename Matrix, typename Vector>
-void TairaColoniusSolver<Matrix, Vector>::generateQT()
+template <>
+void TairaColoniusSolver<cooH, vecH>::generateQT()
+{
+}
+
+template <>
+void TairaColoniusSolver<cooD, vecD>::generateQT()
 {
 	std::cout << "Entered generateQT" << std::endl;
 	int  nx = NavierStokesSolver<Matrix, Vector>::domInfo->nx,

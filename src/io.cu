@@ -6,7 +6,88 @@ namespace io
 	{
 		flow_desc = flowDescription();
 		sim_par   = simulationParameters();
-		dom_info  = domain();
+		readDomainInfo(opts.domFile, dom_info);
+	}
+	
+	void readDomainInfo(std::string domFile, domain &D)
+	{
+		int  beg = 0, end, numCells;
+		int  nsubx, nsuby;
+		real h, r, a, b;
+		std::ifstream f(domFile.c_str());
+		
+		// x-coordinates of the grid
+		f	>> D.nx;					// read the total number of cells along the edge
+		f	>> nsubx;				// read the number of sections which the edge is divided into
+		D.x.resize(D.nx+1);
+		D.dx.resize(D.nx);
+		f >> D.x[beg];				// read the coordinate of the first point
+		for(int i=0; i<nsubx; i++)
+		{
+			a	= D.x[beg];	// coordinate of the first node of the section
+			f	>> b;		// coordinate of the last node of the section (which is the first node of the next section)
+			f	>> numCells;		// number of cells in the current section
+			f	>> r;		// stretching ratio
+			end = beg + numCells;			
+
+			if(fabs(r-1.0) < 1e-6)					// if there is no stretching (i.e. stretching factor = 1)
+			{	
+				h = (b - a)/numCells;						// calculate the width of each cell
+				for(int j=beg; j<end; j++)
+				{
+					D.dx[j] = h;						// assign the width to the array
+					D.x[j+1] = D.x[j] + D.dx[j];		// calculate the coordinate of the node
+				}
+			}
+			else									// if the stretching factor is not equal to 1
+			{
+				h = (b-a)*(r-1)/(pow(r,numCells)-1);		// calculate the width of the first cell
+				for(int j=beg; j<end; j++)
+				{
+					D.dx[j] = h*pow(r, j-beg);		// calculate the width of each cell in the section
+					D.x[j+1] = D.x[j] + D.dx[j];			// calculate the coordinate of each node
+				}
+			}
+			beg = end;
+			D.x[end] = b;
+		}
+		
+		// y-coordinates of the grid
+		beg = 0;
+		f >> D.ny >> nsuby;
+		D.y.resize(D.ny+1);
+		D.dy.resize(D.ny);
+		f >> D.y[beg];
+		for(int i=0; i<nsuby; i++)
+		{
+			a	= D.y[beg];
+			f >> b >> numCells >> r;
+			end = beg + numCells;
+			if(fabs(r-1.0) < 1e-6)
+			{
+				h = (b - a)/numCells;
+				for(int j=beg; j<beg+numCells; j++)
+				{
+					D.dy[j] = h;
+					D.y[j+1] = D.y[j] + D.dy[j];
+				}
+			}
+			else
+			{
+				h = (b-a)*(r-1)/(pow(r,numCells)-1);
+				for(int j=beg; j<beg+numCells; j++)
+				{
+					D.dy[j] = h*pow(r, j-beg);
+					D.y[j+1] = D.y[j] + D.dy[j];
+				}
+			}
+			beg = end;
+			D.y[end] = b;
+		}
+		D.xD = D.x;
+		D.dxD = D.dx;
+		D.yD = D.y;
+		D.dyD = D.dy;
 	}
 	
 	void printSimulationInfo(options &opts, flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info)
@@ -74,7 +155,7 @@ namespace io
 	}
 
 	template <>
-	void writeData<vecH>(std::string folderName, int n, vecH q, vecH lambda, domain &D//, bodies &B)
+	void writeData<vecH>(std::string folderName, int n, vecH q, vecH lambda, domain &D)//, bodies &B)
 	{
 		std::string path;
 		std::stringstream out;

@@ -7,11 +7,6 @@ void NavierStokesSolver<Matrix, Vector>::generateQT()
 	int  numU  = (nx-1)*ny;
 	int  numUV = numU + nx*(ny-1);
 	int  numP  = numU + ny;
-//	int  numB  = 0;	
-//	for(int k=0; k<flowDesc->numBodies; k++)
-//		numB += flowDesc->B[k].numPoints;
-	
-//	QT.resize(numP + 2*numB, numUV, 4*numP-2*(nx+ny) + 24*numB)
 	QT.resize(numP, numUV, 4*numP-2*(nx+ny));
 	
 	int Iu, Iv;
@@ -59,66 +54,6 @@ void NavierStokesSolver<Matrix, Vector>::generateQT()
 			row++;
 		}
 	}
-
-/*	int			I, J, col, k, l;
-	PRECISION	xB, yB, x, y, alpha, Dx;
-	
-	/// Generate the E part
-	for(int k=0; k<B.no_of_bodies; k++)
-	{
-		Dx = D.dx[B.Body[k].bp[0].I];
-		alpha = Dx*Dx;
-		for(int l=0; l<B.Body[k].no_of_points; l++)
-		{
-			xB	= B.Body[k].bp[l].x;
-			yB	= B.Body[k].bp[l].y;
-			I	= B.Body[k].bp[l].I;
-			J	= B.Body[k].bp[l].J;
-			
-			for(int j=J-1; j<=J+1; j++)
-			{
-				for(i=I-2; i<=I+1; i++)
-				{
-					col	= j*(nx-1) + i;
-					x	= D.x[i+1];
-					y	= 0.5*(D.y[j] + D.y[j+1]);
-					QT.row_indices[num_elements] = row;
-					QT.column_indices[num_elements] = col;
-					QT.values[num_elements] = alpha*delta(x-xB, y-yB, Dx)/Dx; // Dx = Dy near the body
-					num_elements++;
-				}
-			}		
-			row++;
-		}
-	}
-	
-	for(int k=0; k<B.no_of_bodies; k++)
-	{
-		Dx = D.dx[B.Body[k].bp[0].I];
-		alpha = Dx*Dx;
-		for(int l=0; l<B.Body[k].no_of_points; l++)
-		{
-			xB	= B.Body[k].bp[l].x;
-			yB	= B.Body[k].bp[l].y;
-			I	= B.Body[k].bp[l].I;
-			J	= B.Body[k].bp[l].J;
-			
-			for(j=J-2; j<=J+1; j++)
-			{
-				for(i=I-1; i<=I+1; i++)
-				{
-					col	= j*nx + i + numU;
-					x	= 0.5*(D.x[i] + D.x[i+1]);
-					y	= D.y[j+1];
-					QT.row_indices[num_elements] = row;
-					QT.column_indices[num_elements] = col;
-					QT.values[num_elements] = alpha*delta(x-xB, y-yB, Dx)/Dx;
-					num_elements++;
-				}
-			}
-			row++;
-		}
-	}*/
 	
 	cusp::transpose(QT, Q);
 }
