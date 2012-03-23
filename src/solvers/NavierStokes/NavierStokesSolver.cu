@@ -38,9 +38,6 @@ void NavierStokesSolver<Matrix, Vector>::initialiseArrays()
 	int numU  = (nx-1)*ny;
 	int numUV = numU + nx*(ny-1);
 	int numP  = numU + ny;
-//	int numB  = 0;
-//	for(int k=0; k<flowDesc->numBodies; k++)
-//		numB += flowDesc->B[k].numPoints;
 	
 	q.resize(numUV);
 	qStar.resize(numUV);

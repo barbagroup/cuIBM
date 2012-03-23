@@ -13,9 +13,10 @@ public:
 	real initialU,
 	     initialV;
 	
+	std::pair <bcType, real> bcInfo[4][2];
+	
 	int numBodies;
 	std::vector<body> B;
-	std::pair <bcType, real> bcInfo[4][2];
 	
 	flowDescription(real NU=0.01, real IU=0.0, real IV=0.0)
 	{
