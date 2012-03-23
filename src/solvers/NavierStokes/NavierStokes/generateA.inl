@@ -206,8 +206,11 @@ void NavierStokesSolver<Matrix, Vector>::generateL()
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::generateA()
 {
+	printf("entered generateA\n");
 	generateM();
+	printf("finished generateM\n");
 	generateL();
+printf("finished generateL\n");
 	cusp::wrapped::subtract(M, L, A);
 }
 

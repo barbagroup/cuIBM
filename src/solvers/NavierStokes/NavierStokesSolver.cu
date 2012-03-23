@@ -1,10 +1,17 @@
 #include <solvers/NavierStokes/NavierStokesSolver.h>
 #include <solvers/NavierStokes/FadlunEtAlSolver.h>
+#include <solvers/NavierStokes/TairaColoniusSolver.h>
 
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::initialise()
 {
+	printf("NS initalising\n");
 	timeStep = simPar->startStep;
+	
+	//io::createDirectory
+	mkdir(opts->folderName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	io::writeGrid(opts->folderName, *domInfo);
+	
 	initialiseArrays();
 	assembleMatrices();
 }
@@ -12,9 +19,13 @@ void NavierStokesSolver<Matrix, Vector>::initialise()
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::assembleMatrices()
 {
+	std::cout << "Entered assembleMatrices" << std::endl;
 	generateA();
+	std::cout << "Assembled A!" << std::endl;
 	generateBN();
+	std::cout << "Assembled BN!" << std::endl;
 	generateQT();
+	std::cout << "Assembled QT!" << std::endl;
 	generateC(); // QT*BN*Q
 }
 
@@ -106,14 +117,22 @@ void NavierStokesSolver<Matrix, Vector>::initialiseBoundaryArrays()
 	bcN[XPLUS][ny-1]  = flowDesc->bcInfo[XPLUS][0].second;
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::generateC()
+template <>
+void NavierStokesSolver<cooD, vecD>::generateC()
 {
-	Matrix temp;
+	// Should this temp matrix be created each time step?
+	cooD temp;
 	cusp::wrapped::multiply(QT, BN, temp);
 	cusp::wrapped::multiply(temp, Q, C);
-	//cusp::multiply(QT, BN, temp);
-	//cusp::multiply(temp, Q, C);
+	C.values[0] += C.values[0];
+}
+
+template <>
+void NavierStokesSolver<cooH, vecH>::generateC()
+{
+	cooH temp;
+	cusp::wrapped::multiply(QT, BN, temp);
+	cusp::wrapped::multiply(temp, Q, C);
 	C.sort_by_row_and_column();
 	C.values[0] += C.values[0];
 }
@@ -122,6 +141,7 @@ template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::stepTime()
 {
 	//for(int i=0; i<simPar->intSch.substeps; i++)
+	//std::cout << timeStep << ", ";
 	for(int i=0; i<1; i++)
 	{
 		updateSolverState();
@@ -158,7 +178,6 @@ void NavierStokesSolver<Matrix, Vector>::solveIntermediateVelocity()
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::assembleRHS2()
 {
-	// Vector temp2; 
 	cusp::wrapped::multiply(QT, qStar, temp2);
 	cusp::blas::axpby(temp2, bc2, rhs2, 1.0, -1.0 );
 }
@@ -173,7 +192,6 @@ void NavierStokesSolver<Matrix, Vector>::solvePoisson()
 template <typename Matrix, typename Vector>
 void NavierStokesSolver<Matrix, Vector>::projectionStep()
 {
-	// QUESTION: Would you create a temp1 here at every time step or have a permanent temp1?
 	cusp::wrapped::multiply(Q, lambda, temp1);
 	cusp::wrapped::multiply(BN, temp1, q);
 	cusp::blas::axpby(qStar, q, q, 1.0, -1.0 );
@@ -184,7 +202,7 @@ void NavierStokesSolver<Matrix, Vector>::writeData()
 {
 	if (timeStep % simPar->nsave == 0)
 	{
-		std::cout << timeStep << std::endl;		
+		io::writeData(opts->folderName, timeStep, q, lambda, *domInfo);
 	}
 }
 
@@ -208,11 +226,10 @@ bool NavierStokesSolver<Matrix, Vector>::finished()
 /**
 * \brief Factory method to select the required IBM solver
 * \param a Description
-* \return
+* \return Pointer to an instance of the required dervied class.
 */
-
 template <typename Matrix, typename Vector>
-NavierStokesSolver<Matrix, Vector>* NavierStokesSolver<Matrix, Vector>::createSolver(flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info)
+NavierStokesSolver<Matrix, Vector>* NavierStokesSolver<Matrix, Vector>::createSolver(options &opts, flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info)
 {
 	NavierStokesSolver<Matrix, Vector> *solver = 0;
 	switch(sim_par.ibmSch)
@@ -220,6 +237,7 @@ NavierStokesSolver<Matrix, Vector>* NavierStokesSolver<Matrix, Vector>::createSo
 		case SAIKI_BIRINGEN:
 			break;
 		case TAIRA_COLONIUS:
+			solver = new TairaColoniusSolver<Matrix, Vector>;
 			break;
 		case NAVIER_STOKES:
 			solver = new NavierStokesSolver<Matrix, Vector>;
@@ -228,9 +246,11 @@ NavierStokesSolver<Matrix, Vector>* NavierStokesSolver<Matrix, Vector>::createSo
 			solver = new FadlunEtAlSolver<Matrix, Vector>;
 			break;
 	}
+	solver->opts = &opts;
 	solver->flowDesc = &flow_desc;
 	solver->simPar = &sim_par;
 	solver->domInfo = &dom_info;
+	std::cout << "Selected solver: " << solver->name() << std::endl;
 	return solver;
 }
 

@@ -11,7 +11,7 @@ public:
 	vecH  dx, dy;
 	vecD  xD, yD;
 	vecD  dxD, dyD;
-	domain(real X0=0.0, real Y0=0.0, real X1=4.0, real Y1=4.0, int NX=4, int NY=4)
+	domain(real X0=-5.0, real X1=5.0, real Y0=-5.0, real Y1=5.0, int NX=100, int NY=100)
 	{
 		nx = NX;
 		ny = NY;

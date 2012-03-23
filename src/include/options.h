@@ -11,4 +11,8 @@ public:
 	            systemFile;
 	int  cudaDevice;
 	bool writeData;
+	options()
+	{
+		folderName = "new";
+	}
 };

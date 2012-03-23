@@ -14,8 +14,7 @@ class body
 		real X0_x, X0_y, ///< Reference centre of rotation
 		     Theta0; ///< Reference angle
 
-		real *X, *Y, ///< Reference location of boundary points
-		     *ds; ///< segment lengths
+		real *X, *Y; ///< Reference location of boundary points
 		
 		bool tFlag, rFlag;
 

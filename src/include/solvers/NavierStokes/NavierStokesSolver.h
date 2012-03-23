@@ -5,6 +5,7 @@
 #include <simulationParameters.h>
 #include <domain.h>
 #include <integrationScheme.h>
+#include <io.h>
 
 /**
 * Navier-Stokes solver for a rectangular domain.
@@ -13,6 +14,7 @@ template <typename Matrix, typename Vector>
 class NavierStokesSolver
 {
 protected:
+	options *opts;
 	flowDescription *flowDesc;
 	simulationParameters *simPar;
 	domain  *domInfo;
@@ -21,15 +23,15 @@ protected:
 	Vector  q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1;
 	int     timeStep;
 	
-	void initialiseArrays();
+	virtual void initialiseArrays();
 	void initialiseBoundaryArrays();
 	void assembleMatrices(); // contains subfunctions to calculate A, QT, BN, QTBNQ
 	
 	void generateM();
 	void generateL();
-	void generateA();
+	virtual void generateA();
 	void generateBN();
-	void generateQT();
+	virtual void generateQT();
 	void generateC();
 
 	void generateRN();
@@ -47,9 +49,13 @@ protected:
 	void updateSolverState();
 	
 public:
-	void initialise();
+	virtual void initialise();
 	void stepTime();
 	void writeData();
 	bool finished();
-	static NavierStokesSolver<Matrix, Vector>* createSolver(flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info);
+	static NavierStokesSolver<Matrix, Vector>* createSolver(options &opts, flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info);
+	virtual std::string name()
+	{
+		return "Navier-Stokes";
+	}
 };
