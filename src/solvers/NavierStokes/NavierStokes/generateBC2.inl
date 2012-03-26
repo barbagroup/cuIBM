@@ -57,3 +57,25 @@ void NavierStokesSolver<cooD, vecD>::generateBC2()
 	}
 	bc2 = bc2Host;
 }
+/*
+template<>
+void NavierStokesSolver<cooD, vecD>::generateBC2()
+{
+	// raw pointers for cup arrays
+	real *H_r  = thrust::raw_pointer_cast(&H[0]),
+	     *q_r  = thrust::raw_pointer_cast(&q[0]),
+	     *rn_r = thrust::raw_pointer_cast(&rn[0]),
+	     *dxD = thrust::raw_pointer_cast(&(domInfo->dxD[0])),
+	     *dyD = thrust::raw_pointer_cast(&(domInfo->dyD[0]));
+	
+	real *xminus = thrust::raw_pointer_cast(&(bc[XMINUS][0])),
+	     *xplus  = thrust::raw_pointer_cast(&(bc[XPLUS][0])),
+	     *yminus = thrust::raw_pointer_cast(&(bc[YMINUS][0])),
+	     *yplus  = thrust::raw_pointer_cast(&(bc[YPLUS][0]));
+	
+	int  nx = domInfo->nx,
+	     ny = domInfo->ny;
+	
+	
+}
+*/

@@ -40,3 +40,5 @@ typedef array1d<real, device_memory> vecD;
 //typedef memory_space cusp::device_memory
 typedef cooD matrix;
 typedef vecD vector;
+typedef array1d<int, host_memory> intVecH;
+typedef array1d<int, device_memory> intVecD;

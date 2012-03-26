@@ -411,8 +411,8 @@ void NavierStokesSolver<cooD, vecD>::generateRN()
 	real *H_r  = thrust::raw_pointer_cast(&H[0]),
 	     *q_r  = thrust::raw_pointer_cast(&q[0]),
 	     *rn_r = thrust::raw_pointer_cast(&rn[0]),
-	     *dxD_r = thrust::raw_pointer_cast(&(domInfo->dxD[0])),
-	     *dyD_r = thrust::raw_pointer_cast(&(domInfo->dyD[0]));
+	     *dxD = thrust::raw_pointer_cast(&(domInfo->dxD[0])),
+	     *dyD = thrust::raw_pointer_cast(&(domInfo->dyD[0]));
 	
 	real *xminus = thrust::raw_pointer_cast(&(bc[XMINUS][0])),
 	     *xplus  = thrust::raw_pointer_cast(&(bc[XPLUS][0])),
@@ -429,46 +429,101 @@ void NavierStokesSolver<cooD, vecD>::generateRN()
 	dim3 dimBlock(BSZ, BSZ);
 	
 	// call the kernel
-	convection_term_u_cuda <<<dimGridx, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD_r, dyD_r, simPar->dt, d_coeff);
-	convection_term_v_cuda <<<dimGridy, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD_r, dyD_r, simPar->dt, d_coeff);
+	convection_term_u_cuda <<<dimGridx, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, simPar->dt, d_coeff);
+	convection_term_v_cuda <<<dimGridy, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, simPar->dt, d_coeff);
 	
 	dim3 dimGridbc(int((nx+ny-0.5)/(BSZ*BSZ))+1, 1);
 	dim3 dimBlockbc(BSZ*BSZ, 1);
 	
-	convection_term_u_bottomtop_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD_r, dyD_r, simPar->dt, d_coeff, \
+	convection_term_u_bottomtop_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD, dyD, simPar->dt, d_coeff, \
 																yminus, yplus, xminus, xplus);
-	convection_term_v_bottomtop_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD_r, dyD_r, simPar->dt, d_coeff, \
+	convection_term_v_bottomtop_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD, dyD, simPar->dt, d_coeff, \
 																yminus, yplus);
 
-	convection_term_u_leftright_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD_r, dyD_r, simPar->dt, d_coeff, \
+	convection_term_u_leftright_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD, dyD, simPar->dt, d_coeff, \
 																xminus, xplus);
-	convection_term_v_leftright_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD_r, dyD_r, simPar->dt, d_coeff, \
+	convection_term_v_leftright_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD, dyD, simPar->dt, d_coeff, \
 																yminus, yplus, xminus, xplus);
 }
 
 template <>
 void NavierStokesSolver<cooH, vecH>::generateRN()
 {
-/*	int  nx = domInfo->nx,
+	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
-	int  Iu, Iv;
-	real east, west, north, south, Hn;
+	int  numU = (nx-1)*ny;
+	int  Iu = 0, Iv = 0;
+	real east = 0, west = 0, north = 0, south = 0, Hn = 0, c_term = 0, d_term = 0, u = 0, v = 0;
+	
 	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
 	     *dy = thrust::raw_pointer_cast(&(domInfo->dy[0]));
-	for(int i=0; i<nx-1; i++)
+	
+	real *xminus = thrust::raw_pointer_cast(&(bc[XMINUS][0])),
+	     *xplus  = thrust::raw_pointer_cast(&(bc[XPLUS][0])),
+	     *yminus = thrust::raw_pointer_cast(&(bc[YMINUS][0])),
+	     *yplus  = thrust::raw_pointer_cast(&(bc[YPLUS][0]));
+	
+	for(int j=0; j<ny; j++)
 	{
-		for(int j=0; j<ny; j++)
+		for(int i=0; i<nx-1; i++)
 		{
 			Iu = j*(nx-1)+i;
+			Iv = j*nx + i + numU;
 			Hn = H[Iu];
+			u  = q[Iu]/dy[j];
 			if(i==0)
-				west = (bc[XMINUS][0] + q[Iu]/dy[j])/2.0 * (bc[XMINUS][0] + q[Iu]/dy[j])/2.0;
+				west = (xminus[j] + u)/2.0 * (xminus[j] + u)/2.0;
 			else
-				west = (q[Iu-1]/dy[j] + q[Iu]/dy[j])/2.0 * (q[Iu-1]/dy[j] + q[Iu]/dy[j])/2.0;
+				west = (q[Iu-1]/dy[j] + u)/2.0 * (q[Iu-1]/dy[j] + u)/2.0;
 			if(i==nx-2)
-				east = (q[Iu]/dy[j] + bc[XPLUS][0])/2.0 * (q[Iu]/dy[j] + bc[XPLUS][0])/2.0;
+				east = (u + xplus[j])/2.0 * (u + xplus[j])/2.0;
 			else
-				east = (q[Iu]/dy[j] + q[Iu+1]/dy[j])/2.0 * (q[Iu]/dy[j] + q[Iu+1]/dy[j])/2.0;
+				east = (u + q[Iu+1]/dy[j])/2.0 * (u + q[Iu+1]/dy[j])/2.0;
+			if(j==0)
+				south = yminus[i] * (yminus[i+(nx-1)]+yminus[i+1+(nx-1)])/2.0;
+			else
+				south = (q[Iu-(nx-1)]/dy[j-1] + u)/2.0 * (q[Iv-nx]/dx[i] + q[Iv-nx+1]/dx[i+1])/2.0;
+			if(j==ny-1)
+				north = yplus[i] * (yplus[i+(nx-1)]+yplus[i+1+(nx-1)])/2.0;
+			else
+				north = (u + q[Iu+(nx-1)]/dy[j+1])/2.0 * (q[Iv]/dx[i] + q[Iv+1]/dx[i+1])/2.0;
+				
+			H[Iu]  = - (east-west)/0.5*(dx[i]+dx[i+1]) - (north-south)/dy[j];
+			c_term = 1.5*H[Iu] - 0.5*Hn;
+			d_term = 0.0;
+			rn[Iu] = (u/simPar->dt + c_term + d_term) * 0.5*(dx[i]+dx[i+1]);
 		}
-	}*/
+	}
+	
+	for(int j=0; j<ny-1; j++)
+	{
+		for(int i=0; i<nx; i++)
+		{
+			Iv = j*nx+i + numU;
+			Iv = j*(nx-1) + i;
+			Hn = H[Iv];
+			v  = q[Iv]/dx[i];
+			if(j==0)
+				south = (yminus[i+(nx-1)] + v)/2.0 * (yminus[i+(nx-1)] + v)/2.0;
+			else
+				south = (q[Iv-nx]/dx[i] + v)/2.0 * (q[Iv-nx]/dx[i] + v)/2.0;
+			if(j==ny-2)
+				north = (v + yplus[i+(nx-1)])/2.0 * (v + yplus[i+(nx-1)])/2.0;
+			else
+				north = (v + q[Iv+nx]/dx[i])/2.0 * (v + q[Iv+nx]/dx[i])/2.0;
+			if(i==0)
+				west = xminus[j+ny]*(xminus[j]+xminus[j+1])/2.0;
+			else
+				west = (q[Iv-1]/dx[i-1] + v)/2.0 * (q[Iu-1]/dy[j] + q[Iu-1+(nx-1)]/dy[j+1])/2.0;
+			if(i==nx-1)
+				east = xplus[j+ny]*(xplus[j]+xplus[j+1])/2.0;
+			else
+				east = (v + q[Iv+1]/dx[i+1])/2.0 * (q[Iu]/dy[j] + q[Iu+(nx-1)]/dy[j+1])/2.0;
+				
+			H[Iu]  = - (east-west)/dx[i] - (north-south)/0.5*(dy[j]+dy[j+1]);
+			c_term = 1.5*H[Iv] - 0.5*Hn;
+			d_term = 0.0;
+			rn[Iu] = (v/simPar->dt + c_term + d_term) * 0.5*(dy[j]+dy[j+1]);
+		}
+	}
 }
