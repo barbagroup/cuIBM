@@ -14,6 +14,6 @@ public:
 	options()
 	{
 		folderName = "new";
-		domFile = "domains/open_flow.dom";
+		domFile = "domains/cavity.dom";
 	}
 };

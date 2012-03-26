@@ -18,7 +18,7 @@ class body
 		
 		bool tFlag, rFlag;
 
-		real VelX, VelY;
+		real VelX, VelY, Omg;
 		real AmpX, OmegaX, PhiX,
 		     AmpY, OmegaY, PhiY,
 		     AmpT, OmegaT, PhiT;

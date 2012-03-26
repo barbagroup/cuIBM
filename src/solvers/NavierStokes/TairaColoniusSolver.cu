@@ -4,6 +4,7 @@ template <typename Matrix, typename Vector>
 void TairaColoniusSolver<Matrix, Vector>::updateBodies()
 {
 }
+
 template <typename Matrix, typename Vector>
 void TairaColoniusSolver<Matrix, Vector>::initialise()
 {
@@ -54,11 +55,13 @@ void TairaColoniusSolver<Matrix, Vector>::initialiseArrays()
 	//rhs2.resize(numP+2*numB);
 	NavierStokesSolver<Matrix, Vector>::lambda.resize(numP+2*B.totalPoints);
 	NavierStokesSolver<Matrix, Vector>::bc2.resize(numP+2*B.totalPoints);
+	NavierStokesSolver<Matrix, Vector>::bc2Host.resize(numP+2*B.totalPoints);
 	NavierStokesSolver<Matrix, Vector>::rhs2.resize(numP+2*B.totalPoints);
 	NavierStokesSolver<Matrix, Vector>::temp2.resize(numP+2*B.totalPoints);
 	
 	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::lambda, 0.0);
 	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::bc2, 0.0);
+	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::bc2Host, 0.0);
 	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::rhs2, 0.0);
 	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::temp2, 0.0);
 	

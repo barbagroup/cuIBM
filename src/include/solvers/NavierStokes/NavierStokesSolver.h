@@ -18,12 +18,18 @@ protected:
 	flowDescription *flowDesc;
 	simulationParameters *simPar;
 	domain  *domInfo;
-	Vector  bcN[4];//, bcNP1[4];
+	Vector  bc[4];//, bcNP1[4];
+	vecD    bcHost[4];
 	Matrix  M, Minv, L, A, QT, Q, BN, C;
 	Vector  q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1;
+	vecD    bc2Host;
 	int     timeStep;
 	
+	/**
+	* Methods are defined as virtual when they are redefined with the same name in a derived class.
+	*/	
 	virtual void initialiseArrays();
+	void initialiseFluxes();
 	void initialiseBoundaryArrays();
 	void assembleMatrices(); // contains subfunctions to calculate A, QT, BN, QTBNQ
 	

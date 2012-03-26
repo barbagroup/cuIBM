@@ -57,15 +57,27 @@ void NavierStokesSolver<Matrix, Vector>::initialiseArrays()
 	//rhs2.resize(numP+2*numB);
 	lambda.resize(numP);
 	bc2.resize(numP);
+	bc2Host.resize(numP);
 	rhs2.resize(numP);
 	temp2.resize(numP);
 	
 	cusp::blas::fill(lambda, 0.0);
 	cusp::blas::fill(bc2, 0.0);
+	cusp::blas::fill(bc2Host, 0.0);
 	cusp::blas::fill(rhs2, 0.0);
 	cusp::blas::fill(temp2, 0.0);
 	
-	/// Initialise velocity fluxes
+	initialiseFluxes();
+	initialiseBoundaryArrays();
+}
+
+template <>
+void NavierStokesSolver <cooH, vecH>::initialiseFluxes()
+{
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
+	int numU  = (nx-1)*ny;
+	int numUV = numU + nx*(ny-1);
 	int i;
 	for(i=0; i < numU; i++)
 	{
@@ -76,8 +88,27 @@ void NavierStokesSolver<Matrix, Vector>::initialiseArrays()
 		q[i] = flowDesc->initialV * domInfo->dx[(i-numU)%nx];
 	}
 	qStar = q;
-	
-	initialiseBoundaryArrays();
+}
+
+template<>
+void NavierStokesSolver <cooD, vecD>::initialiseFluxes()
+{
+	int  nx = domInfo->nx,
+	     ny = domInfo->ny;
+	int  numU  = (nx-1)*ny;
+	int  numUV = numU + nx*(ny-1);
+	vecH qHost(numUV);
+	int  i;
+	for(i=0; i < numU; i++)
+	{
+		qHost[i] = flowDesc->initialU * domInfo->dy[i/(nx-1)];
+	}
+	for(; i < numUV; i++)
+	{
+		qHost[i] = flowDesc->initialV * domInfo->dx[(i-numU)%nx];
+	}
+	q = qHost;
+	qStar = q;
 }
 
 template <typename Matrix, typename Vector>
@@ -85,33 +116,42 @@ void NavierStokesSolver<Matrix, Vector>::initialiseBoundaryArrays()
 {
 	int nx = domInfo->nx,
 		ny = domInfo->ny;
-		
-	bcN[XMINUS].resize(2*ny-1);   
-	bcN[XPLUS].resize(2*ny-1);
-	bcN[YMINUS].resize(2*nx-1);
-	bcN[YPLUS].resize(2*nx-1);
+	
+	bc[XMINUS].resize(2*ny-1);
+	bc[XPLUS].resize(2*ny-1);
+	bc[YMINUS].resize(2*nx-1);
+	bc[YPLUS].resize(2*nx-1);
+	bcHost[XMINUS].resize(2*ny-1);   
+	bcHost[XPLUS].resize(2*ny-1);
+	bcHost[YMINUS].resize(2*nx-1);
+	bcHost[YPLUS].resize(2*nx-1);
 
 	/// Top and Bottom
 	for(int i=0; i<nx-1; i++)
 	{
-		bcN[YMINUS][i] = flowDesc->bcInfo[YMINUS][0].second;
-		bcN[YPLUS][i]  = flowDesc->bcInfo[YPLUS][0].second;
-		bcN[YMINUS][i+nx-1]	= flowDesc->bcInfo[YMINUS][1].second;
-		bcN[YPLUS][i+nx-1]	= flowDesc->bcInfo[YPLUS][1].second;
+		bcHost[YMINUS][i] = flowDesc->bcInfo[YMINUS][0].second;
+		bcHost[YPLUS][i]  = flowDesc->bcInfo[YPLUS][0].second;
+		bcHost[YMINUS][i+nx-1]	= flowDesc->bcInfo[YMINUS][1].second;
+		bcHost[YPLUS][i+nx-1]	= flowDesc->bcInfo[YPLUS][1].second;
 	}
-	bcN[YMINUS][2*nx-2]	= flowDesc->bcInfo[YMINUS][1].second;
-	bcN[YPLUS][2*nx-2]	= flowDesc->bcInfo[YPLUS][1].second;
+	bcHost[YMINUS][2*nx-2]	= flowDesc->bcInfo[YMINUS][1].second;
+	bcHost[YPLUS][2*nx-2]	= flowDesc->bcInfo[YPLUS][1].second;
 	
 	/// Left and Right
 	for(int i=0; i<ny-1; i++)
 	{
-		bcN[XMINUS][i] = flowDesc->bcInfo[XMINUS][0].second;
-		bcN[XPLUS][i]  = flowDesc->bcInfo[XPLUS][0].second;
-		bcN[XMINUS][i+ny] = flowDesc->bcInfo[XMINUS][1].second;
-		bcN[XPLUS][i+ny]  = flowDesc->bcInfo[XPLUS][1].second;
+		bcHost[XMINUS][i] = flowDesc->bcInfo[XMINUS][0].second;
+		bcHost[XPLUS][i]  = flowDesc->bcInfo[XPLUS][0].second;
+		bcHost[XMINUS][i+ny] = flowDesc->bcInfo[XMINUS][1].second;
+		bcHost[XPLUS][i+ny]  = flowDesc->bcInfo[XPLUS][1].second;
 	}
-	bcN[XMINUS][ny-1] = flowDesc->bcInfo[XMINUS][0].second;
-	bcN[XPLUS][ny-1]  = flowDesc->bcInfo[XPLUS][0].second;
+	bcHost[XMINUS][ny-1] = flowDesc->bcInfo[XMINUS][0].second;
+	bcHost[XPLUS][ny-1]  = flowDesc->bcInfo[XPLUS][0].second;
+	
+	bc[XMINUS] = bcHost[XMINUS];
+	bc[XPLUS]  = bcHost[XPLUS];
+	bc[YMINUS] = bcHost[YMINUS];
+	bc[YPLUS]  = bcHost[YPLUS];
 }
 
 template <typename Matrix, typename Vector>

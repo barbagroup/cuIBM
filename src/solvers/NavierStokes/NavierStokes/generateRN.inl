@@ -1,10 +1,4 @@
-template <>
-void NavierStokesSolver<cooH, vecH>::generateRN()
-{
-}
-
 #define BSZ 16
-
 // CUDA kernel to generate Hx and rn
 __global__ void convection_term_u_cuda(real *rn, real *H, real *q, int nx, int ny, real *dx, real *dy, real dt, real d_coeff)
 {
@@ -420,10 +414,10 @@ void NavierStokesSolver<cooD, vecD>::generateRN()
 	     *dxD_r = thrust::raw_pointer_cast(&(domInfo->dxD[0])),
 	     *dyD_r = thrust::raw_pointer_cast(&(domInfo->dyD[0]));
 	
-	real *xminus = thrust::raw_pointer_cast(&(bcN[XMINUS][0])),
-	     *xplus  = thrust::raw_pointer_cast(&(bcN[XPLUS][0])),
-	     *yminus = thrust::raw_pointer_cast(&(bcN[YMINUS][0])),
-	     *yplus  = thrust::raw_pointer_cast(&(bcN[YPLUS][0]));
+	real *xminus = thrust::raw_pointer_cast(&(bc[XMINUS][0])),
+	     *xplus  = thrust::raw_pointer_cast(&(bc[XPLUS][0])),
+	     *yminus = thrust::raw_pointer_cast(&(bc[YMINUS][0])),
+	     *yplus  = thrust::raw_pointer_cast(&(bc[YPLUS][0]));
 	
 	real d_coeff = 0.0;//(1.0 - D.omega) * 2.0 * F.nu;
 	
@@ -450,4 +444,31 @@ void NavierStokesSolver<cooD, vecD>::generateRN()
 																xminus, xplus);
 	convection_term_v_leftright_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD_r, dyD_r, simPar->dt, d_coeff, \
 																yminus, yplus, xminus, xplus);
+}
+
+template <>
+void NavierStokesSolver<cooH, vecH>::generateRN()
+{
+/*	int  nx = domInfo->nx,
+	     ny = domInfo->ny;
+	int  Iu, Iv;
+	real east, west, north, south, Hn;
+	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
+	     *dy = thrust::raw_pointer_cast(&(domInfo->dy[0]));
+	for(int i=0; i<nx-1; i++)
+	{
+		for(int j=0; j<ny; j++)
+		{
+			Iu = j*(nx-1)+i;
+			Hn = H[Iu];
+			if(i==0)
+				west = (bc[XMINUS][0] + q[Iu]/dy[j])/2.0 * (bc[XMINUS][0] + q[Iu]/dy[j])/2.0;
+			else
+				west = (q[Iu-1]/dy[j] + q[Iu]/dy[j])/2.0 * (q[Iu-1]/dy[j] + q[Iu]/dy[j])/2.0;
+			if(i==nx-2)
+				east = (q[Iu]/dy[j] + bc[XPLUS][0])/2.0 * (q[Iu]/dy[j] + bc[XPLUS][0])/2.0;
+			else
+				east = (q[Iu]/dy[j] + q[Iu+1]/dy[j])/2.0 * (q[Iu]/dy[j] + q[Iu+1]/dy[j])/2.0;
+		}
+	}*/
 }
