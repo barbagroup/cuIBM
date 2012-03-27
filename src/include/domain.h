@@ -7,8 +7,8 @@ class domain
 {
 public:
 	int   nx, ny;
-	vecH  x, y;
-	vecH  dx, dy;
-	vecD  xD, yD;
-	vecD  dxD, dyD;
+	vecH  x, y,
+	      dx, dy;
+	vecD  xD, yD,
+	      dxD, dyD;
 };

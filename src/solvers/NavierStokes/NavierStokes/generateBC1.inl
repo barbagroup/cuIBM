@@ -55,7 +55,7 @@ void bc1_convective_v(real *bc1, int N, int nx, int numU, int offset, int stride
 }
 
 template <>
-void NavierStokesSolver<cooD, vecD>::generateBC1()
+void NavierStokesSolver<device_memory>::generateBC1()
 {
 	// raw pointers from cusp arrays
 	real *bc1_r	= thrust::raw_pointer_cast(&bc1[0]),
@@ -191,6 +191,6 @@ void NavierStokesSolver<cooD, vecD>::generateBC1()
 }
 
 template <>
-void NavierStokesSolver<cooH, vecH>::generateBC1()
+void NavierStokesSolver<host_memory>::generateBC1()
 {
 }

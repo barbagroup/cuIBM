@@ -1,5 +1,5 @@
 template <>
-void NavierStokesSolver<cooH, vecH>::generateQT()
+void NavierStokesSolver<host_memory>::generateQT()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -59,7 +59,7 @@ void NavierStokesSolver<cooH, vecH>::generateQT()
 }
 
 template <>
-void NavierStokesSolver<cooD, vecD>::generateQT()
+void NavierStokesSolver<device_memory>::generateQT()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -68,7 +68,7 @@ void NavierStokesSolver<cooD, vecD>::generateQT()
 	int  numUV = numU + nx*(ny-1);
 	int  numP  = numU + ny;
 	
-	cooD QTHost(numP, numUV, 4*numP-2*(nx+ny));
+	cooH QTHost(numP, numUV, 4*numP-2*(nx+ny));
 	
 	int Iu, Iv;
 	int row = 0;

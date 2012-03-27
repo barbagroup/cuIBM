@@ -16,7 +16,7 @@ real delta(real x, real y, real h)
 }
 
 template <>
-void TairaColoniusSolver<cooH, vecH>::generateQT()
+void TairaColoniusSolver<host_memory>::generateQT()
 {
 	std::cout << "Entered generateQT" << std::endl;
 	int  nx = domInfo->nx,
@@ -185,7 +185,7 @@ void TairaColoniusSolver<cooH, vecH>::generateQT()
 }
 
 template <>
-void TairaColoniusSolver<cooD, vecD>::generateQT()
+void TairaColoniusSolver<device_memory>::generateQT()
 {
 	std::cout << "Entered generateQT" << std::endl;
 	int  nx = domInfo->nx,
@@ -354,8 +354,8 @@ void TairaColoniusSolver<cooD, vecD>::generateQT()
 	cusp::transpose(QT, Q);
 }
 
-template <typename Matrix, typename Vector>
-void TairaColoniusSolver<Matrix, Vector>::updateQT()
+template <typename memoryType>
+void TairaColoniusSolver<memoryType>::updateQT()
 {	
 }
 

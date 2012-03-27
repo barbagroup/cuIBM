@@ -405,7 +405,7 @@ __global__ void convection_term_v_leftright_cuda(real *rn, real *H, real *q, \
 }
 
 template <>
-void NavierStokesSolver<cooD, vecD>::generateRN()
+void NavierStokesSolver<device_memory>::generateRN()
 {
 	// raw pointers for cup arrays
 	real *H_r  = thrust::raw_pointer_cast(&H[0]),
@@ -447,7 +447,7 @@ void NavierStokesSolver<cooD, vecD>::generateRN()
 }
 
 template <>
-void NavierStokesSolver<cooH, vecH>::generateRN()
+void NavierStokesSolver<host_memory>::generateRN()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;

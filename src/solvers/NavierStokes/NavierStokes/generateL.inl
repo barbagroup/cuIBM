@@ -1,5 +1,5 @@
 template <>
-void NavierStokesSolver<cooH, vecH>::generateL()
+void NavierStokesSolver<host_memory>::generateL()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -155,7 +155,7 @@ void NavierStokesSolver<cooH, vecH>::generateL()
 }
 
 template <>
-void NavierStokesSolver<cooD, vecD>::generateL()
+void NavierStokesSolver<device_memory>::generateL()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;

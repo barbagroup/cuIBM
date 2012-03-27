@@ -2,8 +2,8 @@
 #include <solvers/NavierStokes/FadlunEtAlSolver.h>
 #include <solvers/NavierStokes/TairaColoniusSolver.h>
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::initialise()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::initialise()
 {
 	printf("NS initalising\n");
 	timeStep = simPar->startStep;
@@ -16,8 +16,8 @@ void NavierStokesSolver<Matrix, Vector>::initialise()
 	assembleMatrices();
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::assembleMatrices()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::assembleMatrices()
 {
 	std::cout << "Entered assembleMatrices" << std::endl;
 	generateA();
@@ -29,8 +29,8 @@ void NavierStokesSolver<Matrix, Vector>::assembleMatrices()
 	generateC(); // QT*BN*Q
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::initialiseArrays()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::initialiseArrays()
 {
 	int nx = domInfo->nx,
 	    ny = domInfo->ny;
@@ -72,7 +72,7 @@ void NavierStokesSolver<Matrix, Vector>::initialiseArrays()
 }
 
 template <>
-void NavierStokesSolver <cooH, vecH>::initialiseFluxes()
+void NavierStokesSolver <host_memory>::initialiseFluxes()
 {
 	int nx = domInfo->nx,
 	    ny = domInfo->ny;
@@ -91,7 +91,7 @@ void NavierStokesSolver <cooH, vecH>::initialiseFluxes()
 }
 
 template<>
-void NavierStokesSolver <cooD, vecD>::initialiseFluxes()
+void NavierStokesSolver <device_memory>::initialiseFluxes()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -111,8 +111,8 @@ void NavierStokesSolver <cooD, vecD>::initialiseFluxes()
 	qStar = q;
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::initialiseBoundaryArrays()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 {
 	int nx = domInfo->nx,
 		ny = domInfo->ny;
@@ -154,24 +154,24 @@ void NavierStokesSolver<Matrix, Vector>::initialiseBoundaryArrays()
 	bc[YPLUS]  = bcHost[YPLUS];
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::generateA()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::generateA()
 {
 	generateM();
 	generateL();
 	cusp::wrapped::subtract(M, L, A);
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::generateBN()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::generateBN()
 {
 	BN = Minv;
 }
 
 /*
-template <typename Matrix, typename Vector>
+template <typename memoryType>
 template <>
-void NavierStokesSolver<Matrix, Vector>::generateBN<3>()
+void NavierStokesSolver<memoryType>::generateBN<3>()
 {
 	Matrix	temp1, temp2;
 	cusp::multiply(Minv, L, temp1);
@@ -182,7 +182,7 @@ void NavierStokesSolver<Matrix, Vector>::generateBN<3>()
 }*/
 
 template <>
-void NavierStokesSolver<cooD, vecD>::generateC()
+void NavierStokesSolver<device_memory>::generateC()
 {
 	// Should this temp matrix be created each time step?
 	cooD temp;
@@ -192,7 +192,7 @@ void NavierStokesSolver<cooD, vecD>::generateC()
 }
 
 template <>
-void NavierStokesSolver<cooH, vecH>::generateC()
+void NavierStokesSolver<host_memory>::generateC()
 {
 	cooH temp;
 	cusp::wrapped::multiply(QT, BN, temp);
@@ -201,8 +201,8 @@ void NavierStokesSolver<cooH, vecH>::generateC()
 	C.values[0] += C.values[0];
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::stepTime()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::stepTime()
 {
 	//for(int i=0; i<simPar->intSch.substeps; i++)
 	//std::cout << timeStep << ", ";
@@ -226,43 +226,43 @@ void NavierStokesSolver<Matrix, Vector>::stepTime()
 	timeStep++;
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::assembleRHS1()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::assembleRHS1()
 {
 	cusp::blas::axpby(rn, bc1, rhs1, 1.0, 1.0);
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::solveIntermediateVelocity()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 {
 	cusp::default_monitor<real> sys1Mon(rhs1, 10000);
 	cusp::krylov::cg(A, qStar, rhs1, sys1Mon);//, PC1);
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::assembleRHS2()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::assembleRHS2()
 {
 	cusp::wrapped::multiply(QT, qStar, temp2);
 	cusp::blas::axpby(temp2, bc2, rhs2, 1.0, -1.0 );
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::solvePoisson()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::solvePoisson()
 {
 	cusp::default_monitor<real> sys2Mon(rhs2, 20000);
 	cusp::krylov::cg(C, lambda, rhs2, sys2Mon);//, PC2);
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::projectionStep()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::projectionStep()
 {
 	cusp::wrapped::multiply(Q, lambda, temp1);
 	cusp::wrapped::multiply(BN, temp1, q);
 	cusp::blas::axpby(qStar, q, q, 1.0, -1.0 );
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::writeData()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::writeData()
 {
 	if (timeStep % simPar->nsave == 0)
 	{
@@ -270,19 +270,19 @@ void NavierStokesSolver<Matrix, Vector>::writeData()
 	}
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::updateBoundaryConditions()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::updateBoundaryConditions()
 {
 }
 
-template <typename Matrix, typename Vector>
-void NavierStokesSolver<Matrix, Vector>::updateSolverState()
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::updateSolverState()
 {
 	updateBoundaryConditions();
 }
 
-template <typename Matrix, typename Vector>
-bool NavierStokesSolver<Matrix, Vector>::finished()
+template <typename memoryType>
+bool NavierStokesSolver<memoryType>::finished()
 {
 	return (timeStep < simPar->nt) ? false : true;
 }
@@ -292,22 +292,22 @@ bool NavierStokesSolver<Matrix, Vector>::finished()
 * \param a Description
 * \return Pointer to an instance of the required dervied class.
 */
-template <typename Matrix, typename Vector>
-NavierStokesSolver<Matrix, Vector>* NavierStokesSolver<Matrix, Vector>::createSolver(options &opts, flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info)
+template <typename memoryType>
+NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(options &opts, flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info)
 {
-	NavierStokesSolver<Matrix, Vector> *solver = 0;
+	NavierStokesSolver<memoryType> *solver = 0;
 	switch(sim_par.ibmSch)
 	{
 		case SAIKI_BIRINGEN:
 			break;
 		case TAIRA_COLONIUS:
-			solver = new TairaColoniusSolver<Matrix, Vector>;
+			solver = new TairaColoniusSolver<memoryType>;
 			break;
 		case NAVIER_STOKES:
-			solver = new NavierStokesSolver<Matrix, Vector>;
+			solver = new NavierStokesSolver<memoryType>;
 			break;
 		case FADLUN_ET_AL:
-			solver = new FadlunEtAlSolver<Matrix, Vector>;
+			solver = new FadlunEtAlSolver<memoryType>;
 			break;
 	}
 	solver->opts = &opts;
@@ -325,5 +325,5 @@ NavierStokesSolver<Matrix, Vector>* NavierStokesSolver<Matrix, Vector>::createSo
 #include "NavierStokes/generateBC1.inl"
 #include "NavierStokes/generateBC2.inl"
 
-template class NavierStokesSolver<cooH, vecH>;
-template class NavierStokesSolver<cooD, vecD>;
+template class NavierStokesSolver<host_memory>;
+template class NavierStokesSolver<device_memory>;

@@ -57,8 +57,8 @@ public:
 			B[k].X0_x = 0.0;
 			B[k].X0_y = 0.0;
 			B[k].Theta0 = 0.0;
-			B[k].X  = new real[B[k].numPoints];
-			B[k].Y  = new real[B[k].numPoints];
+			B[k].X.resize(B[k].numPoints);
+			B[k].Y.resize(B[k].numPoints);
 			for(int i=0; i<B[k].numPoints; i++)
 			{
 				B[k].X[i] = 0.5*cos(i*2*M_PI/B[k].numPoints);

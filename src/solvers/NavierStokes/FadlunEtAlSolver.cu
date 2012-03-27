@@ -1,37 +1,37 @@
 #include <solvers/NavierStokes/FadlunEtAlSolver.h>
 
-template <typename Matrix, typename Vector>
-void FadlunEtAlSolver<Matrix, Vector>::generateA()
+template <typename memoryType>
+void FadlunEtAlSolver<memoryType>::generateA()
 {
 }
-template <typename Matrix, typename Vector>
-void FadlunEtAlSolver<Matrix, Vector>::updateA()
+template <typename memoryType>
+void FadlunEtAlSolver<memoryType>::updateA()
 {
 }
-template <typename Matrix, typename Vector>
-void FadlunEtAlSolver<Matrix, Vector>::initialiseBodies()
+template <typename memoryType>
+void FadlunEtAlSolver<memoryType>::initialiseBodies()
 {
 }
-template <typename Matrix, typename Vector>
-void FadlunEtAlSolver<Matrix, Vector>::updateBodies()
+template <typename memoryType>
+void FadlunEtAlSolver<memoryType>::updateBodies()
 {
 }
-template <typename Matrix, typename Vector>
-void FadlunEtAlSolver<Matrix, Vector>::initialise()
+template <typename memoryType>
+void FadlunEtAlSolver<memoryType>::initialise()
 {
-	NavierStokesSolver<Matrix, Vector>::initialiseArrays();
-	NavierStokesSolver<Matrix, Vector>::assembleMatrices();
+	NavierStokesSolver<memoryType>::initialiseArrays();
+	NavierStokesSolver<memoryType>::assembleMatrices();
 	initialiseBodies();
 }
-template <typename Matrix, typename Vector>
-void FadlunEtAlSolver<Matrix, Vector>::updateSolverState()
+template <typename memoryType>
+void FadlunEtAlSolver<memoryType>::updateSolverState()
 {
-	NavierStokesSolver<Matrix, Vector>::updateBoundaryConditions();
+	NavierStokesSolver<memoryType>::updateBoundaryConditions();
 	if (B.bodiesMove) {
 		updateBodies();
 		updateA();
 	}
 }
 
-template class FadlunEtAlSolver<cooH, vecH>;
-template class FadlunEtAlSolver<cooD, vecD>;
+template class FadlunEtAlSolver<host_memory>;
+template class FadlunEtAlSolver<device_memory>;

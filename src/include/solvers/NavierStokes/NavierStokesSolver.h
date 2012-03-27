@@ -10,7 +10,7 @@
 /**
 * Navier-Stokes solver for a rectangular domain.
 */
-template <typename Matrix, typename Vector>
+template <typename memoryType>
 class NavierStokesSolver
 {
 protected:
@@ -18,12 +18,17 @@ protected:
 	flowDescription *flowDesc;
 	simulationParameters *simPar;
 	domain  *domInfo;
-	Vector  bc[4];//, bcNP1[4];
-	vecD    bcHost[4];
-	Matrix  M, Minv, L, A, QT, Q, BN, C;
-	Vector  q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1;
-	vecD    bc2Host;
-	int     timeStep;
+	
+	
+	coo_matrix<int, real, memoryType>
+	     M, Minv, L, A, QT, Q, BN, C;
+
+	array1d<real, memoryType>
+	     q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1, bc[4];
+
+	vecH bcHost[4], bc2Host;
+
+	int  timeStep;
 	
 	/**
 	* Methods are defined as virtual when they are redefined with the same name in a derived class.
@@ -59,7 +64,7 @@ public:
 	void stepTime();
 	void writeData();
 	bool finished();
-	static NavierStokesSolver<Matrix, Vector>* createSolver(options &opts, flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info);
+	static NavierStokesSolver<memoryType>* createSolver(options &opts, flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info);
 	virtual std::string name()
 	{
 		return "Navier-Stokes";

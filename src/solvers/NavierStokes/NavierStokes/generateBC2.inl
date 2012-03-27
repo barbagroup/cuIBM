@@ -1,5 +1,5 @@
 template <>
-void NavierStokesSolver<cooH, vecH>::generateBC2()
+void NavierStokesSolver<host_memory>::generateBC2()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -30,7 +30,7 @@ void NavierStokesSolver<cooH, vecH>::generateBC2()
 }
 
 template <>
-void NavierStokesSolver<cooD, vecD>::generateBC2()
+void NavierStokesSolver<device_memory>::generateBC2()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;

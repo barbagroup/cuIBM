@@ -1,34 +1,34 @@
 #include <solvers/NavierStokes/TairaColoniusSolver.h>
 
-template <typename Matrix, typename Vector>
-void TairaColoniusSolver<Matrix, Vector>::updateBodies()
+template <typename memoryType>
+void TairaColoniusSolver<memoryType>::updateBodies()
 {
 }
 
-template <typename Matrix, typename Vector>
-void TairaColoniusSolver<Matrix, Vector>::initialise()
+template <typename memoryType>
+void TairaColoniusSolver<memoryType>::initialise()
 {
 	initialiseBodies();
 	printf("NS initalising\n");
-	NavierStokesSolver<Matrix, Vector>::timeStep = NavierStokesSolver<Matrix, Vector>::simPar->startStep;
+	NavierStokesSolver<memoryType>::timeStep = NavierStokesSolver<memoryType>::simPar->startStep;
 		
 	//io::createDirectory
-	mkdir(NavierStokesSolver<Matrix, Vector>::opts->folderName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-	io::writeGrid(NavierStokesSolver<Matrix, Vector>::opts->folderName, *NavierStokesSolver<Matrix, Vector>::domInfo);
+	mkdir(NavierStokesSolver<memoryType>::opts->folderName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	io::writeGrid(NavierStokesSolver<memoryType>::opts->folderName, *NavierStokesSolver<memoryType>::domInfo);
 	
 	printf("TC: initalising\n");
 	initialiseArrays();
 	
 	std::cout << "Initialised bodies!" << std::endl;
-	NavierStokesSolver<Matrix, Vector>::assembleMatrices();
+	NavierStokesSolver<memoryType>::assembleMatrices();
 	std::cout << "Assembled matrices!" << std::endl;
 }
 
-template <typename Matrix, typename Vector>
-void TairaColoniusSolver<Matrix, Vector>::initialiseArrays()
+template <typename memoryType>
+void TairaColoniusSolver<memoryType>::initialiseArrays()
 {
-	int nx = NavierStokesSolver<Matrix, Vector>::domInfo->nx,
-	    ny = NavierStokesSolver<Matrix, Vector>::domInfo->ny;
+	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
+	    ny = NavierStokesSolver<memoryType>::domInfo->ny;
 		
 	int numU  = (nx-1)*ny;
 	int numUV = numU + nx*(ny-1);
@@ -37,57 +37,46 @@ void TairaColoniusSolver<Matrix, Vector>::initialiseArrays()
 //	for(int k=0; k<flowDesc->numBodies; k++)
 //		numB += flowDesc->B[k].numPoints;
 	
-	NavierStokesSolver<Matrix, Vector>::q.resize(numUV);
-	NavierStokesSolver<Matrix, Vector>::qStar.resize(numUV);
-	NavierStokesSolver<Matrix, Vector>::rn.resize(numUV);
-	NavierStokesSolver<Matrix, Vector>::H.resize(numUV);
-	NavierStokesSolver<Matrix, Vector>::bc1.resize(numUV);
-	NavierStokesSolver<Matrix, Vector>::rhs1.resize(numUV);
-	NavierStokesSolver<Matrix, Vector>::temp1.resize(numUV);
+	NavierStokesSolver<memoryType>::q.resize(numUV);
+	NavierStokesSolver<memoryType>::qStar.resize(numUV);
+	NavierStokesSolver<memoryType>::rn.resize(numUV);
+	NavierStokesSolver<memoryType>::H.resize(numUV);
+	NavierStokesSolver<memoryType>::bc1.resize(numUV);
+	NavierStokesSolver<memoryType>::rhs1.resize(numUV);
+	NavierStokesSolver<memoryType>::temp1.resize(numUV);
 	
-	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::rn, 0.0);
-	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::H, 0.0);
-	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::bc1, 0.0);
-	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::rhs1, 0.0);
-	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::temp1, 0.0);
+	cusp::blas::fill(NavierStokesSolver<memoryType>::rn, 0.0);
+	cusp::blas::fill(NavierStokesSolver<memoryType>::H, 0.0);
+	cusp::blas::fill(NavierStokesSolver<memoryType>::bc1, 0.0);
+	cusp::blas::fill(NavierStokesSolver<memoryType>::rhs1, 0.0);
+	cusp::blas::fill(NavierStokesSolver<memoryType>::temp1, 0.0);
 	
 	//lambda.resize(numP+2*numB);
 	//rhs2.resize(numP+2*numB);
-	NavierStokesSolver<Matrix, Vector>::lambda.resize(numP+2*B.totalPoints);
-	NavierStokesSolver<Matrix, Vector>::bc2.resize(numP+2*B.totalPoints);
-	NavierStokesSolver<Matrix, Vector>::bc2Host.resize(numP+2*B.totalPoints);
-	NavierStokesSolver<Matrix, Vector>::rhs2.resize(numP+2*B.totalPoints);
-	NavierStokesSolver<Matrix, Vector>::temp2.resize(numP+2*B.totalPoints);
+	NavierStokesSolver<memoryType>::lambda.resize(numP+2*B.totalPoints);
+	NavierStokesSolver<memoryType>::bc2.resize(numP+2*B.totalPoints);
+	NavierStokesSolver<memoryType>::bc2Host.resize(numP+2*B.totalPoints);
+	NavierStokesSolver<memoryType>::rhs2.resize(numP+2*B.totalPoints);
+	NavierStokesSolver<memoryType>::temp2.resize(numP+2*B.totalPoints);
 	
-	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::lambda, 0.0);
-	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::bc2, 0.0);
-	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::bc2Host, 0.0);
-	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::rhs2, 0.0);
-	cusp::blas::fill(NavierStokesSolver<Matrix, Vector>::temp2, 0.0);
+	cusp::blas::fill(NavierStokesSolver<memoryType>::lambda, 0.0);
+	cusp::blas::fill(NavierStokesSolver<memoryType>::bc2, 0.0);
+	cusp::blas::fill(NavierStokesSolver<memoryType>::bc2Host, 0.0);
+	cusp::blas::fill(NavierStokesSolver<memoryType>::rhs2, 0.0);
+	cusp::blas::fill(NavierStokesSolver<memoryType>::temp2, 0.0);
 	
-	/// Initialise velocity fluxes
-	int i;
-	for(i=0; i < numU; i++)
-	{
-		NavierStokesSolver<Matrix, Vector>::q[i] = NavierStokesSolver<Matrix, Vector>::flowDesc->initialU * NavierStokesSolver<Matrix, Vector>::domInfo->dy[i/(nx-1)];
-	}
-	for(; i < numUV; i++)
-	{
-		NavierStokesSolver<Matrix, Vector>::q[i] = NavierStokesSolver<Matrix, Vector>::flowDesc->initialV * NavierStokesSolver<Matrix, Vector>::domInfo->dx[(i-numU)%nx];
-	}
-	NavierStokesSolver<Matrix, Vector>::qStar = NavierStokesSolver<Matrix, Vector>::q;
-	
-	NavierStokesSolver<Matrix, Vector>::initialiseBoundaryArrays();
+	NavierStokesSolver<memoryType>::initialiseFluxes();
+	NavierStokesSolver<memoryType>::initialiseBoundaryArrays();
 }
 
-template <typename Matrix, typename Vector>
-void TairaColoniusSolver<Matrix, Vector>::updateSolverState()
+template <typename memoryType>
+void TairaColoniusSolver<memoryType>::updateSolverState()
 {
-	NavierStokesSolver<Matrix, Vector>::updateBoundaryConditions();
+	NavierStokesSolver<memoryType>::updateBoundaryConditions();
 	if (B.bodiesMove) {
 		updateBodies();
 		updateQT();
-		NavierStokesSolver<Matrix, Vector>::generateC();
+		NavierStokesSolver<memoryType>::generateC();
 	}
 }
 
@@ -95,5 +84,5 @@ void TairaColoniusSolver<Matrix, Vector>::updateSolverState()
 #include "TairaColonius/generateBC2.inl"
 #include "TairaColonius/initialiseBodies.inl"
 
-template class TairaColoniusSolver<cooH, vecH>;
-template class TairaColoniusSolver<cooD, vecD>;
+template class TairaColoniusSolver<host_memory>;
+template class TairaColoniusSolver<device_memory>;

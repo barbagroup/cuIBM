@@ -3,13 +3,13 @@
 #include <solvers/NavierStokes/NavierStokesSolver.h>
 #include <bodies.h>
 /**
-* Immersed boundary method described by Fadlun et al (2000)
+* Immersed boundary method described by Taira and Colonius (2007)
 */
-template <typename Matrix, typename Vector>
-class TairaColoniusSolver : public NavierStokesSolver<Matrix, Vector>
+template <typename memoryType>
+class TairaColoniusSolver : public NavierStokesSolver<memoryType>
 {
 private:
-	bodies B;
+	bodies<memoryType> B;
 	void initialiseArrays();
 	void generateQT();
 	void updateQT();

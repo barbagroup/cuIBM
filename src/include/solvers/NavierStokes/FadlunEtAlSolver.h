@@ -5,11 +5,11 @@
 /**
 * Immersed boundary method described by Fadlun et al (2000)
 */
-template <typename Matrix, typename Vector>
-class FadlunEtAlSolver : public NavierStokesSolver<Matrix, Vector>
+template <typename memoryType>
+class FadlunEtAlSolver : public NavierStokesSolver<memoryType>
 {
 private:
-	bodies B;
+	bodies<memoryType> B;
 	void generateA();
 	void updateA();
 	void initialiseBodies();

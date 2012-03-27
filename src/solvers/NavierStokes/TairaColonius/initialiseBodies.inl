@@ -1,5 +1,5 @@
-template <typename Matrix, typename Vector>
-void TairaColoniusSolver<Matrix, Vector>::initialiseBodies()
+template <typename memoryType>
+void TairaColoniusSolver<memoryType>::initialiseBodies()
 {
-	B.initialise(*NavierStokesSolver<Matrix, Vector>::flowDesc, *NavierStokesSolver<Matrix, Vector>::domInfo);
+	B.initialise(*NavierStokesSolver<memoryType>::flowDesc, *NavierStokesSolver<memoryType>::domInfo);
 }

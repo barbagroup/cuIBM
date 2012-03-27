@@ -1,17 +1,18 @@
 #include <bodies.h>
 
-void bodies::initialise(flowDescription &F, domain &D)
+template <typename memoryType>
+void bodies<memoryType>::initialise(flowDescription &F, domain &D)
 {
 	std::cout << "Entered B.initialise" << std::endl;
 	numBodies = F.numBodies;
 	
-	X0_x = new real[numBodies];
-	X0_y = new real[numBodies];
-	Theta0 = new real[numBodies];
-	Xc_x = new real[numBodies];
-	Xc_y = new real[numBodies];
-	numPoints = new int[numBodies];
-	offsets   = new int[numBodies];
+	X0_x.resize(numBodies);
+	X0_y.resize(numBodies);
+	Xc_x.resize(numBodies);
+	Xc_y.resize(numBodies);
+	Theta0.resize(numBodies);
+	numPoints.resize(numBodies);
+	offsets.resize(numBodies);
 	
 	totalPoints = 0;
 	for(int k=0; k<numBodies; k++)
@@ -20,9 +21,9 @@ void bodies::initialise(flowDescription &F, domain &D)
 		numPoints[k] = F.B[k].numPoints;
 		totalPoints += numPoints[k];
 	}
-	X  = new real[totalPoints];
-	Y  = new real[totalPoints];
-	ds = new real[totalPoints];
+	X.resize(totalPoints);
+	Y.resize(totalPoints);
+	ds.resize(totalPoints);
 	for(int k=0; k<numBodies; k++)
 	{
 		X0_x[k] = F.B[k].X0_x;
@@ -34,17 +35,17 @@ void bodies::initialise(flowDescription &F, domain &D)
 			Y[i+offsets[k]] = F.B[k].Y[i];
 		}
 	}
-	x  = new real[totalPoints];
-	y  = new real[totalPoints];
-	uB = new real[totalPoints];
-	vB = new real[totalPoints];
-	I  = new int[totalPoints];
-	J  = new int[totalPoints];
+	x.resize(totalPoints);
+	y.resize(totalPoints);
+	uB.resize(totalPoints);
+	vB.resize(totalPoints);
+	I.resize(totalPoints);
+	J.resize(totalPoints);
 	
 	for(int k=0; k<numBodies; k++)
 	{
-		Xc_x[k] = X0_x[k]; ////
-		Xc_y[k] = X0_y[k]; ////
+		Xc_x[k] = X0_x[k];
+		Xc_y[k] = X0_y[k];
 		for(int i=offsets[k], j = offsets[k]+numPoints[k]-1; i<offsets[k]+numPoints[k];)
 		{
 			ds[i] = sqrt( (X[i]-X[j])*(X[i]-X[j]) + (Y[i]-Y[j])*(Y[i]-Y[j]) );
@@ -57,13 +58,22 @@ void bodies::initialise(flowDescription &F, domain &D)
 	}
 	bodiesMove = false;
 	calculateCellIndices(D);
+	std::cout << "Completed B.initialise" << std::endl;
 }
 
-void bodies::calculateCellIndices(domain &D)
+/*
+template <typename memoryType>
+void bodies<memoryType>::initialise(flowDescription &F, domain &D)
+{
+}
+*/
+
+template <typename memoryType>
+void bodies<memoryType>::calculateCellIndices(domain &D)
 {
 	std::cout << "Entered calculateCellIndices" << std::endl;
 	int	i=0, j=0;
-
+/*
 	/// find the cell for the zeroth point
 	while(D.x[i+1] < x[0])
 		i++;
@@ -100,9 +110,18 @@ void bodies::calculateCellIndices(domain &D)
 		}
 		I[k] = i;
 		J[k] = j;
-	}
+	}*/
 }
+/*
+template <>
+void bodies<device_memory>::calculateCellIndices(domain &D)
+{
+}*/
 
-void bodies::update()
+template <typename memoryType>
+void bodies<memoryType>::update()
 {
 }
+
+template class bodies<host_memory>;
+template class bodies<device_memory>;

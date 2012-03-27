@@ -1,12 +1,12 @@
 template <>
-void TairaColoniusSolver<cooH, vecH>::generateBC2()
+void TairaColoniusSolver<host_memory>::generateBC2()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	//int  numP  = nx*ny;
 	
-	real *dx    = thrust::raw_pointer_cast(&(domInfo->dx[0])),
-	     *dy    = thrust::raw_pointer_cast(&(domInfo->dy[0]));
+	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
+	     *dy = thrust::raw_pointer_cast(&(domInfo->dy[0]));
 	
 	/// rhs2 of size np+2nb
 	
@@ -43,7 +43,7 @@ void TairaColoniusSolver<cooH, vecH>::generateBC2()
 }
 
 template <>
-void TairaColoniusSolver<cooD, vecD>::generateBC2()
+void TairaColoniusSolver<device_memory>::generateBC2()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;

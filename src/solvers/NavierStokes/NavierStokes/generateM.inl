@@ -1,5 +1,5 @@
 template <>
-void NavierStokesSolver<cooH, vecH>::generateM()
+void NavierStokesSolver<host_memory>::generateM()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -48,7 +48,7 @@ void NavierStokesSolver<cooH, vecH>::generateM()
 }
 
 template <>
-void NavierStokesSolver<cooD, vecD>::generateM()
+void NavierStokesSolver<device_memory>::generateM()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -100,7 +100,7 @@ void NavierStokesSolver<cooD, vecD>::generateM()
 }
 /*
 template<>
-void NavierStokesSolver<cooD, vecD>::generateM()
+void NavierStokesSolver<device_memory>::generateM()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -118,7 +118,6 @@ void NavierStokesSolver<cooD, vecD>::generateM()
 	dim3 dimBlock(blocksize, 1);
 	fillM_u <<<dimGrid, dimBlock>>> (M, Minv, nx, ny, domInfo->dxD, domInfo->dyD, simPar->dt);
 	fillM_v <<<dimGrid, dimBlock>>> (M, Minv, nx, ny, domInfo->dxD, domInfo->dyD, simPar->dt);
-	
 }
 
 __global__
@@ -142,7 +141,7 @@ void fillM_u(cooD &M, cooD &Minv, int nx, int ny, real *dx, real *dy, real dt)
 }
 
 __global__
-void fillM_v(real *dx, real *dy, real dt)
+void fillM_v(cooD &m, cooD &Minv, int nx, int ny, real *dx, real *dy, real dt)
 {
 	int I = threadIdx.x + blockIdx.x*blockDim.x;
 	
