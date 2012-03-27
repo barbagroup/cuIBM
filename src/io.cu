@@ -85,6 +85,10 @@ void readDomainInfo(std::string domFile, domain &D)
 		beg = end;
 		D.y[end] = b;
 	}
+	D.xD.resize(D.nx+1);
+	D.dxD.resize(D.nx);
+	D.yD.resize(D.ny+1);
+	D.dyD.resize(D.ny);
 	D.xD = D.x;
 	D.dxD = D.dx;
 	D.yD = D.y;

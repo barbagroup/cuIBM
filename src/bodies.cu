@@ -57,7 +57,8 @@ void bodies<memoryType>::initialise(flowDescription &F, domain &D)
 		}
 	}
 	bodiesMove = false;
-	calculateCellIndices(D);
+	if(numBodies)
+		calculateCellIndices(D);
 	std::cout << "Completed B.initialise" << std::endl;
 }
 
@@ -73,7 +74,7 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 {
 	std::cout << "Entered calculateCellIndices" << std::endl;
 	int	i=0, j=0;
-/*
+
 	/// find the cell for the zeroth point
 	while(D.x[i+1] < x[0])
 		i++;
@@ -110,7 +111,7 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 		}
 		I[k] = i;
 		J[k] = j;
-	}*/
+	}
 }
 /*
 template <>
