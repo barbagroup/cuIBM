@@ -14,10 +14,14 @@ lib/libNavierStokesSolvers.a: force_look
 lib/libCuspWrapped.a: force_look
 	cd src/cusp/; $(MAKE) $(MFLAGS)
 
+external:
+	cd external; $(MAKE) $(MFLAGS) all
+
 clean:
 	@rm -f lib/*.a bin/cuIBM src/*.o
 	cd src/solvers; $(MAKE) $(MFLAGS) clean
 	cd src/cusp; $(MAKE) $(MFLAGS) clean
+	cd external; $(MAKE) $(MFLAGS) clean
 
 force_look:
 	true
