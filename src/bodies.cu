@@ -26,9 +26,9 @@ void bodies<memoryType>::initialise(flowDescription &F, domain &D)
 	ds.resize(totalPoints);
 	for(int k=0; k<numBodies; k++)
 	{
-		X0_x[k] = F.B[k].X0_x;
-		X0_y[k] = F.B[k].X0_y;
-		Theta0[k] = 0.0;
+		X0_x[k] = F.B[k].X0[0];
+		X0_y[k] = F.B[k].X0[1];
+		Theta0[k] = F.B[k].Theta0;
 		for(int i=0; i<numPoints[k]; i++)
 		{
 			X[i+offsets[k]] = F.B[k].X[i];

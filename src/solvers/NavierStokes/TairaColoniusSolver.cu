@@ -33,9 +33,6 @@ void TairaColoniusSolver<memoryType>::initialiseArrays()
 	int numU  = (nx-1)*ny;
 	int numUV = numU + nx*(ny-1);
 	int numP  = numU + ny;
-//	int numB  = 0;
-//	for(int k=0; k<flowDesc->numBodies; k++)
-//		numB += flowDesc->B[k].numPoints;
 	
 	NavierStokesSolver<memoryType>::q.resize(numUV);
 	NavierStokesSolver<memoryType>::qStar.resize(numUV);
@@ -55,13 +52,13 @@ void TairaColoniusSolver<memoryType>::initialiseArrays()
 	//rhs2.resize(numP+2*numB);
 	NavierStokesSolver<memoryType>::lambda.resize(numP+2*B.totalPoints);
 	NavierStokesSolver<memoryType>::bc2.resize(numP+2*B.totalPoints);
-	NavierStokesSolver<memoryType>::bc2Host.resize(numP+2*B.totalPoints);
+	//NavierStokesSolver<memoryType>::bc2Host.resize(numP+2*B.totalPoints);
 	NavierStokesSolver<memoryType>::rhs2.resize(numP+2*B.totalPoints);
 	NavierStokesSolver<memoryType>::temp2.resize(numP+2*B.totalPoints);
 	
 	cusp::blas::fill(NavierStokesSolver<memoryType>::lambda, 0.0);
 	cusp::blas::fill(NavierStokesSolver<memoryType>::bc2, 0.0);
-	cusp::blas::fill(NavierStokesSolver<memoryType>::bc2Host, 0.0);
+	//cusp::blas::fill(NavierStokesSolver<memoryType>::bc2Host, 0.0);
 	cusp::blas::fill(NavierStokesSolver<memoryType>::rhs2, 0.0);
 	cusp::blas::fill(NavierStokesSolver<memoryType>::temp2, 0.0);
 	

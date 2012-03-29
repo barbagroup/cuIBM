@@ -1,3 +1,5 @@
+#include <solvers/NavierStokes/kernels/generateM.h>
+
 template <>
 void NavierStokesSolver<host_memory>::generateM()
 {
@@ -46,7 +48,7 @@ void NavierStokesSolver<host_memory>::generateM()
 		}
 	}
 }
-
+/*
 template <>
 void NavierStokesSolver<device_memory>::generateM()
 {
@@ -98,65 +100,34 @@ void NavierStokesSolver<device_memory>::generateM()
 	M = MHost;
 	Minv = MinvHost;
 }
-/*
+*/
+
 template<>
 void NavierStokesSolver<device_memory>::generateM()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
+	real *dxD = thrust::raw_pointer_cast(&(domInfo->dxD[0])),
+	     *dyD = thrust::raw_pointer_cast(&(domInfo->dyD[0]));
+	
 	int  numU  = (nx-1)*ny;
 	int  numUV = numU + nx*(ny-1);
-	int  numP  = nx*ny;
 	M.resize(numUV, numUV, numUV);
 	Minv.resize(numUV, numUV, numUV);
-	int  I;
-	real value;
+	
+	int  *MRows = thrust::raw_pointer_cast(&(M.row_indices[0])),
+	     *MCols = thrust::raw_pointer_cast(&(M.column_indices[0])),
+	     *MinvRows = thrust::raw_pointer_cast(&(Minv.row_indices[0])),
+	     *MinvCols = thrust::raw_pointer_cast(&(Minv.column_indices[0]));
+	
+	real *MVals = thrust::raw_pointer_cast(&(M.values[0])),
+	     *MinvVals = thrust::raw_pointer_cast(&(Minv.values[0]));
 	
 	const int blockSize = 256;
-	dim3 dimGrid( int((nx*ny-0.5)/blocksize) + 1, 1);
-	dim3 dimBlock(blocksize, 1);
-	fillM_u <<<dimGrid, dimBlock>>> (M, Minv, nx, ny, domInfo->dxD, domInfo->dyD, simPar->dt);
-	fillM_v <<<dimGrid, dimBlock>>> (M, Minv, nx, ny, domInfo->dxD, domInfo->dyD, simPar->dt);
+	dim3 dimGrid( int((nx*ny-0.5)/blockSize) + 1, 1);
+	dim3 dimBlock(blockSize, 1);
+	kernels::fillM_u <<<dimGrid, dimBlock>>> (MRows, MCols, MVals, MinvRows, MinvCols, MinvVals, nx, ny, dxD, dyD, simPar->dt);
+	kernels::fillM_v <<<dimGrid, dimBlock>>> (MRows, MCols, MVals, MinvRows, MinvCols, MinvVals, nx, ny, dxD, dyD, simPar->dt);
+	std::cout << "Generated M!" << std::endl;
 }
-
-__global__
-void fillM_u(cooD &M, cooD &Minv, int nx, int ny, real *dx, real *dy, real dt)
-{
-	int I = threadIdx.x + blockIdx.x*blockDim.x;
-	
-	if(I >= (nx-1)*ny) return;
-	
-	int  i = I % (nx-1);
-	int  j = I / (nx-1);
-	real value = 0.5*(dx[i]+dx[i+1])/dy[j]/dt;
-	
-	M.row_indices[I] = I;
-	M.row_indices[I] = I;
-	M.values[I] = value;
-	
-	Minv.row_indices[I] = I;
-	Minv.row_indices[I] = I;
-	Minv.values[I] = 1.0/value;
-}
-
-__global__
-void fillM_v(cooD &m, cooD &Minv, int nx, int ny, real *dx, real *dy, real dt)
-{
-	int I = threadIdx.x + blockIdx.x*blockDim.x;
-	
-	if(I >= nx*(ny-1)) return;
-	
-	int  numU = (nx-1)*ny;
-	int  i = I % nx;
-	int  j = I / nx;
-	real value = 0.5*(dy[j]+dx[j+1])/dx[i]/dt;
-	
-	M.row_indices[I+numU] = I+numU;
-	M.row_indices[I+numU] = I+numU;
-	M.values[I+numU] = value;
-	
-	Minv.row_indices[I+numU] = I+numU;
-	Minv.row_indices[I+numU] = I+numU;
-	Minv.values[I+numU] = 1.0/value;
-}*/

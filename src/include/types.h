@@ -6,9 +6,10 @@
 
 #include <cusp/csr_matrix.h>
 #include <cusp/array1d.h>
-#include <cusp/transpose.h>
 #include <cusp/print.h>
 
+///
+#include <cusp/transpose.h>
 #include <cusp/blas.h>
 #include <cusp/krylov/cg.h>
 

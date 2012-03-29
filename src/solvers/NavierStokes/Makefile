@@ -1,12 +1,15 @@
 include ../../../Makefile.inc
 
-.PHONY: all clean
+.PHONY: all clean kernels
 
 SRCS=$(wildcard *.cu)
 OBJS=$(SRCS:.cu=.o)
 LIBNAME=libNavierStokesSolvers.a
 
-all: objects force_look
+all: objects kernels force_look
+
+kernels:
+	cd kernels; $(MAKE) $(MFLAGS)
 
 objects: $(OBJS)
 	$(AR) $(ARFLAGS) ruv ../$(LIBNAME) $?
@@ -16,4 +19,5 @@ force_look:
 	true
 
 clean:
+	cd kernels; $(MAKE) $(MFLAGS) clean
 	@rm -f *.o

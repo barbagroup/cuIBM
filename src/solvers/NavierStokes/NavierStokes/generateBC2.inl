@@ -1,3 +1,5 @@
+#include <solvers/NavierStokes/kernels/generateBC2.h>
+
 template <>
 void NavierStokesSolver<host_memory>::generateBC2()
 {
@@ -28,7 +30,7 @@ void NavierStokesSolver<host_memory>::generateBC2()
 		bc2[j*nx+nx-1] += bc[XPLUS][j]*dy[j]; // u[j+1][nx]*dy;
 	}
 }
-
+/*
 template <>
 void NavierStokesSolver<device_memory>::generateBC2()
 {
@@ -56,19 +58,17 @@ void NavierStokesSolver<device_memory>::generateBC2()
 		bc2Host[j*nx+nx-1] += bcHost[XPLUS][j]*dy[j]; // u[j+1][nx]*dy;
 	}
 	bc2 = bc2Host;
-}
-/*
+}*/
+
 template<>
-void NavierStokesSolver<cooD, vecD>::generateBC2()
+void NavierStokesSolver<device_memory>::generateBC2()
 {
 	// raw pointers for cup arrays
-	real *H_r  = thrust::raw_pointer_cast(&H[0]),
-	     *q_r  = thrust::raw_pointer_cast(&q[0]),
-	     *rn_r = thrust::raw_pointer_cast(&rn[0]),
-	     *dxD = thrust::raw_pointer_cast(&(domInfo->dxD[0])),
+	real *dxD = thrust::raw_pointer_cast(&(domInfo->dxD[0])),
 	     *dyD = thrust::raw_pointer_cast(&(domInfo->dyD[0]));
 	
-	real *xminus = thrust::raw_pointer_cast(&(bc[XMINUS][0])),
+	real *bc2_r = thrust::raw_pointer_cast(&(bc2[0])),
+	     *xminus = thrust::raw_pointer_cast(&(bc[XMINUS][0])),
 	     *xplus  = thrust::raw_pointer_cast(&(bc[XPLUS][0])),
 	     *yminus = thrust::raw_pointer_cast(&(bc[YMINUS][0])),
 	     *yplus  = thrust::raw_pointer_cast(&(bc[YPLUS][0]));
@@ -76,6 +76,12 @@ void NavierStokesSolver<cooD, vecD>::generateBC2()
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
+	cusp::blas::fill(bc2, 0.0);
 	
+	const int blockSize = 256;
+	dim3 dimGrid( int((nx+ny-0.5)/blockSize) + 1, 1);
+	dim3 dimBlock(blockSize, 1);
+	
+	kernels::fillBC2_v <<<dimGrid, dimBlock>>> (bc2_r, yminus, yplus, dxD, nx, ny);
+	kernels::fillBC2_u <<<dimGrid, dimBlock>>> (bc2_r, xminus, xplus, dyD, nx, ny);
 }
-*/

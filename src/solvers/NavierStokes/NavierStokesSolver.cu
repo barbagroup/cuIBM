@@ -57,13 +57,13 @@ void NavierStokesSolver<memoryType>::initialiseArrays()
 	//rhs2.resize(numP+2*numB);
 	lambda.resize(numP);
 	bc2.resize(numP);
-	bc2Host.resize(numP);
+	//bc2Host.resize(numP);
 	rhs2.resize(numP);
 	temp2.resize(numP);
 	
 	cusp::blas::fill(lambda, 0.0);
 	cusp::blas::fill(bc2, 0.0);
-	cusp::blas::fill(bc2Host, 0.0);
+	//cusp::blas::fill(bc2Host, 0.0);
 	cusp::blas::fill(rhs2, 0.0);
 	cusp::blas::fill(temp2, 0.0);
 	

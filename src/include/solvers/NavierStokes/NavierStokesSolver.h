@@ -19,14 +19,15 @@ protected:
 	simulationParameters *simPar;
 	domain  *domInfo;
 	
-	
 	coo_matrix<int, real, memoryType>
 	     M, Minv, L, A, QT, Q, BN, C;
 
 	array1d<real, memoryType>
 	     q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1, bc[4];
+	
+//	cooH LHost;
 
-	vecH bcHost[4], bc2Host;
+	vecH bcHost[4];//, bc2Host;
 
 	int  timeStep;
 	
@@ -47,7 +48,7 @@ protected:
 
 	void generateRN();
 	void generateBC1();
-	void generateBC2();
+	virtual void generateBC2();
 	
 	void assembleRHS1();
 	void assembleRHS2();
