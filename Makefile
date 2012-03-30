@@ -4,23 +4,33 @@ include Makefile.inc
 
 main: cuibm
 
-cuibm: lib/libNavierStokesSolvers.a lib/libCuspWrapped.a src/cuIBM.o src/io.o src/bodies.o
+LIBS = lib/libNavierStokesSolvers.a lib/libCuspWrapped.a lib/libIO.a
+EXT_LIBS = external/lib/libyaml-cpp.a
+FINAL_LIB = lib/libcuIBM.a
+
+cuibm: src/parameterDB.o $(LIBS) $(EXT_LIBS)  src/cuIBM.o src/bodies.o 
 	nvcc $? -o bin/cuIBM
 
-#src/solvers/libsolvers.a:  force_look
+#lib/libcuIBM.a: $(LIBS) $(EXT_LIBS)
+#	cd lib; libtool -static -o libcuIBM.a $?
+
 lib/libNavierStokesSolvers.a: force_look
 	cd src/solvers; $(MAKE) $(MFLAGS)
 
 lib/libCuspWrapped.a: force_look
 	cd src/cusp/; $(MAKE) $(MFLAGS)
+  
+lib/libIO.a: force_look
+	cd src/io/; $(MAKE) $(MFLAGS)
 
-external:
+external/lib/libyaml-cpp.a:
 	cd external; $(MAKE) $(MFLAGS) all
 
 clean:
 	@rm -f lib/*.a bin/cuIBM src/*.o
 	cd src/solvers; $(MAKE) $(MFLAGS) clean
 	cd src/cusp; $(MAKE) $(MFLAGS) clean
+	cd src/io; $(MAKE) $(MFLAGS) clean
 	cd external; $(MAKE) $(MFLAGS) clean
 
 force_look:

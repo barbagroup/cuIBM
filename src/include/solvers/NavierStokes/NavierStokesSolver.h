@@ -5,7 +5,8 @@
 #include <simulationParameters.h>
 #include <domain.h>
 #include <integrationScheme.h>
-#include <io.h>
+#include <io/io.h>
+#include <parameterDB.h>
 
 /**
 * Navier-Stokes solver for a rectangular domain.
@@ -14,9 +15,7 @@ template <typename memoryType>
 class NavierStokesSolver
 {
 protected:
-	options *opts;
-	flowDescription *flowDesc;
-	simulationParameters *simPar;
+  parameterDB *paramDB;
 	domain  *domInfo;
 	
 	coo_matrix<int, real, memoryType>
@@ -65,7 +64,7 @@ public:
 	void stepTime();
 	void writeData();
 	bool finished();
-	static NavierStokesSolver<memoryType>* createSolver(options &opts, flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info);
+	static NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &dom_info);
 	virtual std::string name()
 	{
 		return "Navier-Stokes";

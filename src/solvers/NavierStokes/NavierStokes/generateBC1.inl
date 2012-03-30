@@ -71,7 +71,10 @@ void NavierStokesSolver<device_memory>::generateBC1()
 	     *yplus  = thrust::raw_pointer_cast(&(bc[YPLUS][0]));
 
 	real dx0, dx1, dy0, dy1,
-	     nu = flowDesc->nu;
+	     nu = (*paramDB)["flow"]["nu"].get<double>(),
+       dt = (*paramDB)["simulation"]["dt"].get<double>();
+
+  boundaryCondition **bcInfo = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
 	
 	const int blocksize = 256;
 	
@@ -94,7 +97,7 @@ void NavierStokesSolver<device_memory>::generateBC1()
 			dimGridy( int((ny - 0.5)/blocksize) + 1, 1);
 	
 	/// bottom
-	if(flowDesc->bcInfo[YMINUS][0].first == DIRICHLET)
+	if(bcInfo[YMINUS][0].type == DIRICHLET)
 	{
 		/// u
 		dy0	= 0.5*dy[0];
@@ -110,7 +113,7 @@ void NavierStokesSolver<device_memory>::generateBC1()
 	//else if(F.nbc.bottom_type==BC_CONVECTIVE)
 	
 	/// top
-	if(flowDesc->bcInfo[YPLUS][0].first == DIRICHLET)
+	if(bcInfo[YPLUS][0].type == DIRICHLET)
 	{
 		/// u
 		dy0	= 0.5*(dy[ny-2] + dy[ny-1]);
@@ -122,17 +125,17 @@ void NavierStokesSolver<device_memory>::generateBC1()
 		C	= omega * 2.0 * nu / (dy[ny-1] * (dy[ny-1]+dy[ny-2]));
 		bc1_dirichlet_v <<<dimGridx, dimBlock>>> (bc1_r, nx, nx, numU, nx*(ny-2), 1, dyD, C, yplus, nx-1);
 	}
-	else if(flowDesc->bcInfo[YPLUS][0].first == CONVECTIVE)
+	else if(bcInfo[YPLUS][0].type == CONVECTIVE)
 	{
 		/// u
-		alpha = flowDesc->bcInfo[YPLUS][1].second * simPar->dt / (0.5 * dy[ny-1]);
+		alpha = bcInfo[YPLUS][1].value * dt / (0.5 * dy[ny-1]);
 		dy0	= 0.5*(dy[ny-2] + dy[ny-1]);
 		dy1	= 0.5*(dy[ny-1]);
 		C	= omega * 2.0 * nu / (dy1 * (dy0+dy1));
 		bc1_convective_u <<<dimGridx, dimBlock>>> (bc1_r, nx-1, nx, (nx-1)*(ny-1), 1, dxD, dyD, C, yplus, q_r, alpha);
 		
 		/// v
-		alpha = flowDesc->bcInfo[YPLUS][1].second * simPar->dt / dy[ny-1];
+		alpha = bcInfo[YPLUS][1].value * dt / dy[ny-1];
 		C	= omega * 2.0 * nu / (dy[ny-1] * (dy[ny-1]+dy[ny-2]));
 		bc1_convective_v <<<dimGridx, dimBlock>>> (bc1_r, nx, nx, numU, nx*(ny-2), 1, dxD, dyD, C, yplus, nx-1, q_r, alpha);
 		
@@ -140,7 +143,7 @@ void NavierStokesSolver<device_memory>::generateBC1()
 	}
 	
 	/// left
-	if(flowDesc->bcInfo[XMINUS][0].first == DIRICHLET)
+	if(bcInfo[XMINUS][0].type == DIRICHLET)
 	{
 		/// u
 		C = omega * 2.0 * nu / ( dx[0] * (dx[0]+dx[1]) );
@@ -155,7 +158,7 @@ void NavierStokesSolver<device_memory>::generateBC1()
 	//else if(F.nbc.left_type==BC_CONVECTIVE)
 
 	/// right
-	if(flowDesc->bcInfo[XPLUS][0].first == DIRICHLET)
+	if(bcInfo[XPLUS][0].type == DIRICHLET)
 	{
 		/// u
 		C = omega * 2.0 * nu / ( dx[nx-1] * (dx[nx-1]+dx[nx-2]) );
@@ -167,15 +170,15 @@ void NavierStokesSolver<device_memory>::generateBC1()
 		C	= omega * 2.0 * nu / (dx1 * (dx0+dx1));
 		bc1_dirichlet_v <<<dimGridy, dimBlock>>> (bc1_r, ny-1, nx, numU, nx-1, nx, dyD, C, xplus, ny);
 	}
-	else if(flowDesc->bcInfo[XPLUS][0].first == CONVECTIVE)
+	else if(bcInfo[XPLUS][0].type == CONVECTIVE)
 	{
 		/// u
-		alpha = flowDesc->bcInfo[XPLUS][0].second * simPar->dt / dx[nx-1];
+		alpha = bcInfo[XPLUS][0].value * dt / dx[nx-1];
 		C = omega * 2.0 * nu / ( dx[nx-1] * (dx[nx-1]+dx[nx-2]) );
 		bc1_convective_u <<<dimGridy, dimBlock>>> (bc1_r, ny, nx, nx-2, nx-1, dxD, dyD, C, xplus, q_r, alpha);
 		
 		/// v
-		alpha = flowDesc->bcInfo[XPLUS][0].second * simPar->dt / (0.5*dx[nx-1]);
+		alpha = bcInfo[XPLUS][0].value * dt / (0.5*dx[nx-1]);
 		dx0	= 0.5*(dx[nx-1] + dx[nx-2]);
 		dx1	= 0.5*(dx[nx-1]);
 		C	= omega * 2.0 * nu / (dx1 * (dx0+dx1));

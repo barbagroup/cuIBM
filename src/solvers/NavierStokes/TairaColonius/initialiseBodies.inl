@@ -1,5 +1,6 @@
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::initialiseBodies()
 {
-	B.initialise(*NavierStokesSolver<memoryType>::flowDesc, *NavierStokesSolver<memoryType>::domInfo);
+  parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
+	B.initialise(db, *NavierStokesSolver<memoryType>::domInfo);
 }

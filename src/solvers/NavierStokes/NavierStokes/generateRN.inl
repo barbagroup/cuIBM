@@ -429,20 +429,21 @@ void NavierStokesSolver<device_memory>::generateRN()
 	dim3 dimBlock(BSZ, BSZ);
 	
 	// call the kernel
-	convection_term_u_cuda <<<dimGridx, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, simPar->dt, d_coeff);
-	convection_term_v_cuda <<<dimGridy, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, simPar->dt, d_coeff);
+  double dt = (*paramDB)["simulation"]["dt"].get<double>();
+	convection_term_u_cuda <<<dimGridx, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, d_coeff);
+	convection_term_v_cuda <<<dimGridy, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, d_coeff);
 	
 	dim3 dimGridbc(int((nx+ny-0.5)/(BSZ*BSZ))+1, 1);
 	dim3 dimBlockbc(BSZ*BSZ, 1);
 	
-	convection_term_u_bottomtop_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD, dyD, simPar->dt, d_coeff, \
+	convection_term_u_bottomtop_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, d_coeff, \
 																yminus, yplus, xminus, xplus);
-	convection_term_v_bottomtop_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD, dyD, simPar->dt, d_coeff, \
+	convection_term_v_bottomtop_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, d_coeff, \
 																yminus, yplus);
 
-	convection_term_u_leftright_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD, dyD, simPar->dt, d_coeff, \
+	convection_term_u_leftright_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, d_coeff, \
 																xminus, xplus);
-	convection_term_v_leftright_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD, dyD, simPar->dt, d_coeff, \
+	convection_term_v_leftright_cuda<<<dimGridbc, dimBlockbc>>>(rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, d_coeff, \
 																yminus, yplus, xminus, xplus);
 }
 
@@ -462,7 +463,7 @@ void NavierStokesSolver<host_memory>::generateRN()
 	     *xplus  = thrust::raw_pointer_cast(&(bc[XPLUS][0])),
 	     *yminus = thrust::raw_pointer_cast(&(bc[YMINUS][0])),
 	     *yplus  = thrust::raw_pointer_cast(&(bc[YPLUS][0]));
-	
+	double dt = (*paramDB)["simulation"]["dt"].get<double>();
 	for(int j=0; j<ny; j++)
 	{
 		for(int i=0; i<nx-1; i++)
@@ -491,7 +492,7 @@ void NavierStokesSolver<host_memory>::generateRN()
 			H[Iu]  = - (east-west)/0.5*(dx[i]+dx[i+1]) - (north-south)/dy[j];
 			c_term = 1.5*H[Iu] - 0.5*Hn;
 			d_term = 0.0;
-			rn[Iu] = (u/simPar->dt + c_term + d_term) * 0.5*(dx[i]+dx[i+1]);
+			rn[Iu] = (u/dt + c_term + d_term) * 0.5*(dx[i]+dx[i+1]);
 		}
 	}
 	
@@ -523,7 +524,8 @@ void NavierStokesSolver<host_memory>::generateRN()
 			H[Iu]  = - (east-west)/dx[i] - (north-south)/0.5*(dy[j]+dy[j+1]);
 			c_term = 1.5*H[Iv] - 0.5*Hn;
 			d_term = 0.0;
-			rn[Iu] = (v/simPar->dt + c_term + d_term) * 0.5*(dy[j]+dy[j+1]);
+			rn[Iu] = (v/dt + c_term + d_term) * 0.5*(dy[j]+dy[j+1]);
 		}
 	}
 }
+

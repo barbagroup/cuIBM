@@ -10,6 +10,7 @@ void NavierStokesSolver<host_memory>::generateM()
 	int  numUV = numU + nx*(ny-1);
 	int  I;
 	real value;
+  double dt = (*paramDB)["simulation"]["dt"].get<double>();
 	
 	M.resize(numUV, numUV, numUV);
 	Minv.resize(numUV, numUV, numUV);
@@ -19,7 +20,7 @@ void NavierStokesSolver<host_memory>::generateM()
 		for (int i=0; i < nx-1; i++)
 		{
 			I = j*(nx-1) + i;
-			value = 0.5*(domInfo->dx[i+1]+domInfo->dx[i]) / domInfo->dy[j] / simPar->dt;
+			value = 0.5*(domInfo->dx[i+1]+domInfo->dx[i]) / domInfo->dy[j] / dt;
 			
 			M.row_indices[I] = I;
 			M.column_indices[I] = I;
@@ -36,7 +37,7 @@ void NavierStokesSolver<host_memory>::generateM()
 		{
 			I = j*nx + i + numU;
 			
-			value  = 0.5*(domInfo->dy[j+1]+domInfo->dy[j]) / domInfo->dx[i] / simPar->dt;
+			value  = 0.5*(domInfo->dy[j+1]+domInfo->dy[j]) / domInfo->dx[i] / dt;
 			
 			M.row_indices[I] = I;
 			M.column_indices[I] = I;
@@ -107,6 +108,8 @@ void NavierStokesSolver<device_memory>::generateM()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
+
+  double dt = (*paramDB)["simulation"]["dt"].get<double>();
 	
 	real *dxD = thrust::raw_pointer_cast(&(domInfo->dxD[0])),
 	     *dyD = thrust::raw_pointer_cast(&(domInfo->dyD[0]));
@@ -127,7 +130,7 @@ void NavierStokesSolver<device_memory>::generateM()
 	const int blockSize = 256;
 	dim3 dimGrid( int((nx*ny-0.5)/blockSize) + 1, 1);
 	dim3 dimBlock(blockSize, 1);
-	kernels::fillM_u <<<dimGrid, dimBlock>>> (MRows, MCols, MVals, MinvRows, MinvCols, MinvVals, nx, ny, dxD, dyD, simPar->dt);
-	kernels::fillM_v <<<dimGrid, dimBlock>>> (MRows, MCols, MVals, MinvRows, MinvCols, MinvVals, nx, ny, dxD, dyD, simPar->dt);
+	kernels::fillM_u <<<dimGrid, dimBlock>>> (MRows, MCols, MVals, MinvRows, MinvCols, MinvVals, nx, ny, dxD, dyD, dt);
+	kernels::fillM_v <<<dimGrid, dimBlock>>> (MRows, MCols, MVals, MinvRows, MinvCols, MinvVals, nx, ny, dxD, dyD, dt);
 	std::cout << "Generated M!" << std::endl;
 }

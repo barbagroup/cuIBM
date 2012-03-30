@@ -1,16 +1,18 @@
 #include <solvers/NavierStokes/NavierStokesSolver.h>
 #include <solvers/NavierStokes/FadlunEtAlSolver.h>
 #include <solvers/NavierStokes/TairaColoniusSolver.h>
+#include <sys/stat.h>
 
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialise()
 {
 	printf("NS initalising\n");
-	timeStep = simPar->startStep;
+	timeStep = (*paramDB)["simulation"]["startStep"].get<int>();
 	
 	//io::createDirectory
-	mkdir(opts->folderName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-	io::writeGrid(opts->folderName, *domInfo);
+  std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
+	mkdir(folderName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	io::writeGrid(folderName, *domInfo);
 	
 	initialiseArrays();
 	assembleMatrices();
@@ -79,13 +81,16 @@ void NavierStokesSolver <host_memory>::initialiseFluxes()
 	int numU  = (nx-1)*ny;
 	int numUV = numU + nx*(ny-1);
 	int i;
+  double uInitial, vInitial;
+  uInitial = (*paramDB)["flow"]["uInitial"].get<double>();
+  vInitial = (*paramDB)["flow"]["vInitial"].get<double>();
 	for(i=0; i < numU; i++)
 	{
-		q[i] = flowDesc->initialU * domInfo->dy[i/(nx-1)];
+		q[i] = uInitial * domInfo->dy[i/(nx-1)];
 	}
 	for(; i < numUV; i++)
 	{
-		q[i] = flowDesc->initialV * domInfo->dx[(i-numU)%nx];
+		q[i] = vInitial * domInfo->dx[(i-numU)%nx];
 	}
 	qStar = q;
 }
@@ -99,13 +104,16 @@ void NavierStokesSolver <device_memory>::initialiseFluxes()
 	int  numUV = numU + nx*(ny-1);
 	vecH qHost(numUV);
 	int  i;
+  double uInitial, vInitial;
+  uInitial = (*paramDB)["flow"]["uInitial"].get<double>();
+  vInitial = (*paramDB)["flow"]["vInitial"].get<double>();
 	for(i=0; i < numU; i++)
 	{
-		qHost[i] = flowDesc->initialU * domInfo->dy[i/(nx-1)];
+		qHost[i] = uInitial * domInfo->dy[i/(nx-1)];
 	}
 	for(; i < numUV; i++)
 	{
-		qHost[i] = flowDesc->initialV * domInfo->dx[(i-numU)%nx];
+		qHost[i] = vInitial * domInfo->dx[(i-numU)%nx];
 	}
 	q = qHost;
 	qStar = q;
@@ -116,6 +124,8 @@ void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 {
 	int nx = domInfo->nx,
 		ny = domInfo->ny;
+
+  boundaryCondition **bcInfo = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
 	
 	bc[XMINUS].resize(2*ny-1);
 	bc[XPLUS].resize(2*ny-1);
@@ -129,24 +139,24 @@ void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 	/// Top and Bottom
 	for(int i=0; i<nx-1; i++)
 	{
-		bcHost[YMINUS][i] = flowDesc->bcInfo[YMINUS][0].second;
-		bcHost[YPLUS][i]  = flowDesc->bcInfo[YPLUS][0].second;
-		bcHost[YMINUS][i+nx-1]	= flowDesc->bcInfo[YMINUS][1].second;
-		bcHost[YPLUS][i+nx-1]	= flowDesc->bcInfo[YPLUS][1].second;
+		bcHost[YMINUS][i] = bcInfo[YMINUS][0].value;
+		bcHost[YPLUS][i]  = bcInfo[YPLUS][0].value;
+		bcHost[YMINUS][i+nx-1]	= bcInfo[YMINUS][1].value;
+		bcHost[YPLUS][i+nx-1]	= bcInfo[YPLUS][1].value;
 	}
-	bcHost[YMINUS][2*nx-2]	= flowDesc->bcInfo[YMINUS][1].second;
-	bcHost[YPLUS][2*nx-2]	= flowDesc->bcInfo[YPLUS][1].second;
+	bcHost[YMINUS][2*nx-2]	= bcInfo[YMINUS][1].value;
+	bcHost[YPLUS][2*nx-2]	= bcInfo[YPLUS][1].value;
 	
 	/// Left and Right
 	for(int i=0; i<ny-1; i++)
 	{
-		bcHost[XMINUS][i] = flowDesc->bcInfo[XMINUS][0].second;
-		bcHost[XPLUS][i]  = flowDesc->bcInfo[XPLUS][0].second;
-		bcHost[XMINUS][i+ny] = flowDesc->bcInfo[XMINUS][1].second;
-		bcHost[XPLUS][i+ny]  = flowDesc->bcInfo[XPLUS][1].second;
+		bcHost[XMINUS][i] = bcInfo[XMINUS][0].value;
+		bcHost[XPLUS][i]  = bcInfo[XPLUS][0].value;
+		bcHost[XMINUS][i+ny] = bcInfo[XMINUS][1].value;
+		bcHost[XPLUS][i+ny]  = bcInfo[XPLUS][1].value;
 	}
-	bcHost[XMINUS][ny-1] = flowDesc->bcInfo[XMINUS][0].second;
-	bcHost[XPLUS][ny-1]  = flowDesc->bcInfo[XPLUS][0].second;
+	bcHost[XMINUS][ny-1] = bcInfo[XMINUS][0].value;
+	bcHost[XPLUS][ny-1]  = bcInfo[XPLUS][0].value;
 	
 	bc[XMINUS] = bcHost[XMINUS];
 	bc[XPLUS]  = bcHost[XPLUS];
@@ -264,9 +274,11 @@ void NavierStokesSolver<memoryType>::projectionStep()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::writeData()
 {
-	if (timeStep % simPar->nsave == 0)
+  int nsave = (*paramDB)["simulation"]["nsave"].get<int>();
+  std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
+	if (timeStep % nsave == 0)
 	{
-		io::writeData(opts->folderName, timeStep, q, lambda, *domInfo);
+		io::writeData(folderName, timeStep, q, lambda, *domInfo);
 	}
 }
 
@@ -284,7 +296,8 @@ void NavierStokesSolver<memoryType>::updateSolverState()
 template <typename memoryType>
 bool NavierStokesSolver<memoryType>::finished()
 {
-	return (timeStep < simPar->nt) ? false : true;
+  int nt = (*paramDB)["simulation"]["nt"].get<int>();
+	return (timeStep < nt) ? false : true;
 }
 
 /**
@@ -293,10 +306,11 @@ bool NavierStokesSolver<memoryType>::finished()
 * \return Pointer to an instance of the required dervied class.
 */
 template <typename memoryType>
-NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(options &opts, flowDescription &flow_desc, simulationParameters &sim_par, domain &dom_info)
+NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(parameterDB &paramDB, domain &dom_info)
 {
+  ibmScheme ibm = paramDB["simulation"]["ibmScheme"].get<ibmScheme>();
 	NavierStokesSolver<memoryType> *solver = 0;
-	switch(sim_par.ibmSch)
+	switch(ibm)
 	{
 		case SAIKI_BIRINGEN:
 			break;
@@ -310,9 +324,7 @@ NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(opt
 			solver = new FadlunEtAlSolver<memoryType>;
 			break;
 	}
-	solver->opts = &opts;
-	solver->flowDesc = &flow_desc;
-	solver->simPar = &sim_par;
+  solver->paramDB = &paramDB;
 	solver->domInfo = &dom_info;
 	std::cout << "Selected solver: " << solver->name() << std::endl;
 	return solver;

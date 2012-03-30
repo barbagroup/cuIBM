@@ -14,7 +14,7 @@ lib: $(OBJ)
 	ranlib ../$(LIBNAME)
 
 clean:
-	@rm *.o
+	@rm -f *.o
 
 .cpp.o:
 	$(CC) $(OPTS) -c $< -o $@

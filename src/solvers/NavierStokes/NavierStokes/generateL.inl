@@ -18,6 +18,8 @@ void NavierStokesSolver<memoryType>::generateL()
 			
 	L.resize(numUV, numUV, 5*numUV-4*(nx+ny)+4);
 
+  real nu = (*paramDB)["flow"]["nu"].get<double>();
+
 	///x-component
 	for (int j=0; j < ny; j++)
 	{
@@ -36,15 +38,15 @@ void NavierStokesSolver<memoryType>::generateL()
 			dy0 = 0.5*(dy[j]+dy[j-1]);
 			dy1 = 0.5*(dy[j]+dy[j+1]);
 		}
-		Cy0 = 2.0 * flowDesc->nu / ( dy1*(dy1+dy0) );
-		Cy1 = 2.0 * flowDesc->nu / ( dy0*(dy1+dy0) );
+		Cy0 = 2.0 * nu / ( dy1*(dy1+dy0) );
+		Cy1 = 2.0 * nu / ( dy0*(dy1+dy0) );
 		
 		for (int i=0; i < nx-1; i++)
 		{
 			I = j*(nx-1) + i;										///< calculate the row of the matrix
 			
-			Cx0 = 2.0 * flowDesc->nu / ( dx[i+1]*(dx[i+1]+dx[i]) );
-			Cx1 = 2.0 * flowDesc->nu / ( dx[i]*(dx[i+1]+dx[i]) );
+			Cx0 = 2.0 * nu / ( dx[i+1]*(dx[i+1]+dx[i]) );
+			Cx1 = 2.0 * nu / ( dx[i]*(dx[i+1]+dx[i]) );
 			
 			scale = 0.5*(dx[i+1]+dx[i]);					///< scaling factor (to obtain the normalised matrix)
 		
@@ -91,8 +93,8 @@ void NavierStokesSolver<memoryType>::generateL()
 	///y-component
 	for (int j=0; j < ny-1; j++)
 	{
-		Cy0 = 2.0 * flowDesc->nu / ( dy[j+1]*(dy[j+1]+dy[j]) );
-		Cy1 = 2.0 * flowDesc->nu / ( dy[j]*(dy[j+1]+dy[j]) );
+		Cy0 = 2.0 * nu / ( dy[j+1]*(dy[j+1]+dy[j]) );
+		Cy1 = 2.0 * nu / ( dy[j]*(dy[j+1]+dy[j]) );
 		
 		for (int i=0; i < nx; i++)
 		{
@@ -113,8 +115,8 @@ void NavierStokesSolver<memoryType>::generateL()
 				dx0 = 0.5*(dx[i]+dx[i-1]);
 				dx1 = 0.5*dx[i];
 			}
-			Cx0 = 2.0 * flowDesc->nu /( dx1*(dx1+dx0) );
-			Cx1 = 2.0 * flowDesc->nu /( dx0*(dx1+dx0) );
+			Cx0 = 2.0 * nu /( dx1*(dx1+dx0) );
+			Cx1 = 2.0 * nu /( dx0*(dx1+dx0) );
 			
 			scale = 0.5*(dy[j+1]+dy[j]);	// scaling factor (to obtain the normalised matrix)
 			
@@ -180,6 +182,7 @@ void NavierStokesSolver<device_memory>::generateL()
 
 	cooH LHost(numUV, numUV, 5*numUV-4*(nx+ny)+4);
 
+  double nu = (*paramDB)["flow"]["nu"].get<double>();
 	///x-component
 	for (int j=0; j < ny; j++)
 	{
@@ -198,15 +201,15 @@ void NavierStokesSolver<device_memory>::generateL()
 			dy0 = 0.5*(dy[j]+dy[j-1]);
 			dy1 = 0.5*(dy[j]+dy[j+1]);
 		}
-		Cy0 = 2.0 * flowDesc->nu / ( dy1*(dy1+dy0) );
-		Cy1 = 2.0 * flowDesc->nu / ( dy0*(dy1+dy0) );
+		Cy0 = 2.0 * nu / ( dy1*(dy1+dy0) );
+		Cy1 = 2.0 * nu / ( dy0*(dy1+dy0) );
 		
 		for (int i=0; i < nx-1; i++)
 		{
 			I = j*(nx-1) + i;										///< calculate the row of the matrix
 			
-			Cx0 = 2.0 * flowDesc->nu / ( dx[i+1]*(dx[i+1]+dx[i]) );
-			Cx1 = 2.0 * flowDesc->nu / ( dx[i]*(dx[i+1]+dx[i]) );
+			Cx0 = 2.0 * nu / ( dx[i+1]*(dx[i+1]+dx[i]) );
+			Cx1 = 2.0 * nu / ( dx[i]*(dx[i+1]+dx[i]) );
 			
 			scale = 0.5*(dx[i+1]+dx[i]);					///< scaling factor (to obtain the normalised matrix)
 			
@@ -253,8 +256,8 @@ void NavierStokesSolver<device_memory>::generateL()
 	///y-component
 	for (int j=0; j < ny-1; j++)
 	{
-		Cy0 = 2.0 * flowDesc->nu / ( dy[j+1]*(dy[j+1]+dy[j]) );
-		Cy1 = 2.0 * flowDesc->nu / ( dy[j]*(dy[j+1]+dy[j]) );
+		Cy0 = 2.0 * nu / ( dy[j+1]*(dy[j+1]+dy[j]) );
+		Cy1 = 2.0 * nu / ( dy[j]*(dy[j+1]+dy[j]) );
 		
 		for (int i=0; i < nx; i++)
 		{
@@ -275,8 +278,8 @@ void NavierStokesSolver<device_memory>::generateL()
 				dx0 = 0.5*(dx[i]+dx[i-1]);
 				dx1 = 0.5*dx[i];
 			}
-			Cx0 = 2.0 * flowDesc->nu /( dx1*(dx1+dx0) );
-			Cx1 = 2.0 * flowDesc->nu /( dx0*(dx1+dx0) );
+			Cx0 = 2.0 * nu /( dx1*(dx1+dx0) );
+			Cx1 = 2.0 * nu /( dx0*(dx1+dx0) );
 			
 			scale = 0.5*(dy[j+1]+dy[j]);	// scaling factor (to obtain the normalised matrix)
 			

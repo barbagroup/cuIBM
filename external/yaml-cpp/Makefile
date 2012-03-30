@@ -8,7 +8,7 @@ install: force_look
 
 clean: force_look
 	cd src; $(MAKE) $(MFLAGS) clean
-	rm ../lib/libyaml-cpp.a
+	rm -f ../lib/libyaml-cpp.a
 
 force_look:
 	true

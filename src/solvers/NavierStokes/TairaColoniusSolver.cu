@@ -1,4 +1,5 @@
 #include <solvers/NavierStokes/TairaColoniusSolver.h>
+#include <sys/stat.h>
 
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::updateBodies()
@@ -8,13 +9,16 @@ void TairaColoniusSolver<memoryType>::updateBodies()
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::initialise()
 {
+  parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
 	initialiseBodies();
+  int startStep = db["simulation"]["startStep"].get<int>();
 	printf("NS initalising\n");
-	NavierStokesSolver<memoryType>::timeStep = NavierStokesSolver<memoryType>::simPar->startStep;
+	NavierStokesSolver<memoryType>::timeStep = startStep;
 		
 	//io::createDirectory
-	mkdir(NavierStokesSolver<memoryType>::opts->folderName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-	io::writeGrid(NavierStokesSolver<memoryType>::opts->folderName, *NavierStokesSolver<memoryType>::domInfo);
+  std::string folderName = db["inputs"]["folderName"].get<std::string>();
+	mkdir(folderName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	io::writeGrid(folderName, *NavierStokesSolver<memoryType>::domInfo);
 	
 	printf("TC: initalising\n");
 	initialiseArrays();

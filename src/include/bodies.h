@@ -2,6 +2,7 @@
 
 #include <flowDescription.h>
 #include <domain.h>
+#include <parameterDB.h>
 
 template <typename memoryType>
 class bodies
@@ -21,7 +22,7 @@ public:
 		x, y, uB, vB,
 		X0_x, X0_y, Xc_x, Xc_y, Theta0;
 	
-	void initialise(flowDescription &F, domain &D);
+	void initialise(parameterDB &db, domain &D);
 	void calculateCellIndices(domain &D);
 	void update();
 };
