@@ -7,51 +7,117 @@ namespace io
 
 using std::string;
 
-void operator >> (const YAML::Node &node, domain &d)
+void operator >> (const YAML::Node &node, domain &D)
 {
-  string dir;
-  node["direction"] >> dir;
-  double start;
-  node["start"] >> start;
-  //if (dir == "x") d.startX = start;
-  //else            d.startY = start;
-
-  const YAML::Node &subDomains = node["subDomains"];
-  // first pass
-  for (unsigned int i=0; i<subDomains.size(); i++)
-  {
-    int nPoints;
-    subDomains[i]["points"] >> nPoints;
-    if (dir == "x") d.nx += nPoints;
-    else            d.ny += nPoints;
-  }
-  // allocate memory <ANUSH>
-
-  // second pass
-  for (unsigned int i=0; i<subDomains.size(); i++)
-  {
-    double end, stretchRatio;
-    int nPoints;
-    subDomains[i]["end"] >> end;
-    subDomains[i]["points"] >> nPoints;
-    subDomains[i]["stretchRatio"] >> stretchRatio;
-
-    /* <ANUSH>
-    if (dir == "x") do_something_with_X
-    else            do_something_with_Y
-    */
-  }
+	string dir;
+	real start;
+	int  numCells;
+	
+	node["direction"] >> dir;
+	node["start"] >> start;
+	
+	if (dir=="x")
+			D.nx = 0;
+		else if(dir=="y")
+			D.ny = 0;
+	
+	const YAML::Node &subDomains = node["subDomains"];
+	// first pass
+	for (unsigned int i=0; i<subDomains.size(); i++)
+	{
+		subDomains[i]["cells"] >> numCells;
+		if (dir=="x")
+			D.nx += numCells;
+		else if(dir=="y")
+			D.ny += numCells;
+	}
+	
+	// allocate memory
+	int  beg = 0;
+	if(dir=="x")
+	{
+		D.x.resize(D.nx+1);
+		D.dx.resize(D.nx);
+		D.xD.resize(D.nx+1);
+		D.dxD.resize(D.nx);
+		D.x[beg] = start;
+	}
+	if(dir=="y")
+	{
+		D.y.resize(D.ny+1);
+		D.dy.resize(D.ny);	
+		D.yD.resize(D.ny+1);
+		D.dyD.resize(D.nx);
+		D.y[beg] = start;
+	}
+	
+	// second pass
+	real end, stretchRatio, h;
+	for (unsigned int i=0; i<subDomains.size(); i++)
+	{
+		subDomains[i]["end"] >> end;
+		subDomains[i]["cells"] >> numCells;
+		subDomains[i]["stretchRatio"] >> stretchRatio;
+		
+		if(fabs(stretchRatio-1.0) < 1.0e-6)
+		{
+			h = (end - start)/numCells;
+			for(int j=beg; j<beg+numCells; j++)
+			{
+				if(dir=="x")
+				{
+					D.dx[j]  = h;
+					D.x[j+1] = D.x[j] + D.dx[j];
+				}
+				else if(dir=="y")
+				{
+					D.dy[j]  = h;
+					D.y[j+1] = D.y[j] + D.dy[j];
+				}	
+			}
+		}
+		else
+		{
+			h = (end - start)*(stretchRatio-1)/(pow(stretchRatio, numCells)-1);
+			for(int j=beg; j<beg+numCells; j++)
+			{
+				if(dir=="x")
+				{
+					D.dx[j]  = h*pow(stretchRatio, j-beg);
+					D.x[j+1] = D.x[j] + D.dx[j];
+				}
+				else if(dir=="y")
+				{
+					D.dy[j]  = h*pow(stretchRatio, j-beg);
+					D.y[j+1] = D.y[j] + D.dy[j];
+				}
+			}
+		}
+		beg += numCells;
+		start = end;
+	}
+	
+	if(dir=="x")
+	{
+		D.xD  = D.x;
+		D.dxD = D.dx;
+	}
+	else if(dir=="y")
+	{
+		D.yD  = D.y;
+		D.dyD = D.dy;
+	}
 }
 
 void parseDomainFile(std::string &domFile, domain &D)
 {
-  std::ifstream fin(domFile.c_str());
-  YAML::Parser parser(fin);
-  YAML::Node doc;
-  parser.GetNextDocument(doc);
+	std::ifstream fin(domFile.c_str());
+	YAML::Parser  parser(fin);
+	YAML::Node    doc;
+	parser.GetNextDocument(doc);
 
-  for (unsigned int i=0; i<doc.size(); i++)
-    doc[i] >> D;
+	for (unsigned int i=0; i<doc.size(); i++)
+		doc[i] >> D;
 }
 
 } // end namespace io

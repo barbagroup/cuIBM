@@ -71,10 +71,10 @@ void NavierStokesSolver<device_memory>::generateBC1()
 	     *yplus  = thrust::raw_pointer_cast(&(bc[YPLUS][0]));
 
 	real dx0, dx1, dy0, dy1,
-	     nu = (*paramDB)["flow"]["nu"].get<double>(),
-       dt = (*paramDB)["simulation"]["dt"].get<double>();
+	     nu = (*paramDB)["flow"]["nu"].get<real>(),
+         dt = (*paramDB)["simulation"]["dt"].get<real>();
 
-  boundaryCondition **bcInfo = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
+	boundaryCondition **bcInfo = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
 	
 	const int blocksize = 256;
 	

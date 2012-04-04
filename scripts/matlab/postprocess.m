@@ -84,13 +84,23 @@ for i=1:ny
 end
 [Xp, Yp] = meshgrid(xp, yp);
 
+%xo = [];
+%yo = [];
+%for i=1:nx-1
+%	xo = [xo, 0.5*(xp(i+1) + xp(i))];
+%end
+%for i=1:ny-1
+%	yo = [yo, 0.5*(yp(i+1) + yp(i))];
+%end
+%[Xo, Yo] = meshgrid(xo, yo);
+
 xo = [];
 yo = [];
-for i=1:nx-1
-	xo = [xo, 0.5*(xp(i+1) + xp(i))];
+for i=2:nx
+	xo = [xo, x(i)];
 end
-for i=1:ny-1
-	yo = [yo, 0.5*(yp(i+1) + yp(i))];
+for i=2:ny
+	yo = [yo, y(i)];
 end
 [Xo, Yo] = meshgrid(xo, yo);
 

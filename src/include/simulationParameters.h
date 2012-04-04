@@ -14,7 +14,7 @@ public:
 	int   startStep;
 	integrationScheme intSch;
 	ibmScheme ibmSch;
-	simulationParameters(real DT=0.01, int NT=1000, int NSAVE=1000, bool RESTART=false, int START_STEP=0, ibmScheme IBM_SCH=TAIRA_COLONIUS)
+	simulationParameters(real DT=0.001, int NT=40000, int NSAVE=4000, bool RESTART=false, int START_STEP=0, ibmScheme IBM_SCH=TAIRA_COLONIUS)
 	{
 		dt = DT;
 		nt = NT;

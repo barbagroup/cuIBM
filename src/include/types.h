@@ -25,7 +25,7 @@ enum timeScheme {EULER_EXPLICIT, EULER_IMPLICIT, ADAMS_BASHFORTH_2, RUNGE_KUTTA_
 enum ibmScheme {NAVIER_STOKES, SAIKI_BIRINGEN, FADLUN_ET_AL, TAIRA_COLONIUS};
 enum preconditionerType {NONE, DIAGONAL, SMOOTHED_AGGREGATION};
 
-typedef float real;
+typedef double real;
 
 using cusp::device_memory;
 using cusp::host_memory;

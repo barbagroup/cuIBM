@@ -52,72 +52,74 @@ ibmScheme ibmSchemeFromString(string &s)
 
 void parseSimulation(const YAML::Node &node, parameterDB &DB)
 {
-  double dt = 0.02;
-  int nt = 100, nsave = 100, startStep = 0;
-  string convSch = "EULER_EXPLICIT", diffSch = "EULER_IMPLICIT", ibmSch = "NAVIER_STOKES";
-  bool restart = false;
+	real dt = 0.02;
+	int nt = 100, nsave = 100, startStep = 0;
+	string convSch = "EULER_EXPLICIT", diffSch = "EULER_IMPLICIT", ibmSch = "NAVIER_STOKES";
+	bool restart = false;
 
-  node["dt"] >> dt;
-  node["nsave"] >> nsave;
-  node["nt"] >> nt;
-  node["restart"] >> restart;
-  node["startStep"] >> startStep;
-  node["ibmScheme"] >> ibmSch;
-  node["timeScheme"][0] >> convSch;
-  node["timeScheme"][1] >> diffSch;
+	node["dt"] >> dt;
+	node["nsave"] >> nsave;
+	node["nt"] >> nt;
+	node["restart"] >> restart;
+	node["startStep"] >> startStep;
+	node["ibmScheme"] >> ibmSch;
+	node["timeScheme"][0] >> convSch;
+	node["timeScheme"][1] >> diffSch;
+	node["ibmScheme"] >> ibmSch;
 
-  // write to DB
-  string dbKey = "simulation";
-  DB[dbKey]["dt"].set<double>(dt);
-  DB[dbKey]["nsave"].set<int>(nsave);
-  DB[dbKey]["nt"].set<int>(nt);
-  DB[dbKey]["restart"].set<bool>(restart);
+	// write to DB
+	string dbKey = "simulation";
+	DB[dbKey]["dt"].set<real>(dt);
+	DB[dbKey]["nsave"].set<int>(nsave);
+	DB[dbKey]["nt"].set<int>(nt);
+	DB[dbKey]["restart"].set<bool>(restart);
 
-  DB[dbKey]["convTimeScheme"].set<timeScheme>(timeSchemeFromString(convSch));
-  DB[dbKey]["diffTimeScheme"].set<timeScheme>(timeSchemeFromString(diffSch));
+	DB[dbKey]["convTimeScheme"].set<timeScheme>(timeSchemeFromString(convSch));
+	DB[dbKey]["diffTimeScheme"].set<timeScheme>(timeSchemeFromString(diffSch));
 
-  DB[dbKey]["ibmScheme"].set<ibmScheme>(ibmSchemeFromString(ibmSch));
+	DB[dbKey]["ibmScheme"].set<ibmScheme>(ibmSchemeFromString(ibmSch));
 
-  const YAML::Node &solvers = node["linearSolvers"];
-  string systemKey[] = {"velocitySolver","PoissonSolver"};
-  for (unsigned int i=0; i<solvers.size(); i++)
-  {
-    string system = "velocity", solver = "CG", PC = "DIAGONAL";
-    double tol = 1e-5;
-    int maxIter = 10000;
-    solvers[i]["system"] >> system;
-    solvers[i]["solver"] >> solver;
-    solvers[i]["preconditioner"] >> PC;
-    solvers[i]["tolerance"] >> tol;
-    solvers[i]["maxIterations"] >> maxIter;
+	const YAML::Node &solvers = node["linearSolvers"];
+	string systemKey[] = {"velocitySolver","PoissonSolver"};
+	for (unsigned int i=0; i<solvers.size(); i++)
+	{
+		string system = "velocity", solver = "CG", PC = "DIAGONAL";
+		real tol = 1e-5;
+		int maxIter = 10000;
+		solvers[i]["system"] >> system;
+		solvers[i]["solver"] >> solver;
+		solvers[i]["preconditioner"] >> PC;
+		solvers[i]["tolerance"] >> tol;
+		solvers[i]["maxIterations"] >> maxIter;
 
-    string dbKey;
-    if (system == "velocity")      dbKey = "velocitySolver";
-    else if (system == "Poisson")  dbKey = "PoissonSolver";
-    else
-    {
-      printf("[E]: Unknown solver system found in io::parseSimulation\n");
-      exit(0);
-    }
+		string dbKey;
+		if (system == "velocity")
+			dbKey = "velocitySolver";
+		else if (system == "Poisson")
+			dbKey = "PoissonSolver";
+		else
+		{
+			printf("[E]: Unknown solver system found in io::parseSimulation\n");
+			exit(0);
+		}
 
-    // write to DB
-    DB[dbKey]["solver"].set<string>(solver);
-    DB[dbKey]["preconditioner"].set<preconditionerType>(preconditionerTypeFromString(PC));
-    DB[dbKey]["tolerance"].set<double>(tol);
-    DB[dbKey]["maxIterations"].set<int>(maxIter);
-  }
+		// write to DB
+		DB[dbKey]["solver"].set<string>(solver);
+		DB[dbKey]["preconditioner"].set<preconditionerType>(preconditionerTypeFromString(PC));
+		DB[dbKey]["tolerance"].set<real>(tol);
+		DB[dbKey]["maxIterations"].set<int>(maxIter);
+	}
 }
 
 void parseSimulationFile(std::string &simFile, parameterDB &DB)
 {
-  std::ifstream fin(simFile.c_str());
-  YAML::Parser parser(fin);
-  YAML::Node doc;
-  parser.GetNextDocument(doc);
+	std::ifstream fin(simFile.c_str());
+	YAML::Parser parser(fin);
+	YAML::Node doc;
+	parser.GetNextDocument(doc);
 
-  for (unsigned int i=0; i<doc.size(); i++)
-    parseSimulation(doc[i],DB);
-
+	for(unsigned int i=0; i<doc.size(); i++)
+		parseSimulation(doc[i], DB);
 }
 
 } // end namespace io

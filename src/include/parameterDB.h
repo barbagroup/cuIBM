@@ -13,24 +13,24 @@
 class property
 {
 public:
-  property()
-  {
-    // initialise the memory to 0
-    memset(value,0,64);
-  }
-  // get a value given a type
-  template <typename T> T get();
-  // set a value given a type
-  template <typename T> void set(T v);
+	property()
+	{
+		// initialise the memory to 0
+		memset(value,0,64);
+	}
+	// get a value given a type
+	template <typename T> T get();
+	// set a value given a type
+	template <typename T> void set(T v);
 
-  // return string describing value of property as appropriate
-  const char *print();
+	// return string describing value of property as appropriate
+	const char *print();
 private:
-  template <typename T> T getInternal();
-  // hack to get around std::type_info not having a default constructor
-  const std::type_info *type;
-  // 64 bytes of storage
-  char value[64];
+	template <typename T> T getInternal();
+	// hack to get around std::type_info not having a default constructor
+	const std::type_info *type;
+	// 64 bytes of storage
+	char value[64];
 };
 
 typedef std::map<std::string, property> componentParameter;

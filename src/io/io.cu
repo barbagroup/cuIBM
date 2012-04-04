@@ -7,173 +7,179 @@ using std::string;
 
 namespace io
 {
+	
+void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
+{
+	// get a default database
+	initialiseDefaultDB(DB);
+	
+	// first pass of command line arguments
+	commandLineParse1(argc, argv, DB);
+	
+	// read the simulation file
+	string fname = DB["inputs"]["simulationFile"].get<string>();
+	parseSimulationFile(fname, DB);
+	
+	// read the flow file
+	fname = DB["inputs"]["flowFile"].get<string>();
+	parseFlowFile(fname, DB);
+
+	// read the domain file
+	fname = DB["inputs"]["domainFile"].get<string>();
+	parseDomainFile(fname, D);
+	
+	// read the body file
+	fname = DB["inputs"]["bodyFile"].get<string>();
+	parseBodiesFile(fname, DB);
+	
+	// second pass of command line -- overwrite values in DB
+	commandLineParse2(argc, argv, DB);
+}
 
 void initialiseDefaultDB(parameterDB &DB)
 {
-  DB["inputs"] = componentParameter();
-  DB["flow"] = componentParameter();
-  DB["simulation"] = componentParameter();
-  DB["velocitySolve"] = componentParameter();
-  DB["PoissonSolve"] = componentParameter();
+	DB["inputs"] = componentParameter();
+	DB["flow"] = componentParameter();
+	DB["simulation"] = componentParameter();
+	DB["velocitySolve"] = componentParameter();
+	DB["PoissonSolve"] = componentParameter();
 
-  // default input files
-  string inputs = "inputs";
-  DB[inputs]["flowFile"].set<string>("flows/open_flow.yaml");
-  DB[inputs]["simulationFile"].set<string>("test.yaml");
-  DB[inputs]["bodyFile"].set<string>("inputs/cylinder.yaml");
-  DB[inputs]["domainFile"].set<string>("domains/open_flow.yaml");
-  DB[inputs]["folderName"].set<string>("new");
+	// default input files
+	string inputs = "inputs";
+	DB[inputs]["flowFile"].set<string>("flows/open_flow.yaml");
+	DB[inputs]["simulationFile"].set<string>("test.yaml");
+	DB[inputs]["bodyFile"].set<string>("inputs/cylinder.yaml");
+	DB[inputs]["domainFile"].set<string>("domains/open_flow.yaml");
+	DB[inputs]["folderName"].set<string>("new");
 
-  // flow parameters
-  string flow = "flow";
-  DB[flow]["nu"].set<double>(0.01);
-  DB[flow]["uInitial"].set<double>(1);
-  DB[flow]["vInitial"].set<double>(0);
-  DB[flow]["numBodies"].set<int>(0);
-  std::vector<body> *bodyVec = new std::vector<body>;
-  DB[flow]["bodies"].set<std::vector<body> *>(bodyVec);
+	// flow parameters
+	string flow = "flow";
+	DB[flow]["nu"].set<real>(0.01);
+	DB[flow]["uInitial"].set<real>(1.0);
+	DB[flow]["vInitial"].set<real>(0.0);
+	DB[flow]["numBodies"].set<int>(0);
+	std::vector<body> *bodyVec = new std::vector<body>;
+	DB[flow]["bodies"].set<std::vector<body> *>(bodyVec);
 
-  boundaryCondition **bc = new boundaryCondition*[4];
-  for (int i=0; i<4; i++) bc[i] = new boundaryCondition[2];
-  DB[flow]["boundaryConditions"].set<boundaryCondition **>(bc);
+	boundaryCondition **bc = new boundaryCondition*[4];
+	for (int i=0; i<4; i++)
+		bc[i] = new boundaryCondition[2];
+	DB[flow]["boundaryConditions"].set<boundaryCondition **>(bc);
 
-  // simulation parameters
-  string sim = "simulation";
-  DB[sim]["dt"].set<double>(0.02);
-  DB[sim]["nt"].set<int>(100);
-  DB[sim]["nsave"].set<int>(100);
-  DB[sim]["restart"].set<bool>(false);
-  DB[sim]["startStep"].set<bool>(0);
-  DB[sim]["convTimeScheme"].set<timeScheme>(EULER_EXPLICIT);
-  DB[sim]["diffTimeScheme"].set<timeScheme>(EULER_IMPLICIT);
+	// simulation parameters
+	string sim = "simulation";
+	DB[sim]["dt"].set<real>(0.02);
+	DB[sim]["nt"].set<int>(100);
+	DB[sim]["nsave"].set<int>(100);
+	DB[sim]["restart"].set<bool>(false);
+	DB[sim]["startStep"].set<bool>(0);
+	DB[sim]["convTimeScheme"].set<timeScheme>(EULER_EXPLICIT);
+	DB[sim]["diffTimeScheme"].set<timeScheme>(EULER_IMPLICIT);
 
-  // velocity solver
-  string solver = "velocitySolve";
-  DB[solver]["solver"].set<string>("CG");
-  DB[solver]["preconditioner"].set<preconditionerType>(DIAGONAL);
-  DB[solver]["tolerance"].set<double>(1e-5);
-  DB[solver]["maxIterations"].set<int>(10000);
+	// velocity solver
+	string solver = "velocitySolve";
+	DB[solver]["solver"].set<string>("CG");
+	DB[solver]["preconditioner"].set<preconditionerType>(DIAGONAL);
+	DB[solver]["tolerance"].set<real>(1e-5);
+	DB[solver]["maxIterations"].set<int>(10000);
 
-  // Poisson solver
-  solver = "PoissonSolve";
-  DB[solver]["solver"].set<string>("CG");
-  DB[solver]["preconditioner"].set<preconditionerType>(DIAGONAL);
-  DB[solver]["tolerance"].set<double>(1e-5);
-  DB[solver]["maxIterations"].set<int>(20000);
-
+	// Poisson solver
+	solver = "PoissonSolve";
+	DB[solver]["solver"].set<string>("CG");
+	DB[solver]["preconditioner"].set<preconditionerType>(DIAGONAL);
+	DB[solver]["tolerance"].set<real>(1e-5);
+	DB[solver]["maxIterations"].set<int>(20000);
 }
 
 // first pass -- only get the files to continue
 void commandLineParse1(int argc, char **argv, parameterDB &DB)
 {
-  for (int i=1; i<argc; i++)
-  {
-    if (strcmp(argv[i],"-flowFile")==0)
-    {
-      i++;
-      DB["inputs"]["flowFile"].set<string>(string(argv[i]));
-    }
-    else if (strcmp(argv[i],"simulationFile")==0)
-    {
-      i++;
-      DB["inputs"]["simulationFile"].set<string>(string(argv[i]));
-    }
-    else if (strcmp(argv[i],"bodyFile")==0)
-    {
-      i++;
-      DB["inputs"]["bodyFile"].set<string>(string(argv[i]));
-    }
-    else if (strcmp(argv[i],"-domainFile")==0)
-    {
-      i++;
-      DB["inputs"]["domainFile"].set<string>(string(argv[i]));
-    }
-    else if (strcmp(argv[i],"-folderName")==0)
-    {
-      i++;
-      DB["inputs"]["folderName"].set<string>(string(argv[i]));
-    }
-  }
+	for (int i=1; i<argc; i++)
+	{
+		if (strcmp(argv[i],"-flowFile")==0)
+		{
+			i++;
+			DB["inputs"]["flowFile"].set<string>(string(argv[i]));
+		}
+		else if (strcmp(argv[i],"simulationFile")==0)
+		{
+			i++;
+			DB["inputs"]["simulationFile"].set<string>(string(argv[i]));
+		}
+		else if (strcmp(argv[i],"bodyFile")==0)
+		{
+			i++;
+			DB["inputs"]["bodyFile"].set<string>(string(argv[i]));
+		}
+		else if (strcmp(argv[i],"-domainFile")==0)
+		{
+			i++;
+			DB["inputs"]["domainFile"].set<string>(string(argv[i]));
+		}
+		else if (strcmp(argv[i],"-folderName")==0)
+		{
+			i++;
+			DB["inputs"]["folderName"].set<string>(string(argv[i]));
+		}
+	}
 }
 
 // overwrite values in the DB from command line
 void commandLineParse2(int argc, char **argv, parameterDB &DB)
 {
-  for (int i=1; i<argc; i++)
-  {
-    // ignore these -- already parsed in pass 1
-    if (strcmp(argv[i],"-flowFile")==0 ||
-        strcmp(argv[i],"-simulationFile")==0 ||
-        strcmp(argv[i],"-bodyFile")==0 ||
-        strcmp(argv[i],"-domainFile")==0 ||
-        strcmp(argv[i],"-folderName")==0) continue;
-  }
-}
-
-void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
-{
-  std::vector<body> B;
-  B.reserve(5);
-  // get a default database
-  initialiseDefaultDB(DB);
-  // first pass of command line arguments
-  commandLineParse1(argc,argv,DB);
-  // read the simulation file
-  string fname = DB["inputs"]["domainFile"].get<string>();
-  parseSimulationFile(fname,DB);
-  // read the flow file
-  fname = DB["inputs"]["flowFile"].get<string>();
-  parseFlowFile(fname,DB);
-  // read the domain file
-  fname = DB["inputs"]["domainFile"].get<string>();
-  parseDomainFile(fname,D);
-  // read the body file
-  fname = DB["inputs"]["bodyFile"].get<string>();
-  parseBodiesFile(fname,DB);
-  // second pass of command line -- overwrite values in DB
-  commandLineParse2(argc,argv,DB);
+	for (int i=1; i<argc; i++)
+	{
+		// ignore these -- already parsed in pass 1
+		if (strcmp(argv[i],"-flowFile")==0 ||
+		strcmp(argv[i],"-simulationFile")==0 ||
+		strcmp(argv[i],"-bodyFile")==0 ||
+		strcmp(argv[i],"-domainFile")==0 ||
+		strcmp(argv[i],"-folderName")==0)
+			continue;
+	}
 }
 
 // output
 void printSimulationInfo(parameterDB &DB, domain &D)
 {
-  /*
-  std::cout << std::endl;
-  std::cout << "Simulation parameters" << std::endl;
-  std::cout << "---------------------" << std::endl;
-  double dt = DB["simulation"]["dt"].get<double>();
-  std::cout << "dt = " << dt         << std::endl;
-  std::cout << "startStep = " << sim_par.startStep << std::endl;
-  std::cout << "nt = "    << sim_par.nt    << std::endl;
-  std::cout << "nsave = " << sim_par.nsave << std::endl;
-  std::cout << "T (start) = " << sim_par.startStep*sim_par.dt << std::endl;
-  std::cout << "T (end)   = " << (sim_par.startStep + sim_par.nt)*sim_par.dt << std::endl << std::endl;
+	real dt = DB["simulation"]["dt"].get<real>();
+	int  nt = DB["simulation"]["nt"].get<real>(),
+	     nsave = DB["simulation"]["nsave"].get<real>(),
+	     startStep = DB["simulation"]["startStep"].get<real>();
+	
+	std::cout << std::endl;
+	std::cout << "Simulation parameters" << std::endl;
+	std::cout << "---------------------" << std::endl;
+	std::cout << "dt = " << dt << std::endl;
+	std::cout << "startStep = " << startStep << std::endl;
+	std::cout << "nt = "    << nt << std::endl;
+	std::cout << "nsave = " << nsave << std::endl;
 
-  std::cout << "Flow parameters" << std::endl;
-  std::cout << "---------------" << std::endl;
-  std::cout << "nu = " << flow_desc.nu << std::endl << std::endl;
+	std::cout << "Flow parameters" << std::endl;
+	std::cout << "---------------" << std::endl;
+	std::cout << "nu = " << DB["flow"]["nu"].get<real>() << std::endl << std::endl;
 
-  std::cout << "Domain" << std::endl;
-  std::cout << "------" << std::endl;
-  std::cout << dom_info.nx << " x " << dom_info.ny << std::endl << std::endl;
-  */
+	std::cout << "Domain" << std::endl;
+	std::cout << "------" << std::endl;
+	std::cout << D.nx << " x " << D.ny << std::endl << std::endl;
 }
 
 void writeGrid(std::string &folderName, domain &D)
 {
-  std::stringstream out;
-  out << folderName << "/grid";
-  std::ofstream f(out.str().c_str());
+	std::stringstream out;
+	out << folderName << "/grid";
+	std::ofstream f(out.str().c_str());
 
-  f << D.nx << std::endl;
-  for(int i=0; i<D.nx+1; i++)
-    f << D.x[i] << std::endl;
-  f << std::endl;
-  f << D.ny << std::endl;
-  for(int j=0; j<D.ny+1; j++)
-    f << D.y[j] << std::endl;
+	f << D.nx << std::endl;
+	for(int i=0; i<D.nx+1; i++)
+		f << D.x[i] << std::endl;
+	f << std::endl;
+	
+	f << D.ny << std::endl;
+	for(int j=0; j<D.ny+1; j++)
+		f << D.y[j] << std::endl;
 
-  f.close();
+	f.close();
 }
 
 template <>

@@ -52,7 +52,8 @@ __global__ void convection_term_u_cuda(real *rn, real *H, real *q, int nx, int n
 		H[Gidx_x] = Hx[j][i];
 		
 		// rN for u
-		c_term = 1.5*Hx[j][i] - 0.5*Hxn;
+		//c_term = 1.5*Hx[j][i] - 0.5*Hxn;
+		c_term = Hx[j][i]; // 1st order Euler
 		d_term = d_coeff*( \
 						 ( Dx[j][i]*u[j][i+1] - (Dx[j][i]+Dx[j][i+1])*u[j][i] + Dx[j][i+1]*u[j][i-1] )/( Dx[j][i]*Dx[j][i+1]*(Dx[j][i]+Dx[j][i+1]) ) \
 					   + 4.0*( (Dy[j][i]+Dy[j-1][i])*u[j+1][i] - (Dy[j-1][i] + 2.0*Dy[j][i] + Dy[j+1][i])*u[j][i] + (Dy[j][i]+Dy[j+1][i])*u[j-1][i] ) \
@@ -117,7 +118,8 @@ __global__ void convection_term_v_cuda(real *rn, real *H, real *q, int nx, int n
 		H[Gidx_y] = Hy[j][i];
 		
 		// rN for v
-		c_term = 1.5*Hy[j][i] - 0.5*Hyn;
+		//c_term = 1.5*Hy[j][i] - 0.5*Hyn;
+		c_term = Hy[j][i]; // 1st order Euler
 		d_term = d_coeff*( \
 						4.0*( (Dx[j][i-1]+Dx[j][i])*v[j][i+1] - (Dx[j][i-1]+2.0*Dx[j][i]+Dx[j][i+1])*v[j][i] + (Dx[j][i]+Dx[j][i+1])*v[j][i-1] ) \
 							/( (Dx[j][i-1]+Dx[j][i]) * (Dx[j][i]+Dx[j][i+1]) * (Dx[j][i-1]+2.0*Dx[j][i]+Dx[j][i+1]) ) \
@@ -148,7 +150,8 @@ __global__ void convection_term_v_bottomtop_cuda(real *rn, real *H, real *q, \
 				(0.5*(q[Iv] + q[Iv+nx])/dx[I]) * (0.5*(q[Iv] + q[Iv+nx])/dx[I]) \
 				- (0.5*(bc_bottom[I+nx-1] + q[Iv]/dx[I])) * (0.5*(bc_bottom[I+nx-1] + q[Iv]/dx[I])) \
 			 )/(0.5*(dy[0] + dy[1]));
-	c_term = 1.5*H[Iv] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	//c_term = 1.5*H[Iv] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	c_term = H[Iv];	/// 1st order Euler
 	/// Diffusion Term
 	d_term = d_coeff*( \
 					4.0 * ( (dx[I-1]+dx[I])*q[Iv+1]/dx[I+1] - (dx[I-1]+2.0*dx[I]+dx[I+1])*q[Iv]/dx[I] + (dx[I]+dx[I+1])*q[Iv-1]/dx[I-1] ) \
@@ -170,7 +173,8 @@ __global__ void convection_term_v_bottomtop_cuda(real *rn, real *H, real *q, \
 				( 0.5*(q[Iv]/dx[I] + bc_top[I+nx-1]) )*( 0.5*(q[Iv]/dx[I] + bc_top[I+nx-1]) ) \
 				- ( 0.5*(q[Iv-nx] + q[Iv])/dx[I] )*( 0.5*(q[Iv-nx] + q[Iv])/dx[I] )
 			 )/(0.5*(dy[ny-2] + dy[ny-1]));
-	c_term = 1.5*H[Iv] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	//c_term = 1.5*H[Iv] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	c_term = H[Iv];	/// 1st order Euler
 	/// Diffusion Term
 	d_term = d_coeff*( \
 					4.0*( (dx[I-1]+dx[I])*q[Iv+1]/dx[I+1] - (dx[I-1]+2.0*dx[I]+dx[I+1])*q[Iv]/dx[I] + (dx[I]+dx[I+1])*q[Iv-1]/dx[I-1] ) \
@@ -219,7 +223,8 @@ __global__ void convection_term_u_bottomtop_cuda(real *rn, real *H, real *q, \
 	Hn = H[I];
 	H[I] = - ( u1x*u1x - u0x*u0x )/( 0.5*(dx[I]+dx[I+1]) ) \
 			- ( 0.5*(q[Iv]/dx[I] + q[Iv+1]/dx[I+1]) * 0.5*(u + q[I+(nx-1)]/dy[1]) - 0.5*(bc_bottom[I+(nx-1)] + bc_bottom[I+1+(nx-1)])*bc_bottom[I] )/(dy[0]);
-	c_term = 1.5*H[I] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	//c_term = 1.5*H[I] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	c_term = H[I]; // 1st order Euler **************************** DID NOT CHANGE I TO Iu HERE
 	// Diffusion Term
 	d_term = d_coeff*( \
 					( dx[I]*ur - (dx[I]+dx[I+1])*u + dx[I+1]*ul )/( dx[I] * (dx[I]+dx[I+1]) * dx[I+1] ) \
@@ -255,7 +260,8 @@ __global__ void convection_term_u_bottomtop_cuda(real *rn, real *H, real *q, \
 	Hn = H[Iu];
 	H[Iu] = - ( u1x*u1x - u0x*u0x )/( 0.5*(dx[I]+dx[I+1]) ) \
 			- ( bc_top[I]*0.5*(bc_top[I+(nx-1)]+bc_top[I+1+(nx-1)]) - 0.5*(q[Iv]/dx[I] + q[Iv+1]/dx[I+1])*0.5*(u + q[Iu-(nx-1)]/dy[ny-2]) )/(dy[ny-1]);
-	c_term = 1.5*H[I] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	//c_term = 1.5*H[Iu] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	c_term = H[Iu];	/// 1st order Euler  ************************* CHANGED I TO Iu HERE
 	// Diffusion Term
 	d_term = d_coeff*( \
 					( dx[I]*ur - (dx[I]+dx[I+1])*u + dx[I+1]*ul )/( dx[I] * (dx[I]+dx[I+1]) * dx[I+1] ) \
@@ -288,7 +294,8 @@ __global__ void convection_term_u_leftright_cuda(real *rn, real *H, real *q, \
 				( 0.5*(q[Iv]/dx[0] + q[Iv+1]/dx[1]) ) * ( 0.5*(q[Iu]/dy[I] + q[Iu+(nx-1)]/dy[I+1]) ) \
 				- ( 0.5*(q[Iv-nx]/dx[0] + q[Iv+1-nx]/dx[1]) ) * ( 0.5*(q[Iu-(nx-1)]/dy[I-1] + q[Iu]/dy[I]) ) \
 			 )/(dy[I]);
-	c_term = 1.5*H[Iu] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	//c_term = 1.5*H[Iu] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	c_term = H[Iu];	/// 1st order Euler
 	/// Diffusion Term
 	d_term = d_coeff*( \
 					( dx[0]*q[Iu+1]/dy[I] - (dx[0]+dx[1])*q[Iu]/dy[I] + dx[1]*bc_left[I] )/( dx[0]*dx[1]*(dx[0]+dx[1]) ) \
@@ -309,7 +316,8 @@ __global__ void convection_term_u_leftright_cuda(real *rn, real *H, real *q, \
 				( 0.5*(q[Iv]/dx[nx-2] + q[Iv+1]/dx[nx-1]) ) * ( 0.5*(q[Iu]/dy[I] + q[Iu+(nx-1)]/dy[I+1]) ) \
 				- ( 0.5*(q[Iv-nx]/dx[nx-2] + q[Iv+1-nx]/dx[nx-1]) ) * ( 0.5*(q[Iu-(nx-1)]/dy[I-1] + q[Iu]/dy[I]) ) \
 			 )/(dy[I]);
-	c_term = 1.5*H[Iu] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	//c_term = 1.5*H[Iu] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	c_term = H[Iu];	/// 1st order Euler
 	/// Diffusion Term
 	d_term = d_coeff*( \
 					( dx[nx-2]*bc_right[I] - (dx[nx-2]+dx[nx-1])*q[Iu]/dy[I] + dx[nx-1]*q[Iu-1]/dy[I] )/( dx[nx-2]*dx[nx-1]*(dx[nx-2]+dx[nx-1]) ) \
@@ -357,7 +365,8 @@ __global__ void convection_term_v_leftright_cuda(real *rn, real *H, real *q, \
 	Hn = H[Iv];
 	H[Iv] = -( 0.5*(v + q[Iv+1]/dx[1])*0.5*(q[Iu]/dy[I] + q[Iu+(nx-1)]/dy[I+1]) - bc_left[I+ny]*0.5*(bc_left[I] + bc_left[I+1]) )/dx[0] \
 	 		-( v1y*v1y - v0y*v0y )/(0.5*(dy[I] + dy[I+1]));
-	c_term = 1.5*H[Iv] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	//c_term = 1.5*H[Iv] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	c_term = H[Iv];	/// 1st order Euler
 	/// Diffusion Term
 	d_term = d_coeff*( \
 					4.0 * ( (dx[0])*q[Iv+1]/dx[1] - (2.0*dx[0]+dx[1])*v + (dx[0]+dx[1])*bc_left[I+ny] ) \
@@ -393,7 +402,8 @@ __global__ void convection_term_v_leftright_cuda(real *rn, real *H, real *q, \
 	Hn = H[Iv];
 	H[Iv] = -( bc_right[I+ny]*0.5*(bc_right[I]+bc_right[I+1]) - 0.5*(q[Iv-1]/dx[nx-2] + v)*0.5*(q[Iu-1]/dy[I] + q[Iu-1+(nx-1)]/dy[I+1]) )/dx[nx-1] \
 	 		-( v1y*v1y - v0y*v0y )/(0.5*(dy[I] + dy[I+1]));
-	c_term = 1.5*H[Iv] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	//c_term = 1.5*H[Iv] - 0.5*Hn;	/// 2nd order Adams-Bashforth
+	c_term = H[Iv];	/// 1st order Euler
 	/// Diffusion Term
 	d_term = d_coeff*( \
 					4.0 * ( (dx[nx-1]+dx[nx-2])*bc_right[I+ny] - (2.0*dx[nx-1]+dx[nx-2])*v + (dx[nx-1])*q[Iv-1]/dx[nx-2] ) \
@@ -429,7 +439,7 @@ void NavierStokesSolver<device_memory>::generateRN()
 	dim3 dimBlock(BSZ, BSZ);
 	
 	// call the kernel
-  double dt = (*paramDB)["simulation"]["dt"].get<double>();
+	real dt = (*paramDB)["simulation"]["dt"].get<real>();
 	convection_term_u_cuda <<<dimGridx, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, d_coeff);
 	convection_term_v_cuda <<<dimGridy, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, d_coeff);
 	
@@ -463,7 +473,7 @@ void NavierStokesSolver<host_memory>::generateRN()
 	     *xplus  = thrust::raw_pointer_cast(&(bc[XPLUS][0])),
 	     *yminus = thrust::raw_pointer_cast(&(bc[YMINUS][0])),
 	     *yplus  = thrust::raw_pointer_cast(&(bc[YPLUS][0]));
-	double dt = (*paramDB)["simulation"]["dt"].get<double>();
+	real dt = (*paramDB)["simulation"]["dt"].get<real>();
 	for(int j=0; j<ny; j++)
 	{
 		for(int i=0; i<nx-1; i++)

@@ -1,5 +1,5 @@
 - type: flow
-  nu: 0.01
+  nu: 0.025
   initialVelocity: [1.0, 0.0]
   boundaryConditions:
     - location: xMinus
@@ -10,7 +10,7 @@
       v: [CONVECTIVE, 0.0]
     - location: yMinus
       u: [DIRICHLET, 1.0]
-      v: [DIRCIHLET, 0.0]
+      v: [DIRICHLET, 0.0]
     - location: yPlus
       u: [DIRICHLET, 1.0]
       v: [DIRICHLET, 0.0]

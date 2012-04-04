@@ -37,6 +37,7 @@ T property::get()
 }
 
 template double property::get<double>();
+template float property::get<float>();
 template int property::get<int>();
 template bool property::get<bool>();
 template timeScheme property::get<timeScheme>();
@@ -50,6 +51,8 @@ const char *property::print()
       return toString(this->get<int>()).c_str();
     else if (*type == typeid(double))
       return toString(this->get<double>()).c_str();
+	else if (*type == typeid(float))
+      return toString(this->get<float>()).c_str();
     else if (*type == typeid(std::string))
       return (const char *)value;
     else
@@ -72,6 +75,7 @@ void property::set(T v)
 }
 
 template void property::set(int v);
+template void property::set(float v);
 template void property::set(double v);
 template void property::set(bool v);
 template void property::set(timeScheme v);

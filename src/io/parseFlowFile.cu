@@ -43,46 +43,52 @@ bcType bcTypeFromString(string &s)
 
 void parseFlow(const YAML::Node &node, parameterDB &DB)
 {
-  string dbKey = "flow";
-  double nu = 0.01, initialU = 1, initialV = 0;
-  node["nu"] >> nu;
-  node["initialVelocity"][0] >> initialU;
-  node["initialVelocity"][1] >> initialV;
+	string dbKey = "flow";
+	real nu = 0.01, initialU = 1, initialV = 0;
+	node["nu"] >> nu;
+	node["initialVelocity"][0] >> initialU;
+	node["initialVelocity"][1] >> initialV;
 
-  DB[dbKey]["nu"].set<double>(nu);
-  DB[dbKey]["uInitial"].set<double>(initialU);
-  DB[dbKey]["vInitial"].set<double>(initialV);
+	DB[dbKey]["nu"].set<real>(nu);
+	DB[dbKey]["uInitial"].set<real>(initialU);
+	DB[dbKey]["vInitial"].set<real>(initialV);
 
-  boundaryCondition **bc = 0;
-  DB[dbKey]["boundaryConditions"].get<boundaryCondition **>();
-  const YAML::Node &BCs = node["boundaryConditions"];
-  for (unsigned int i=0; i<BCs.size(); i++)
-  {
-    string location, uType, vType;
-    double uVal, vVal;
-    BCs[i]["location"] >> location;
-    BCs[i]["u"][0] >> uType;
-    BCs[i]["v"][0] >> vType;
-    BCs[i]["u"][1] >> uVal;
-    BCs[i]["v"][1] >> vVal;
+	boundaryCondition **bc = 0;
+	bc = DB[dbKey]["boundaryConditions"].get<boundaryCondition **>();
+	
+	if (!bc)
+	{
+		printf("[E]: BoundaryConditions pointer not initialised\n");
+		exit(-1);
+	}
+	const YAML::Node &BCs = node["boundaryConditions"];
+	string location, uType, vType;
+	real   uVal, vVal;
+	for (unsigned int i=0; i<BCs.size(); i++)
+	{
+		BCs[i]["location"] >> location;
+		BCs[i]["u"][0] >> uType;
+		BCs[i]["v"][0] >> vType;
+		BCs[i]["u"][1] >> uVal;
+		BCs[i]["v"][1] >> vVal;
 
-    boundary loc = boundaryFromString(location);
-    bc[loc][0] = boundaryCondition(bcTypeFromString(uType),uVal);
-    bc[loc][1] = boundaryCondition(bcTypeFromString(vType),vVal);
+		boundary loc = boundaryFromString(location);
+		bc[loc][0] = boundaryCondition(bcTypeFromString(uType), uVal);
+		bc[loc][1] = boundaryCondition(bcTypeFromString(vType), vVal);
 
-    // printf("%s: %s, %lg : %s, %lg\n",location.c_str(),uType.c_str(),uVal,vType.c_str(),vVal);
-  }
+		// printf("%s: %s, %lg : %s, %lg\n",location.c_str(),uType.c_str(),uVal,vType.c_str(),vVal);
+	}
 }
 
 void parseFlowFile(std::string &flowFile, parameterDB &DB)
 {
-  std::ifstream fin(flowFile.c_str());
-  YAML::Parser parser(fin);
-  YAML::Node doc;
-  parser.GetNextDocument(doc);
+	std::ifstream fin(flowFile.c_str());
+	YAML::Parser parser(fin);
+	YAML::Node doc;
+	parser.GetNextDocument(doc);
 
-  for (unsigned int i=0; i<doc.size(); i++)
-    parseFlow(doc[i],DB);
+	for (unsigned int i=0; i<doc.size(); i++)
+		parseFlow(doc[i], DB);
 }
 
 } // end namespace io

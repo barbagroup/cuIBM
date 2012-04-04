@@ -9,10 +9,10 @@ class boundaryCondition
 {
 public:
   bcType type;
-  double value;
+  real value;
 
   boundaryCondition() : type(DIRICHLET), value(0) {}; 
-  boundaryCondition(bcType _type, double _value) : type(_type), value(_value) {}; 
+  boundaryCondition(bcType _type, real _value) : type(_type), value(_value) {}; 
 
 
   /*const char *print()

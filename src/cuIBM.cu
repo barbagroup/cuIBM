@@ -10,13 +10,13 @@
 int main(int argc, char **argv)
 {
 	domain dom_info;
-  parameterDB paramDB;
+	parameterDB paramDB;
 	
 	cudaSetDevice(4);
 	
 	io::readInputs(argc, argv, paramDB, dom_info);
-	// io::printSimulationInfo(opts, flow_desc, paramDB); // sim_par, dom_info);
-	
+	io::printSimulationInfo(paramDB, dom_info);
+
 	NavierStokesSolver<device_memory> *solver = NavierStokesSolver<device_memory>::createSolver(paramDB, dom_info);
 	solver->initialise();
 

@@ -15,7 +15,7 @@ template <typename memoryType>
 class NavierStokesSolver
 {
 protected:
-  parameterDB *paramDB;
+	parameterDB *paramDB;
 	domain  *domInfo;
 	
 	coo_matrix<int, real, memoryType>

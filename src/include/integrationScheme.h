@@ -13,6 +13,4 @@ class integrationScheme
 {
 public:
 	int substeps;
-	timeScheme convTScheme,
-	           diffTScheme;
 };

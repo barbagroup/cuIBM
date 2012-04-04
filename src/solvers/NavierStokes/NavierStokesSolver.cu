@@ -81,9 +81,9 @@ void NavierStokesSolver <host_memory>::initialiseFluxes()
 	int numU  = (nx-1)*ny;
 	int numUV = numU + nx*(ny-1);
 	int i;
-  double uInitial, vInitial;
-  uInitial = (*paramDB)["flow"]["uInitial"].get<double>();
-  vInitial = (*paramDB)["flow"]["vInitial"].get<double>();
+  real uInitial, vInitial;
+  uInitial = (*paramDB)["flow"]["uInitial"].get<real>();
+  vInitial = (*paramDB)["flow"]["vInitial"].get<real>();
 	for(i=0; i < numU; i++)
 	{
 		q[i] = uInitial * domInfo->dy[i/(nx-1)];
@@ -104,9 +104,9 @@ void NavierStokesSolver <device_memory>::initialiseFluxes()
 	int  numUV = numU + nx*(ny-1);
 	vecH qHost(numUV);
 	int  i;
-  double uInitial, vInitial;
-  uInitial = (*paramDB)["flow"]["uInitial"].get<double>();
-  vInitial = (*paramDB)["flow"]["vInitial"].get<double>();
+  real uInitial, vInitial;
+  uInitial = (*paramDB)["flow"]["uInitial"].get<real>();
+  vInitial = (*paramDB)["flow"]["vInitial"].get<real>();
 	for(i=0; i < numU; i++)
 	{
 		qHost[i] = uInitial * domInfo->dy[i/(nx-1)];
@@ -308,7 +308,7 @@ bool NavierStokesSolver<memoryType>::finished()
 template <typename memoryType>
 NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(parameterDB &paramDB, domain &dom_info)
 {
-  ibmScheme ibm = paramDB["simulation"]["ibmScheme"].get<ibmScheme>();
+	ibmScheme ibm = paramDB["simulation"]["ibmScheme"].get<ibmScheme>();
 	NavierStokesSolver<memoryType> *solver = 0;
 	switch(ibm)
 	{
