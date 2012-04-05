@@ -16,37 +16,33 @@ class NavierStokesSolver
 {
 protected:
 	parameterDB *paramDB;
-	domain  *domInfo;
+	domain      *domInfo;
 	
 	coo_matrix<int, real, memoryType>
 	     M, Minv, L, A, QT, Q, BN, C;
 
 	array1d<real, memoryType>
 	     q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1, bc[4];
-	
-//	cooH LHost;
-
-	vecH bcHost[4];//, bc2Host;
 
 	int  timeStep;
 	
 	/**
-	* Methods are defined as virtual when they are redefined with the same name in a derived class.
+	* Methods are defined as virtual when they are redefined in a derived class with the same name.
 	*/	
-	virtual void initialiseArrays();
+	void initialiseArrays(int numQ, int numLambda);
 	void initialiseFluxes();
 	void initialiseBoundaryArrays();
 	void assembleMatrices(); // contains subfunctions to calculate A, QT, BN, QTBNQ
 	
 	void generateM();
 	void generateL();
-	virtual void generateA();
+	void generateA(int alpha);
 	void generateBN();
 	virtual void generateQT();
 	void generateC();
 
-	void generateRN();
-	void generateBC1();
+	void generateRN(real gamma, real beta, real alpha);
+	void generateBC1(real alpha);
 	virtual void generateBC2();
 	
 	void assembleRHS1();

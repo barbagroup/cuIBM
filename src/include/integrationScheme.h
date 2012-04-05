@@ -12,5 +12,7 @@
 class integrationScheme
 {
 public:
-	int substeps;
+	int  substeps;
+	real *alphaImp,
+	     *alphaExp;
 };

@@ -6,48 +6,35 @@
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialise()
 {
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
+	
+	int numUV = (nx-1)*ny + nx*(ny-1);
+	int numP  = nx*ny;
+	
 	printf("NS initalising\n");
+	
 	timeStep = (*paramDB)["simulation"]["startStep"].get<int>();
 	
-	//io::createDirectory
-  std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
+	// create directory 
+	std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
 	mkdir(folderName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 	io::writeGrid(folderName, *domInfo);
 	
-	initialiseArrays();
+	initialiseArrays(numUV, numP);
 	assembleMatrices();
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::assembleMatrices()
-{
-	std::cout << "Entered assembleMatrices" << std::endl;
-	generateA();
-	std::cout << "Assembled A!" << std::endl;
-	generateBN();
-	std::cout << "Assembled BN!" << std::endl;
-	generateQT();
-	std::cout << "Assembled QT!" << std::endl;
-	generateC(); // QT*BN*Q
-}
-
-template <typename memoryType>
-void NavierStokesSolver<memoryType>::initialiseArrays()
-{
-	int nx = domInfo->nx,
-	    ny = domInfo->ny;
-		
-	int numU  = (nx-1)*ny;
-	int numUV = numU + nx*(ny-1);
-	int numP  = numU + ny;
-	
-	q.resize(numUV);
-	qStar.resize(numUV);
-	rn.resize(numUV);
-	H.resize(numUV);
-	bc1.resize(numUV);
-	rhs1.resize(numUV);
-	temp1.resize(numUV);
+void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
+{	
+	q.resize(numQ);
+	qStar.resize(numQ);
+	rn.resize(numQ);
+	H.resize(numQ);
+	bc1.resize(numQ);
+	rhs1.resize(numQ);
+	temp1.resize(numQ);
 	
 	cusp::blas::fill(rn, 0.0);
 	cusp::blas::fill(H, 0.0);
@@ -55,17 +42,13 @@ void NavierStokesSolver<memoryType>::initialiseArrays()
 	cusp::blas::fill(rhs1, 0.0);
 	cusp::blas::fill(temp1, 0.0);
 	
-	//lambda.resize(numP+2*numB);
-	//rhs2.resize(numP+2*numB);
-	lambda.resize(numP);
-	bc2.resize(numP);
-	//bc2Host.resize(numP);
-	rhs2.resize(numP);
-	temp2.resize(numP);
+	lambda.resize(numLambda);
+	bc2.resize(numLambda);
+	rhs2.resize(numLambda);
+	temp2.resize(numLambda);
 	
 	cusp::blas::fill(lambda, 0.0);
 	cusp::blas::fill(bc2, 0.0);
-	//cusp::blas::fill(bc2Host, 0.0);
 	cusp::blas::fill(rhs2, 0.0);
 	cusp::blas::fill(temp2, 0.0);
 	
@@ -104,9 +87,9 @@ void NavierStokesSolver <device_memory>::initialiseFluxes()
 	int  numUV = numU + nx*(ny-1);
 	vecH qHost(numUV);
 	int  i;
-  real uInitial, vInitial;
-  uInitial = (*paramDB)["flow"]["uInitial"].get<real>();
-  vInitial = (*paramDB)["flow"]["vInitial"].get<real>();
+	real uInitial, vInitial;
+	uInitial = (*paramDB)["flow"]["uInitial"].get<real>();
+	vInitial = (*paramDB)["flow"]["vInitial"].get<real>();
 	for(i=0; i < numU; i++)
 	{
 		qHost[i] = uInitial * domInfo->dy[i/(nx-1)];
@@ -125,51 +108,50 @@ void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 	int nx = domInfo->nx,
 		ny = domInfo->ny;
 
-  boundaryCondition **bcInfo = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
+	boundaryCondition **bcInfo = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
 	
 	bc[XMINUS].resize(2*ny-1);
 	bc[XPLUS].resize(2*ny-1);
 	bc[YMINUS].resize(2*nx-1);
 	bc[YPLUS].resize(2*nx-1);
-	bcHost[XMINUS].resize(2*ny-1);   
-	bcHost[XPLUS].resize(2*ny-1);
-	bcHost[YMINUS].resize(2*nx-1);
-	bcHost[YPLUS].resize(2*nx-1);
 
 	/// Top and Bottom
 	for(int i=0; i<nx-1; i++)
 	{
-		bcHost[YMINUS][i] = bcInfo[YMINUS][0].value;
-		bcHost[YPLUS][i]  = bcInfo[YPLUS][0].value;
-		bcHost[YMINUS][i+nx-1]	= bcInfo[YMINUS][1].value;
-		bcHost[YPLUS][i+nx-1]	= bcInfo[YPLUS][1].value;
+		bc[YMINUS][i] = bcInfo[YMINUS][0].value;
+		bc[YPLUS][i]  = bcInfo[YPLUS][0].value;
+		bc[YMINUS][i+nx-1]	= bcInfo[YMINUS][1].value;
+		bc[YPLUS][i+nx-1]	= bcInfo[YPLUS][1].value;
 	}
-	bcHost[YMINUS][2*nx-2]	= bcInfo[YMINUS][1].value;
-	bcHost[YPLUS][2*nx-2]	= bcInfo[YPLUS][1].value;
+	bc[YMINUS][2*nx-2]	= bcInfo[YMINUS][1].value;
+	bc[YPLUS][2*nx-2]	= bcInfo[YPLUS][1].value;
 	
 	/// Left and Right
 	for(int i=0; i<ny-1; i++)
 	{
-		bcHost[XMINUS][i] = bcInfo[XMINUS][0].value;
-		bcHost[XPLUS][i]  = bcInfo[XPLUS][0].value;
-		bcHost[XMINUS][i+ny] = bcInfo[XMINUS][1].value;
-		bcHost[XPLUS][i+ny]  = bcInfo[XPLUS][1].value;
+		bc[XMINUS][i] = bcInfo[XMINUS][0].value;
+		bc[XPLUS][i]  = bcInfo[XPLUS][0].value;
+		bc[XMINUS][i+ny] = bcInfo[XMINUS][1].value;
+		bc[XPLUS][i+ny]  = bcInfo[XPLUS][1].value;
 	}
-	bcHost[XMINUS][ny-1] = bcInfo[XMINUS][0].value;
-	bcHost[XPLUS][ny-1]  = bcInfo[XPLUS][0].value;
-	
-	bc[XMINUS] = bcHost[XMINUS];
-	bc[XPLUS]  = bcHost[XPLUS];
-	bc[YMINUS] = bcHost[YMINUS];
-	bc[YPLUS]  = bcHost[YPLUS];
+	bc[XMINUS][ny-1] = bcInfo[XMINUS][0].value;
+	bc[XPLUS][ny-1]  = bcInfo[XPLUS][0].value;
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::generateA()
+void NavierStokesSolver<memoryType>::assembleMatrices()
 {
+	std::cout << "Entered assembleMatrices" << std::endl;
 	generateM();
 	generateL();
-	cusp::wrapped::subtract(M, L, A);
+	generateA(1.0);
+//	cusp::subtract(M, L, A);
+	std::cout << "Assembled A!" << std::endl;
+	generateBN();
+	std::cout << "Assembled BN!" << std::endl;
+	generateQT();
+	std::cout << "Assembled QT!" << std::endl;
+	generateC(); // QT*BN*Q
 }
 
 template <typename memoryType>
@@ -220,8 +202,8 @@ void NavierStokesSolver<memoryType>::stepTime()
 	{
 		updateSolverState();
 
-		generateRN();
-		generateBC1();
+		generateRN(1.0, 0.0, 0.0);
+		generateBC1(1.0);
 		assembleRHS1();
 
 		solveIntermediateVelocity();
@@ -296,7 +278,7 @@ void NavierStokesSolver<memoryType>::updateSolverState()
 template <typename memoryType>
 bool NavierStokesSolver<memoryType>::finished()
 {
-  int nt = (*paramDB)["simulation"]["nt"].get<int>();
+	int nt = (*paramDB)["simulation"]["nt"].get<int>();
 	return (timeStep < nt) ? false : true;
 }
 
@@ -332,6 +314,7 @@ NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(par
 
 #include "NavierStokes/generateM.inl"
 #include "NavierStokes/generateL.inl"
+#include "NavierStokes/generateA.inl"
 #include "NavierStokes/generateQT.inl"
 #include "NavierStokes/generateRN.inl"
 #include "NavierStokes/generateBC1.inl"

@@ -19,7 +19,13 @@ void FadlunEtAlSolver<memoryType>::updateBodies()
 template <typename memoryType>
 void FadlunEtAlSolver<memoryType>::initialise()
 {
-	NavierStokesSolver<memoryType>::initialiseArrays();
+	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
+        ny = NavierStokesSolver<memoryType>::domInfo->ny;
+	
+	int numUV = (nx-1)*ny + nx*(ny-1);
+	int numP  = nx*ny;
+	
+	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP);
 	NavierStokesSolver<memoryType>::assembleMatrices();
 	initialiseBodies();
 }
@@ -27,7 +33,8 @@ template <typename memoryType>
 void FadlunEtAlSolver<memoryType>::updateSolverState()
 {
 	NavierStokesSolver<memoryType>::updateBoundaryConditions();
-	if (B.bodiesMove) {
+	if (B.bodiesMove)
+	{
 		updateBodies();
 		updateA();
 	}

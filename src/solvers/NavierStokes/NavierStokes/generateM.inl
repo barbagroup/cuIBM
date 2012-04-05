@@ -10,7 +10,7 @@ void NavierStokesSolver<host_memory>::generateM()
 	int  numUV = numU + nx*(ny-1);
 	int  I;
 	real value;
-  real dt = (*paramDB)["simulation"]["dt"].get<real>();
+	real dt = (*paramDB)["simulation"]["dt"].get<real>();
 	
 	M.resize(numUV, numUV, numUV);
 	Minv.resize(numUV, numUV, numUV);
@@ -109,7 +109,7 @@ void NavierStokesSolver<device_memory>::generateM()
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 
-  real dt = (*paramDB)["simulation"]["dt"].get<real>();
+	real dt = (*paramDB)["simulation"]["dt"].get<real>();
 	
 	real *dxD = thrust::raw_pointer_cast(&(domInfo->dxD[0])),
 	     *dyD = thrust::raw_pointer_cast(&(domInfo->dyD[0]));

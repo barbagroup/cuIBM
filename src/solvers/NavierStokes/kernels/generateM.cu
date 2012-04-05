@@ -44,4 +44,4 @@ void fillM_v(int *MRows, int *MCols, real *MVals, int *MinvRows, int *MinvCols, 
 	MinvVals[I+numU] = 1.0/value;
 }
 
-} // end of namespace kernel
+} // end of namespace kernels

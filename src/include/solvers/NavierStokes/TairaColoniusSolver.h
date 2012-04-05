@@ -10,7 +10,6 @@ class TairaColoniusSolver : public NavierStokesSolver<memoryType>
 {
 private:
 	bodies<memoryType> B;
-	void initialiseArrays();
 	void generateQT();
 	void updateQT();
 	void generateBC2();

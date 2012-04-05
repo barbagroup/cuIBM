@@ -1,5 +1,5 @@
-template <typename memoryType>
-void NavierStokesSolver<memoryType>::generateL()
+template <>
+void NavierStokesSolver<host_memory>::generateL()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -18,7 +18,7 @@ void NavierStokesSolver<memoryType>::generateL()
 			
 	L.resize(numUV, numUV, 5*numUV-4*(nx+ny)+4);
 
-  real nu = (*paramDB)["flow"]["nu"].get<real>();
+	real nu = (*paramDB)["flow"]["nu"].get<real>();
 
 	///x-component
 	for (int j=0; j < ny; j++)
