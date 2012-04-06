@@ -1,7 +1,4 @@
 #include <types.h>
-#include <options.h>
-#include <flowDescription.h>
-#include <simulationParameters.h>
 #include <domain.h>
 #include <io/io.h>
 #include <solvers/NavierStokes/NavierStokesSolver.h>
@@ -11,9 +8,9 @@ int main(int argc, char **argv)
 {
 	domain dom_info;
 	parameterDB paramDB;
-	
-	cudaSetDevice(4);
-	
+
+	cudaSetDevice(0);
+
 	io::readInputs(argc, argv, paramDB, dom_info);
 	io::printSimulationInfo(paramDB, dom_info);
 
@@ -21,7 +18,7 @@ int main(int argc, char **argv)
 	solver->initialise();
 
 	while (!solver->finished())
-	{	 
+	{
 		solver->stepTime();
 		solver->writeData();
 	}

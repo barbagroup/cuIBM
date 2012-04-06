@@ -1,4 +1,6 @@
 #pragma once
+
+#include <types.h>
 /**
 * Defines the domain and grid on which the problem is solved.
 */

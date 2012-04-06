@@ -1,14 +1,13 @@
 #include <bodies.h>
-#include <parameterDB.h>
 
 template <typename memoryType>
 void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 {
 	std::cout << "Entered B.initialise" << std::endl;
-  std::vector<body> *B = db["flow"]["bodies"].get<std::vector<body> *>();
+	std::vector<body> *B = db["flow"]["bodies"].get<std::vector<body> *>();
 
 	numBodies = B->size();
-	
+
 	X0_x.resize(numBodies);
 	X0_y.resize(numBodies);
 	Xc_x.resize(numBodies);
@@ -16,7 +15,7 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	Theta0.resize(numBodies);
 	numPoints.resize(numBodies);
 	offsets.resize(numBodies);
-	
+
 	totalPoints = 0;
 	for(int k=0; k<numBodies; k++)
 	{
@@ -44,7 +43,7 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	vB.resize(totalPoints);
 	I.resize(totalPoints);
 	J.resize(totalPoints);
-	
+
 	for(int k=0; k<numBodies; k++)
 	{
 		Xc_x[k] = X0_x[k];
@@ -82,7 +81,7 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 	while(D.x[i+1] < x[0])
 		i++;
 	while(D.y[j+1] < y[0])
-		j++;	
+		j++;
 	I[0] = i;
 	J[0] = j;
 

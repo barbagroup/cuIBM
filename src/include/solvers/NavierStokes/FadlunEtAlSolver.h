@@ -15,7 +15,7 @@ private:
 	void initialiseBodies();
 	void updateBodies();
 	void updateSolverState();
-	
+
 public:
 	void initialise();
 };
