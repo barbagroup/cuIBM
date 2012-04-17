@@ -115,6 +115,7 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 		J[k] = j;
 	}
 }
+
 /*
 template <>
 void bodies<device_memory>::calculateCellIndices(domain &D)

@@ -10,12 +10,15 @@ class TairaColoniusSolver : public NavierStokesSolver<memoryType>
 {
 private:
 	bodies<memoryType> B;
+	coo_matrix<int, real, memoryType> E, ET;
 	void generateQT();
 	void updateQT();
 	void generateBC2();
 	void initialiseBodies();
 	void updateBodies();
 	void updateSolverState();
+	void calculateForce();
+	void generateE();
 	
 public:
 	void initialise();

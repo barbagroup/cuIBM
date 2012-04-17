@@ -1,7 +1,7 @@
 #include <solvers/NavierStokes/kernels/generateBC1.h>
 
 template <>
-void NavierStokesSolver<device_memory>::generateBC1(real alpha)
+void NavierStokesSolver<device_memory>::generateBC1Full(real alpha)
 {
 	// raw pointers from cusp arrays
 	real *bc1_r = thrust::raw_pointer_cast(&bc1[0]),
@@ -29,18 +29,15 @@ void NavierStokesSolver<device_memory>::generateBC1(real alpha)
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
-	int  numU  = (nx-1)*ny,
-	     numUV = numU + nx*(ny-1);
+	int  numU  = (nx-1)*ny;
 	
-	dim3 dimGrid( int((numUV-0.5)/blocksize) + 1, 1);
-	dim3 dimBlock(blocksize, 1);
-	
-	// call the kernels
 	// zero the bc1 vector
 	cusp::blas::fill(bc1, 0.0);
 	
-	dim3	dimGridx( int((nx - 0.5)/blocksize) + 1, 1),
-			dimGridy( int((ny - 0.5)/blocksize) + 1, 1);
+	dim3 dimGridx( int((nx - 0.5)/blocksize) + 1, 1),
+	     dimGridy( int((ny - 0.5)/blocksize) + 1, 1);
+			
+	dim3 dimBlock(blocksize, 1);
 	
 	/// bottom
 	if(bcInfo[YMINUS][0].type == DIRICHLET)
@@ -131,6 +128,6 @@ void NavierStokesSolver<device_memory>::generateBC1(real alpha)
 }
 
 template <>
-void NavierStokesSolver<host_memory>::generateBC1(real alpha)
+void NavierStokesSolver<host_memory>::generateBC1Full(real alpha)
 {
 }

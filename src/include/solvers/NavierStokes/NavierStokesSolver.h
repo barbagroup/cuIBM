@@ -5,6 +5,8 @@
 #include <integrationScheme.h>
 #include <io/io.h>
 #include <parameterDB.h>
+//#include <cusp/precond/smoothed_aggregation.h>
+//#include <cusp/precond/diagonal.h>
 
 /**
 * Navier-Stokes solver for a rectangular domain.
@@ -23,6 +25,8 @@ protected:
 	     q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1, bc[4];
 
 	int  timeStep;
+	
+	real forceX, forceY;
 
 	/**
 	* Methods are defined as virtual when they are redefined in a derived class with the same name.
@@ -33,14 +37,16 @@ protected:
 	void assembleMatrices(); // contains subfunctions to calculate A, QT, BN, QTBNQ
 
 	void generateM();
-	void generateL();
+	virtual void generateL();
 	void generateA(int alpha);
 	void generateBN();
 	virtual void generateQT();
 	void generateC();
 
-	void generateRN(real gamma, real beta, real alpha);
-	void generateBC1(real alpha);
+	virtual void generateRN();
+	void generateRNFull(real gamma, real beta, real alpha);
+	virtual void generateBC1();
+	void generateBC1Full(real alpha);
 	virtual void generateBC2();
 
 	void assembleRHS1();
@@ -52,6 +58,8 @@ protected:
 
 	void updateBoundaryConditions();
 	void updateSolverState();
+	
+	virtual void calculateForce();
 
 public:
 	virtual void initialise();

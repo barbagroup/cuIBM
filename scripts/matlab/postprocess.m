@@ -104,6 +104,9 @@ for i=2:ny
 end
 [Xo, Yo] = meshgrid(xo, yo);
 
+[Xu, Yu] = meshgrid(xo, yp);
+[Xv, Yv] = meshgrid(xp, yo);
+
 % step through different save points ------------------------------------------
 
 N_u = (nx-1)*ny;
@@ -119,11 +122,15 @@ for n=nsave:nsave:nt
 	q_file = strcat('../../', foldername, '/', subfolder, '/q');
 	file = fopen(q_file, 'r');
 	nq = fscanf(file, '%d', 1);
+	
+	% populate u
 	for I=0:N_u-1
 		q = fscanf(file, '%f', 1);
 		j = floor(I/(nx-1)) + 1;
 		u = [u, q/(y(j+1)-y(j))];
 	end
+	
+	% populate v
 	for I=0:N_v-1
 		q = fscanf(file, '%f', 1);
 		i = rem(I, nx) + 1;
@@ -131,6 +138,7 @@ for n=nsave:nsave:nt
 	end
 	u = reshape(u, nx-1, ny);
 	v = reshape(v, nx, ny-1);
+	
 	omg = [];
 	for I=0:N_omg-1
 		i = rem(I, nx-1);
@@ -138,6 +146,7 @@ for n=nsave:nsave:nt
 		value = (v(i+2,j+1)-v(i+1,j+1))/(xp(i+2)-xp(i+1)) - (u(i+1,j+2)-u(i+1,j+1))/(yp(j+2)-yp(j+1));
 		omg = [omg, value];
 	end
+	
 	omg = transpose(reshape(omg, nx-1, ny-1));
 	contourf(Xo, Yo, omg, [-omgmax:domg:omgmax]);
 	%	shading flat
@@ -153,14 +162,30 @@ for n=nsave:nsave:nt
 	lambda_file = strcat('../../', foldername, '/', subfolder, '/lambda');
 	file = fopen(lambda_file, 'r');
 	nlambda = fscanf(file, '%d', 1);
+	
+	% populate p
 	for i=1:N_p
 		value = fscanf(file, '%f', 1);
 		p = [p, value];
 	end
+	
 	p = transpose(reshape(p, nx, ny));
 	contourf(Xp, Yp, p, [-pmax:dp:pmax]);
 	axis equal;
 	axis([xmin xmax ymin ymax]);
 	out_file = strcat('../../', foldername, '/p', subfolder, '.png');
+	print('-dpng', '-r300', out_file);
+	
+	% plot u
+	mesh(Xu, Yu, transpose(u), 'EdgeColor', 'black')
+	out_file = strcat('../../', foldername, '/u', subfolder, '.png');
+	print('-dpng', '-r300', out_file);
+	
+	% plot v
+	%mesh(Xv, Yv, transpose(v), 'EdgeColor', 'black')
+	contourf(Xv, Yv, transpose(v), [-0.5:0.05:0.5])
+	axis equal;
+	axis([xmin xmax ymin ymax])
+	out_file = strcat('../../', foldername, '/v', subfolder, '.png');
 	print('-dpng', '-r300', out_file);
 end

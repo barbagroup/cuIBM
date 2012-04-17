@@ -118,6 +118,26 @@ void parseDomainFile(std::string &domFile, domain &D)
 
 	for (unsigned int i=0; i<doc.size(); i++)
 		doc[i] >> D;
+		
+	D.xu.resize(D.nx-1);
+	D.yu.resize(D.ny);
+	D.xv.resize(D.nx);
+	D.yv.resize(D.ny-1);
+	
+	int i, j;
+	for(i=0; i<D.nx-1; i++)
+	{
+		D.xu[i] = D.x[i+1];
+		D.xv[i] = (D.x[i]+D.x[i+1])/2.0;
+	}
+	D.xv[i] = (D.x[i]+D.x[i+1])/2.0;
+	
+	for(j=0; j<D.ny-1; j++)
+	{
+		D.yu[j] = (D.y[j]+D.y[j+1])/2.0;
+		D.yv[j] = D.y[j+1];
+	}
+	D.yu[j] = (D.y[j]+D.y[j+1])/2.0;
 }
 
 } // end namespace io

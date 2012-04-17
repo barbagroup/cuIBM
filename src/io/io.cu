@@ -47,7 +47,7 @@ void initialiseDefaultDB(parameterDB &DB)
 	// default input files
 	string inputs = "inputs";
 	DB[inputs]["flowFile"].set<string>("flows/open_flow.yaml");
-	DB[inputs]["simulationFile"].set<string>("test.yaml");
+	DB[inputs]["simulationFile"].set<string>("open_flow.yaml");
 	DB[inputs]["bodyFile"].set<string>("inputs/cylinder.yaml");
 	DB[inputs]["domainFile"].set<string>("domains/open_flow.yaml");
 	DB[inputs]["folderName"].set<string>("new");
@@ -75,6 +75,7 @@ void initialiseDefaultDB(parameterDB &DB)
 	DB[sim]["startStep"].set<bool>(0);
 	DB[sim]["convTimeScheme"].set<timeScheme>(EULER_EXPLICIT);
 	DB[sim]["diffTimeScheme"].set<timeScheme>(EULER_IMPLICIT);
+	DB[sim]["ibmScheme"].set<ibmScheme>(TAIRA_COLONIUS);
 
 	// velocity solver
 	string solver = "velocitySolve";
@@ -101,12 +102,12 @@ void commandLineParse1(int argc, char **argv, parameterDB &DB)
 			i++;
 			DB["inputs"]["flowFile"].set<string>(string(argv[i]));
 		}
-		else if (strcmp(argv[i],"simulationFile")==0)
+		else if (strcmp(argv[i],"-simulationFile")==0)
 		{
 			i++;
 			DB["inputs"]["simulationFile"].set<string>(string(argv[i]));
 		}
-		else if (strcmp(argv[i],"bodyFile")==0)
+		else if (strcmp(argv[i],"-bodyFile")==0)
 		{
 			i++;
 			DB["inputs"]["bodyFile"].set<string>(string(argv[i]));
@@ -143,9 +144,9 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 void printSimulationInfo(parameterDB &DB, domain &D)
 {
 	real dt = DB["simulation"]["dt"].get<real>();
-	int  nt = DB["simulation"]["nt"].get<real>(),
-	     nsave = DB["simulation"]["nsave"].get<real>(),
-	     startStep = DB["simulation"]["startStep"].get<real>();
+	int  nt = DB["simulation"]["nt"].get<int>(),
+	     nsave = DB["simulation"]["nsave"].get<int>(),
+	     startStep = DB["simulation"]["startStep"].get<int>();
 	
 	std::cout << std::endl;
 	std::cout << "Simulation parameters" << std::endl;
@@ -187,9 +188,6 @@ void writeData<vecH>(std::string &folderName, int n, vecH &q, vecH &lambda, doma
 {
   std::string path;
   std::stringstream out;
-  int numUV = D.nx*(D.ny-1) + D.ny*(D.nx-1),
-      numP  = D.nx*D.ny,
-      numB  = 0;
 
   out << folderName << '/' << std::setfill('0') << std::setw(7) << n;
   path = out.str();
@@ -199,10 +197,9 @@ void writeData<vecH>(std::string &folderName, int n, vecH &q, vecH &lambda, doma
 
   out.str("");
   out << path << "/q";
-  //out << "q";
   std::ofstream file(out.str().c_str());
-  file << numUV << std::endl;
-  for(int i=0; i<numUV; i++)
+  file << q.size() << std::endl;
+  for(int i=0; i<q.size(); i++)
     file << q[i] << std::endl;
   file.close();
 
@@ -222,12 +219,11 @@ void writeData<vecH>(std::string &folderName, int n, vecH &q, vecH &lambda, doma
   }
   file.close();*/
 
-  out.str("");
-  out << path << "/lambda";
-  //out << "lambda";
-  file.open(out.str().c_str());
-  file << numP+2*numB << std::endl;
-  for(int i=0; i<numP+2*numB; i++)
+	out.str("");
+	out << path << "/lambda";
+	file.open(out.str().c_str());
+	file << lambda.size() << std::endl;
+  for(int i=0; i<lambda.size(); i++)
     file << lambda[i] << std::endl;
   file.close();
 
@@ -240,6 +236,19 @@ void writeData<vecD>(std::string &folderName, int n, vecD &q, vecD &lambda, doma
   vecH qH = q,
        lambdaH = lambda;
   writeData(folderName, n, qH, lambdaH, D);
+}
+
+void writeForce(std::string &folderName, real t, real forceX, real forceY)
+{
+	std::string path;
+	std::stringstream out;
+
+	out << folderName << "/forces";
+	std::ofstream file(out.str().c_str(), std::ios::out | std::ios::app);
+	//std::ofstream file(out.str().c_str());
+	file << t << '\t' << forceX << '\t' << forceY << std::endl;
+//	std::cout << t << '\t' << forceX << '\t' << forceY << std::endl;
+	file.close();
 }
 
 } // end namespace io

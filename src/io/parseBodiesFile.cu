@@ -70,8 +70,8 @@ void operator >> (const YAML::Node &node, body &Body)
 		Body.Y.resize(numPoints);
 		for(int i=0; i<Body.numPoints; i++)
 		{
-			Body.X[i] = 0.5*cos(i*2*M_PI/Body.numPoints);
-			Body.Y[i] = 0.5*sin(i*2*M_PI/Body.numPoints);
+			Body.X[i] = cx + R*cos(i*2*M_PI/Body.numPoints);
+			Body.Y[i] = cy + R*sin(i*2*M_PI/Body.numPoints);
 		}
 	}
 	else

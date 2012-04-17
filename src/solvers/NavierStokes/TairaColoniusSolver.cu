@@ -16,6 +16,7 @@ void TairaColoniusSolver<memoryType>::initialise()
 	int numP  = nx*ny;
 	
 	initialiseBodies();
+	std::cout << "Initialised bodies!" << std::endl;
 	
 	printf("NS initalising\n");
 	
@@ -30,9 +31,8 @@ void TairaColoniusSolver<memoryType>::initialise()
 	// write grid data to file
 	io::writeGrid(folderName, *NavierStokesSolver<memoryType>::domInfo);
 	
-	initialiseArrays(numUV, numP+2*B.totalPoints);
+	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP+2*B.totalPoints);
 	
-	std::cout << "Initialised bodies!" << std::endl;
 	NavierStokesSolver<memoryType>::assembleMatrices();
 	std::cout << "Assembled matrices!" << std::endl;
 }
@@ -46,6 +46,25 @@ void TairaColoniusSolver<memoryType>::updateSolverState()
 		updateQT();
 		NavierStokesSolver<memoryType>::generateC();
 	}
+}
+
+template <typename memoryType>
+void TairaColoniusSolver<memoryType>::calculateForce()
+{
+	int  nx = NavierStokesSolver<memoryType>::domInfo->nx,
+	     ny = NavierStokesSolver<memoryType>::domInfo->ny;
+	
+	array1d<real, memoryType>
+		f(2*B.totalPoints),
+		F((nx-1)*ny + nx*(ny-1));
+	
+	real dx = NavierStokesSolver<memoryType>::domInfo->dx[ B.I[0] ],
+	     dy = dx;
+	
+	thrust::copy(NavierStokesSolver<memoryType>::lambda.begin() + nx*ny, NavierStokesSolver<memoryType>::lambda.end(), f.begin());
+	cusp::multiply(ET, f, F);
+	NavierStokesSolver<memoryType>::forceX = (dx*dy)/dx*thrust::reduce( F.begin(), F.begin()+(nx-1)*ny );
+	NavierStokesSolver<memoryType>::forceY = (dx*dy)/dy*thrust::reduce( F.begin()+(nx-1)*ny, F.end() );
 }
 
 #include "TairaColonius/generateQT.inl"

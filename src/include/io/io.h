@@ -24,6 +24,7 @@ namespace io
 	void printSimulationInfo(parameterDB &DB, domain &D);
 	void writeGrid(std::string &folderName, domain &D);
 	template <typename Vector>
-	void writeData(std::string &s, int n, Vector &q, Vector &lambda, domain &D);//, bodies &B);
+	void writeData(std::string &folderName, int n, Vector &q, Vector &lambda, domain &D);//, bodies &B);
+	void writeForce(std::string &folderName, real t, real forceX, real forceY);
 //  void writeDataDevice(std::string &s, int n, vecD &q, vecD &lambda, domain &D);//, bodies &B);
 }

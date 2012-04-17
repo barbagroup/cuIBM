@@ -3,7 +3,7 @@
 #define BSZ 16
 
 template <>
-void NavierStokesSolver<device_memory>::generateRN(real gamma, real zeta, real alpha)
+void NavierStokesSolver<device_memory>::generateRNFull(real gamma, real zeta, real alpha)
 {
 	// raw pointers for cup arrays
 	real *H_r  = thrust::raw_pointer_cast(&H[0]),
@@ -42,7 +42,7 @@ void NavierStokesSolver<device_memory>::generateRN(real gamma, real zeta, real a
 }
 
 template <>
-void NavierStokesSolver<host_memory>::generateRN(real gamma, real zeta, real alpha)
+void NavierStokesSolver<host_memory>::generateRNFull(real gamma, real zeta, real alpha)
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;

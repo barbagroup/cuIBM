@@ -23,6 +23,17 @@ void NavierStokesSolver<memoryType>::initialise()
 	
 	initialiseArrays(numUV, numP);
 	assembleMatrices();
+	
+	boundaryCondition **bcInfo = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
+	std::cout << bcInfo[XMINUS][0].type << ", " << bcInfo[XMINUS][1].type << std::endl;
+	std::cout << bcInfo[XPLUS][0].type << ", " << bcInfo[XPLUS][1].type << std::endl;
+	std::cout << bcInfo[YMINUS][0].type << ", " << bcInfo[YMINUS][1].type << std::endl;
+	std::cout << bcInfo[YPLUS][0].type << ", " << bcInfo[YPLUS][1].type << std::endl;
+	
+	std::cout << bcInfo[XMINUS][0].value << ", " << bcInfo[XMINUS][1].value << std::endl;
+	std::cout << bcInfo[XPLUS][0].value << ", " << bcInfo[XPLUS][1].value << std::endl;
+	std::cout << bcInfo[YMINUS][0].value << ", " << bcInfo[YMINUS][1].value << std::endl;
+	std::cout << bcInfo[YPLUS][0].value << ", " << bcInfo[YPLUS][1].value << std::endl;
 }
 
 template <typename memoryType>
@@ -64,9 +75,9 @@ void NavierStokesSolver <host_memory>::initialiseFluxes()
 	int numU  = (nx-1)*ny;
 	int numUV = numU + nx*(ny-1);
 	int i;
-  real uInitial, vInitial;
-  uInitial = (*paramDB)["flow"]["uInitial"].get<real>();
-  vInitial = (*paramDB)["flow"]["vInitial"].get<real>();
+	real uInitial, vInitial;
+	uInitial = (*paramDB)["flow"]["uInitial"].get<real>();
+	vInitial = (*paramDB)["flow"]["vInitial"].get<real>();
 	for(i=0; i < numU; i++)
 	{
 		q[i] = uInitial * domInfo->dy[i/(nx-1)];
@@ -145,13 +156,18 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 	generateM();
 	generateL();
 	generateA(1.0);
+//	cusp::print(A);
+	
 //	cusp::subtract(M, L, A);
 	std::cout << "Assembled A!" << std::endl;
+//	PC1 = cusp::precond::diagonal<real, memoryType>(A);
 	generateBN();
 	std::cout << "Assembled BN!" << std::endl;
 	generateQT();
 	std::cout << "Assembled QT!" << std::endl;
 	generateC(); // QT*BN*Q
+	std::cout << "Generated C!" << std::endl;
+//	PC2 = cusp::precond::smoothed_aggregation<int, real, memoryType>(C);
 }
 
 template <typename memoryType>
@@ -176,8 +192,7 @@ void NavierStokesSolver<memoryType>::generateBN<3>()
 template <>
 void NavierStokesSolver<device_memory>::generateC()
 {
-	// Should this temp matrix be created each time step?
-	cooD temp;
+	cooD temp; // Should this temp matrix be created each time step?
 	cusp::wrapped::multiply(QT, BN, temp);
 	cusp::wrapped::multiply(temp, Q, C);
 	C.values[0] += C.values[0];
@@ -196,14 +211,15 @@ void NavierStokesSolver<host_memory>::generateC()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::stepTime()
 {
-	//for(int i=0; i<simPar->intSch.substeps; i++)
+	//for(int i=0; i<intSch->substeps; i++)
 	//std::cout << timeStep << ", ";
 	for(int i=0; i<1; i++)
 	{
 		updateSolverState();
 
-		generateRN(1.0, 0.0, 0.0);
-		generateBC1(1.0);
+		generateRN();
+		generateBC1();
+		
 		assembleRHS1();
 
 		solveIntermediateVelocity();
@@ -214,8 +230,23 @@ void NavierStokesSolver<memoryType>::stepTime()
 		solvePoisson();
 
 		projectionStep();
+
+//		q = qStar; // REMOVE THIS LATER
 	}
+	
 	timeStep++;
+}
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::generateRN()
+{
+	generateRNFull(1.0, 0.0, 0.0);
+}
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::generateBC1()
+{
+	generateBC1Full(1.0);
 }
 
 template <typename memoryType>
@@ -235,7 +266,7 @@ template <typename memoryType>
 void NavierStokesSolver<memoryType>::assembleRHS2()
 {
 	cusp::wrapped::multiply(QT, qStar, temp2);
-	cusp::blas::axpby(temp2, bc2, rhs2, 1.0, -1.0 );
+	cusp::blas::axpby(temp2, bc2, rhs2, 1.0, -1.0);
 }
 
 template <typename memoryType>
@@ -250,18 +281,21 @@ void NavierStokesSolver<memoryType>::projectionStep()
 {
 	cusp::wrapped::multiply(Q, lambda, temp1);
 	cusp::wrapped::multiply(BN, temp1, q);
-	cusp::blas::axpby(qStar, q, q, 1.0, -1.0 );
+	cusp::blas::axpby(qStar, q, q, 1.0, -1.0);
 }
 
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::writeData()
 {
-  int nsave = (*paramDB)["simulation"]["nsave"].get<int>();
-  std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
+	int nsave = (*paramDB)["simulation"]["nsave"].get<int>();
+	std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
 	if (timeStep % nsave == 0)
 	{
 		io::writeData(folderName, timeStep, q, lambda, *domInfo);
 	}
+	real dt = (*paramDB)["simulation"]["dt"].get<real>();
+//	calculateForce();
+//	io::writeForce(folderName, timeStep*dt, forceX, forceY);
 }
 
 template <typename memoryType>
@@ -280,6 +314,11 @@ bool NavierStokesSolver<memoryType>::finished()
 {
 	int nt = (*paramDB)["simulation"]["nt"].get<int>();
 	return (timeStep < nt) ? false : true;
+}
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::calculateForce()
+{
 }
 
 /**
