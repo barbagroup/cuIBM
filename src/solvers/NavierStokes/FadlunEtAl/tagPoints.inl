@@ -284,15 +284,17 @@ void FadlunEtAlSolver<device_memory>::tagPoints()
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
+	std::cout << B.totalPoints << "\t" << B.numBodies << std::endl;
 	vecH bx(B.totalPoints), by(B.totalPoints);
 	bx = B.x;
 	by = B.y;
 	
 	cusp::array1d<int, host_memory>
 	     numPoints(B.numBodies), offsets(B.numBodies);
-	
+
 	offsets   = B.offsets;
 	numPoints = B.numPoints;
+	std::cout << "Transferred" << std::endl;
 	
 	real *xu = thrust::raw_pointer_cast(&(domInfo->xu[0])),
 	     *yu = thrust::raw_pointer_cast(&(domInfo->yu[0]));
@@ -577,6 +579,7 @@ void FadlunEtAlSolver<device_memory>::tagPoints()
 	tagsD = tags;
 	coeffsD = coeffs;
 }
+
 #if 0
 template <>
 void FadlunEtAlSolver<device_memory>::tagPoints()

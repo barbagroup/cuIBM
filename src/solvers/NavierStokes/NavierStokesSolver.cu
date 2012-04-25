@@ -6,34 +6,39 @@
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialise()
 {
+	printf("NS initalising\n");
+	
 	int nx = domInfo->nx,
 	    ny = domInfo->ny;
 	
 	int numUV = (nx-1)*ny + nx*(ny-1);
 	int numP  = nx*ny;
 	
-	printf("NS initalising\n");
+	initialiseCommon();
+	initialiseArrays(numUV, numP);
+	assembleMatrices();
+}
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::initialiseCommon()
+{
+	QCoeff = 1.0;
 	
+	timeScheme convScheme = (*paramDB)["simulation"]["convTimeScheme"].get<timeScheme>(),
+	           diffScheme = (*paramDB)["simulation"]["diffTimeScheme"].get<timeScheme>();
+	intgSchm.initialise(convScheme, diffScheme);
+	
+	// initial values of timeStep
 	timeStep = (*paramDB)["simulation"]["startStep"].get<int>();
 	
 	// create directory 
 	std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
 	mkdir(folderName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	
+	// write the grids information to a file
 	io::writeGrid(folderName, *domInfo);
 	
-	initialiseArrays(numUV, numP);
-	assembleMatrices();
-	
-	boundaryCondition **bcInfo = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
-	std::cout << bcInfo[XMINUS][0].type << ", " << bcInfo[XMINUS][1].type << std::endl;
-	std::cout << bcInfo[XPLUS][0].type << ", " << bcInfo[XPLUS][1].type << std::endl;
-	std::cout << bcInfo[YMINUS][0].type << ", " << bcInfo[YMINUS][1].type << std::endl;
-	std::cout << bcInfo[YPLUS][0].type << ", " << bcInfo[YPLUS][1].type << std::endl;
-	
-	std::cout << bcInfo[XMINUS][0].value << ", " << bcInfo[XMINUS][1].value << std::endl;
-	std::cout << bcInfo[XPLUS][0].value << ", " << bcInfo[XPLUS][1].value << std::endl;
-	std::cout << bcInfo[YMINUS][0].value << ", " << bcInfo[YMINUS][1].value << std::endl;
-	std::cout << bcInfo[YPLUS][0].value << ", " << bcInfo[YPLUS][1].value << std::endl;
+	std::cout << "Initialised common stuff!" << std::endl;
 }
 
 template <typename memoryType>
@@ -65,6 +70,10 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 	
 	initialiseFluxes();
 	initialiseBoundaryArrays();
+	
+	generateRNFull(0);
+	cusp::blas::scal(H, 1.0/intgSchm.gamma[0]);
+	std::cout << "Initialised arrays!" << std::endl;
 }
 
 template <>
@@ -155,19 +164,23 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 	std::cout << "Entered assembleMatrices" << std::endl;
 	generateM();
 	generateL();
-	generateA(1.0);
-//	cusp::print(A);
-	
-//	cusp::subtract(M, L, A);
+	generateA(intgSchm.alphaImplicit[0]);
 	std::cout << "Assembled A!" << std::endl;
+	
 //	PC1 = cusp::precond::diagonal<real, memoryType>(A);
+	
 	generateBN();
 	std::cout << "Assembled BN!" << std::endl;
+	
 	generateQT();
 	std::cout << "Assembled QT!" << std::endl;
+	
 	generateC(); // QT*BN*Q
 	std::cout << "Generated C!" << std::endl;
+
 //	PC2 = cusp::precond::smoothed_aggregation<int, real, memoryType>(C);
+
+	std::cout << "Assembled matrices!" << std::endl;
 }
 
 template <typename memoryType>
@@ -211,14 +224,12 @@ void NavierStokesSolver<host_memory>::generateC()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::stepTime()
 {
-	//for(int i=0; i<intSch->substeps; i++)
-	//std::cout << timeStep << ", ";
-	for(int i=0; i<1; i++)
+	for(int i=0; i<intgSchm.subSteps; i++)
 	{
-		updateSolverState();
+		updateSolverState(i);
 
-		generateRN();
-		generateBC1();
+		generateRN(i);
+		generateBC1(i);
 		
 		assembleRHS1();
 
@@ -230,23 +241,21 @@ void NavierStokesSolver<memoryType>::stepTime()
 		solvePoisson();
 
 		projectionStep();
-
-//		q = qStar; // REMOVE THIS LATER
 	}
 	
 	timeStep++;
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::generateRN()
+void NavierStokesSolver<memoryType>::generateRN(int i)
 {
-	generateRNFull(1.0, 0.0, 0.0);
+	generateRNFull(i);
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::generateBC1()
+void NavierStokesSolver<memoryType>::generateBC1(int i)
 {
-	generateBC1Full(1.0);
+	generateBC1Full(intgSchm.alphaImplicit[i]);
 }
 
 template <typename memoryType>
@@ -274,6 +283,11 @@ void NavierStokesSolver<memoryType>::solvePoisson()
 {
 	cusp::default_monitor<real> sys2Mon(rhs2, 20000);
 	cusp::krylov::cg(C, lambda, rhs2, sys2Mon);//, PC2);
+	if (!sys2Mon.converged())
+	{
+		std::cout << "ERROR: Solve for Lambda failed at time step " << timeStep << std::endl;
+		std::exit(-1);
+	}
 }
 
 template <typename memoryType>
@@ -299,14 +313,23 @@ void NavierStokesSolver<memoryType>::writeData()
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::updateBoundaryConditions()
+void NavierStokesSolver<memoryType>::updateSolverState(int i)
 {
+	generateA(intgSchm.alphaImplicit[i]);
+	updateQ(intgSchm.gamma[i]);
+	updateBoundaryConditions();
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::updateSolverState()
+void NavierStokesSolver<memoryType>::updateQ(real gamma)
 {
-	updateBoundaryConditions();
+	cusp::blas::scal(Q.values, gamma/QCoeff);
+	QCoeff = gamma;
+}
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::updateBoundaryConditions()
+{
 }
 
 template <typename memoryType>

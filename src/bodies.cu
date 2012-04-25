@@ -23,6 +23,7 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 		numPoints[k] = (*B)[k].numPoints;
 		totalPoints += numPoints[k];
 	}
+	
 	X.resize(totalPoints);
 	Y.resize(totalPoints);
 	ds.resize(totalPoints);

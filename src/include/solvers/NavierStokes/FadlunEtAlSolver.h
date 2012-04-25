@@ -29,13 +29,13 @@ private:
 //	void generateA();
 //	void updateA();
 	void generateL();
-	void generateRN();
+	void generateRN(int i);
 	void updateRN();
-	void generateBC1();
+	void generateBC1(int i);
 	void updateBC1();
 	void initialiseBodies();
 	void updateBodies();
-	void updateSolverState();
+//	void updateSolverState(int i);
 	
 public:
 	void initialise();

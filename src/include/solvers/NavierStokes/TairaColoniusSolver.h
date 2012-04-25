@@ -16,7 +16,7 @@ private:
 	void generateBC2();
 	void initialiseBodies();
 	void updateBodies();
-	void updateSolverState();
+	void updateSolverState(int i);
 	void calculateForce();
 	void generateE();
 	

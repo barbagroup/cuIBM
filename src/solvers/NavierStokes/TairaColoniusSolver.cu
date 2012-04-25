@@ -2,11 +2,6 @@
 #include <sys/stat.h>
 
 template <typename memoryType>
-void TairaColoniusSolver<memoryType>::updateBodies()
-{
-}
-
-template <typename memoryType>
 void TairaColoniusSolver<memoryType>::initialise()
 {	
 	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
@@ -16,29 +11,18 @@ void TairaColoniusSolver<memoryType>::initialise()
 	int numP  = nx*ny;
 	
 	initialiseBodies();
-	std::cout << "Initialised bodies!" << std::endl;
-	
-	printf("NS initalising\n");
-	
-	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
-	
-	NavierStokesSolver<memoryType>::timeStep = db["simulation"]["startStep"].get<int>();
-			
-	// create directory
-	std::string folderName = db["inputs"]["folderName"].get<std::string>();
-	mkdir(folderName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-	
-	// write grid data to file
-	io::writeGrid(folderName, *NavierStokesSolver<memoryType>::domInfo);
-	
+	NavierStokesSolver<memoryType>::initialiseCommon();
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP+2*B.totalPoints);
-	
 	NavierStokesSolver<memoryType>::assembleMatrices();
-	std::cout << "Assembled matrices!" << std::endl;
 }
 
 template <typename memoryType>
-void TairaColoniusSolver<memoryType>::updateSolverState()
+void TairaColoniusSolver<memoryType>::updateBodies()
+{
+}
+
+template <typename memoryType>
+void TairaColoniusSolver<memoryType>::updateSolverState(int i)
 {
 	NavierStokesSolver<memoryType>::updateBoundaryConditions();
 	if (B.bodiesMove) {

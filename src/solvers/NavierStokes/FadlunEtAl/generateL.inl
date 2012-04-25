@@ -23,13 +23,15 @@ void FadlunEtAlSolver<host_memory>::generateL()
 	
 	/**
 	* DO NOT FORGET
-	* When you generate A as M - alpha*L
-	* L has values that should not be multplied by alpha
-	* These are the interpolation values of Fadlun et al
+	* A is generated as M-alpha*L
+	* But some values of L are the interpolation values of Fadlun et al
+	* These should not be multplied by alpha
 	*
 	* The sign of the interpolation coeffs
 	* is the opposite of that in the toy python code
 	* since A is obtained by subtracting alpha*L from M
+	* 
+	* Also remember to take alpha into account in BC1 for moving bodies
 	*/
 	
 	///x-component
@@ -55,15 +57,16 @@ void FadlunEtAlSolver<host_memory>::generateL()
 		
 		for (int i=0; i < nx-1; i++)
 		{
-			I = j*(nx-1) + i;										///< calculate the row of the matrix
+			/// calculate the row of the matrix
+			I = j*(nx-1) + i;
 			
 			Cx0 = 2.0 * nu / ( dx[i+1]*(dx[i+1]+dx[i]) );
 			Cx1 = 2.0 * nu / ( dx[i]*(dx[i+1]+dx[i]) );
 			
-			scale = 0.5*(dx[i+1]+dx[i]);					///< scaling factor (to obtain the normalised matrix)
+			scale = 0.5*(dx[i+1]+dx[i]); ///< scaling factor (to obtain the normalised matrix)
 		
 			// south
-			if(j>0)													///< no south coefficient for the bottom row
+			if(j>0) ///< no south coefficient for the bottom row
 			{
 				L.row_indices[num_elements] = I;
 				L.column_indices[num_elements] = I - (nx-1);
@@ -78,7 +81,7 @@ void FadlunEtAlSolver<host_memory>::generateL()
 				num_elements++;
 			}
 			// west
-			if(i>0)													///< no west coefficient for the leftmost column			
+			if(i>0) ///< no west coefficient for the leftmost column			
 			{
 				L.row_indices[num_elements] = I;
 				L.column_indices[num_elements] = I - 1;
@@ -248,13 +251,15 @@ void FadlunEtAlSolver<device_memory>::generateL()
 	
 	/**
 	* DO NOT FORGET
-	* When you generate A as M - alpha*L
-	* L has values that should not be multplied by alpha
-	* These are the interpolation values of Fadlun et al
+	* A is generated as M-alpha*L
+	* But some values of L are the interpolation values of Fadlun et al
+	* These should not be multplied by alpha
 	*
 	* The sign of the interpolation coeffs
 	* is the opposite of that in the toy python code
 	* since A is obtained by subtracting alpha*L from M
+	* 
+	* Also remember to take alpha into account in BC1 for moving bodies
 	*/
 	
 	///x-component

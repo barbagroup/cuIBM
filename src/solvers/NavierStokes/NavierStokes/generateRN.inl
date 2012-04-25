@@ -2,9 +2,27 @@
 
 #define BSZ 16
 
-template <>
-void NavierStokesSolver<device_memory>::generateRNFull(real gamma, real zeta, real alpha)
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::calculateExplicitLambdaTerms(int i)
 {
+	int  nx = domInfo->nx,
+	     ny = domInfo->ny;
+	if(fabs(intgSchm.zeta[i]) > 1e-6)
+	{
+		cusp::array1d<real, memoryType> temp(0.0, (nx-1)*ny+nx*(ny-1));
+		cusp::wrapped::multiply(Q, lambda, temp);
+		cusp::blas::scal(temp, intgSchm.zeta[i]);
+		cusp::blas::axpy(temp, rn, -1.0);
+	}
+}
+
+template <>
+void NavierStokesSolver<device_memory>::calculateExplicitQTerms(int i)
+{
+	real gamma = intgSchm.gamma[i],
+	     zeta = intgSchm.zeta[i],
+	     alpha = intgSchm.alphaExplicit[i];
+	     
 	// raw pointers for cup arrays
 	real *H_r  = thrust::raw_pointer_cast(&H[0]),
 	     *q_r  = thrust::raw_pointer_cast(&q[0]),
@@ -42,8 +60,12 @@ void NavierStokesSolver<device_memory>::generateRNFull(real gamma, real zeta, re
 }
 
 template <>
-void NavierStokesSolver<host_memory>::generateRNFull(real gamma, real zeta, real alpha)
+void NavierStokesSolver<host_memory>::calculateExplicitQTerms(int i)
 {
+	real gamma = intgSchm.gamma[i],
+	     zeta = intgSchm.zeta[i],
+	     alpha = intgSchm.alphaExplicit[i];
+	      
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	int  numU = (nx-1)*ny;
@@ -121,4 +143,11 @@ void NavierStokesSolver<host_memory>::generateRNFull(real gamma, real zeta, real
 			rn[Iv] = (v/dt + cTerm + dTerm) * 0.5*(dy[j]+dy[j+1]);
 		}
 	}
+}
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::generateRNFull(int i)
+{
+	calculateExplicitQTerms(i);
+	calculateExplicitLambdaTerms(i);
 }

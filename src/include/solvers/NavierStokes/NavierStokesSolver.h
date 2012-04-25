@@ -17,7 +17,10 @@ class NavierStokesSolver
 protected:
 	parameterDB *paramDB;
 	domain      *domInfo;
+	integrationScheme intgSchm;
 
+	real QCoeff;
+	
 	coo_matrix<int, real, memoryType>
 	     M, Minv, L, A, QT, Q, BN, C;
 
@@ -31,21 +34,26 @@ protected:
 	/**
 	* Methods are defined as virtual when they are redefined in a derived class with the same name.
 	*/
+	void initialiseCommon();
 	void initialiseArrays(int numQ, int numLambda);
 	void initialiseFluxes();
 	void initialiseBoundaryArrays();
 	void assembleMatrices(); // contains subfunctions to calculate A, QT, BN, QTBNQ
 
+	// functions to generate matrices
 	void generateM();
 	virtual void generateL();
-	void generateA(int alpha);
+	virtual void generateA(int alpha);
 	void generateBN();
 	virtual void generateQT();
+	void updateQ(real gamma);
 	void generateC();
 
-	virtual void generateRN();
-	void generateRNFull(real gamma, real beta, real alpha);
-	virtual void generateBC1();
+	virtual void generateRN(int i);
+	void calculateExplicitQTerms(int i);
+	void calculateExplicitLambdaTerms(int i);
+	void generateRNFull(int i);
+	virtual void generateBC1(int i);
 	void generateBC1Full(real alpha);
 	virtual void generateBC2();
 
@@ -57,7 +65,7 @@ protected:
 	void projectionStep();
 
 	void updateBoundaryConditions();
-	void updateSolverState();
+	virtual void updateSolverState(int i);
 	
 	virtual void calculateForce();
 
@@ -66,6 +74,9 @@ public:
 	void stepTime();
 	void writeData();
 	bool finished();
+	/**
+	* Factory methods are static (not entirely sure why)
+	*/
 	static NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &dom_info);
 	virtual std::string name()
 	{

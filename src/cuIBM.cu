@@ -3,6 +3,7 @@
 #include <io/io.h>
 #include <solvers/NavierStokes/NavierStokesSolver.h>
 #include <solvers/NavierStokes/TairaColoniusSolver.h>
+#include <solvers/NavierStokes/FadlunEtAlSolver.h>
 
 int main(int argc, char **argv)
 {

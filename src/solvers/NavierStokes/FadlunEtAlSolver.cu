@@ -1,18 +1,5 @@
 #include <solvers/NavierStokes/FadlunEtAlSolver.h>
 #include <sys/stat.h>
-/*
-template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::generateA()
-{
-}
-template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::updateA()
-{
-}*/
-template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::updateBodies()
-{
-}
 
 template <typename memoryType>
 void FadlunEtAlSolver<memoryType>::initialise()
@@ -24,19 +11,7 @@ void FadlunEtAlSolver<memoryType>::initialise()
 	int numP  = nx*ny;
 	
 	initialiseBodies();
-	std::cout << "Initialised bodies!" << std::endl;
-	
-	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
-	
-	NavierStokesSolver<memoryType>::timeStep = db["simulation"]["startStep"].get<int>();
-	
-	// create directory
-	std::string folderName = db["inputs"]["folderName"].get<std::string>();
-	mkdir(folderName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-	
-	// write grid data to file
-	io::writeGrid(folderName, *NavierStokesSolver<memoryType>::domInfo);
-
+	NavierStokesSolver<memoryType>::initialiseCommon();
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP);
 	
 	tags.resize(numUV);
@@ -44,25 +19,32 @@ void FadlunEtAlSolver<memoryType>::initialise()
 	coeffs.resize(numUV);
 	coeffsD.resize(numUV);
 	tagPoints();
+	std::cout << "Tagged points!" << std::endl;
 	
 	NavierStokesSolver<memoryType>::assembleMatrices();
 	std::cout << "Assembled matrices!" << std::endl;
 }
+
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::updateSolverState()
+void FadlunEtAlSolver<memoryType>::updateBodies()
 {
+}
+
+/*template <typename memoryType>
+void FadlunEtAlSolver<memoryType>::updateSolverState(int i)
+{	
 	NavierStokesSolver<memoryType>::updateBoundaryConditions();
 	if (B.bodiesMove)
 	{
 		updateBodies();
 		//updateA();
 	}
-}
+}*/
 
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::generateRN()
+void FadlunEtAlSolver<memoryType>::generateRN(int i)
 {
-	NavierStokesSolver<memoryType>::generateRNFull(1.0, 0.0, 0.0);
+	NavierStokesSolver<memoryType>::generateRNFull(i);
 	updateRN();
 	
 	/**
@@ -72,9 +54,9 @@ void FadlunEtAlSolver<memoryType>::generateRN()
 }
 
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::generateBC1()
+void FadlunEtAlSolver<memoryType>::generateBC1(int i)
 {
-	NavierStokesSolver<memoryType>::generateBC1Full(1.0);
+	NavierStokesSolver<memoryType>::generateBC1Full(NavierStokesSolver<memoryType>::intgSchm.alphaImplicit[i]);
 	updateBC1();
 }
 
