@@ -24,7 +24,7 @@ void generateAFadlun(int *ARows, int *ACols, real *AVals, real *MVals, int *LRow
 
 	ARows[I] = LRows[I];
 	ACols[I] = LCols[I];
-	AVals[I] = ( tags[LRows[I]] == -1 )*-alpha*LVals[I] + ( tags[LRows[I]] != -1 )*LVals[I] + (LRows[I]==LCols[I])*MVals[LRows[I]];
+	AVals[I] = -(tags[LRows[I]] == -1)*alpha*LVals[I] - (tags[LRows[I]] != -1)*LVals[I] + (LRows[I]==LCols[I])*MVals[LRows[I]];
 }
 	
 } // end of namespace kernels

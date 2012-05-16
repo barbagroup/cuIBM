@@ -18,7 +18,7 @@ real delta(real x, real y, real h)
 template <>
 void TairaColoniusSolver<host_memory>::generateQT()
 {
-	std::cout << "Entered generateQT" << std::endl;
+	std::cout << "Entered generateQT (T&C)" << std::endl;
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
@@ -72,7 +72,7 @@ void TairaColoniusSolver<host_memory>::generateQT()
 			row++;
 		}
 	}
-	std::cout << "Generated GT!" << std::endl;
+	std::cout << "Generated GT! (T&C)" << std::endl;
 	/// Generate E
 	int  I, J, col;
 	real xB, yB, x, y, alpha, Dx;
@@ -187,7 +187,7 @@ void TairaColoniusSolver<host_memory>::generateQT()
 template <>
 void TairaColoniusSolver<device_memory>::generateQT()
 {
-	std::cout << "Entered generateQT" << std::endl;
+	std::cout << "Entered generateQT (T&C)" << std::endl;
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
@@ -241,7 +241,7 @@ void TairaColoniusSolver<device_memory>::generateQT()
 			row++;
 		}
 	}
-	std::cout << "Generated GT!" << std::endl;
+	std::cout << "Generated GT! (T&C)" << std::endl;
 	/// Generate E
 	int  I, J, col;
 	real xB, yB, x, y, alpha, Dx;
@@ -434,7 +434,7 @@ void TairaColoniusSolver<host_memory>::generateE()
 		}
 	}
 	cusp::transpose(E, ET);
-	std::cout << "Generated E" << std::endl;
+	std::cout << "Generated E (T&C)" << std::endl;
 }
 
 template <>
@@ -513,5 +513,5 @@ void TairaColoniusSolver<device_memory>::generateE()
 	}
 	E = EHost;
 	cusp::transpose(E, ET);
-	std::cout << "Generated E" << std::endl;
+	std::cout << "Generated E (T&C)" << std::endl;
 }

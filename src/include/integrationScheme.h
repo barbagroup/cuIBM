@@ -33,7 +33,6 @@ public:
 				subSteps = 3;
 				break;
 		}
-		std::cout << subSteps << " ";
 		
 		gamma.resize(subSteps);
 		zeta.resize(subSteps);

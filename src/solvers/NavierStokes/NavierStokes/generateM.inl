@@ -49,59 +49,6 @@ void NavierStokesSolver<host_memory>::generateM()
 		}
 	}
 }
-/*
-template <>
-void NavierStokesSolver<device_memory>::generateM()
-{
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
-	
-	int  numU  = (nx-1)*ny;
-	int  numUV = numU + nx*(ny-1);
-	int  I;
-	real value;
-	
-	cooH MHost(numUV, numUV, numUV),
-	     MinvHost(numUV, numUV, numUV);
-	
-	for (int j=0; j < ny; j++)
-	{
-		for (int i=0; i < nx-1; i++)
-		{
-			I = j*(nx-1) + i;
-			value = 0.5*(domInfo->dx[i+1]+domInfo->dx[i]) / domInfo->dy[j] / simPar->dt;
-			
-			MHost.row_indices[I] = I;
-			MHost.column_indices[I] = I;
-			MHost.values[I] = value;
-			
-			MinvHost.row_indices[I] = I;
-			MinvHost.column_indices[I] = I;
-			MinvHost.values[I] = 1.0/value;
-		}
-	}
-	for (int j=0; j < ny-1; j++)
-	{
-		for (int i=0; i < nx; i++)
-		{
-			I = j*nx + i + numU;
-			
-			value  = 0.5*(domInfo->dy[j+1]+domInfo->dy[j]) / domInfo->dx[i] / simPar->dt;
-			
-			MHost.row_indices[I] = I;
-			MHost.column_indices[I] = I;
-			MHost.values[I] = value;
-			
-			MinvHost.row_indices[I] = I;
-			MinvHost.column_indices[I] = I;
-			MinvHost.values[I] = 1.0/value;
-		}
-	}
-	
-	M = MHost;
-	Minv = MinvHost;
-}
-*/
 
 template<>
 void NavierStokesSolver<device_memory>::generateM()

@@ -166,7 +166,10 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 	generateL();
 	generateA(intgSchm.alphaImplicit[0]);
 	std::cout << "Assembled A!" << std::endl;
-	
+	////
+	//cusp::print(L);
+	//cusp::print(A);
+
 //	PC1 = cusp::precond::diagonal<real, memoryType>(A);
 	
 	generateBN();
@@ -174,9 +177,11 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 	
 	generateQT();
 	std::cout << "Assembled QT!" << std::endl;
+	//cusp::print(QT);
 	
 	generateC(); // QT*BN*Q
 	std::cout << "Generated C!" << std::endl;
+	//cusp::print(C);
 
 //	PC2 = cusp::precond::smoothed_aggregation<int, real, memoryType>(C);
 
@@ -224,14 +229,17 @@ void NavierStokesSolver<host_memory>::generateC()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::stepTime()
 {
+	//std::cout << timeStep << std::endl;
 	for(int i=0; i<intgSchm.subSteps; i++)
 	{
 		updateSolverState(i);
 
 		generateRN(i);
 		generateBC1(i);
-		
 		assembleRHS1();
+		
+		//cusp::print(rn);
+//		cusp::print(rhs1);
 
 		solveIntermediateVelocity();
 
@@ -241,15 +249,27 @@ void NavierStokesSolver<memoryType>::stepTime()
 		solvePoisson();
 
 		projectionStep();
+//		cusp::print(q);
 	}
 	
 	timeStep++;
 }
 
 template <typename memoryType>
+void NavierStokesSolver<memoryType>::updateSolverState(int i)
+{
+//	generateA(intgSchm.alphaImplicit[i]);
+//	updateQ(intgSchm.gamma[i]);
+//	updateBoundaryConditions();
+}
+
+template <typename memoryType>
 void NavierStokesSolver<memoryType>::generateRN(int i)
 {
 	generateRNFull(i);
+	/**
+	* Does this include the pressure term on the RHS?
+	*/
 }
 
 template <typename memoryType>
@@ -268,7 +288,8 @@ template <typename memoryType>
 void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 {
 	cusp::default_monitor<real> sys1Mon(rhs1, 10000);
-	cusp::krylov::cg(A, qStar, rhs1, sys1Mon);//, PC1);
+	cusp::krylov::bicgstab(A, qStar, rhs1, sys1Mon);//, PC1);
+	//cusp::krylov::cg(A, qStar, rhs1, sys1Mon);//, PC1);
 }
 
 template <typename memoryType>
@@ -281,7 +302,9 @@ void NavierStokesSolver<memoryType>::assembleRHS2()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::solvePoisson()
 {
-	cusp::default_monitor<real> sys2Mon(rhs2, 20000);
+	cusp::default_monitor<real> sys2Mon(rhs2, 30000);
+	//cusp::krylov::gmres(C, lambda, rhs2, 50, sys2Mon);//, PC2);
+	//cusp::krylov::bicgstab(C, lambda, rhs2, sys2Mon);//, PC2);
 	cusp::krylov::cg(C, lambda, rhs2, sys2Mon);//, PC2);
 	if (!sys2Mon.converged())
 	{
@@ -310,14 +333,6 @@ void NavierStokesSolver<memoryType>::writeData()
 	real dt = (*paramDB)["simulation"]["dt"].get<real>();
 //	calculateForce();
 //	io::writeForce(folderName, timeStep*dt, forceX, forceY);
-}
-
-template <typename memoryType>
-void NavierStokesSolver<memoryType>::updateSolverState(int i)
-{
-	generateA(intgSchm.alphaImplicit[i]);
-	updateQ(intgSchm.gamma[i]);
-	updateBoundaryConditions();
 }
 
 template <typename memoryType>

@@ -19,10 +19,8 @@ void FadlunEtAlSolver<memoryType>::initialise()
 	coeffs.resize(numUV);
 	coeffsD.resize(numUV);
 	tagPoints();
-	std::cout << "Tagged points!" << std::endl;
 	
 	NavierStokesSolver<memoryType>::assembleMatrices();
-	std::cout << "Assembled matrices!" << std::endl;
 }
 
 template <typename memoryType>
@@ -69,6 +67,7 @@ void FadlunEtAlSolver<memoryType>::updateBC1()
 #include "FadlunEtAl/tagPoints.inl"
 #include "FadlunEtAl/generateL.inl"
 #include "FadlunEtAl/updateRN.inl"
+#include "FadlunEtAl/generateQT.inl"
 
 template class FadlunEtAlSolver<host_memory>;
 template class FadlunEtAlSolver<device_memory>;

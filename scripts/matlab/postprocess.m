@@ -47,7 +47,8 @@ file = fopen(info_file, 'r');
 count=1;
 nt=0;
 nsave=0;
-for i=1:5
+start_step=0;
+for i=1:6
 	[opt, count] = fscanf(file, '%s', 1);
 	[value, count] = fscanf(file, '%f', 1);
 	if (strcmpi(opt,'--nt')==1)
@@ -55,6 +56,9 @@ for i=1:5
 	end
 	if (strcmpi(opt,'--nsave')==1)
 		nsave = value;
+	end
+	if (strcmpi(opt,'--start_step')==1)
+		start_step = value
 	end
 end
 
@@ -114,7 +118,7 @@ N_v = nx*(ny-1);
 N_p = nx*ny;
 N_omg=(nx-1)*(ny-1);
 f = [];
-for n=nsave:nsave:nt
+for n=start_step+nsave:nsave:nt
 	subfolder = num2str(n, '%07d');
 	
 	u = [];
@@ -178,14 +182,23 @@ for n=nsave:nsave:nt
 	
 	% plot u
 	mesh(Xu, Yu, transpose(u), 'EdgeColor', 'black')
+	out_file = strcat('../../', foldername, '/umesh', subfolder, '.png');
+	print('-dpng', '-r300', out_file);
+	
+	contourf(Xu, Yu, transpose(u), [-1:0.1:1])
+	axis equal;
+	axis([xmin xmax ymin ymax])
 	out_file = strcat('../../', foldername, '/u', subfolder, '.png');
 	print('-dpng', '-r300', out_file);
 	
 	% plot v
-	%mesh(Xv, Yv, transpose(v), 'EdgeColor', 'black')
-	contourf(Xv, Yv, transpose(v), [-0.5:0.05:0.5])
+	mesh(Xv, Yv, transpose(v), 'EdgeColor', 'black')
+	out_file = strcat('../../', foldername, '/vmesh', subfolder, '.png');
+	print('-dpng', '-r300', out_file);
+	
+	contourf(Xv, Yv, transpose(v), [-1:0.1:1])
 	axis equal;
 	axis([xmin xmax ymin ymax])
 	out_file = strcat('../../', foldername, '/v', subfolder, '.png');
-	print('-dpng', '-r300', out_file);
+	print('-dpng', '-r300', out_file); 
 end

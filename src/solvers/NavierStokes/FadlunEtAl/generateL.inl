@@ -1,5 +1,11 @@
+/*template <typename memoryType>
+void FadlunEtAlSolver<memoryType>::generateL()
+{
+	
+}*/
+
 template <>
-void FadlunEtAlSolver<host_memory>::generateL()
+void FadlunEtAlSolver<host_memory>::generateL() 
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -29,7 +35,7 @@ void FadlunEtAlSolver<host_memory>::generateL()
 	*
 	* The sign of the interpolation coeffs
 	* is the opposite of that in the toy python code
-	* since A is obtained by subtracting alpha*L from M
+	* since A is obtained by subtracting L from M
 	* 
 	* Also remember to take alpha into account in BC1 for moving bodies
 	*/
@@ -73,7 +79,7 @@ void FadlunEtAlSolver<host_memory>::generateL()
 				
 				if(tags[I] == -1)
 					L.values[num_elements] = Cy1 * scale / dy[j-1];
-				else if(tags[I]==I-(nx-1))
+				else if(tags[I] == I-(nx-1))
 					L.values[num_elements] = coeffs[I]/dt * scale / dy[j-1];
 				else
 					L.values[num_elements] = 0.0;
@@ -88,7 +94,7 @@ void FadlunEtAlSolver<host_memory>::generateL()
 				
 				if(tags[I] == -1)
 					L.values[num_elements] = Cx1 * scale / dy[j];
-				else if(tags[I]==I-1)
+				else if(tags[I] == I-1)
 					L.values[num_elements] = coeffs[I]/dt * scale / dy[j];
 				else
 					L.values[num_elements] = 0.0;
@@ -110,7 +116,7 @@ void FadlunEtAlSolver<host_memory>::generateL()
 				L.column_indices[num_elements] = I + 1;
 				if(tags[I] == -1)
 					L.values[num_elements] = Cx0 * scale / dy[j];
-				else if(tags[I]=I+1)
+				else if(tags[I] == I+1)
 					L.values[num_elements] = coeffs[I]/dt * scale / dy[j];
 				else
 					L.values[num_elements] = 0.0;
@@ -123,7 +129,7 @@ void FadlunEtAlSolver<host_memory>::generateL()
 				L.column_indices[num_elements] = I + (nx-1);
 				if(tags[I] == -1)	
 					L.values[num_elements] = Cy0 * scale / dy[j+1];
-				else if(tags[I]==I+(nx-1))
+				else if(tags[I] == I+(nx-1))
 					L.values[num_elements] = coeffs[I]/dt * scale / dy[j+1];
 				else
 					L.values[num_elements] = 0.0;
@@ -147,12 +153,12 @@ void FadlunEtAlSolver<host_memory>::generateL()
 				dx0 = 0.5*(dx[i]+dx[i-1]);
 				dx1 = 0.5*(dx[i]+dx[i+1]);
 			}
-			else if(i==0)
+			else if(i == 0)
 			{
 				dx0 = 0.5*dx[i];
 				dx1 = 0.5*(dx[i]+dx[i+1]);
 			}
-			else if(i==nx-1)
+			else if(i == nx-1)
 			{
 				dx0 = 0.5*(dx[i]+dx[i-1]);
 				dx1 = 0.5*dx[i];
@@ -169,7 +175,7 @@ void FadlunEtAlSolver<host_memory>::generateL()
 				L.column_indices[num_elements] = I - nx;
 				if(tags[I] == -1)
 					L.values[num_elements] = Cy1 * scale / dx[i];
-				else if(tags[I]==I-nx)
+				else if(tags[I] == I-nx)
 					L.values[num_elements] = coeffs[I]/dt * scale / dx[i];
 				else
 					L.values[num_elements] = 0.0;
@@ -182,7 +188,7 @@ void FadlunEtAlSolver<host_memory>::generateL()
 				L.column_indices[num_elements] = I - 1;
 				if(tags[I] == -1)
 					L.values[num_elements] = Cx1 * scale / dx[i-1];
-				else if(tags[I]==I-1)
+				else if(tags[I] == I-1)
 					L.values[num_elements] = coeffs[I]/dt * scale / dx[i-1];
 				else
 					L.values[num_elements] = 0.0;
@@ -203,7 +209,7 @@ void FadlunEtAlSolver<host_memory>::generateL()
 				L.column_indices[num_elements] = I + 1;
 				if(tags[I] == -1)
 					L.values[num_elements] = Cx0 * scale / dx[i+1];
-				else if(tags[I]==I+1)
+				else if(tags[I] == I+1)
 					L.values[num_elements] = coeffs[I]/dt * scale / dx[i+1];
 				else
 					L.values[num_elements] = 0.0;
@@ -250,7 +256,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 	real dt = (*paramDB)["simulation"]["dt"].get<real>();
 	
 	/**
-	* DO NOT FORGET
+	* DO NOT FORGET (IMPLEMENTED)
 	* A is generated as M-alpha*L
 	* But some values of L are the interpolation values of Fadlun et al
 	* These should not be multplied by alpha
@@ -259,6 +265,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 	* is the opposite of that in the toy python code
 	* since A is obtained by subtracting alpha*L from M
 	* 
+	* (NOT IMPLEMENTED YET)
 	* Also remember to take alpha into account in BC1 for moving bodies
 	*/
 	
@@ -300,7 +307,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 				
 				if(tags[I] == -1)
 					LHost.values[num_elements] = Cy1 * scale / dy[j-1];
-				else if(tags[I]==I-(nx-1))
+				else if(tags[I] == I-(nx-1))
 					LHost.values[num_elements] = coeffs[I]/dt * scale / dy[j-1];
 				else
 					LHost.values[num_elements] = 0.0;
@@ -315,7 +322,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 				
 				if(tags[I] == -1)
 					LHost.values[num_elements] = Cx1 * scale / dy[j];
-				else if(tags[I]==I-1)
+				else if(tags[I] == I-1)
 					LHost.values[num_elements] = coeffs[I]/dt * scale / dy[j];
 				else
 					LHost.values[num_elements] = 0.0;
@@ -337,7 +344,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 				LHost.column_indices[num_elements] = I + 1;
 				if(tags[I] == -1)
 					LHost.values[num_elements] = Cx0 * scale / dy[j];
-				else if(tags[I]=I+1)
+				else if(tags[I] == I+1)
 					LHost.values[num_elements] = coeffs[I]/dt * scale / dy[j];
 				else
 					LHost.values[num_elements] = 0.0;
@@ -350,7 +357,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 				LHost.column_indices[num_elements] = I + (nx-1);
 				if(tags[I] == -1)	
 					LHost.values[num_elements] = Cy0 * scale / dy[j+1];
-				else if(tags[I]==I+(nx-1))
+				else if(tags[I] == I+(nx-1))
 					LHost.values[num_elements] = coeffs[I]/dt * scale / dy[j+1];
 				else
 					LHost.values[num_elements] = 0.0;
@@ -374,12 +381,12 @@ void FadlunEtAlSolver<device_memory>::generateL()
 				dx0 = 0.5*(dx[i]+dx[i-1]);
 				dx1 = 0.5*(dx[i]+dx[i+1]);
 			}
-			else if(i==0)
+			else if(i == 0)
 			{
 				dx0 = 0.5*dx[i];
 				dx1 = 0.5*(dx[i]+dx[i+1]);
 			}
-			else if(i==nx-1)
+			else if(i == nx-1)
 			{
 				dx0 = 0.5*(dx[i]+dx[i-1]);
 				dx1 = 0.5*dx[i];
@@ -396,7 +403,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 				LHost.column_indices[num_elements] = I - nx;
 				if(tags[I] == -1)
 					LHost.values[num_elements] = Cy1 * scale / dx[i];
-				else if(tags[I]==I-nx)
+				else if(tags[I] == I-nx)
 					LHost.values[num_elements] = coeffs[I]/dt * scale / dx[i];
 				else
 					LHost.values[num_elements] = 0.0;
@@ -409,7 +416,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 				LHost.column_indices[num_elements] = I - 1;
 				if(tags[I] == -1)
 					LHost.values[num_elements] = Cx1 * scale / dx[i-1];
-				else if(tags[I]==I-1)
+				else if(tags[I] == I-1)
 					LHost.values[num_elements] = coeffs[I]/dt * scale / dx[i-1];
 				else
 					LHost.values[num_elements] = 0.0;
@@ -430,7 +437,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 				LHost.column_indices[num_elements] = I + 1;
 				if(tags[I] == -1)
 					LHost.values[num_elements] = Cx0 * scale / dx[i+1];
-				else if(tags[I]==I+1)
+				else if(tags[I] == I+1)
 					LHost.values[num_elements] = coeffs[I]/dt * scale / dx[i+1];
 				else
 					LHost.values[num_elements] = 0.0;

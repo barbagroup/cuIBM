@@ -7,11 +7,16 @@ void NavierStokesSolver<memoryType>::calculateExplicitLambdaTerms(int i)
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
+
+	// rn = rn - zeta * Q.lambda
 	if(fabs(intgSchm.zeta[i]) > 1e-6)
 	{
 		cusp::array1d<real, memoryType> temp(0.0, (nx-1)*ny+nx*(ny-1));
+		// temp = Q.lambda
 		cusp::wrapped::multiply(Q, lambda, temp);
+		// temp = zeta*temp
 		cusp::blas::scal(temp, intgSchm.zeta[i]);
+		// rn = rn - temp
 		cusp::blas::axpy(temp, rn, -1.0);
 	}
 }
@@ -38,6 +43,8 @@ void NavierStokesSolver<device_memory>::calculateExplicitQTerms(int i)
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
+	real dt = (*paramDB)["simulation"]["dt"].get<real>();
+	
 	//const int blockEdge = 16;
 	
 	dim3 dimGridx( int( (nx-1-0.5)/(BSZ-2) ) + 1, int( (ny-0.5)/(BSZ-2) ) + 1 ),
@@ -45,16 +52,19 @@ void NavierStokesSolver<device_memory>::calculateExplicitQTerms(int i)
 	dim3 dimBlock(BSZ, BSZ);
 	
 	// call the kernel
-	real dt = (*paramDB)["simulation"]["dt"].get<real>();
+
+	// convection terms for the interior points
 	kernels::convectionTermU <<<dimGridx, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha);
 	kernels::convectionTermV <<<dimGridy, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha);
 	
 	dim3 dimGridbc(int((nx+ny-0.5)/(BSZ*BSZ))+1, 1);
 	dim3 dimBlockbc(BSZ*BSZ, 1);
 	
+	// calculate convection terms for the rows adjoining the top and bottom boundaries
 	kernels::convectionTermUBottomTop <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, yminus, yplus, xminus, xplus);
 	kernels::convectionTermVBottomTop <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, yminus, yplus);
 
+	// calculate convection terms for the columns adjoining the left and right boundaries
 	kernels::convectionTermULeftRight <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, xminus, xplus);
 	kernels::convectionTermVLeftRight <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, yminus, yplus, xminus, xplus);
 }
@@ -68,20 +78,24 @@ void NavierStokesSolver<host_memory>::calculateExplicitQTerms(int i)
 	      
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
+	     
 	int  numU = (nx-1)*ny;
 	int  Iu = 0, Iv = 0;
 	real east = 0, west = 0, north = 0, south = 0, Hn = 0, cTerm = 0, dTerm = 0, u = 0, v = 0;
 
 	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
 	     *dy = thrust::raw_pointer_cast(&(domInfo->dy[0]));
+	     
 	real *xminus = thrust::raw_pointer_cast(&(bc[XMINUS][0])),
 	     *xplus  = thrust::raw_pointer_cast(&(bc[XPLUS][0])),
 	     *yminus = thrust::raw_pointer_cast(&(bc[YMINUS][0])),
 	     *yplus  = thrust::raw_pointer_cast(&(bc[YPLUS][0]));
+	     
 	real dt = (*paramDB)["simulation"]["dt"].get<real>();
 	
 	for(int j=0; j<ny; j++)
 	{
+		// convection terms for the x-momentum equation
 		for(int i=0; i<nx-1; i++)
 		{
 			Iu = j*(nx-1)+i;
@@ -105,13 +119,14 @@ void NavierStokesSolver<host_memory>::calculateExplicitQTerms(int i)
 			else
 				north = (u + q[Iu+(nx-1)]/dy[j+1])/2.0 * (q[Iv]/dx[i] + q[Iv+1]/dx[i+1])/2.0;
 				
-			H[Iu]  = - (east-west)/(0.5*(dx[i]+dx[i+1])) - (north-south)/dy[j];
+			H[Iu]  = -(east-west)/(0.5*(dx[i]+dx[i+1])) -(north-south)/dy[j];
 			cTerm = gamma*H[Iu] + zeta*Hn;
 			dTerm = alpha*0;
 			rn[Iu] = (u/dt + cTerm + dTerm) * 0.5*(dx[i]+dx[i+1]);
 		}
 	}
 	
+	// convection terms for the y-momentum equation
 	for(int j=0; j<ny-1; j++)
 	{
 		for(int i=0; i<nx; i++)
@@ -137,7 +152,7 @@ void NavierStokesSolver<host_memory>::calculateExplicitQTerms(int i)
 			else
 				east = (v + q[Iv+1]/dx[i+1])/2.0 * (q[Iu]/dy[j] + q[Iu+(nx-1)]/dy[j+1])/2.0;
 				
-			H[Iv]  = - (east-west)/dx[i] - (north-south)/(0.5*(dy[j]+dy[j+1]));
+			H[Iv]  = -(east-west)/dx[i] -(north-south)/(0.5*(dy[j]+dy[j+1]));
 			cTerm = gamma*H[Iv] +zeta*Hn;
 			dTerm = alpha*0;
 			rn[Iv] = (v/dt + cTerm + dTerm) * 0.5*(dy[j]+dy[j+1]);

@@ -148,19 +148,18 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	     nsave = DB["simulation"]["nsave"].get<int>(),
 	     startStep = DB["simulation"]["startStep"].get<int>();
 	
-	std::cout << std::endl;
-	std::cout << "Simulation parameters" << std::endl;
+	std::cout << "\nSimulation parameters" << std::endl;
 	std::cout << "---------------------" << std::endl;
 	std::cout << "dt = " << dt << std::endl;
 	std::cout << "startStep = " << startStep << std::endl;
 	std::cout << "nt = "    << nt << std::endl;
 	std::cout << "nsave = " << nsave << std::endl;
 
-	std::cout << "Flow parameters" << std::endl;
+	std::cout << "\nFlow parameters" << std::endl;
 	std::cout << "---------------" << std::endl;
-	std::cout << "nu = " << DB["flow"]["nu"].get<real>() << std::endl << std::endl;
+	std::cout << "nu = " << DB["flow"]["nu"].get<real>() << std::endl;
 
-	std::cout << "Domain" << std::endl;
+	std::cout << "\nDomain" << std::endl;
 	std::cout << "------" << std::endl;
 	std::cout << D.nx << " x " << D.ny << std::endl << std::endl;
 }

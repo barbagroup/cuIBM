@@ -26,13 +26,21 @@ private:
 
 	
 	void tagPoints();
+	void tagPoints(real *bx, real *by);
+
 //	void generateA();
 //	void updateA();
+
 	void generateL();
+	void generateQT(int *QTRows, int *QTCols, real *QTVals){}
+	void generateQT();
+	void updateQFadlun();
+	
 	void generateRN(int i);
 	void updateRN();
 	void generateBC1(int i);
 	void updateBC1();
+
 	void initialiseBodies();
 	void updateBodies();
 //	void updateSolverState(int i);

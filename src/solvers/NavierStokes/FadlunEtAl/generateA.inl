@@ -31,9 +31,6 @@ void FadlunEtAlSolver<device_memory>::generateA(int alpha)
 template <>
 void FadlunEtAlSolver<host_memory>::generateA(int alpha)
 {
-}
-/*
-{
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 
@@ -46,8 +43,11 @@ void FadlunEtAlSolver<host_memory>::generateA(int alpha)
 	{
 		A.row_indices[i] = L.row_indices[i];
 		A.column_indices[i] = L.column_indices[i];
-		A.values[i] = -alpha*L.values[i];
+		if(tags[A.row_indices[i]]==-1)
+			A.values[i] = -alpha*L.values[i];
+		else
+			A.values[i] = -L.values[i];
 		if(A.row_indices[i] == A.column_indices[i])
 			A.values[i] += M.values[A.row_indices[i]];
 	}
-}*/
+}

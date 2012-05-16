@@ -42,17 +42,23 @@ protected:
 
 	// functions to generate matrices
 	void generateM();
+	
 	virtual void generateL();
 	virtual void generateA(int alpha);
 	void generateBN();
+	
+	virtual void generateQT(int *QTRows, int *QTCols, real *QTVals){}
 	virtual void generateQT();
 	void updateQ(real gamma);
+	
 	void generateC();
 
+	// generate explicit terms
 	virtual void generateRN(int i);
 	void calculateExplicitQTerms(int i);
 	void calculateExplicitLambdaTerms(int i);
 	void generateRNFull(int i);
+	
 	virtual void generateBC1(int i);
 	void generateBC1Full(real alpha);
 	virtual void generateBC2();

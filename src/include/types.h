@@ -13,6 +13,8 @@
 #include <cusp/transpose.h>
 #include <cusp/blas.h>
 #include <cusp/krylov/cg.h>
+#include <cusp/krylov/bicgstab.h>
+#include <cusp/krylov/gmres.h>
 
 #include <cusp/wrapped/add.h>
 #include <cusp/wrapped/subtract.h>
