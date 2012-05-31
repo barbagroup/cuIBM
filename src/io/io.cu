@@ -164,6 +164,12 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << D.nx << " x " << D.ny << std::endl << std::endl;
 }
 
+void printTimingInfo(Logger &logger)
+{
+	logger.writeLegend();
+	logger.printAllTime();
+}
+
 void writeGrid(std::string &folderName, domain &D)
 {
 	std::stringstream out;
@@ -247,6 +253,17 @@ void writeForce(std::string &folderName, real t, real forceX, real forceY)
 	//std::ofstream file(out.str().c_str());
 	file << t << '\t' << forceX << '\t' << forceY << std::endl;
 //	std::cout << t << '\t' << forceX << '\t' << forceY << std::endl;
+	file.close();
+}
+
+void writeIterations(std::string &folderName, size_t n, size_t iter1, size_t iter2)
+{
+	std::string path;
+	std::stringstream out;
+
+	out << folderName << "/iterations";
+	std::ofstream file(out.str().c_str(), std::ios::out | std::ios::app);
+	file << n << '\t' << iter1 << '\t' << iter2 << std::endl;
 	file.close();
 }
 

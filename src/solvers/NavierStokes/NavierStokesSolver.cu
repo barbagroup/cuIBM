@@ -22,6 +22,8 @@ void NavierStokesSolver<memoryType>::initialise()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialiseCommon()
 {
+	logger.startTimer("initialiseCommon");
+	
 	QCoeff = 1.0;
 	
 	timeScheme convScheme = (*paramDB)["simulation"]["convTimeScheme"].get<timeScheme>(),
@@ -38,7 +40,11 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	// write the grids information to a file
 	io::writeGrid(folderName, *domInfo);
 	
+	// write the plot information to a file
+	
 	std::cout << "Initialised common stuff!" << std::endl;
+	
+	logger.stopTimer("initialiseCommon");
 }
 
 template <typename memoryType>
@@ -161,6 +167,8 @@ void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::assembleMatrices()
 {
+	logger.startTimer("assembleMatrices");
+	
 	std::cout << "Entered assembleMatrices" << std::endl;
 	generateM();
 	generateL();
@@ -186,6 +194,8 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 //	PC2 = cusp::precond::smoothed_aggregation<int, real, memoryType>(C);
 
 	std::cout << "Assembled matrices!" << std::endl;
+	
+	logger.stopTimer("assembleMatrices");
 }
 
 template <typename memoryType>
@@ -290,6 +300,7 @@ void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 	cusp::default_monitor<real> sys1Mon(rhs1, 10000);
 	cusp::krylov::bicgstab(A, qStar, rhs1, sys1Mon);//, PC1);
 	//cusp::krylov::cg(A, qStar, rhs1, sys1Mon);//, PC1);
+	iterationCount1 = sys1Mon.iteration_count();
 }
 
 template <typename memoryType>
@@ -302,15 +313,22 @@ void NavierStokesSolver<memoryType>::assembleRHS2()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::solvePoisson()
 {
-	cusp::default_monitor<real> sys2Mon(rhs2, 30000);
+	logger.startTimer("Poisson solve");
+	
+	cusp::default_monitor<real> sys2Mon(rhs2, 50000);
 	//cusp::krylov::gmres(C, lambda, rhs2, 50, sys2Mon);//, PC2);
-	//cusp::krylov::bicgstab(C, lambda, rhs2, sys2Mon);//, PC2);
-	cusp::krylov::cg(C, lambda, rhs2, sys2Mon);//, PC2);
+	cusp::krylov::bicgstab(C, lambda, rhs2, sys2Mon);//, PC2);
+	//cusp::krylov::cg(C, lambda, rhs2, sys2Mon);//, PC2);
+	iterationCount2 = sys2Mon.iteration_count();
 	if (!sys2Mon.converged())
 	{
 		std::cout << "ERROR: Solve for Lambda failed at time step " << timeStep << std::endl;
+		std::cout << "Residual norm: " << sys2Mon.residual_norm() << std::endl;
+		std::cout << "Tolerance    : " << sys2Mon.tolerance() << std::endl;
 		std::exit(-1);
 	}
+	
+	logger.stopTimer("Poisson solve");
 }
 
 template <typename memoryType>
@@ -333,6 +351,7 @@ void NavierStokesSolver<memoryType>::writeData()
 	real dt = (*paramDB)["simulation"]["dt"].get<real>();
 //	calculateForce();
 //	io::writeForce(folderName, timeStep*dt, forceX, forceY);
+	io::writeIterations(folderName, timeStep, iterationCount1, iterationCount2);
 }
 
 template <typename memoryType>
@@ -357,6 +376,12 @@ bool NavierStokesSolver<memoryType>::finished()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::calculateForce()
 {
+}
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::wrapUp()
+{
+	io::printTimingInfo(logger);
 }
 
 /**

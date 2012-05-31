@@ -27,9 +27,11 @@ protected:
 	array1d<real, memoryType>
 	     q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1, bc[4];
 
-	int  timeStep;
+	size_t  timeStep, iterationCount1, iterationCount2;
 	
 	real forceX, forceY;
+	
+	Logger logger;
 
 	/**
 	* Methods are defined as virtual when they are redefined in a derived class with the same name.
@@ -80,6 +82,7 @@ public:
 	void stepTime();
 	void writeData();
 	bool finished();
+	void wrapUp();
 	/**
 	* Factory methods are static (not entirely sure why)
 	*/

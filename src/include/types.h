@@ -22,6 +22,8 @@
 
 #include <thrust/device_ptr.h>
 
+#include <logger.h>
+
 enum bcType {DIRICHLET, NEUMANN, CONVECTIVE, PERIODIC};
 enum boundary {XMINUS, XPLUS, YMINUS, YPLUS};
 enum timeScheme {EULER_EXPLICIT, EULER_IMPLICIT, ADAMS_BASHFORTH_2, RUNGE_KUTTA_3, CRANK_NICOLSON};

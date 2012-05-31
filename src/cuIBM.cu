@@ -25,4 +25,5 @@ int main(int argc, char **argv)
 		solver->stepTime();
 		solver->writeData();
 	}
+	solver->wrapUp();
 }
