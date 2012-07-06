@@ -1,3 +1,7 @@
+/**
+* \file NavierStokesSolver.h
+* \brief Solves the Navier-Stokes equations in a rectangular domain
+*/
 #pragma once
 
 #include <types.h>
@@ -25,13 +29,15 @@ protected:
 	     M, Minv, L, A, QT, Q, BN, C;
 
 	array1d<real, memoryType>
-	     q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1, bc[4];
+	     q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1, bc[4], qOld;
 
-	size_t  timeStep, iterationCount1, iterationCount2;
+	size_t  timeStep, subStep, iterationCount1, iterationCount2;
 	
-	real forceX, forceY;
+	real forceX, forceY, force1;
 	
 	Logger logger;
+	
+	std::ofstream forceFile, iterationsFile;
 
 	/**
 	* Methods are defined as virtual when they are redefined in a derived class with the same name.
@@ -56,12 +62,12 @@ protected:
 	void generateC();
 
 	// generate explicit terms
-	virtual void generateRN(int i);
-	void calculateExplicitQTerms(int i);
-	void calculateExplicitLambdaTerms(int i);
-	void generateRNFull(int i);
+	virtual void generateRN();
+	void calculateExplicitQTerms();
+	void calculateExplicitLambdaTerms();
+	void generateRNFull();
 	
-	virtual void generateBC1(int i);
+	virtual void generateBC1();
 	void generateBC1Full(real alpha);
 	virtual void generateBC2();
 
@@ -73,7 +79,7 @@ protected:
 	void projectionStep();
 
 	void updateBoundaryConditions();
-	virtual void updateSolverState(int i);
+	virtual void updateSolverState();
 	
 	virtual void calculateForce();
 
@@ -82,7 +88,7 @@ public:
 	void stepTime();
 	void writeData();
 	bool finished();
-	void wrapUp();
+	void shutDown();
 	/**
 	* Factory methods are static (not entirely sure why)
 	*/

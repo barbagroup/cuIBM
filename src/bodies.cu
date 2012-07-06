@@ -15,6 +15,16 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	Theta0.resize(numBodies);
 	numPoints.resize(numBodies);
 	offsets.resize(numBodies);
+	
+	startI.resize(numBodies);
+	startJ.resize(numBodies);
+	numCellsX.resize(numBodies);
+	numCellsY.resize(numBodies);
+	
+	xmin.resize(numBodies);
+	xmax.resize(numBodies);
+	ymin.resize(numBodies);
+	ymax.resize(numBodies);
 
 	totalPoints = 0;
 	for(int k=0; k<numBodies; k++)
@@ -61,7 +71,10 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	}
 	bodiesMove = false;
 	if(numBodies)
+	{
 		calculateCellIndices(D);
+		calculateBoundingBoxes(D);
+	}
 	std::cout << "Completed B.initialise" << std::endl;
 }
 
@@ -114,6 +127,50 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 		}
 		I[k] = i;
 		J[k] = j;
+	}
+}
+/**
+* \brief This function determines the bounding box around each body.
+*/
+template <typename memoryType>
+void bodies<memoryType>::calculateBoundingBoxes(domain &D)
+{
+	real scale=2.0, dx, dy;
+	int  i, j;
+	for(int k=0; k<numBodies; k++)
+	{
+		xmin[k] = x[offsets[k]];
+		xmax[k] = xmin[k];
+		ymin[k] = y[offsets[k]];
+		ymax[k] = ymin[k];
+		for(int l=offsets[k]+1; l<offsets[k]+numPoints[k]; l++)
+		{
+			if(x[l] < xmin[k]) xmin[k] = x[l];
+			if(x[l] > xmax[k]) xmax[k] = x[l];
+			if(y[l] < ymin[k]) ymin[k] = y[l];
+			if(y[l] > ymax[k]) ymax[k] = y[l];
+		}
+		dx = xmax[k]-xmin[k];
+		dy = ymax[k]-ymin[k];
+		xmax[k] += 0.5*dx*(scale-1.0);
+		xmin[k] -= 0.5*dx*(scale-1.0);
+		ymax[k] += 0.5*dy*(scale-1.0);
+		ymin[k] -= 0.5*dy*(scale-1.0);
+		
+		i=0; j=0;
+		while(D.x[i+1] < xmin[k])
+			i++;
+		while(D.y[j+1] < ymin[k])
+			j++;
+		startI[k] = i;
+		startJ[k] = j;
+		
+		while(D.x[i] < xmax[k])
+			i++;
+		while(D.y[j] < ymax[k])
+			j++;
+		numCellsX[k] = i - startI[k];
+		numCellsY[k] = j - startJ[k];
 	}
 }
 

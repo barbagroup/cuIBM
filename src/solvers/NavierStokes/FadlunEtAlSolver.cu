@@ -11,14 +11,29 @@ void FadlunEtAlSolver<memoryType>::initialise()
 	int numP  = nx*ny;
 	
 	initialiseBodies();
+	
 	NavierStokesSolver<memoryType>::initialiseCommon();
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP);
 	
+	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");
+/*	
 	tags.resize(numUV);
 	tagsD.resize(numUV);
 	coeffs.resize(numUV);
 	coeffsD.resize(numUV);
+*/
+	tagsX.resize(numUV);
+	tagsXD.resize(numUV);
+	tagsY.resize(numUV);
+	tagsYD.resize(numUV);
+	coeffsX.resize(numUV);
+	coeffsXD.resize(numUV);
+	coeffsY.resize(numUV);
+	coeffsYD.resize(numUV);
+	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");
+	
 	tagPoints();
+	std::cout << "Done tagging points!" << std::endl;
 	
 	NavierStokesSolver<memoryType>::assembleMatrices();
 }
@@ -29,7 +44,7 @@ void FadlunEtAlSolver<memoryType>::updateBodies()
 }
 
 /*template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::updateSolverState(int i)
+void FadlunEtAlSolver<memoryType>::updateSolverState()
 {	
 	NavierStokesSolver<memoryType>::updateBoundaryConditions();
 	if (B.bodiesMove)
@@ -40,9 +55,9 @@ void FadlunEtAlSolver<memoryType>::updateSolverState(int i)
 }*/
 
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::generateRN(int i)
+void FadlunEtAlSolver<memoryType>::generateRN()
 {
-	NavierStokesSolver<memoryType>::generateRNFull(i);
+	NavierStokesSolver<memoryType>::generateRNFull();
 	updateRN();
 	
 	/**
@@ -52,9 +67,9 @@ void FadlunEtAlSolver<memoryType>::generateRN(int i)
 }
 
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::generateBC1(int i)
+void FadlunEtAlSolver<memoryType>::generateBC1()
 {
-	NavierStokesSolver<memoryType>::generateBC1Full(NavierStokesSolver<memoryType>::intgSchm.alphaImplicit[i]);
+	NavierStokesSolver<memoryType>::generateBC1Full(NavierStokesSolver<memoryType>::intgSchm.alphaImplicit[NavierStokesSolver<memoryType>::subStep]);
 	updateBC1();
 }
 

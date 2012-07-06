@@ -16,6 +16,12 @@ public:
 	cusp::array1d<int, memoryType>
 		numPoints, offsets,
 		I, J;
+	
+	cusp::array1d<int, memoryType>
+		startI, startJ, numCellsX, numCellsY;
+		
+	cusp::array1d<real, memoryType>
+		xmin, xmax, ymin, ymax;
 
 	cusp::array1d<real, memoryType>
 		X, Y, ds,
@@ -24,5 +30,7 @@ public:
 
 	void initialise(parameterDB &db, domain &D);
 	void calculateCellIndices(domain &D);
+	void calculateBoundingBoxes(domain &D);
+	
 	void update();
 };

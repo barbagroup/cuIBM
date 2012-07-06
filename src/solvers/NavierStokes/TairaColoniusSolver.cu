@@ -14,6 +14,12 @@ void TairaColoniusSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::initialiseCommon();
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP+2*B.totalPoints);
 	NavierStokesSolver<memoryType>::assembleMatrices();
+	if(B.totalPoints > 0)
+		generateE();
+	
+	FxX.resize(B.numCellsX[0]);
+	FxY.resize(B.numCellsY[0]);
+	FxU.resize( (B.numCellsX[0]+1)*B.numCellsY[0] );
 }
 
 template <typename memoryType>
@@ -22,7 +28,7 @@ void TairaColoniusSolver<memoryType>::updateBodies()
 }
 
 template <typename memoryType>
-void TairaColoniusSolver<memoryType>::updateSolverState(int i)
+void TairaColoniusSolver<memoryType>::updateSolverState()
 {
 	NavierStokesSolver<memoryType>::updateBoundaryConditions();
 	if (B.bodiesMove) {
@@ -33,7 +39,7 @@ void TairaColoniusSolver<memoryType>::updateSolverState(int i)
 }
 
 template <typename memoryType>
-void TairaColoniusSolver<memoryType>::calculateForce()
+void TairaColoniusSolver<memoryType>::calculateForceTC()
 {
 	int  nx = NavierStokesSolver<memoryType>::domInfo->nx,
 	     ny = NavierStokesSolver<memoryType>::domInfo->ny;
@@ -51,9 +57,17 @@ void TairaColoniusSolver<memoryType>::calculateForce()
 	NavierStokesSolver<memoryType>::forceY = (dx*dy)/dy*thrust::reduce( F.begin()+(nx-1)*ny, F.end() );
 }
 
+template <typename memoryType>
+void TairaColoniusSolver<memoryType>::calculateForce()
+{
+	calculateForceTC();
+	calculateForce1();
+}
+
 #include "TairaColonius/generateQT.inl"
 #include "TairaColonius/generateBC2.inl"
 #include "TairaColonius/initialiseBodies.inl"
+#include "TairaColonius/calculateForce.inl"
 
 template class TairaColoniusSolver<host_memory>;
 template class TairaColoniusSolver<device_memory>;

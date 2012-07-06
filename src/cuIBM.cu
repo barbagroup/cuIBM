@@ -1,3 +1,8 @@
+/**
+* \file cuIBM.cu
+* \brief Main file.
+*/
+
 #include <types.h>
 #include <domain.h>
 #include <io/io.h>
@@ -17,13 +22,14 @@ int main(int argc, char **argv)
 	io::readInputs(argc, argv, paramDB, dom_info);
 	io::printSimulationInfo(paramDB, dom_info);
 
+	/// choose the appropriate flow solver
 	NavierStokesSolver<device_memory> *solver = NavierStokesSolver<device_memory>::createSolver(paramDB, dom_info);
-	solver->initialise();
 
+	solver->initialise();
 	while (!solver->finished())
 	{
 		solver->stepTime();
 		solver->writeData();
 	}
-	solver->wrapUp();
+	solver->shutDown();
 }

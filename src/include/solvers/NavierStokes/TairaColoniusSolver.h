@@ -11,6 +11,8 @@ class TairaColoniusSolver : public NavierStokesSolver<memoryType>
 private:
 	bodies<memoryType> B;
 	coo_matrix<int, real, memoryType> E, ET;
+	
+	array1d<real, memoryType> FxX, FxY, FxU;
 
 	void generateQT(int *QTRows, int *QTCols, real *QTVals){}
 	void generateQT();
@@ -20,8 +22,10 @@ private:
 
 	void initialiseBodies();
 	void updateBodies();
-	void updateSolverState(int i);
+	void updateSolverState();
 
+	void calculateForce1();
+	void calculateForceTC();
 	void calculateForce();
 	void generateE();
 	

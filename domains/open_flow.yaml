@@ -7,7 +7,7 @@
     - end: 1
       cells: 40
       stretchRatio: 1.0
-    - end: 15
+    - end: 15.0
       cells: 55
       stretchRatio: 1.05
 
@@ -20,7 +20,7 @@
     - end: 1
       cells: 40
       stretchRatio: 1.0
-    - end: 15
+    - end: 15.0
       cells: 55
       stretchRatio: 1.05
 

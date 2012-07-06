@@ -100,8 +100,7 @@ public:
 		std::cout << std::endl;
 		for( E_iter E=timer.begin(); E!=timer.end(); ++E )
 		{
-			// std::cout << E->first << " : " << E->second << std::endl;
-			std::cout << std::setw(20) << E->first << std::setw(13) << std::fixed \
+			std::cout << std::setw(24) << E->first << std::setw(13) << std::fixed \
 			          << std::setprecision(4) << E->second << std::endl;
 		}
 	}

@@ -1,3 +1,8 @@
+/**
+* \file io.h
+* \brief Functions for input and output.
+*/
+
 #pragma once
 
 #include <types.h>
@@ -27,7 +32,4 @@ namespace io
 	void writeGrid(std::string &folderName, domain &D);
 	template <typename Vector>
 	void writeData(std::string &folderName, int n, Vector &q, Vector &lambda, domain &D);//, bodies &B);
-	void writeForce(std::string &folderName, real t, real forceX, real forceY);
-	void writeIterations(std::string &folderName, size_t n, size_t iter1, size_t iter2);
-//  void writeDataDevice(std::string &s, int n, vecD &q, vecD &lambda, domain &D);//, bodies &B);
 }

@@ -25,6 +25,7 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	logger.startTimer("initialiseCommon");
 	
 	QCoeff = 1.0;
+	subStep = 0;
 	
 	timeScheme convScheme = (*paramDB)["simulation"]["convTimeScheme"].get<timeScheme>(),
 	           diffScheme = (*paramDB)["simulation"]["diffTimeScheme"].get<timeScheme>();
@@ -40,6 +41,14 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	// write the grids information to a file
 	io::writeGrid(folderName, *domInfo);
 	
+	// open the required files
+	std::stringstream out;
+	out << folderName << "/forces";
+//	forceFile.open(out.str().c_str());
+	out.str("");
+	out << folderName << "/iterations";
+	iterationsFile.open(out.str().c_str());
+	
 	// write the plot information to a file
 	
 	std::cout << "Initialised common stuff!" << std::endl;
@@ -50,8 +59,11 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 {	
+	logger.startTimer("initialiseArrays");
+	
 	q.resize(numQ);
 	qStar.resize(numQ);
+		qOld.resize(numQ); // remove later
 	rn.resize(numQ);
 	H.resize(numQ);
 	bc1.resize(numQ);
@@ -77,9 +89,11 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 	initialiseFluxes();
 	initialiseBoundaryArrays();
 	
-	generateRNFull(0);
+	generateRNFull();
 	cusp::blas::scal(H, 1.0/intgSchm.gamma[0]);
 	std::cout << "Initialised arrays!" << std::endl;
+	
+	logger.stopTimer("initialiseArrays");
 }
 
 template <>
@@ -169,28 +183,16 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 {
 	logger.startTimer("assembleMatrices");
 	
-	std::cout << "Entered assembleMatrices" << std::endl;
 	generateM();
 	generateL();
 	generateA(intgSchm.alphaImplicit[0]);
-	std::cout << "Assembled A!" << std::endl;
-	////
-	//cusp::print(L);
-	//cusp::print(A);
-
+	
 //	PC1 = cusp::precond::diagonal<real, memoryType>(A);
 	
 	generateBN();
-	std::cout << "Assembled BN!" << std::endl;
-	
 	generateQT();
-	std::cout << "Assembled QT!" << std::endl;
-	//cusp::print(QT);
-	
 	generateC(); // QT*BN*Q
-	std::cout << "Generated C!" << std::endl;
-	//cusp::print(C);
-
+	
 //	PC2 = cusp::precond::smoothed_aggregation<int, real, memoryType>(C);
 
 	std::cout << "Assembled matrices!" << std::endl;
@@ -239,68 +241,73 @@ void NavierStokesSolver<host_memory>::generateC()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::stepTime()
 {
-	//std::cout << timeStep << std::endl;
-	for(int i=0; i<intgSchm.subSteps; i++)
+	qOld = q;
+	for(subStep=0; subStep < intgSchm.subSteps; subStep++)
 	{
-		updateSolverState(i);
+		updateSolverState();
 
-		generateRN(i);
-		generateBC1(i);
+		// Set up and solve the first system for the intermediate velocity
+		generateRN();
+		generateBC1();
 		assembleRHS1();
-		
-		//cusp::print(rn);
-//		cusp::print(rhs1);
-
 		solveIntermediateVelocity();
 
+		// Set up and solve the Poisson system
 		generateBC2();
 		assembleRHS2();
-
 		solvePoisson();
 
+		// Projection step
 		projectionStep();
-//		cusp::print(q);
 	}
 	
 	timeStep++;
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::updateSolverState(int i)
+void NavierStokesSolver<memoryType>::updateSolverState()
 {
-//	generateA(intgSchm.alphaImplicit[i]);
+//	generateA(intgSchm.alphaImplicit[subStep]);
 //	updateQ(intgSchm.gamma[i]);
 //	updateBoundaryConditions();
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::generateRN(int i)
+void NavierStokesSolver<memoryType>::generateRN()
 {
-	generateRNFull(i);
+	generateRNFull();
 	/**
 	* Does this include the pressure term on the RHS?
 	*/
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::generateBC1(int i)
+void NavierStokesSolver<memoryType>::generateBC1()
 {
-	generateBC1Full(intgSchm.alphaImplicit[i]);
+	generateBC1Full(intgSchm.alphaImplicit[subStep]);
 }
 
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::assembleRHS1()
 {
+	logger.startTimer("assembleRHS1");
+	
 	cusp::blas::axpby(rn, bc1, rhs1, 1.0, 1.0);
+	
+	logger.stopTimer("assembleRHS1");
 }
 
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 {
+	logger.startTimer("solveIntermediateVel");
+
 	cusp::default_monitor<real> sys1Mon(rhs1, 10000);
 	cusp::krylov::bicgstab(A, qStar, rhs1, sys1Mon);//, PC1);
 	//cusp::krylov::cg(A, qStar, rhs1, sys1Mon);//, PC1);
 	iterationCount1 = sys1Mon.iteration_count();
+
+	logger.stopTimer("solveIntermediateVel");
 }
 
 template <typename memoryType>
@@ -313,7 +320,7 @@ void NavierStokesSolver<memoryType>::assembleRHS2()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::solvePoisson()
 {
-	logger.startTimer("Poisson solve");
+	logger.startTimer("solvePoisson");
 	
 	cusp::default_monitor<real> sys2Mon(rhs2, 50000);
 	//cusp::krylov::gmres(C, lambda, rhs2, 50, sys2Mon);//, PC2);
@@ -328,20 +335,26 @@ void NavierStokesSolver<memoryType>::solvePoisson()
 		std::exit(-1);
 	}
 	
-	logger.stopTimer("Poisson solve");
+	logger.stopTimer("solvePoisson");
 }
 
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::projectionStep()
 {
+	logger.startTimer("projectionStep");
+
 	cusp::wrapped::multiply(Q, lambda, temp1);
 	cusp::wrapped::multiply(BN, temp1, q);
 	cusp::blas::axpby(qStar, q, q, 1.0, -1.0);
+
+	logger.stopTimer("projectionStep");
 }
 
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::writeData()
 {
+	logger.startTimer("Output");
+	
 	int nsave = (*paramDB)["simulation"]["nsave"].get<int>();
 	std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
 	if (timeStep % nsave == 0)
@@ -351,7 +364,11 @@ void NavierStokesSolver<memoryType>::writeData()
 	real dt = (*paramDB)["simulation"]["dt"].get<real>();
 //	calculateForce();
 //	io::writeForce(folderName, timeStep*dt, forceX, forceY);
-	io::writeIterations(folderName, timeStep, iterationCount1, iterationCount2);
+//	forceFile << timeStep*dt << '\t' << forceX << '\t' << force1 << std::endl;
+	iterationsFile << timeStep << '\t' << iterationCount1 << '\t' << iterationCount2 << std::endl;
+//	io::writeIterations(iterationsFile, folderName, timeStep, iterationCount1, iterationCount2);
+	
+	logger.stopTimer("Output");
 }
 
 template <typename memoryType>
@@ -379,9 +396,11 @@ void NavierStokesSolver<memoryType>::calculateForce()
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::wrapUp()
+void NavierStokesSolver<memoryType>::shutDown()
 {
 	io::printTimingInfo(logger);
+//	forceFile.close();
+	iterationsFile.close();
 }
 
 /**

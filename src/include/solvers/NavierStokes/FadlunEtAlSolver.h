@@ -10,20 +10,18 @@ class FadlunEtAlSolver : public NavierStokesSolver<memoryType>
 {
 private:
 	bodies<memoryType> B;
-
-//	array1d<int, memoryType>
-//	     tags;
-//	array1d<real, memoryType>
-//	     coeffs;
-	
-	cusp::array1d<int, host_memory>
-         tags;
-	cusp::array1d<int, device_memory>
-         tagsD;
-
+/*
+	// For the 1D interpolations
+	cusp::array1d<int, host_memory>    tags;
+	cusp::array1d<int, device_memory>  tagsD;
 	vecH coeffs;
 	vecD coeffsD;
-
+*/	
+	// For the 2D interpolations
+	cusp::array1d<int, host_memory>    tagsX, tagsY;
+	cusp::array1d<int, device_memory>  tagsXD, tagsYD;
+	vecH coeffsX, coeffsY;
+	vecD coeffsXD, coeffsYD;
 	
 	void tagPoints();
 	void tagPoints(real *bx, real *by);
@@ -36,14 +34,14 @@ private:
 	void generateQT();
 	void updateQFadlun();
 	
-	void generateRN(int i);
+	void generateRN();
 	void updateRN();
-	void generateBC1(int i);
+	void generateBC1();
 	void updateBC1();
 
 	void initialiseBodies();
 	void updateBodies();
-//	void updateSolverState(int i);
+//	void updateSolverState();
 	
 public:
 	void initialise();

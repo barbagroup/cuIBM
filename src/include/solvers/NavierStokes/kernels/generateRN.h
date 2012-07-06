@@ -36,6 +36,9 @@ void convectionTermVLeftRight(real *rn, real *H, real *q, \
                               real *bcBottom, real *bcTop, real *bcLeft, real *bcRight);
 
 __global__
-void updateRN(real *rn, int *tags, int numUV);
+void updateRN(real *rn, int numUV, int *tags);
+
+__global__
+void updateRN(real *rn, int numUV, int *tagsX, int *tagsY);
 
 } // end of namespace kernels

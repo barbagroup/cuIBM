@@ -58,7 +58,7 @@ for i=1:6
 		nsave = value;
 	end
 	if (strcmpi(opt,'--start_step')==1)
-		start_step = value
+		start_step = value;
 	end
 end
 
@@ -67,45 +67,23 @@ end
 grid_file = strcat('../../', foldername, '/grid');
 file = fopen(grid_file, 'r');
 nx = fscanf(file, '%d', 1);
-x = [];
-for i=1:nx+1
-	x = [x, fscanf(file, '%f', 1)];
-end
-	ny = fscanf(file, '%d', 1);
-y = [];
-for i=1:ny+1
-	y = [y, fscanf(file, '%f', 1)];
-end
+x = fscanf(file, '%f', nx+1);
+ny = fscanf(file, '%d', 1);
+y = fscanf(file, '%f', ny+1);
 
 % pressure
-xp = [];
-yp = [];
-for i=1:nx
-	xp = [xp, 0.5*(x(i+1) + x(i))];
-end
-for i=1:ny
-	yp = [yp, 0.5*(y(i+1) + y(i))];
-end
+xp = zeros(1,nx);
+yp = zeros(1,ny);
+xp(1:nx) = 0.5*(x(2:nx+1)+x(1:nx));
+yp(1:ny) = 0.5*(y(2:ny+1)+y(1:ny));
 [Xp, Yp] = meshgrid(xp, yp);
 
-%xo = [];
-%yo = [];
-%for i=1:nx-1
-%	xo = [xo, 0.5*(xp(i+1) + xp(i))];
-%end
-%for i=1:ny-1
-%	yo = [yo, 0.5*(yp(i+1) + yp(i))];
-%end
-%[Xo, Yo] = meshgrid(xo, yo);
-
-xo = [];
-yo = [];
-for i=2:nx
-	xo = [xo, x(i)];
-end
-for i=2:ny
-	yo = [yo, y(i)];
-end
+xo = zeros(1,nx-1);
+yo = zeros(1,ny-1);
+xo(1:nx-1) = 0.5*(xp(1:nx-1) + xp(2:nx));
+yo(1:ny-1) = 0.5*(yp(1:ny-1) + yp(2:ny));
+%
+%
 [Xo, Yo] = meshgrid(xo, yo);
 
 [Xu, Yu] = meshgrid(xo, yp);
@@ -157,48 +135,51 @@ for n=start_step+nsave:nsave:nt
 	%	shading interp
 	%	h = pcolor(Xo, Yo, omg);
 	%	set(h,'edgecolor','none') 
+	set(gca, 'FontName', 'Arial', 'FontSize', 14);
+	set(gcf, 'PaperPositionMode', 'auto', 'PaperSize', [6 4.5]);
 	axis equal;
-	axis([xmin xmax ymin ymax]);
-	out_file = strcat('../../', foldername, '/o', subfolder, '.png');
-	print('-dpng', '-r300', out_file);
+	axis([-1 2 -1.5 1.5]);
+	caxis([-omgmax omgmax])
+	out_file = strcat('../../', foldername, '/o', subfolder, '.pdf');
+	print('-dpdf', '-r300', out_file);
 	
-	p = [];
 	lambda_file = strcat('../../', foldername, '/', subfolder, '/lambda');
 	file = fopen(lambda_file, 'r');
 	nlambda = fscanf(file, '%d', 1);
-	
-	% populate p
-	for i=1:N_p
-		value = fscanf(file, '%f', 1);
-		p = [p, value];
-	end
+	% populate p	
+	p = fscanf(file, '%f', N_p);
 	
 	p = transpose(reshape(p, nx, ny));
 	contourf(Xp, Yp, p, [-pmax:dp:pmax]);
+	set(gca, 'FontName', 'Arial', 'FontSize', 14);
+	set(gcf, 'PaperPositionMode', 'auto', 'PaperSize', [5 4.5]);
 	axis equal;
 	axis([xmin xmax ymin ymax]);
-	out_file = strcat('../../', foldername, '/p', subfolder, '.png');
-	print('-dpng', '-r300', out_file);
+	caxis([-pmax pmax]);
+	out_file = strcat('../../', foldername, '/p', subfolder, '.pdf');
+	print('-dpdf', '-r300', out_file);
 	
 	% plot u
-	mesh(Xu, Yu, transpose(u), 'EdgeColor', 'black')
-	out_file = strcat('../../', foldername, '/umesh', subfolder, '.png');
-	print('-dpng', '-r300', out_file);
+	%mesh(Xu, Yu, transpose(u), 'EdgeColor', 'black')
+	%out_file = strcat('../../', foldername, '/umesh', subfolder, '.png');
+	%print('-dpng', '-r300', out_file);
 	
 	contourf(Xu, Yu, transpose(u), [-1:0.1:1])
 	axis equal;
-	axis([xmin xmax ymin ymax])
-	out_file = strcat('../../', foldername, '/u', subfolder, '.png');
-	print('-dpng', '-r300', out_file);
+	axis([-1 2 -1.5 1.5]);
+	caxis([-1 1]);
+	out_file = strcat('../../', foldername, '/u', subfolder, '.pdf');
+	print('-dpdf', '-r300', out_file);
 	
 	% plot v
-	mesh(Xv, Yv, transpose(v), 'EdgeColor', 'black')
-	out_file = strcat('../../', foldername, '/vmesh', subfolder, '.png');
-	print('-dpng', '-r300', out_file);
+	%mesh(Xv, Yv, transpose(v), 'EdgeColor', 'black')
+	%out_file = strcat('../../', foldername, '/vmesh', subfolder, '.png');
+	%print('-dpng', '-r300', out_file);
 	
 	contourf(Xv, Yv, transpose(v), [-1:0.1:1])
 	axis equal;
-	axis([xmin xmax ymin ymax])
-	out_file = strcat('../../', foldername, '/v', subfolder, '.png');
-	print('-dpng', '-r300', out_file); 
+	axis([-1 2 -1.5 1.5]);
+	caxis([-1 1]);
+	out_file = strcat('../../', foldername, '/v', subfolder, '.pdf');
+	print('-dpdf', '-r300', out_file); 
 end

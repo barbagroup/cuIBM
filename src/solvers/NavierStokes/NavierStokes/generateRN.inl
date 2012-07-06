@@ -3,30 +3,30 @@
 #define BSZ 16
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::calculateExplicitLambdaTerms(int i)
+void NavierStokesSolver<memoryType>::calculateExplicitLambdaTerms()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 
 	// rn = rn - zeta * Q.lambda
-	if(fabs(intgSchm.zeta[i]) > 1e-6)
+	if(fabs(intgSchm.zeta[subStep]) > 1e-6)
 	{
 		cusp::array1d<real, memoryType> temp(0.0, (nx-1)*ny+nx*(ny-1));
 		// temp = Q.lambda
 		cusp::wrapped::multiply(Q, lambda, temp);
 		// temp = zeta*temp
-		cusp::blas::scal(temp, intgSchm.zeta[i]);
+		cusp::blas::scal(temp, intgSchm.zeta[subStep]);
 		// rn = rn - temp
 		cusp::blas::axpy(temp, rn, -1.0);
 	}
 }
 
 template <>
-void NavierStokesSolver<device_memory>::calculateExplicitQTerms(int i)
+void NavierStokesSolver<device_memory>::calculateExplicitQTerms()
 {
-	real gamma = intgSchm.gamma[i],
-	     zeta = intgSchm.zeta[i],
-	     alpha = intgSchm.alphaExplicit[i];
+	real gamma = intgSchm.gamma[subStep],
+	     zeta = intgSchm.zeta[subStep],
+	     alpha = intgSchm.alphaExplicit[subStep];
 	     
 	// raw pointers for cup arrays
 	real *H_r  = thrust::raw_pointer_cast(&H[0]),
@@ -70,11 +70,11 @@ void NavierStokesSolver<device_memory>::calculateExplicitQTerms(int i)
 }
 
 template <>
-void NavierStokesSolver<host_memory>::calculateExplicitQTerms(int i)
+void NavierStokesSolver<host_memory>::calculateExplicitQTerms()
 {
-	real gamma = intgSchm.gamma[i],
-	     zeta = intgSchm.zeta[i],
-	     alpha = intgSchm.alphaExplicit[i];
+	real gamma = intgSchm.gamma[subStep],
+	     zeta = intgSchm.zeta[subStep],
+	     alpha = intgSchm.alphaExplicit[subStep];
 	      
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -161,8 +161,8 @@ void NavierStokesSolver<host_memory>::calculateExplicitQTerms(int i)
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::generateRNFull(int i)
+void NavierStokesSolver<memoryType>::generateRNFull()
 {
-	calculateExplicitQTerms(i);
-	calculateExplicitLambdaTerms(i);
+	calculateExplicitQTerms();
+	calculateExplicitLambdaTerms();
 }

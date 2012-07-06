@@ -4,10 +4,9 @@ include ../../Makefile.inc
 
 all: NavierStokes
 
-#NavierStokes: force_look
 NavierStokes: force_look 
 	cd NavierStokes; $(MAKE) $(MFLAGS)
-	@mv libNavierStokesSolvers.a ../../lib
+	mv libNavierStokesSolvers.a ../../lib
 
 clean:
 	cd NavierStokes; $(MAKE) $(MFLAGS) clean

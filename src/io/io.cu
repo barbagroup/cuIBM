@@ -243,28 +243,4 @@ void writeData<vecD>(std::string &folderName, int n, vecD &q, vecD &lambda, doma
   writeData(folderName, n, qH, lambdaH, D);
 }
 
-void writeForce(std::string &folderName, real t, real forceX, real forceY)
-{
-	std::string path;
-	std::stringstream out;
-
-	out << folderName << "/forces";
-	std::ofstream file(out.str().c_str(), std::ios::out | std::ios::app);
-	//std::ofstream file(out.str().c_str());
-	file << t << '\t' << forceX << '\t' << forceY << std::endl;
-//	std::cout << t << '\t' << forceX << '\t' << forceY << std::endl;
-	file.close();
-}
-
-void writeIterations(std::string &folderName, size_t n, size_t iter1, size_t iter2)
-{
-	std::string path;
-	std::stringstream out;
-
-	out << folderName << "/iterations";
-	std::ofstream file(out.str().c_str(), std::ios::out | std::ios::app);
-	file << n << '\t' << iter1 << '\t' << iter2 << std::endl;
-	file.close();
-}
-
 } // end namespace io

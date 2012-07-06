@@ -1,10 +1,6 @@
-/**
-* \file body.h
-* \brief
-*/
 #pragma once
 /**
-* Class description
+* \brief Stores the locations of the body points and the motion parameters
 */
 class body
 {

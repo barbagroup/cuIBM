@@ -1,15 +1,21 @@
 template <>
 void FadlunEtAlSolver<host_memory>::tagPoints()
-{	
+{
+	logger.startTimer("tagPoints");
+
 	real *bx = thrust::raw_pointer_cast(&(B.x[0])),
 	     *by = thrust::raw_pointer_cast(&(B.y[0]));
 	     
 	tagPoints(bx, by);
+
+	logger.stopTimer("tagPoints");
 }
 
 template <>
 void FadlunEtAlSolver<device_memory>::tagPoints()
 {
+	logger.startTimer("tagPoints");
+	
 	// transferring boundary point coordinates to the host
 	vecH bxH(B.totalPoints), byH(B.totalPoints);
 	bxH = B.x;
@@ -22,308 +28,15 @@ void FadlunEtAlSolver<device_memory>::tagPoints()
 	tagPoints(bx, by);
 	
 	// transferring tag and coeffs data to the device
-	tagsD = tags;
-	coeffsD = coeffs;
+	tagsXD = tagsX;
+	tagsYD = tagsY;
+	coeffsXD = coeffsX;
+	coeffsYD = coeffsY;
 	
-	//cusp::print(tagsD);
+	logger.stopTimer("tagPoints");
 }
 
-#if 1
-// the function below does the 1c type of interpolation. applied at grid points just outside the body
-template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
-{
-	int  nx = NavierStokesSolver<memoryType>::domInfo->nx,
-	     ny = NavierStokesSolver<memoryType>::domInfo->ny;
-	
-	real *xu = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->xu[0])),
-	     *yu = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->yu[0]));
-
-	bool outsideX, outsideY, flag;
-	int  bdryFlagX, bdryFlagY, k, l, I;
-	int  bottom, top, left, right;
-	real eps = 1.e-6;
-	real cf = 0, x, y;
-	
-	std::cout << "Tagging points... ";
-	
-	// tag points at which u is evaluated
-	for(int j=0; j<ny; j++)
-	{
-		for(int i=0; i<nx-1; i++)
-		{
-			I = j*(nx-1)+i;
-			tags[I] = -1;
-			outsideX = true;
-			outsideY = true;
-			k = B.totalPoints - 1;
-			l = 0;
-			flag = false;
-			bdryFlagX = -1;
-			bdryFlagY = -1;
-				
-			while( l < B.totalPoints)
-			{
-				if (by[k] > by[l])
-				{
-					bottom = l;
-					top = k;
-				}
-				else
-				{
-					bottom = k;
-					top = l;
-				}
-				if (bx[k] > bx[l])
-				{
-					left = l;
-					right = k;
-				}
-				else
-				{
-					left = k;
-					right = l;
-				}
-				// consider rays along the x-direction
-				/**
-				* if the ray intersects the boundary segment
-				* top endpoint must be strictly above the ray
-				* bottom can be on or below the ray
-				*/
-				if (by[bottom]-eps < yu[j] && by[top]-eps > yu[j])
-				{
-					if (fabs(by[l]-by[k]) > eps)
-					{
-						// calculate the point of intersection of the double ray with the boundary
-						x = bx[k] + (bx[l]-bx[k]) * (yu[j]-by[k]) / (by[l]-by[k]);
-						// if the point of intersection coincides with the grid point
-						if (fabs(x-xu[i]) < eps)
-						{
-							outsideX   = true;
-							bdryFlagX = I;
-							cf        = 0.0;
-							flag      = true;
-						}
-						// if the point of intersection lies to the right of the grid point
-				 		else if (x > xu[i]+eps)
-							outsideX = !outsideX;
-						// if the point of intersection is in the cell to the immediate left of the grid point (was earlier typed as 'right')
-						if (x>xu[i-1]+eps && x<xu[i]-eps)
-						{
-							bdryFlagX = I+1;
-							cf = (xu[i]-x)/(xu[i+1]-x);
-						}
-						// if the point of intersection is in the cell to the immediate right of the grid point
-						else if (x>xu[i]+eps && x<xu[i+1]-eps)
-						{
-							bdryFlagX = I-1;
-							cf = (xu[i]-x)/(xu[i-1]-x);
-						}
-					}
-				}
-				// consider rays along the y-direction
-				if (bx[left]-eps < xu[i] && bx[right]-eps > xu[i] && !flag)
-				{
-					if (fabs(bx[l]-bx[k]) > eps)
-					{
-						y = by[k] + (by[l]-by[k]) * (xu[i]-bx[k]) / (bx[l]-bx[k]);
-						if (fabs(y-yu[j]) < eps)
-						{
-							outsideY   = true;
-							bdryFlagY = I;
-							cf        = 0.0;
-						}
-				 		else if (y > yu[j]+eps)
-							outsideY = !outsideY;
-
-						if (y>yu[j-1]+eps && y<yu[j]-eps)
-						{
-							bdryFlagY = I+(nx-1);
-							cf = (yu[j]-y)/(yu[j+1]-y);
-						}
-						else if (y>yu[j]+eps && y<yu[j+1]-eps)
-						{
-							bdryFlagY = I-(nx-1);
-							cf = (yu[j]-y)/(yu[j-1]-y);
-						}
-					}
-				}
-				k = l;
-				l = l+1;
-			}
-			if (outsideX && bdryFlagX>=0)
-			{
-				tags[I]   = bdryFlagX;
-				coeffs[I] = cf;
-			}
-			else if (outsideY && bdryFlagY>=0)
-			{					
-				tags[I]   = bdryFlagY;
-				coeffs[I] = cf;
-			}
-		}
-	}
-	
-	std::ofstream file("tagx.txt");
-	for(int j=0; j<ny; j++)
-	{
-		for(int i=0; i<nx-1; i++)
-		{
-			I = j*(nx-1)+i;
-			if (tags[I] >= 0)
-				file << xu[i] << '\t' << yu[j] << std::endl;
-		}
-	}
-	file.close();
-
-	real *xv = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->xv[0])),
-	     *yv = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->yv[0]));
-	
-	// tag points at which v is evaluated
-	for(int j=0; j<ny-1; j++)
-	{
-		for(int i=0; i<nx; i++)
-		{
-			I = j*nx+i + (nx-1)*ny;
-			tags[I] = -1;
-			outsideX = true;
-			outsideY = true;
-			k = B.totalPoints - 1;
-			l = 0;
-			flag = false;
-			bdryFlagX = -1;
-			bdryFlagY = -1;
-			
-			while( l < B.totalPoints)
-			{
-				if (by[k] > by[l])
-				{
-					bottom = l;
-					top = k;
-				}
-				else
-				{
-					bottom = k;
-					top = l;
-				}
-				if (bx[k] > bx[l])
-				{
-					left = l;
-					right = k;
-				}
-				else
-				{
-					left = k;
-					right = l;
-				}
-				// consider rays along the x-direction
-				/**
-				* if the ray intersects the boundary segment
-				* top endpoint must be strictly above the ray
-				* bottom can be on or below the ray
-				*/
-				if (by[bottom]-eps < yv[j] && by[top]-eps > yv[j])
-				{
-					if (fabs(by[l]-by[k]) > eps)
-					{
-						// calculate the point of intersection of the double ray with the boundary
-						x = bx[k] + (bx[l]-bx[k]) * (yv[j]-by[k]) / (by[l]-by[k]);
-						// if the point of intersection coincides with the grid point
-						if (fabs(x-xv[i]) < eps)
-						{
-							outsideX   = true;
-							flag      = true;
-							bdryFlagX = I;
-							cf        = 0.0;
-						}
-						// if the point of intersection lies to the right of the grid point
-				 		else if (x > xv[i]+eps)
-							outsideX = !outsideX;
-						// if the point of intersection is in the cell to the immediate right of the grid point
-						if (x>xv[i-1]+eps && x<xv[i]-eps)
-						{
-							bdryFlagX = I+1;
-							cf = (xv[i]-x)/(xv[i+1]-x);
-						}
-						// if the point of intersection is in the cell to the immediate left of the grid point
-						else if (x>xv[i]+eps && x<xv[i+1]-eps)
-						{
-							bdryFlagX = I-1;
-							cf = (xv[i]-x)/(xv[i-1]-x);
-						}
-					}
-				}
-				// consider rays along the y-direction
-				if (bx[left]-eps < xv[i] && bx[right]-eps > xv[i] && !flag)
-				{
-					if (fabs(bx[l]-bx[k]) > eps)
-					{
-						y = by[k] + (by[l]-by[k]) * (xv[i]-bx[k]) / (bx[l]-bx[k]);
-						if (fabs(y-yv[j]) < eps)
-						{
-							outsideY   = true;
-							bdryFlagY = I;
-							cf        = 0.0;
-							flag      = true;
-						}
-				 		else if (y > yv[j]+eps)
-							outsideY = !outsideY;
-
-						if (y>yv[j-1]+eps && y<yv[j]-eps)
-						{
-							bdryFlagY = I+nx;
-							cf = (yv[j]-y)/(yv[j+1]-y);
-						}
-						else if (y>yv[j]+eps && y<yv[j+1]-eps)
-						{
-							bdryFlagY = I-nx;
-							cf = (yv[j]-y)/(yv[j-1]-y);
-						}
-					}
-				}
-				k = l;
-				l = l+1;
-			}
-			if (outsideY && bdryFlagY>=0)
-			{					
-				tags[I]   = bdryFlagY;
-				coeffs[I] = cf;
-			}
-			else if (outsideX && bdryFlagX>=0)
-			{
-				tags[I]   = bdryFlagX;
-				coeffs[I] = cf;
-			} 
-		}
-	}
-	
-	file.open("tagy.txt");
-	for(int j=0; j<ny-1; j++)
-	{
-		for(int i=0; i<nx; i++)
-		{
-			I = j*nx+i+(nx-1)*ny;
-			if (tags[I] >= 0)
-				file << xv[i] << '\t' << yv[j] << std::endl;
-		}
-	}
-	file.close();
-
-	std::cout << "DONE!" << std::endl;
-	
-	file.open("body.txt");
-	for(int k=0; k<B.totalPoints; k++)
-	{
-		file << bx[k] << '\t' << by[k] << std::endl;
-	}
-	file.close();
-}
-#endif
-#if 0
-/**
-* \brief This now works only for bodies that are not inside each other. All points are considered together
-*/
-// the function below does the 2a type of interpolation. it is applied at points just inside the boundary
+// Bilinear Fadlun1c-type interpolation inside the body.
 template <typename memoryType>
 void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 {
@@ -337,9 +50,7 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 	int  bdryFlagX, bdryFlagY, k, l, I;
 	int  bottom, top, left, right;
 	real eps = 1.e-6;
-	real cf = 0, x, y;
-	
-	std::cout << "Tagging points... ";
+	real cfX = 0.0, cfY = 0.0, x, y;
 	
 	// tag points at which u is evaluated
 	for(int j=0; j<ny; j++)
@@ -347,7 +58,10 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 		for(int i=0; i<nx-1; i++)
 		{
 			I = j*(nx-1)+i;
-			tags[I] = -1;
+			tagsX[I] = -1;
+			tagsY[I] = -1;
+			coeffsX[I] = 0.0;
+			coeffsY[I] = 1.0;
 			insideX = false;
 			insideY = false;
 			k = B.totalPoints - 1;
@@ -395,7 +109,7 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 						{
 							insideX   = true;
 							bdryFlagX = I;
-							cf        = 0.0;
+							cfX       = 0.0;
 							flag      = true;
 						}
 						// if the point of intersection lies to the right of the grid point
@@ -404,14 +118,14 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 						// if the point of intersection is in the cell to the immediate left of the grid point (was earlier typed as 'right')
 						if (x>xu[i-1]+eps && x<xu[i]-eps)
 						{
-							bdryFlagX = I-1;
-							cf = (xu[i]-x)/(xu[i-1]-x);
+							bdryFlagX = I+1;
+							cfX = (xu[i]-x)/(xu[i+1]-x);
 						}
 						// if the point of intersection is in the cell to the immediate right of the grid point
 						else if (x>xu[i]+eps && x<xu[i+1]-eps)
 						{
-							bdryFlagX = I+1;
-							cf = (xu[i]-x)/(xu[i+1]-x);
+							bdryFlagX = I-1;
+							cfX = (xu[i]-x)/(xu[i-1]-x);
 						}
 					}
 				}
@@ -425,20 +139,21 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 						{
 							insideY   = true;
 							bdryFlagY = I;
-							cf        = 0.0;
+							cfY       = 0.0;
 						}
 				 		else if (y > yu[j]+eps)
 							insideY = !insideY;
-
+						// if point of intersection is below the concerned grid point
 						if (y>yu[j-1]+eps && y<yu[j]-eps)
 						{
-							bdryFlagY = I-(nx-1);
-							cf = (yu[j]-y)/(yu[j-1]-y);
+							bdryFlagY = I+(nx-1);
+							cfY = (yu[j]-y)/(yu[j+1]-y);
 						}
+						// if point of intersection is above the concerned grid point
 						else if (y>yu[j]+eps && y<yu[j+1]-eps)
 						{
-							bdryFlagY = I+(nx-1);
-							cf = (yu[j]-y)/(yu[j+1]-y);
+							bdryFlagY = I-(nx-1);
+							cfY = (yu[j]-y)/(yu[j-1]-y);
 						}
 					}
 				}
@@ -447,13 +162,13 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 			}
 			if (insideX && bdryFlagX>=0)
 			{
-				tags[I]   = bdryFlagX;
-				coeffs[I] = cf;
+				tagsX[I]   = bdryFlagX;
+				coeffsX[I] = cfX;
 			}
-			else if (insideY && bdryFlagY>=0)
+			if (insideY && bdryFlagY>=0)
 			{					
-				tags[I]   = bdryFlagY;
-				coeffs[I] = cf;
+				tagsY[I]   = bdryFlagY;
+				coeffsY[I] = cfY;
 			}
 		}
 	}
@@ -464,8 +179,20 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 		for(int i=0; i<nx-1; i++)
 		{
 			I = j*(nx-1)+i;
-			if (tags[I] >= 0)
+			if (tagsX[I] >= 0 || tagsY[I] >= 0 )
+			{
 				file << xu[i] << '\t' << yu[j] << std::endl;
+				if (tagsX[I] == I-1)
+					file << xu[i-1] << '\t' << yu[j] << std::endl;
+				else if (tagsX[I] == I+1)
+					file << xu[i+1] << '\t' << yu[j] << std::endl;
+				if (tagsY[I] == I-(nx-1))
+					file << xu[i] << '\t' << yu[j-1] << std::endl;
+				else if (tagsY[I] == I+(nx-1))
+					file << xu[i] << '\t' << yu[j+1] << std::endl;
+				file << xu[i] << '\t' << yu[j] << std::endl;
+			}
+			file << std::endl;
 		}
 	}
 	file.close();
@@ -479,7 +206,10 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 		for(int i=0; i<nx; i++)
 		{
 			I = j*nx+i + (nx-1)*ny;
-			tags[I] = -1;
+			tagsX[I] = -1;
+			tagsY[I] = -1;
+			coeffsX[I] = 0.0;
+			coeffsY[I] = 1.0;
 			insideX = false;
 			insideY = false;
 			k = B.totalPoints - 1;
@@ -528,7 +258,7 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 							insideX   = true;
 							flag      = true;
 							bdryFlagX = I;
-							cf        = 0.0;
+							cfX       = 0.0;
 						}
 						// if the point of intersection lies to the right of the grid point
 				 		else if (x > xv[i]+eps)
@@ -536,14 +266,14 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 						// if the point of intersection is in the cell to the immediate right of the grid point
 						if (x>xv[i-1]+eps && x<xv[i]-eps)
 						{
-							bdryFlagX = I-1;
-							cf = (xv[i]-x)/(xv[i-1]-x);
+							bdryFlagX = I+1;
+							cfX = (xv[i]-x)/(xv[i+1]-x);
 						}
 						// if the point of intersection is in the cell to the immediate left of the grid point
 						else if (x>xv[i]+eps && x<xv[i+1]-eps)
 						{
-							bdryFlagX = I+1;
-							cf = (xv[i]-x)/(xv[i+1]-x);
+							bdryFlagX = I-1;
+							cfX = (xv[i]-x)/(xv[i-1]-x);
 						}
 					}
 				}
@@ -557,7 +287,7 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 						{
 							insideY   = true;
 							bdryFlagY = I;
-							cf        = 0.0;
+							cfY       = 0.0;
 							flag      = true;
 						}
 				 		else if (y > yv[j]+eps)
@@ -565,13 +295,13 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 
 						if (y>yv[j-1]+eps && y<yv[j]-eps)
 						{
-							bdryFlagY = I-nx;
-							cf = (yv[j]-y)/(yv[j-1]-y);
+							bdryFlagY = I+nx;
+							cfY = (yv[j]-y)/(yv[j+1]-y);
 						}
 						else if (y>yv[j]+eps && y<yv[j+1]-eps)
 						{
-							bdryFlagY = I+nx;
-							cf = (yv[j]-y)/(yv[j+1]-y);
+							bdryFlagY = I-nx;
+							cfY = (yv[j]-y)/(yv[j-1]-y);
 						}
 					}
 				}
@@ -580,13 +310,13 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 			}
 			if (insideY && bdryFlagY>=0)
 			{					
-				tags[I]   = bdryFlagY;
-				coeffs[I] = cf;
+				tagsY[I]   = bdryFlagY;
+				coeffsY[I] = cfY;
 			}
-			else if (insideX && bdryFlagX>=0)
+			if (insideX && bdryFlagX>=0)
 			{
-				tags[I]   = bdryFlagX;
-				coeffs[I] = cf;
+				tagsX[I]   = bdryFlagX;
+				coeffsX[I] = cfX;
 			} 
 		}
 	}
@@ -597,13 +327,23 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 		for(int i=0; i<nx; i++)
 		{
 			I = j*nx+i+(nx-1)*ny;
-			if (tags[I] >= 0)
+			if (tagsY[I] >= 0 || tagsX[I] >= 0)
+			{
 				file << xv[i] << '\t' << yv[j] << std::endl;
+				if (tagsX[I] == I-1)
+					file << xv[i-1] << '\t' << yv[j] << std::endl;
+				else if (tagsX[I] == I+1)
+					file << xv[i+1] << '\t' << yv[j] << std::endl;
+				if (tagsY[I] == I-nx)
+					file << xv[i] << '\t' << yv[j-1] << std::endl;
+				else if (tagsY[I] == I+nx)
+					file << xv[i] << '\t' << yv[j+1] << std::endl;
+				file << xv[i] << '\t' << yv[j] << std::endl;
+			}
+			file << std::endl;
 		}
 	}
 	file.close();
-
-	std::cout << "DONE!" << std::endl;
 	
 	file.open("body.txt");
 	for(int k=0; k<B.totalPoints; k++)
@@ -612,5 +352,3 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 	}
 	file.close();
 }
-#endif
-
