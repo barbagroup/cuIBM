@@ -1,3 +1,25 @@
+/**
+*  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
+*
+*  Permission is hereby granted, free of charge, to any person obtaining a copy
+*  of this software and associated documentation files (the "Software"), to deal
+*  in the Software without restriction, including without limitation the rights
+*  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+*  copies of the Software, and to permit persons to whom the Software is
+*  furnished to do so, subject to the following conditions:
+*
+*  The above copyright notice and this permission notice shall be included in
+*  all copies or substantial portions of the Software.
+*
+*  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+*  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+*  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+*  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+*  THE SOFTWARE.
+*/
+
 #include <solvers/NavierStokes/NavierStokesSolver.h>
 #include <solvers/NavierStokes/FadlunEtAlSolver.h>
 #include <solvers/NavierStokes/TairaColoniusSolver.h>
@@ -31,17 +53,17 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	           diffScheme = (*paramDB)["simulation"]["diffTimeScheme"].get<timeScheme>();
 	intgSchm.initialise(convScheme, diffScheme);
 	
-	// initial values of timeStep
+	/// initial values of timeStep
 	timeStep = (*paramDB)["simulation"]["startStep"].get<int>();
 	
-	// create directory 
+	/// create directory 
 	std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
 	mkdir(folderName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 	
-	// write the grids information to a file
+	/// write the grids information to a file
 	io::writeGrid(folderName, *domInfo);
 	
-	// open the required files
+	/// open the required files
 	std::stringstream out;
 	out << folderName << "/forces";
 //	forceFile.open(out.str().c_str());
@@ -49,13 +71,18 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	out << folderName << "/iterations";
 	iterationsFile.open(out.str().c_str());
 	
-	// write the plot information to a file
+	/// write the plot information to a file
 	
 	std::cout << "Initialised common stuff!" << std::endl;
 	
 	logger.stopTimer("initialiseCommon");
 }
 
+/**
+* \brief Initialises all required arrays
+* \param numQ Total number velocity variables (u and v)
+* \param numLambda Number of pressure variables + twice the number of body force variables
+*/
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 {	
@@ -91,11 +118,14 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 	
 	generateRNFull();
 	cusp::blas::scal(H, 1.0/intgSchm.gamma[0]);
-	std::cout << "Initialised arrays!" << std::endl;
+	std::cout << "Initialised arra-ys!" << std::endl;
 	
 	logger.stopTimer("initialiseArrays");
 }
 
+/**
+* \brief Sets the initial value of all the fluxes in the flow field
+*/
 template <>
 void NavierStokesSolver <host_memory>::initialiseFluxes()
 {
@@ -126,8 +156,8 @@ void NavierStokesSolver <device_memory>::initialiseFluxes()
 	int  numU  = (nx-1)*ny;
 	int  numUV = numU + nx*(ny-1);
 	vecH qHost(numUV);
-	int  i;
 	real uInitial, vInitial;
+	int  i;
 	uInitial = (*paramDB)["flow"]["uInitial"].get<real>();
 	vInitial = (*paramDB)["flow"]["vInitial"].get<real>();
 	for(i=0; i < numU; i++)
@@ -142,6 +172,9 @@ void NavierStokesSolver <device_memory>::initialiseFluxes()
 	qStar = q;
 }
 
+/**
+* \brief Sets the initial values of the the boundary velocities
+*/
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 {
@@ -178,6 +211,9 @@ void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 	bc[XPLUS][ny-1]  = bcInfo[XPLUS][0].value;
 }
 
+/**
+* \brief Assembles all the required matrices
+*/
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::assembleMatrices()
 {
@@ -200,6 +236,9 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 	logger.stopTimer("assembleMatrices");
 }
 
+/**
+* \brief Generates the approximate inverse of the matrix A
+*/
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::generateBN()
 {

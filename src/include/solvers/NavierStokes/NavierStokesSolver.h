@@ -1,4 +1,26 @@
 /**
+*  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
+*
+*  Permission is hereby granted, free of charge, to any person obtaining a copy
+*  of this software and associated documentation files (the "Software"), to deal
+*  in the Software without restriction, including without limitation the rights
+*  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+*  copies of the Software, and to permit persons to whom the Software is
+*  furnished to do so, subject to the following conditions:
+*
+*  The above copyright notice and this permission notice shall be included in
+*  all copies or substantial portions of the Software.
+*
+*  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+*  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+*  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+*  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+*  THE SOFTWARE.
+*/
+
+/**
 * \file NavierStokesSolver.h
 * \brief Solves the Navier-Stokes equations in a rectangular domain
 */
@@ -38,9 +60,9 @@ protected:
 	Logger logger;
 	
 	std::ofstream forceFile, iterationsFile;
-
+	
 	/**
-	* Methods are defined as virtual when they are redefined in a derived class with the same name.
+	* \brief Initialises stuff common to all IBM solvers
 	*/
 	void initialiseCommon();
 	void initialiseArrays(int numQ, int numLambda);
@@ -49,7 +71,10 @@ protected:
 	void assembleMatrices(); // contains subfunctions to calculate A, QT, BN, QTBNQ
 
 	// functions to generate matrices
+	
 	void generateM();
+	
+	// Methods are defined as virtual when they are redefined in a derived class with the same name.
 	
 	virtual void generateL();
 	virtual void generateA(int alpha);
@@ -84,15 +109,39 @@ protected:
 	virtual void calculateForce();
 
 public:
-	virtual void initialise();
-	void stepTime();
-	void writeData();
-	bool finished();
-	void shutDown();
 	/**
-	* Factory methods are static (not entirely sure why)
+	* \brief Initialise stuff required for the simulation
 	*/
+	virtual void initialise();
+	
+	/**
+	* \brief Calculate all the variables at the next time step
+	*/
+	void stepTime();
+	
+	/**
+	* \brief Write the data to files
+	*/
+	void writeData();
+	
+	/**
+	* \brief Condition required to bring the simulation to a halt.
+	* \return True if the simulation is over. False if it must continue.
+	*/
+	bool finished();
+	
+	/**
+	* \brief Perform necessary actions to end the simulation
+	*/
+	void shutDown();
+	
+	// Factory methods are static (not entirely sure why)
 	static NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &dom_info);
+	
+	/**
+	* \brief Give the name of the current solver 
+	* \return String that describes the type of solver
+	*/
 	virtual std::string name()
 	{
 		return "Navier-Stokes";
