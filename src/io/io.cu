@@ -191,29 +191,30 @@ void printTimingInfo(Logger &logger)
 	logger.writeLegend();
 	logger.printAllTime();
 }
-/*
+
 void writeInfoFile(parameterDB &DB, domain &D)
 {
-	std::string foldername = DB[inputs]["folderName"].get<string>;
-	std::ofstream   infofile((foldername+"/run.info").c_str());
-	infofile << std::setw(20) << "--nx"  << std::setw(20) << D.nx << std::endl;
-	infofile << std::setw(20) << "--ny"  << std::setw(20) << D.ny << std::endl;
-	infofile << std::setw(20) << "--start_step" << std::setw(20) << opts.nt << std::endl;
-	infofile << std::setw(20) << "--nt" << std::setw(20) << opts.nt << std::endl;
-	infofile << std::setw(20) << "--dt" << std::setw(20) << sys_params.dt << std::endl;
-	infofile << std::setw(20) << "--nsave" << std::setw(20) << opts.nsave << std::endl;
-	infofile << std::setw(20) << "--vortlim" << std::setw(20) << 15 << std::endl;
-	infofile << std::setw(20) << "--folder" << std::setw(20) << opts.foldername << std::endl;
-	infofile << std::setw(20) << "--mu" << std::setw(20) << sys_params.mu << std::endl;
-	infofile << std::setw(20) << "--rho" << std::setw(20) << sys_params.rho << std::endl;
-	infofile << std::setw(20) << "--K" << std::setw(20) << opts.K << std::endl;
-	infofile << std::setw(20) << "--input" << std::setw(20) << opts.input_file << std::endl;
+	std::string   foldername = DB["inputs"]["folderName"].get<string>();
+	std::ofstream infofile((foldername+"/run.info").c_str());
+	infofile << std::setw(20) << "--nx"  << "\t" << D.nx << std::endl;
+	infofile << std::setw(20) << "--ny"  << "\t" << D.ny << std::endl;
+	infofile << std::setw(20) << "--start_step" << "\t" << DB["simulation"]["startStep"].get<int>() << std::endl;
+	infofile << std::setw(20) << "--nt"     << "\t" << DB["simulation"]["nt"].get<int>() << std::endl;
+	infofile << std::setw(20) << "--dt"     << "\t" << DB["simulation"]["dt"].get<real>() << std::endl;
+	infofile << std::setw(20) << "--nsave"  << "\t" << DB["simulation"]["nsave"].get<int>() << std::endl;
+	infofile << std::setw(20) << "--vortlim"<< "\t" << 15 << std::endl;
+	infofile << std::setw(20) << "--folder" << "\t" << foldername << std::endl;
+	infofile << std::setw(20) << "--nu"     << "\t" << DB["flow"]["nu"].get<real>() << std::endl;
+	infofile << std::setw(20) << "--flow_file" << "\t" << DB["inputs"]["flowFile"].get<string>() << std::endl;
+	infofile << std::setw(20) << "--sim_file" << "\t"  << DB["inputs"]["simulationFile"].get<string>() << std::endl;
+	infofile << std::setw(20) << "--dom_file" << "\t"  << DB["inputs"]["domainFile"].get<string>() << std::endl;
+	infofile << std::setw(20) << "--body_file" << "\t" << DB["inputs"]["bodyFile"].get<string>() << std::endl;
 	//infofile << std::setw(20) << "--blx" << std::setw(20) << sys_params.bl.x << std::endl;
 	//infofile << std::setw(20) << "--bly" << std::setw(20) << sys_params.bl.y << std::endl;
 	//infofile << std::setw(20) << "--trx" << std::setw(20) << sys_params.tr.x << std::endl;
 	//infofile << std::setw(20) << "--try" << std::setw(20) << sys_params.tr.y << std::endl;
 	infofile.close();
-}*/
+}
 
 void writeGrid(std::string &folderName, domain &D)
 {
