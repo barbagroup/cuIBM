@@ -37,11 +37,12 @@ void TairaColoniusSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP+2*B.totalPoints);
 	NavierStokesSolver<memoryType>::assembleMatrices();
 	if(B.totalPoints > 0)
+	{
 		generateE();
-	
-	FxX.resize(B.numCellsX[0]);
-	FxY.resize(B.numCellsY[0]);
-	FxU.resize( (B.numCellsX[0]+1)*B.numCellsY[0] );
+		FxX.resize(B.numCellsX[0]);
+		FxY.resize(B.numCellsY[0]);
+		FxU.resize( (B.numCellsX[0]+1)*B.numCellsY[0] );
+	}
 }
 
 template <typename memoryType>

@@ -21,8 +21,8 @@
 */
 
 /**
-* \file
-* \brief
+* \file integrationScheme.h
+* 
 */
 #pragma once
 
@@ -49,7 +49,7 @@ public:
 				subSteps = 1;
 				break;
 			case ADAMS_BASHFORTH_2:
-				subSteps = 2;
+				subSteps = 1;
 				break;
 			case RUNGE_KUTTA_3:
 				subSteps = 3;
@@ -68,7 +68,7 @@ public:
 				break;
 			case ADAMS_BASHFORTH_2:
 				gamma[0] = 1.5;
-				zeta[0]  = 0.5;
+				zeta[0]  = -0.5;
 				break;
 			case RUNGE_KUTTA_3:
 				gamma[0] = 8.0/15;
@@ -101,9 +101,11 @@ public:
 			alphaImplicit[i] = aI*(gamma[i]+zeta[i]);
 		}
 		std::cout << "DONE! " << std::endl;
+		std::cout << std::endl;
 		for(int i=0; i<subSteps; i++)
 		{
 			std::cout << '[' <<  i << ']' << " " << gamma[i] << " " << zeta[i] << " " << alphaExplicit[i] << " " << alphaImplicit[i] << std::endl;
 		}
+		std::cout << std::endl;
 	}
 };

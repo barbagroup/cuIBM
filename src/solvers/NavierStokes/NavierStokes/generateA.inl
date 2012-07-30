@@ -23,7 +23,7 @@
 #include <solvers/NavierStokes/kernels/generateA.h>
 
 template <>
-void NavierStokesSolver<device_memory>::generateA(int alpha)
+void NavierStokesSolver<device_memory>::generateA(real alpha)
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -45,12 +45,12 @@ void NavierStokesSolver<device_memory>::generateA(int alpha)
 	const int blockSize = 256;
 	dim3 dimGrid( int((ASize-0.5)/blockSize) + 1, 1);
 	dim3 dimBlock(blockSize, 1);
-
+	
 	kernels::generateA <<<dimGrid, dimBlock>>> (ARows, ACols, AVals, MVals, LRows, LCols, LVals, ASize, alpha);
 }
 
 template <>
-void NavierStokesSolver<host_memory>::generateA(int alpha)
+void NavierStokesSolver<host_memory>::generateA(real alpha)
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;

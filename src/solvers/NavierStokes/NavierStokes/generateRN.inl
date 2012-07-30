@@ -27,20 +27,24 @@
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::calculateExplicitLambdaTerms()
 {
+	/**
+	* Figure this part out for RK3. Not required for 1-step schemes
+	*/
+/*	
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
-
+	
 	// rn = rn - zeta * Q.lambda
 	if(fabs(intgSchm.zeta[subStep]) > 1e-6)
 	{
-		cusp::array1d<real, memoryType> temp(0.0, (nx-1)*ny+nx*(ny-1));
 		// temp = Q.lambda
-		cusp::wrapped::multiply(Q, lambda, temp);
+		cusp::wrapped::multiply(Q, lambda, temp1);
 		// temp = zeta*temp
-		cusp::blas::scal(temp, intgSchm.zeta[subStep]);
+		cusp::blas::scal(temp1, intgSchm.zeta[subStep]);
 		// rn = rn - temp
-		cusp::blas::axpy(temp, rn, -1.0);
+		cusp::blas::axpy(temp1, rn, -1.0);
 	}
+*/
 }
 
 template <>
@@ -48,7 +52,8 @@ void NavierStokesSolver<device_memory>::calculateExplicitQTerms()
 {
 	real gamma = intgSchm.gamma[subStep],
 	     zeta = intgSchm.zeta[subStep],
-	     alpha = intgSchm.alphaExplicit[subStep];
+	     alpha = intgSchm.alphaExplicit[subStep],
+	     nu = (*paramDB)["flow"]["nu"].get<real>();
 	     
 	// raw pointers for cup arrays
 	real *H_r  = thrust::raw_pointer_cast(&H[0]),
@@ -76,19 +81,19 @@ void NavierStokesSolver<device_memory>::calculateExplicitQTerms()
 	// call the kernel
 
 	// convection terms for the interior points
-	kernels::convectionTermU <<<dimGridx, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha);
-	kernels::convectionTermV <<<dimGridy, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha);
+	kernels::convectionTermU <<<dimGridx, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, nu);
+	kernels::convectionTermV <<<dimGridy, dimBlock>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, nu);
 	
 	dim3 dimGridbc(int((nx+ny-0.5)/(BSZ*BSZ))+1, 1);
 	dim3 dimBlockbc(BSZ*BSZ, 1);
 	
 	// calculate convection terms for the rows adjoining the top and bottom boundaries
-	kernels::convectionTermUBottomTop <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, yminus, yplus, xminus, xplus);
-	kernels::convectionTermVBottomTop <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, yminus, yplus);
+	kernels::convectionTermUBottomTop <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, nu, yminus, yplus, xminus, xplus);
+	kernels::convectionTermVBottomTop <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, nu, yminus, yplus);
 
 	// calculate convection terms for the columns adjoining the left and right boundaries
-	kernels::convectionTermULeftRight <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, xminus, xplus);
-	kernels::convectionTermVLeftRight <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, yminus, yplus, xminus, xplus);
+	kernels::convectionTermULeftRight <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, nu, xminus, xplus);
+	kernels::convectionTermVLeftRight <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, nu, yminus, yplus, xminus, xplus);
 }
 
 template <>

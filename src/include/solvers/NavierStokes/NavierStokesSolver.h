@@ -22,7 +22,7 @@
 
 /**
 * \file NavierStokesSolver.h
-* \brief Solves the Navier-Stokes equations in a rectangular domain
+* \brief Solves the Navier-Stokes equations in a rectangular domain.
 */
 #pragma once
 
@@ -48,7 +48,14 @@ protected:
 	real QCoeff;
 	
 	coo_matrix<int, real, memoryType>
-	     M, Minv, L, A, QT, Q, BN, C;
+	     M,
+	     Minv, 
+	     L,    ///< Discrete Laplacian 
+	     A, 
+	     QT,   ///< 
+	     Q, 
+	     BN, 
+	     C;
 
 	array1d<real, memoryType>
 	     q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1, bc[4], qOld;
@@ -62,7 +69,7 @@ protected:
 	std::ofstream forceFile, iterationsFile;
 	
 	/**
-	* \brief Initialises stuff common to all IBM solvers
+	* Initialises stuff common to all IBM solvers
 	*/
 	void initialiseCommon();
 	void initialiseArrays(int numQ, int numLambda);
@@ -77,7 +84,7 @@ protected:
 	// Methods are defined as virtual when they are redefined in a derived class with the same name.
 	
 	virtual void generateL();
-	virtual void generateA(int alpha);
+	virtual void generateA(real alpha);
 	void generateBN();
 	
 	virtual void generateQT(int *QTRows, int *QTCols, real *QTVals){}

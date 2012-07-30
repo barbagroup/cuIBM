@@ -90,7 +90,7 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 	
 	q.resize(numQ);
 	qStar.resize(numQ);
-		qOld.resize(numQ); // remove later
+		qOld.resize(numQ);
 	rn.resize(numQ);
 	H.resize(numQ);
 	bc1.resize(numQ);
@@ -117,8 +117,8 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 	initialiseBoundaryArrays();
 	
 	generateRNFull();
-	cusp::blas::scal(H, 1.0/intgSchm.gamma[0]);
-	std::cout << "Initialised arra-ys!" << std::endl;
+	cusp::blas::scal(H, 1.0/intgSchm.gamma[subStep]);
+	std::cout << "Initialised arrays!" << std::endl;
 	
 	logger.stopTimer("initialiseArrays");
 }
@@ -220,8 +220,11 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 	logger.startTimer("assembleMatrices");
 	
 	generateM();
+//	cusp::print(M);
 	generateL();
-	generateA(intgSchm.alphaImplicit[0]);
+//	cusp::print(L);
+	generateA(intgSchm.alphaImplicit[subStep]);
+//	cusp::print(A);
 	
 //	PC1 = cusp::precond::diagonal<real, memoryType>(A);
 	
@@ -287,7 +290,9 @@ void NavierStokesSolver<memoryType>::stepTime()
 
 		// Set up and solve the first system for the intermediate velocity
 		generateRN();
+		//cusp::print(rn);
 		generateBC1();
+		//cusp::print(bc1);
 		assembleRHS1();
 		solveIntermediateVelocity();
 
@@ -413,8 +418,8 @@ void NavierStokesSolver<memoryType>::writeData()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::updateQ(real gamma)
 {
-	cusp::blas::scal(Q.values, gamma/QCoeff);
-	QCoeff = gamma;
+//	cusp::blas::scal(Q.values, gamma/QCoeff);
+//	QCoeff = gamma;
 }
 
 template <typename memoryType>

@@ -28,7 +28,9 @@ namespace kernels
 {
 
 // CUDA kernel to generate Hx and rn
-__global__ void convectionTermU(real *rn, real *H, real *q, int nx, int ny, real *dx, real *dy, real dt, real gamma, real zeta, real alpha)
+__global__ void convectionTermU(real *rn, real *H, real *q,
+                                  int nx, int ny, real *dx, real *dy, 
+                                  real dt, real gamma, real zeta, real alpha, real nu)
 {
 	int bx	= blockIdx.x,
 		by	= blockIdx.y,
@@ -45,15 +47,15 @@ __global__ void convectionTermU(real *rn, real *H, real *q, int nx, int ny, real
 		return;
 	}
 
-	int		N_u		= (nx-1)*ny,
-			Gidx_x	= J*(nx-1) + I,
-			Gidx_y	= (J-1)*nx + I + N_u;
+	int  N_u = (nx-1)*ny,
+	     Gidx_x = J*(nx-1) + I,
+	     Gidx_y = (J-1)*nx + I + N_u;
 			
-	real	cTerm, dTerm, Hxn;
+	real cTerm, dTerm, Hxn;
 	
-	__shared__ real		u[BSZ][BSZ],
-						v[BSZ][BSZ],
-						Hx[BSZ][BSZ];
+	__shared__ real u[BSZ][BSZ],
+	                  v[BSZ][BSZ],
+	                  Hx[BSZ][BSZ];
 						
 	__shared__ real		Dx[BSZ][BSZ], Dy[BSZ][BSZ];
 	
@@ -84,7 +86,7 @@ __global__ void convectionTermU(real *rn, real *H, real *q, int nx, int ny, real
 		// rN for u
 		cTerm = gamma*Hx[j][i] + zeta*Hxn;
 		//cTerm = Hx[j][i]; // 1st order Euler
-		dTerm = alpha*( \
+		dTerm = alpha*nu*2.0*( \
 						 ( Dx[j][i]*u[j][i+1] - (Dx[j][i]+Dx[j][i+1])*u[j][i] + Dx[j][i+1]*u[j][i-1] )/( Dx[j][i]*Dx[j][i+1]*(Dx[j][i]+Dx[j][i+1]) ) \
 					   + 4.0*( (Dy[j][i]+Dy[j-1][i])*u[j+1][i] - (Dy[j-1][i] + 2.0*Dy[j][i] + Dy[j+1][i])*u[j][i] + (Dy[j][i]+Dy[j+1][i])*u[j-1][i] ) \
 							/( (Dy[j][i]+Dy[j-1][i]) * (Dy[j-1][i] + 2.0*Dy[j][i] + Dy[j+1][i]) * (Dy[j][i]+Dy[j+1][i]) ) \
@@ -94,7 +96,9 @@ __global__ void convectionTermU(real *rn, real *H, real *q, int nx, int ny, real
 }
 
 // CUDA kernel to generate Hy and rn
-__global__ void convectionTermV(real *rn, real *H, real *q, int nx, int ny, real *dx, real *dy, real dt, real gamma, real zeta, real alpha)
+__global__ void convectionTermV(real *rn, real *H, real *q,
+                                  int nx, int ny, real *dx, real *dy,
+                                  real dt, real gamma, real zeta, real alpha, real nu)
 {
 	int bx	= blockIdx.x,
 		by	= blockIdx.y,
@@ -150,7 +154,7 @@ __global__ void convectionTermV(real *rn, real *H, real *q, int nx, int ny, real
 		// rN for v
 		cTerm = gamma*Hy[j][i] + zeta*Hyn;
 		//cTerm = Hy[j][i]; // 1st order Euler
-		dTerm = alpha*( \
+		dTerm = alpha*nu*2.0*( \
 						4.0*( (Dx[j][i-1]+Dx[j][i])*v[j][i+1] - (Dx[j][i-1]+2.0*Dx[j][i]+Dx[j][i+1])*v[j][i] + (Dx[j][i]+Dx[j][i+1])*v[j][i-1] ) \
 							/( (Dx[j][i-1]+Dx[j][i]) * (Dx[j][i]+Dx[j][i+1]) * (Dx[j][i-1]+2.0*Dx[j][i]+Dx[j][i+1]) ) \
 						+ ( Dy[j][i]*v[j+1][i] - (Dy[j][i]+Dy[j+1][i])*v[j][i] + Dy[j+1][i]*v[j-1][i] )/( Dy[j][i]*Dy[j+1][i]*(Dy[j][i]+Dy[j+1][i]) ) \
@@ -162,7 +166,7 @@ __global__ void convectionTermV(real *rn, real *H, real *q, int nx, int ny, real
 __global__
 void convectionTermVBottomTop(real *rn, real *H, real *q, \
                                       int nx, int ny, real *dx, real *dy, \
-                                      real dt, real gamma, real zeta, real alpha, \
+                                      real dt, real gamma, real zeta, real alpha, real nu,\
                                       real *bcBottom, real *bcTop)
 {
 	int	I = blockIdx.x*blockDim.x + threadIdx.x;
@@ -184,7 +188,7 @@ void convectionTermVBottomTop(real *rn, real *H, real *q, \
 	cTerm = gamma*H[Iv] + zeta*Hn;	/// 2nd order Adams-Bashforth
 	//cTerm = H[Iv];	/// 1st order Euler
 	/// Diffusion Term
-	dTerm = alpha*( \
+	dTerm = alpha*nu*2.0*( \
 					4.0 * ( (dx[I-1]+dx[I])*q[Iv+1]/dx[I+1] - (dx[I-1]+2.0*dx[I]+dx[I+1])*q[Iv]/dx[I] + (dx[I]+dx[I+1])*q[Iv-1]/dx[I-1] ) \
 						/( (dx[I-1]+dx[I]) * (dx[I]+dx[I+1]) * (dx[I-1]+2.0*dx[I]+dx[I+1]) ) \
 					+ ( dy[0]*q[Iv+nx]/dx[I] - (dy[0]+dy[1])*q[Iv]/dx[I] + dy[1]*bcBottom[I+nx-1] )/( dy[0]*dy[1]*(dy[0]+dy[1]) ) \
@@ -207,7 +211,7 @@ void convectionTermVBottomTop(real *rn, real *H, real *q, \
 	cTerm = gamma*H[Iv] + zeta*Hn;	/// 2nd order Adams-Bashforth
 	//cTerm = H[Iv];	/// 1st order Euler
 	/// Diffusion Term
-	dTerm = alpha*( \
+	dTerm = alpha*nu*2.0*( \
 					4.0*( (dx[I-1]+dx[I])*q[Iv+1]/dx[I+1] - (dx[I-1]+2.0*dx[I]+dx[I+1])*q[Iv]/dx[I] + (dx[I]+dx[I+1])*q[Iv-1]/dx[I-1] ) \
 						/( (dx[I-1]+dx[I]) * (dx[I]+dx[I+1]) * (dx[I-1]+2.0*dx[I]+dx[I+1]) ) \
 					+ ( dy[ny-2]*bcTop[I+nx-1] - (dy[ny-1]+dy[ny-2])*q[Iv]/dx[I] + dy[ny-1]*q[Iv-nx]/dx[I] )/( dy[ny-2]*dy[ny-1]*(dy[ny-2]+dy[ny-1]) ) \
@@ -219,7 +223,7 @@ void convectionTermVBottomTop(real *rn, real *H, real *q, \
 __global__
 void convectionTermUBottomTop(real *rn, real *H, real *q, \
                               int nx, int ny, real *dx, real *dy, \
-                              real dt, real gamma, real zeta, real alpha, \
+                              real dt, real gamma, real zeta, real alpha, real nu, \
                               real *bcBottom, real *bcTop, real *bcLeft, real *bcRight)
 {
 	int	I = blockIdx.x*blockDim.x + threadIdx.x;
@@ -258,7 +262,7 @@ void convectionTermUBottomTop(real *rn, real *H, real *q, \
 	cTerm = gamma*H[I] + zeta*Hn;
 	//cTerm = H[I]; // 1st order Euler **************************** DID NOT CHANGE I TO Iu HERE
 	// Diffusion Term
-	dTerm = alpha*( \
+	dTerm = alpha*nu*2.0*( \
 					( dx[I]*ur - (dx[I]+dx[I+1])*u + dx[I+1]*ul )/( dx[I] * (dx[I]+dx[I+1]) * dx[I+1] ) \
 					+ 4.0*( dy[0]*q[I+(nx-1)]/dy[1] - (2.0*dy[0]+dy[1])*u + (dy[0]+dy[1])*bcBottom[I] ) \
 						/( dy[0] * (2.0*dy[0]+dy[1]) * (dy[0]+dy[1]) )
@@ -295,7 +299,7 @@ void convectionTermUBottomTop(real *rn, real *H, real *q, \
 	cTerm = gamma*H[Iu] + zeta*Hn;
 	//cTerm = H[Iu];	/// 1st order Euler  ************************* CHANGED I TO Iu HERE
 	// Diffusion Term
-	dTerm = alpha*( \
+	dTerm = alpha*nu*2.0*( \
 					( dx[I]*ur - (dx[I]+dx[I+1])*u + dx[I+1]*ul )/( dx[I] * (dx[I]+dx[I+1]) * dx[I+1] ) \
 					+ 4.0*( (dy[ny-2]+dy[ny-1])*bcTop[I] - (dy[ny-2]+2.0*dy[ny-1])*u + (dy[ny-1])*q[Iu-(nx-1)]/dy[ny-2] ) \
 						/( (dy[ny-2]+dy[ny-1])*(dy[ny-1])*(dy[ny-2]+2.0*dy[ny-1]) )
@@ -307,7 +311,7 @@ void convectionTermUBottomTop(real *rn, real *H, real *q, \
 __global__
 void convectionTermULeftRight(real *rn, real *H, real *q, \
                               int nx, int ny, real *dx, real *dy, \
-                              real dt, real gamma, real zeta, real alpha, \
+                              real dt, real gamma, real zeta, real alpha, real nu, \
                               real *bcLeft, real *bcRight)
 {
 	int	I = blockIdx.x*blockDim.x + threadIdx.x;
@@ -330,7 +334,7 @@ void convectionTermULeftRight(real *rn, real *H, real *q, \
 	cTerm = gamma*H[Iu] + zeta*Hn;
 	//cTerm = H[Iu];	/// 1st order Euler
 	/// Diffusion Term
-	dTerm = alpha*( \
+	dTerm = alpha*nu*2.0*( \
 					( dx[0]*q[Iu+1]/dy[I] - (dx[0]+dx[1])*q[Iu]/dy[I] + dx[1]*bcLeft[I] )/( dx[0]*dx[1]*(dx[0]+dx[1]) ) \
 					+ 4.0 * ( (dy[I-1]+dy[I])*q[Iu+(nx-1)]/dy[I+1] - (dy[I-1]+2.0*dy[I]+dy[I+1])*q[Iu]/dy[I] + (dy[I]+dy[I+1])*q[Iu-(nx-1)]/dy[I-1] ) \
 						/( (dy[I-1]+dy[I]) * (dy[I]+dy[I+1]) * (dy[I-1]+2.0*dy[I]+dy[I+1]) ) \
@@ -352,7 +356,7 @@ void convectionTermULeftRight(real *rn, real *H, real *q, \
 	cTerm = gamma*H[Iu] + zeta*Hn;
 	//cTerm = H[Iu];	/// 1st order Euler
 	/// Diffusion Term
-	dTerm = alpha*( \
+	dTerm = alpha*nu*2.0*( \
 					( dx[nx-2]*bcRight[I] - (dx[nx-2]+dx[nx-1])*q[Iu]/dy[I] + dx[nx-1]*q[Iu-1]/dy[I] )/( dx[nx-2]*dx[nx-1]*(dx[nx-2]+dx[nx-1]) ) \
 					+ 4.0 * ( (dy[I-1]+dy[I])*q[Iu+(nx-1)]/dy[I+1] - (dy[I-1]+2.0*dy[I]+dy[I+1])*q[Iu]/dy[I] + (dy[I]+dy[I+1])*q[Iu-(nx-1)]/dy[I-1] ) \
 						/( (dy[I-1]+dy[I]) * (dy[I]+dy[I+1]) * (dy[I-1]+2.0*dy[I]+dy[I+1]) ) \
@@ -364,7 +368,7 @@ void convectionTermULeftRight(real *rn, real *H, real *q, \
 __global__
 void convectionTermVLeftRight(real *rn, real *H, real *q, \
                              int nx, int ny, real *dx, real *dy, \
-                             real dt, real gamma, real zeta, real alpha, \
+                             real dt, real gamma, real zeta, real alpha, real nu,\
                              real *bcBottom, real *bcTop, real *bcLeft, real *bcRight)
 {
 	int	I = blockIdx.x*blockDim.x + threadIdx.x;
@@ -402,7 +406,7 @@ void convectionTermVLeftRight(real *rn, real *H, real *q, \
 	cTerm = gamma*H[Iv] + zeta*Hn;
 	//cTerm = H[Iv];	/// 1st order Euler
 	/// Diffusion Term
-	dTerm = alpha*( \
+	dTerm = alpha*nu*2.0*( \
 					4.0 * ( (dx[0])*q[Iv+1]/dx[1] - (2.0*dx[0]+dx[1])*v + (dx[0]+dx[1])*bcLeft[I+ny] ) \
 						/( (dx[0]) * (dx[0]+dx[1]) * (2.0*dx[0]+dx[1]) ) \
 					+ ( dy[I]*vt - (dy[I]+dy[I+1])*v + dy[I+1]*vb )/( dy[I]*dy[I+1]*(dy[I]+dy[I+1]) ) \
@@ -439,7 +443,7 @@ void convectionTermVLeftRight(real *rn, real *H, real *q, \
 	cTerm = gamma*H[Iv] + zeta*Hn;
 	//cTerm = H[Iv];	/// 1st order Euler
 	/// Diffusion Term
-	dTerm = alpha*( \
+	dTerm = alpha*nu*2.0*( \
 					4.0 * ( (dx[nx-1]+dx[nx-2])*bcRight[I+ny] - (2.0*dx[nx-1]+dx[nx-2])*v + (dx[nx-1])*q[Iv-1]/dx[nx-2] ) \
 						/( (dx[nx-1]) * (dx[nx-1]+dx[nx-2]) * (2.0*dx[nx-1]+dx[nx-2]) ) \
 					+ ( dy[I]*vt - (dy[I]+dy[I+1])*v + dy[I+1]*vb )/( dy[I]*dy[I+1]*(dy[I]+dy[I+1]) ) \

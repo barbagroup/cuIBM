@@ -160,7 +160,7 @@ for n=start_step+nsave:nsave:nt
 	set(gca, 'FontName', 'Arial', 'FontSize', 14);
 	set(gcf, 'PaperPositionMode', 'auto', 'PaperSize', [6 4.5]);
 	axis equal;
-	axis([-1 2 -1.5 1.5]);
+	axis([xmin xmax ymin ymax]);
 	caxis([-omgmax omgmax])
 	out_file = strcat('../../', foldername, '/o', subfolder, '.pdf');
 	print('-dpdf', '-r300', out_file);
@@ -188,7 +188,7 @@ for n=start_step+nsave:nsave:nt
 	
 	contourf(Xu, Yu, transpose(u), [-1:0.1:1])
 	axis equal;
-	axis([-1 2 -1.5 1.5]);
+	axis([xmin xmax ymin ymax]);
 	caxis([-1 1]);
 	out_file = strcat('../../', foldername, '/u', subfolder, '.pdf');
 	print('-dpdf', '-r300', out_file);
@@ -200,7 +200,7 @@ for n=start_step+nsave:nsave:nt
 	
 	contourf(Xv, Yv, transpose(v), [-1:0.1:1])
 	axis equal;
-	axis([-1 2 -1.5 1.5]);
+	axis([xmin xmax ymin ymax]);
 	caxis([-1 1]);
 	out_file = strcat('../../', foldername, '/v', subfolder, '.pdf');
 	print('-dpdf', '-r300', out_file); 

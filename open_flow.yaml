@@ -4,8 +4,8 @@
   nsave: 100
   restart: false
   startStep: 0
-  timeScheme: [EULER_EXPLICIT, EULER_IMPLICIT]
-  ibmScheme: FADLUN_ET_AL
+  timeScheme: [EULER_EXPLICIT, EULER_EXPLICIT]
+  ibmScheme: TAIRA_COLONIUS
   linearSolvers:
     - system: velocity
       solver: CG

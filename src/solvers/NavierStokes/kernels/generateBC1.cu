@@ -50,7 +50,7 @@ void bc1DirichletV(real *bc1, int N, int nx, int numU, int offset, int stride, r
 }
 
 __global__
-void bc1ConvectiveU(real *bc1, int N, int nx, int offset, int stride, real *dx, real *dy, real C, real *bc, real *q, real alpha)
+void bc1ConvectiveU(real *bc1, int N, int nx, int offset, int stride, real *dx, real *dy, real C, real *bc, real *q, real beta)
 {
 	int idx	= threadIdx.x + blockIdx.x*blockDim.x;
 	
@@ -60,13 +60,13 @@ void bc1ConvectiveU(real *bc1, int N, int nx, int offset, int stride, real *dx, 
 		i = I % (nx-1),
 		j = I / (nx-1);
 	
-	bc[idx] = (1.0-alpha)*bc[idx] + alpha*q[I]/dy[j];
+	bc[idx] = (1.0-beta)*bc[idx] + beta*q[I]/dy[j];
 	
 	bc1[I] += bc[idx] * C * 0.5*(dx[i] + dx[i+1]);
 }
 
 __global__
-void bc1ConvectiveV(real *bc1, int N, int nx, int numU, int offset, int stride, real *dx, real *dy, real C, real *bc, int numUbc, real *q, real alpha)
+void bc1ConvectiveV(real *bc1, int N, int nx, int numU, int offset, int stride, real *dx, real *dy, real C, real *bc, int numUbc, real *q, real beta)
 {
 	int idx	= threadIdx.x + blockIdx.x*blockDim.x;
 		
@@ -76,7 +76,7 @@ void bc1ConvectiveV(real *bc1, int N, int nx, int numU, int offset, int stride, 
 		i = I % nx,
 		j = I / nx;
 	
-	bc[idx+numUbc] = (1.0-alpha)*bc[idx+numUbc] + alpha*q[numU + I]/dx[i];
+	bc[idx+numUbc] = (1.0-beta)*bc[idx+numUbc] + beta*q[numU + I]/dx[i];
 	
 	bc1[numU + I] += bc[idx+numUbc] * C * 0.5*(dy[j] + dy[j+1]);
 }
