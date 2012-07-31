@@ -67,3 +67,18 @@ force_look:
 
 #
 .PHONY: cuibm
+
+LidDrivenCavityRe100:
+	bin/cuIBM -flowFile flows/cavity0100.yaml -domainFile domains/cavity0100.yaml -bodyFile bodies/empty.yaml -simulationFile simParams/cavity0100.yaml -folderName LidDrivenCavityRe100
+
+LidDrivenCavityRe1000:
+	bin/cuIBM -flowFile flows/cavity1000.yaml -domainFile domains/cavity1000.yaml -bodyFile bodies/empty.yaml -simulationFile simParams/cavity1000.yaml -folderName LidDrivenCavityRe1000
+
+cylinderRe40: force_look
+	bin/cuIBM -flowFile flows/openFlow0040.yaml -domainFile domains/openFlow0.025.yaml -bodyFile bodies/cylinder126.yaml -simulationFile simParams/cylinder0040.yaml -folderName cylinderRe40
+
+cylinderRe550: force_look
+	bin/cuIBM -flowFile flows/openFlow0550.yaml -domainFile domains/openFlow0.010.yaml -bodyFile bodies/cylinder315.yaml -simulationFile simParams/cylinder0550.yaml -folderName cylinderRe550
+
+cylinderRe3000: force_look
+	bin/cuIBM -flowFile flows/openFlow3000.yaml -domainFile domains/openFlow0.004.yaml -bodyFile bodies/cylinder786.yaml -simulationFile simParams/cylinder3000.yaml -folderName cylinderRe3000

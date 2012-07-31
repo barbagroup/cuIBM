@@ -84,7 +84,7 @@ template <typename memoryType>
 void TairaColoniusSolver<memoryType>::calculateForce()
 {
 	calculateForceTC();
-	calculateForce1();
+	//calculateForce1();
 }
 
 #include "TairaColonius/generateQT.inl"

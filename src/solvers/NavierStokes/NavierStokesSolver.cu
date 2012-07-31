@@ -66,7 +66,7 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	/// open the required files
 	std::stringstream out;
 	out << folderName << "/forces";
-//	forceFile.open(out.str().c_str());
+	forceFile.open(out.str().c_str());
 	out.str("");
 	out << folderName << "/iterations";
 	iterationsFile.open(out.str().c_str());
@@ -345,8 +345,11 @@ template <typename memoryType>
 void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 {
 	logger.startTimer("solveIntermediateVel");
+	
+	int  maxIters = (*paramDB)["velocitySolver"]["maxIterations"].get<int>();
+	real relTol = (*paramDB)["velocitySolver"]["tolerance"].get<real>();
 
-	cusp::default_monitor<real> sys1Mon(rhs1, 10000);
+	cusp::default_monitor<real> sys1Mon(rhs1, maxIters, relTol);
 	cusp::krylov::bicgstab(A, qStar, rhs1, sys1Mon);//, PC1);
 	//cusp::krylov::cg(A, qStar, rhs1, sys1Mon);//, PC1);
 	iterationCount1 = sys1Mon.iteration_count();
@@ -366,14 +369,18 @@ void NavierStokesSolver<memoryType>::solvePoisson()
 {
 	logger.startTimer("solvePoisson");
 	
-	cusp::default_monitor<real> sys2Mon(rhs2, 50000);
+	int  maxIters = (*paramDB)["PoissonSolver"]["maxIterations"].get<int>();
+	real relTol = (*paramDB)["PoissonSolver"]["tolerance"].get<real>();
+	
+	cusp::default_monitor<real> sys2Mon(rhs2, maxIters, relTol);
 	//cusp::krylov::gmres(C, lambda, rhs2, 50, sys2Mon);//, PC2);
-	cusp::krylov::bicgstab(C, lambda, rhs2, sys2Mon);//, PC2);
-	//cusp::krylov::cg(C, lambda, rhs2, sys2Mon);//, PC2);
+	//cusp::krylov::bicgstab(C, lambda, rhs2, sys2Mon);//, PC2);
+	cusp::krylov::cg(C, lambda, rhs2, sys2Mon);//, PC2);
 	iterationCount2 = sys2Mon.iteration_count();
 	if (!sys2Mon.converged())
 	{
 		std::cout << "ERROR: Solve for Lambda failed at time step " << timeStep << std::endl;
+		std::cout << "Iterations   : " << iterationCount2 << std::endl;          
 		std::cout << "Residual norm: " << sys2Mon.residual_norm() << std::endl;
 		std::cout << "Tolerance    : " << sys2Mon.tolerance() << std::endl;
 		std::exit(-1);
@@ -406,9 +413,9 @@ void NavierStokesSolver<memoryType>::writeData()
 		io::writeData(folderName, timeStep, q, lambda, *domInfo);
 	}
 	real dt = (*paramDB)["simulation"]["dt"].get<real>();
-//	calculateForce();
+	calculateForce();
 //	io::writeForce(folderName, timeStep*dt, forceX, forceY);
-//	forceFile << timeStep*dt << '\t' << forceX << '\t' << force1 << std::endl;
+	forceFile << timeStep*dt << '\t' << forceX << '\t' << forceY << std::endl;
 	iterationsFile << timeStep << '\t' << iterationCount1 << '\t' << iterationCount2 << std::endl;
 //	io::writeIterations(iterationsFile, folderName, timeStep, iterationCount1, iterationCount2);
 	
