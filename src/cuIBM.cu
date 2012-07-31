@@ -38,12 +38,13 @@ int main(int argc, char **argv)
 
 	io::readInputs(argc, argv, paramDB, dom_info);
 	io::printSimulationInfo(paramDB, dom_info);
-	io::writeInfoFile(paramDB, dom_info);
 
 	/// choose the appropriate flow solver
 	NavierStokesSolver<device_memory> *solver = NavierStokesSolver<device_memory>::createSolver(paramDB, dom_info);
-
 	solver->initialise();
+	
+	io::writeInfoFile(paramDB, dom_info);
+	
 	while (!solver->finished())
 	{
 		solver->stepTime();

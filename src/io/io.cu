@@ -200,8 +200,8 @@ void writeInfoFile(parameterDB &DB, domain &D)
 	infofile << std::setw(20) << "--ny"  << "\t" << D.ny << std::endl;
 	infofile << std::setw(20) << "--start_step" << "\t" << DB["simulation"]["startStep"].get<int>() << std::endl;
 	infofile << std::setw(20) << "--nt"     << "\t" << DB["simulation"]["nt"].get<int>() << std::endl;
-	infofile << std::setw(20) << "--dt"     << "\t" << DB["simulation"]["dt"].get<real>() << std::endl;
 	infofile << std::setw(20) << "--nsave"  << "\t" << DB["simulation"]["nsave"].get<int>() << std::endl;
+	infofile << std::setw(20) << "--dt"     << "\t" << DB["simulation"]["dt"].get<real>() << std::endl;
 	infofile << std::setw(20) << "--vortlim"<< "\t" << 15 << std::endl;
 	infofile << std::setw(20) << "--folder" << "\t" << foldername << std::endl;
 	infofile << std::setw(20) << "--nu"     << "\t" << DB["flow"]["nu"].get<real>() << std::endl;
