@@ -54,5 +54,5 @@ public:
 	void calculateCellIndices(domain &D);
 	void calculateBoundingBoxes(domain &D);
 	
-	void update();
+	void update(parameterDB &db);
 };

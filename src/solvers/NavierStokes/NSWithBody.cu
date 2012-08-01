@@ -20,9 +20,18 @@
 *  THE SOFTWARE.
 */
 
+/*
+#include <solvers/NavierStokes/NSWithBody.h>
+
 template <typename memoryType>
-void TairaColoniusSolver<memoryType>::initialiseBodies()
+void NSWithBody<memoryType>::initialiseBodies()
 {
 	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
 	B.initialise(db, *NavierStokesSolver<memoryType>::domInfo);
 }
+
+template <typename memoryType>
+void NSWithBody<memoryType>::updateBodies()
+{
+}
+*/

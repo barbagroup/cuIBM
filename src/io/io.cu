@@ -68,10 +68,10 @@ void initialiseDefaultDB(parameterDB &DB)
 
 	// default input files
 	string inputs = "inputs";
-	DB[inputs]["flowFile"].set<string>("flows/open_flow.yaml");
-	DB[inputs]["simulationFile"].set<string>("open_flow.yaml");
-	DB[inputs]["bodyFile"].set<string>("inputs/cylinder.yaml");
-	DB[inputs]["domainFile"].set<string>("domains/open_flow.yaml");
+	DB[inputs]["flowFile"].set<string>("flows/openFlow.yaml");
+	DB[inputs]["simulationFile"].set<string>("simParams/openFlow.yaml");
+	DB[inputs]["bodyFile"].set<string>("bodies/cylinder.yaml");
+	DB[inputs]["domainFile"].set<string>("domains/openFlow.yaml");
 	DB[inputs]["folderName"].set<string>("new");
 
 	// flow parameters

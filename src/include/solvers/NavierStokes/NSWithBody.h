@@ -20,10 +20,24 @@
 *  THE SOFTWARE.
 */
 
+#pragma once
+
+#include <solvers/NavierStokes/NavierStokesSolver.h>
+#include <bodies.h>
+/**
+* Immersed boundary method described by Taira and Colonius (2007)
+*/
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::initialiseBodies()
+class NSWithBody : public NavierStokesSolver<memoryType>
 {
-	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
-	B.initialise(db, *NavierStokesSolver<memoryType>::domInfo);
-	std::cout << "Initialised bodies!" << std::endl;
-}
+protected:
+	bodies<memoryType> B;
+
+	void initialiseBodies()
+	{
+		parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
+		B.initialise(db, *NavierStokesSolver<memoryType>::domInfo);
+	}
+
+	void updateBodies(){};
+};

@@ -203,8 +203,12 @@ void bodies<device_memory>::calculateCellIndices(domain &D)
 }*/
 
 template <typename memoryType>
-void bodies<memoryType>::update()
+void bodies<memoryType>::update(parameterDB &db)
 {
+	std::vector<body> *B = db["flow"]["bodies"].get<std::vector<body> *>();	
+	for(int k=0; k<totalPoints; k++)
+	{		
+	}	
 }
 
 template class bodies<host_memory>;

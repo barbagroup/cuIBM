@@ -86,13 +86,13 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 			coeffsY[I] = 1.0;
 			insideX = false;
 			insideY = false;
-			k = B.totalPoints - 1;
+			k = NSWithBody<memoryType>::B.totalPoints - 1;
 			l = 0;
 			flag = false;
 			bdryFlagX = -1;
 			bdryFlagY = -1;
 				
-			while( l < B.totalPoints)
+			while( l < NSWithBody<memoryType>::B.totalPoints)
 			{
 				if (by[k] > by[l])
 				{
@@ -234,13 +234,13 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 			coeffsY[I] = 1.0;
 			insideX = false;
 			insideY = false;
-			k = B.totalPoints - 1;
+			k = NSWithBody<memoryType>::B.totalPoints - 1;
 			l = 0;
 			flag = false;
 			bdryFlagX = -1;
 			bdryFlagY = -1;
 			
-			while( l < B.totalPoints)
+			while( l < NSWithBody<memoryType>::B.totalPoints)
 			{
 				if (by[k] > by[l])
 				{
@@ -368,7 +368,7 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 	file.close();
 	
 	file.open("body.txt");
-	for(int k=0; k<B.totalPoints; k++)
+	for(int k=0; k<NSWithBody<memoryType>::B.totalPoints; k++)
 	{
 		file << bx[k] << '\t' << by[k] << std::endl;
 	}

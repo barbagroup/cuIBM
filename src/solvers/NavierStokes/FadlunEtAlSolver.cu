@@ -32,7 +32,7 @@ void FadlunEtAlSolver<memoryType>::initialise()
 	int numUV = (nx-1)*ny + nx*(ny-1);
 	int numP  = nx*ny;
 	
-	initialiseBodies();
+	NSWithBody<memoryType>::initialiseBodies();
 	
 	NavierStokesSolver<memoryType>::initialiseCommon();
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP);
@@ -58,11 +58,6 @@ void FadlunEtAlSolver<memoryType>::initialise()
 	std::cout << "Done tagging points!" << std::endl;
 	
 	NavierStokesSolver<memoryType>::assembleMatrices();
-}
-
-template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::updateBodies()
-{
 }
 
 /*template <typename memoryType>
@@ -100,7 +95,6 @@ void FadlunEtAlSolver<memoryType>::updateBC1()
 {
 }
 
-#include "FadlunEtAl/initialiseBodies.inl"
 #include "FadlunEtAl/tagPoints.inl"
 #include "FadlunEtAl/generateL.inl"
 #include "FadlunEtAl/updateRN.inl"

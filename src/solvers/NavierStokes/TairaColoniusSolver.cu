@@ -32,30 +32,25 @@ void TairaColoniusSolver<memoryType>::initialise()
 	int numUV = (nx-1)*ny + nx*(ny-1);
 	int numP  = nx*ny;
 	
-	initialiseBodies();
+	NSWithBody<memoryType>::initialiseBodies();
 	NavierStokesSolver<memoryType>::initialiseCommon();
-	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP+2*B.totalPoints);
+	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP+2*NSWithBody<memoryType>::B.totalPoints);
 	NavierStokesSolver<memoryType>::assembleMatrices();
-	if(B.totalPoints > 0)
+	if(NSWithBody<memoryType>::B.totalPoints > 0)
 	{
 		generateE();
-		FxX.resize(B.numCellsX[0]);
-		FxY.resize(B.numCellsY[0]);
-		FxU.resize( (B.numCellsX[0]+1)*B.numCellsY[0] );
+		FxX.resize(NSWithBody<memoryType>::B.numCellsX[0]);
+		FxY.resize(NSWithBody<memoryType>::B.numCellsY[0]);
+		FxU.resize( (NSWithBody<memoryType>::B.numCellsX[0]+1)*NSWithBody<memoryType>::B.numCellsY[0] );
 	}
-}
-
-template <typename memoryType>
-void TairaColoniusSolver<memoryType>::updateBodies()
-{
 }
 
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::updateSolverState()
 {
 	NavierStokesSolver<memoryType>::updateBoundaryConditions();
-	if (B.bodiesMove) {
-		updateBodies();
+	if (NSWithBody<memoryType>::B.bodiesMove) {
+		NSWithBody<memoryType>::updateBodies();
 		updateQT();
 		NavierStokesSolver<memoryType>::generateC();
 	}
@@ -68,10 +63,10 @@ void TairaColoniusSolver<memoryType>::calculateForceTC()
 	     ny = NavierStokesSolver<memoryType>::domInfo->ny;
 	
 	array1d<real, memoryType>
-		f(2*B.totalPoints),
+		f(2*NSWithBody<memoryType>::B.totalPoints),
 		F((nx-1)*ny + nx*(ny-1));
 	
-	real dx = NavierStokesSolver<memoryType>::domInfo->dx[ B.I[0] ],
+	real dx = NavierStokesSolver<memoryType>::domInfo->dx[ NSWithBody<memoryType>::B.I[0] ],
 	     dy = dx;
 	
 	thrust::copy(NavierStokesSolver<memoryType>::lambda.begin() + nx*ny, NavierStokesSolver<memoryType>::lambda.end(), f.begin());
@@ -89,7 +84,6 @@ void TairaColoniusSolver<memoryType>::calculateForce()
 
 #include "TairaColonius/generateQT.inl"
 #include "TairaColonius/generateBC2.inl"
-#include "TairaColonius/initialiseBodies.inl"
 #include "TairaColonius/calculateForce.inl"
 
 template class TairaColoniusSolver<host_memory>;

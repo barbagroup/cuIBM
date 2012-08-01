@@ -27,16 +27,14 @@
 
 #pragma once
 
-#include <solvers/NavierStokes/NavierStokesSolver.h>
-#include <bodies.h>
+#include <solvers/NavierStokes/NSWithBody.h>
 /**
 * Immersed boundary method described by Fadlun et al (2000)
 */
 template <typename memoryType>
-class FadlunEtAlSolver : public NavierStokesSolver<memoryType>
+class FadlunEtAlSolver : public NSWithBody<memoryType>
 {
 private:
-	bodies<memoryType> B;
 /*
 	// For the 1D interpolations
 	cusp::array1d<int, host_memory>    tags;
@@ -66,8 +64,6 @@ private:
 	void generateBC1();
 	void updateBC1();
 
-	void initialiseBodies();
-	void updateBodies();
 //	void updateSolverState();
 	
 public:
