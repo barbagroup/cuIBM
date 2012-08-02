@@ -31,6 +31,11 @@ class body
 
     real X0[2], ///< Reference centre of rotation
          Theta0; ///< Reference angle
+    
+    real Xc[2],
+         Theta,
+         vel[2],
+         angVel;
 
     vecH X, Y; ///< Reference location of boundary points
 
@@ -40,4 +45,22 @@ class body
     real xOscillation[3],
          yOscillation[3],
          pitchOscillation[3];
+         
+	void update(real Time)
+	{
+		/// If the body is translating
+		if(moving[0])
+		{
+			Xc[0] = X0[0] + velocity[0]*Time + xOscillation[0]*sin(xOscillation[1]*Time + xOscillation[2]);
+			Xc[1] = X0[1] + velocity[1]*Time + yOscillation[0]*sin(yOscillation[1]*Time + yOscillation[2]);
+			vel[0]= velocity[0] + xOscillation[0]*xOscillation[1]*cos(xOscillation[1]*Time + xOscillation[2]);
+			vel[1]= velocity[1] + yOscillation[0]*yOscillation[1]*cos(yOscillation[1]*Time + yOscillation[2]);
+		}
+		/// If the body is rotating
+		if(moving[1])
+		{
+			Theta = Theta0 + omega*Time + pitchOscillation[0]*sin(pitchOscillation[1]*Time + pitchOscillation[2]);
+			angVel = omega + pitchOscillation[0]*pitchOscillation[1]*cos(pitchOscillation[1]*Time + pitchOscillation[2]);
+		}
+	}
 };

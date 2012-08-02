@@ -46,13 +46,12 @@ public:
 		xmin, xmax, ymin, ymax;
 
 	cusp::array1d<real, memoryType>
-		X, Y, ds,
-		x, y, uB, vB,
-		X0_x, X0_y, Xc_x, Xc_y, Theta0;
+		X, Y, ds, ones,
+		x, y, uB, vB;
 
 	void initialise(parameterDB &db, domain &D);
 	void calculateCellIndices(domain &D);
 	void calculateBoundingBoxes(domain &D);
 	
-	void update(parameterDB &db);
+	void update(parameterDB &db, domain &D, real Time);
 };

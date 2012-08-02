@@ -48,12 +48,18 @@ void TairaColoniusSolver<memoryType>::initialise()
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::updateSolverState()
 {
+	NavierStokesSolver<memoryType>::logger.startTimer("updateSolverState");
+	
 	NavierStokesSolver<memoryType>::updateBoundaryConditions();
-	if (NSWithBody<memoryType>::B.bodiesMove) {
+	if (NSWithBody<memoryType>::B.bodiesMove)
+	{
 		NSWithBody<memoryType>::updateBodies();
-		updateQT();
+		//updateQT();
+		generateQT();
 		NavierStokesSolver<memoryType>::generateC();
 	}
+	
+	NavierStokesSolver<memoryType>::logger.stopTimer("updateSolverState");
 }
 
 template <typename memoryType>

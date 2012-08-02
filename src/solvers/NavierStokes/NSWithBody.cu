@@ -20,7 +20,7 @@
 *  THE SOFTWARE.
 */
 
-/*
+#if 0
 #include <solvers/NavierStokes/NSWithBody.h>
 
 template <typename memoryType>
@@ -33,5 +33,6 @@ void NSWithBody<memoryType>::initialiseBodies()
 template <typename memoryType>
 void NSWithBody<memoryType>::updateBodies()
 {
+	
 }
-*/
+#endif

@@ -30,11 +30,6 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 
 	numBodies = B->size();
 
-	X0_x.resize(numBodies);
-	X0_y.resize(numBodies);
-	Xc_x.resize(numBodies);
-	Xc_y.resize(numBodies);
-	Theta0.resize(numBodies);
 	numPoints.resize(numBodies);
 	offsets.resize(numBodies);
 	
@@ -59,11 +54,10 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	X.resize(totalPoints);
 	Y.resize(totalPoints);
 	ds.resize(totalPoints);
+	ones.resize(totalPoints);
+	cusp::blas::fill(ones, 1.0);
 	for(int k=0; k<numBodies; k++)
 	{
-		X0_x[k] = (*B)[k].X0[0];
-		X0_y[k] = (*B)[k].X0[1];
-		Theta0[k] = (*B)[k].Theta0;
 		for(int i=0; i<numPoints[k]; i++)
 		{
 			X[i+offsets[k]] = (*B)[k].X[i];
@@ -77,10 +71,9 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	I.resize(totalPoints);
 	J.resize(totalPoints);
 
+	bodiesMove = false;
 	for(int k=0; k<numBodies; k++)
 	{
-		Xc_x[k] = X0_x[k];
-		Xc_y[k] = X0_y[k];
 		for(int i=offsets[k], j = offsets[k]+numPoints[k]-1; i<offsets[k]+numPoints[k];)
 		{
 			ds[i] = sqrt( (X[i]-X[j])*(X[i]-X[j]) + (Y[i]-Y[j])*(Y[i]-Y[j]) );
@@ -90,8 +83,8 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 			vB[i] = 0.0;
 			j = i++;
 		}
+		bodiesMove = bodiesMove || (*B)[k].moving[0] || (*B)[k].moving[1];
 	}
-	bodiesMove = false;
 	if(numBodies)
 	{
 		calculateCellIndices(D);
@@ -110,7 +103,6 @@ void bodies<memoryType>::initialise(flowDescription &F, domain &D)
 template <typename memoryType>
 void bodies<memoryType>::calculateCellIndices(domain &D)
 {
-	std::cout << "Entered calculateCellIndices" << std::endl;
 	int	i=0, j=0;
 
 	/// find the cell for the zeroth point
@@ -203,12 +195,25 @@ void bodies<device_memory>::calculateCellIndices(domain &D)
 }*/
 
 template <typename memoryType>
-void bodies<memoryType>::update(parameterDB &db)
+void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 {
-	std::vector<body> *B = db["flow"]["bodies"].get<std::vector<body> *>();	
-	for(int k=0; k<totalPoints; k++)
-	{		
-	}	
+	
+	std::vector<body> *B = db["flow"]["bodies"].get<std::vector<body> *>();
+	
+	/// Update the location and velocity of the body
+	(*B)[0].update(Time);
+
+	/// Update postitions	
+	cusp::blas::axpby(X, ones, x, 1, -(*B)[0].X0[0]);
+	cusp::blas::axpy(ones, x, (*B)[0].Xc[0]);
+	cusp::blas::axpby(Y, ones, y, 1, -(*B)[0].X0[1]);
+	cusp::blas::axpy(ones, y, (*B)[0].Xc[1]);
+	
+	/// Update velocities
+	cusp::blas::fill(uB, (*B)[0].velX);
+	cusp::blas::fill(vB, (*B)[0].velY);
+	
+	calculateCellIndices(D);
 }
 
 template class bodies<host_memory>;
