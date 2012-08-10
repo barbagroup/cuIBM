@@ -71,37 +71,60 @@ force_look:
 	true
 
 #
-.PHONY: LidDrivenCavityRe100
+.PHONY: cavity LidDrivenCavityRe100 LidDrivenCavityRe1000
+.PHONY: cylinder cylinderRe40 cylinderRe550 cylinderRe3000
+.PHONY: flapping flappingRe75
+
+cavity:
+	bin/cuIBM \
+	-flowFile flows/cavity.yaml -domainFile domains/cavity.yaml \
+	-bodyFile bodies/empty.yaml -simulationFile simParams/cavity.yaml \
+	-folderName cavity
+
 LidDrivenCavityRe100:
 	bin/cuIBM \
 	-flowFile flows/cavity0100.yaml -domainFile domains/cavity0100.yaml \
 	-bodyFile bodies/empty.yaml -simulationFile simParams/cavity0100.yaml \
 	-folderName LidDrivenCavityRe100
 
-.PHONY: LidDrivenCavityRe1000
 LidDrivenCavityRe1000:
 	bin/cuIBM \
 	-flowFile flows/cavity1000.yaml -domainFile domains/cavity1000.yaml \
 	-bodyFile bodies/empty.yaml -simulationFile simParams/cavity1000.yaml \
 	-folderName LidDrivenCavityRe1000
 
-.PHONY: cylinderRe40
-cylinderRe40: force_look
+cylinder:
+	bin/cuIBM \
+	-flowFile flows/openFlow.yaml -domainFile domains/openFlow.yaml \
+	-bodyFile bodies/cylinder.yaml -simulationFile simParams/openFlow.yaml \
+	-folderName cylinder
+
+cylinderRe40:
 	bin/cuIBM \
 	-flowFile flows/openFlow0040.yaml -domainFile domains/openFlow0.025.yaml \
-	-bodyFile bodies/cylinder126.yaml -simulationFile simParams/cylinder0040.yaml \
+	-bodyFile bodies/cylinder0.025.yaml -simulationFile simParams/cylinder0040.yaml \
 	-folderName cylinderRe40
 
-.PHONY: cylinderRe550
-cylinderRe550: force_look
+cylinderRe550:
 	bin/cuIBM \
 	-flowFile flows/openFlow0550.yaml -domainFile domains/openFlow0.010.yaml \
-	-bodyFile bodies/cylinder315.yaml -simulationFile simParams/cylinder0550.yaml \
+	-bodyFile bodies/cylinder0.010.yaml -simulationFile simParams/cylinder0550.yaml \
 	-folderName cylinderRe550
 
-.PHONY: cylinderRe3000
-cylinderRe3000: force_look
+cylinderRe3000:
 	bin/cuIBM \
 	-flowFile flows/openFlow3000.yaml -domainFile domains/openFlow0.004.yaml \
-	-bodyFile bodies/cylinder786.yaml -simulationFile simParams/cylinder3000.yaml \
+	-bodyFile bodies/cylinder0.004.yaml -simulationFile simParams/cylinder3000.yaml \
 	-folderName cylinderRe3000
+
+flapping:
+	bin/cuIBM \
+	-flowFile flows/box.yaml -domainFile domains/flapping.yaml \
+	-bodyFile bodies/flapping.yaml -simulationFile simParams/flapping.yaml \
+	-folderName flapping
+
+flappingRe75:
+	bin/cuIBM \
+	-flowFile flows/box.yaml -domainFile domains/flappingRe75.yaml \
+	-bodyFile bodies/flappingRe75.yaml -simulationFile simParams/flappingRe75.yaml \
+	-folderName flappingRe75

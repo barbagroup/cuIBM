@@ -4,7 +4,7 @@
     - end: -1.0
       cells: 55
       stretchRatio: 0.9523809524
-    - end: 1
+    - end: 1.0
       cells: 40
       stretchRatio: 1.0
     - end: 15.0
@@ -17,7 +17,7 @@
     - end: -1.0
       cells: 55
       stretchRatio: 0.9523809524
-    - end: 1
+    - end: 1.0
       cells: 40
       stretchRatio: 1.0
     - end: 15.0

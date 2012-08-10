@@ -39,9 +39,9 @@ void operator >> (const YAML::Node &node, domain &D)
 	node["start"] >> start;
 	
 	if (dir=="x")
-			D.nx = 0;
-		else if(dir=="y")
-			D.ny = 0;
+		D.nx = 0;
+	else if(dir=="y")
+		D.ny = 0;
 	
 	const YAML::Node &subDomains = node["subDomains"];
 	// first pass
@@ -69,7 +69,7 @@ void operator >> (const YAML::Node &node, domain &D)
 		D.y.resize(D.ny+1);
 		D.dy.resize(D.ny);	
 		D.yD.resize(D.ny+1);
-		D.dyD.resize(D.nx);
+		D.dyD.resize(D.ny);
 		D.y[beg] = start;
 	}
 	

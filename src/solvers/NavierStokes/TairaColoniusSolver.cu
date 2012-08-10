@@ -56,6 +56,7 @@ void TairaColoniusSolver<memoryType>::updateSolverState()
 		NSWithBody<memoryType>::updateBodies();
 		//updateQT();
 		generateQT();
+		generateE();
 		NavierStokesSolver<memoryType>::generateC();
 	}
 	

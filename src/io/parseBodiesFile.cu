@@ -44,9 +44,13 @@ void operator >> (const YAML::Node &node, body &Body)
 	// velocity
 	for (int i=0; i<2; i++)
 		node["velocity"][i] >> Body.velocity[i];
-	
+
+	// alpha
+	node["alpha"] >> Body.Theta0;
+	Body.Theta0 = Body.Theta0 * M_PI/180.0;
+
 	// omega
-	node["omega"] >> Body.Theta0;
+	node["omega"] >> Body.omega;
 	
 	// oscillation in X, Y, pitch
 	for (int i=0; i<3; i++)
@@ -63,9 +67,20 @@ void operator >> (const YAML::Node &node, body &Body)
 	{
 		string fname;
 		node["pointsFile"] >> fname;
-		// initialisePoints(fname.c_str(),Body);
+		fname = "bodyFiles/" + fname;
+		std::cout << fname << std::endl;
+		// initialise points
+		std::ifstream file(fname.c_str());
+		file >> Body.numPoints;
+		Body.X.resize(Body.numPoints);
+		Body.Y.resize(Body.numPoints);
+		for(int i=0; i<Body.numPoints; i++)
+		{
+			file >> Body.X[i] >> Body.Y[i];
+		}
+		file.close();
 	}
-	else if (type == "line_segment")
+	else if (type == "lineSegment")
 	{
 		real startX, startY, endX, endY;
 		int numPoints;
@@ -86,7 +101,6 @@ void operator >> (const YAML::Node &node, body &Body)
 		node["circleOptions"][2] >> R;
 		node["circleOptions"][3] >> numPoints;
 		Body.numPoints = numPoints;
-		printf("numPoints: %d\n",numPoints);
 		// initialise circle
 		Body.X.resize(numPoints);
 		Body.Y.resize(numPoints);
@@ -98,6 +112,7 @@ void operator >> (const YAML::Node &node, body &Body)
 	}
 	else
 		printf("[E]: unknown Body type\n");
+	printf("numPoints: %d\n",Body.numPoints);
 }
 
 void parseBodiesFile(std::string &bodiesFile, parameterDB &DB)

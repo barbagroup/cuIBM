@@ -303,6 +303,7 @@ void NavierStokesSolver<memoryType>::stepTime()
 
 		// Projection step
 		projectionStep();
+//		q = qStar;
 	}
 	
 	timeStep++;

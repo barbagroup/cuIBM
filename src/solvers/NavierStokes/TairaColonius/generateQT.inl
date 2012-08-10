@@ -454,7 +454,6 @@ void TairaColoniusSolver<host_memory>::generateE()
 		}
 	}
 	cusp::transpose(E, ET);
-	std::cout << "Generated E (T&C)" << std::endl;
 }
 
 template <>
@@ -533,5 +532,4 @@ void TairaColoniusSolver<device_memory>::generateE()
 	}
 	E = EHost;
 	cusp::transpose(E, ET);
-	std::cout << "Generated E (T&C)" << std::endl;
 }

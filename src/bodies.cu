@@ -77,8 +77,11 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 		for(int i=offsets[k], j = offsets[k]+numPoints[k]-1; i<offsets[k]+numPoints[k];)
 		{
 			ds[i] = sqrt( (X[i]-X[j])*(X[i]-X[j]) + (Y[i]-Y[j])*(Y[i]-Y[j]) );
-			x[i] = X[i];
-			y[i] = Y[i];
+			
+			/// x_i^m = X_c^m + (X_i^m - X_0^m) \cos(\theta) - (Y_i^m - Y_0^m) \sin(\theta)
+			x[i] = (*B)[k].Xc[0] + ((*B)[k].X[i]-(*B)[k].X0[0])*cos((*B)[k].Theta0) - ((*B)[k].Y[i] - (*B)[k].X0[1])*sin((*B)[k].Theta0);
+			/// y_i^m = Y_c^m + (X_i^m - X_0^m) \sin(\theta) + (Y_i^m - Y_0^m) \cos(\theta)
+			y[i] = (*B)[k].Xc[1] + ((*B)[k].X[i]-(*B)[k].X0[0])*sin((*B)[k].Theta0) + ((*B)[k].Y[i] - (*B)[k].X0[1])*cos((*B)[k].Theta0);
 			uB[i] = 0.0;
 			vB[i] = 0.0;
 			j = i++;
@@ -204,14 +207,31 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 	(*B)[0].update(Time);
 
 	/// Update postitions	
-	cusp::blas::axpby(X, ones, x, 1, -(*B)[0].X0[0]);
-	cusp::blas::axpy(ones, x, (*B)[0].Xc[0]);
-	cusp::blas::axpby(Y, ones, y, 1, -(*B)[0].X0[1]);
-	cusp::blas::axpy(ones, y, (*B)[0].Xc[1]);
+	//cusp::blas::axpby(X, ones, x, 1, -(*B)[0].X0[0]);
+	//cusp::blas::axpy(ones, x, (*B)[0].Xc[0]);
+	//cusp::blas::axpbypcz( ones, X, ones, x, (*B)[0].Xc[0],  1.0, -(*B)[0].X0[0]);
+	//cusp::blas::axpby(Y, ones, y, 1, -(*B)[0].X0[1]);
+	//cusp::blas::axpy(ones, y, (*B)[0].Xc[1]);
+	//cusp::blas::axpbypcz( ones, Y, ones, y, (*B)[0].Xc[1],  1.0, -(*B)[0].X0[1]);
 	
 	/// Update velocities
-	cusp::blas::fill(uB, (*B)[0].velX);
-	cusp::blas::fill(vB, (*B)[0].velY);
+	//cusp::blas::fill(uB, (*B)[0].vel[0]);
+	//cusp::blas::fill(vB, (*B)[0].vel[1]);
+
+
+	/// Update postitions	
+	/// x-coordinates
+	/// x_i^m = X_c^m + (X_i^m - X_0^m) \cos(\theta) - (Y_i^m - Y_0^m) \sin(\theta)
+	cusp::blas::axpbypcz( ones, X, ones, x, (*B)[0].Xc[0],  cos((*B)[0].Theta), -(*B)[0].X0[0]*cos((*B)[0].Theta) );
+	cusp::blas::axpbypcz( x,    Y, ones, x,           1.0, -sin((*B)[0].Theta),  (*B)[0].X0[1]*sin((*B)[0].Theta) );
+	/// y-coordinates
+	/// y_i^m = Y_c^m + (X_i^m - X_0^m) \sin(\theta) + (Y_i^m - Y_0^m) \cos(\theta)
+	cusp::blas::axpbypcz( ones, X, ones, y, (*B)[0].Xc[1],  sin((*B)[0].Theta), -(*B)[0].X0[0]*sin((*B)[0].Theta) );
+	cusp::blas::axpbypcz( y,    Y, ones, y,           1.0,  cos((*B)[0].Theta), -(*B)[0].X0[1]*cos((*B)[0].Theta) );
+	
+	/// Update velocities
+	cusp::blas::axpbypcz(ones, y, ones, uB, (*B)[0].vel[0], -(*B)[0].angVel,  (*B)[0].angVel*(*B)[0].Xc[1]);
+	cusp::blas::axpbypcz(ones, x, ones, vB, (*B)[0].vel[1],  (*B)[0].angVel, -(*B)[0].angVel*(*B)[0].Xc[0]);
 	
 	calculateCellIndices(D);
 }

@@ -55,7 +55,7 @@ void fillM_v(int *MRows, int *MCols, real *MVals, int *MinvRows, int *MinvCols, 
 	int  numU = (nx-1)*ny;
 	int  i = I % nx;
 	int  j = I / nx;
-	real value = 0.5*(dy[j]+dx[j+1])/dx[i]/dt;
+	real value = 0.5*(dy[j]+dy[j+1])/dx[i]/dt;
 	
 	MRows[I+numU] = I+numU;
 	MCols[I+numU] = I+numU;
