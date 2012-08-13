@@ -1,5 +1,5 @@
-/**
-*  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
+/*
+*  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,11 @@
 *  THE SOFTWARE.
 */
 
+/**
+* @file  parameterDB.h
+* @brief Database of all the simluation parameters
+*/
+
 #pragma once
 
 #include <cstdio>
@@ -30,32 +35,50 @@
 #include <iostream>
 #include <boundaryCondition.h>
 
-// property.h
 // generic property storage
+/**
+* @class property
+*/
 class property
 {
+	template <typename T> T getInternal();
+	
+	// hack to get around std::type_info not having a default constructor
+	const std::type_info *type;
+	
+	/// 64 bytes of storage for the name of the 
+	char value[64];
+
 public:
+	/// Constructor. Intialises the memory to zero.
 	property()
 	{
-		// initialise the memory to 0
-		memset(value,0,64);
+		memset(value, 0, 64);
 	}
-	// get a value given a type
+	
+	/// Get a value given a type
 	template <typename T> T get();
-	// set a value given a type
+	
+	/**
+	* @brief Set a value given a type
+	*
+	* @param v The value
+	*/
 	template <typename T> void set(T v);
 
 	// return string describing value of property as appropriate
 	const char *print();
-private:
-	template <typename T> T getInternal();
-	// hack to get around std::type_info not having a default constructor
-	const std::type_info *type;
-	// 64 bytes of storage
-	char value[64];
 };
 
+/**
+* @typedef componentParameter
+* @typedef Maps from strings to a property 
+*/
 typedef std::map<std::string, property> componentParameter;
+
+/**
+* @typedef parameterDB
+*/
 typedef std::map<std::string, componentParameter> parameterDB;
 
 // output a DB

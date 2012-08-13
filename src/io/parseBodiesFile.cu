@@ -48,6 +48,7 @@ void operator >> (const YAML::Node &node, body &Body)
 	// alpha
 	node["alpha"] >> Body.Theta0;
 	Body.Theta0 = Body.Theta0 * M_PI/180.0;
+	Body.Theta  = Body.Theta0;
 
 	// omega
 	node["omega"] >> Body.omega;

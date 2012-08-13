@@ -20,6 +20,11 @@
 *  THE SOFTWARE.
 */
 
+/**
+* @file tagPoints.inl
+* @brief Tag points near the immsersed boundary using a ray-tracing algorithm
+*/
+
 template <>
 void FadlunEtAlSolver<host_memory>::tagPoints()
 {

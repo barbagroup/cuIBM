@@ -1,5 +1,5 @@
-/**
-*  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
+/*
+*  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -25,24 +25,28 @@
 #include <solvers/NavierStokes/NavierStokesSolver.h>
 #include <bodies.h>
 /**
-* Immersed boundary method described by Taira and Colonius (2007)
+* @brief Generic Navier-Stokes solver in the presence of immersed boundaries
 */
 template <typename memoryType>
 class NSWithBody : public NavierStokesSolver<memoryType>
 {
 protected:
-	bodies<memoryType> B;
+	bodies<memoryType> B; ///< Bodies in the flow
+
 #if 0
 	void initialiseBodies();
 	void updateBodies();
 #endif
+
 #if 1
+	/// Initialise the bodies
 	void initialiseBodies()
 	{
 		parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
 		B.initialise(db, *NavierStokesSolver<memoryType>::domInfo);
 	}
-
+	
+	/// Update the body information at each time step during motion
 	void updateBodies()
 	{
 		parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;

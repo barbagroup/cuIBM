@@ -1,5 +1,5 @@
-/**
-*  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
+/*
+*  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,10 @@
 */
 
 /**
-* \file NavierStokesSolver.h
-* \brief Solves the Navier-Stokes equations in a rectangular domain.
+* @file NavierStokesSolver.h
+* @brief Solves the Navier-Stokes equations in a rectangular domain.
 */
+
 #pragma once
 
 #include <types.h>
@@ -47,7 +48,7 @@ protected:
 
 	real QCoeff;
 	
-	coo_matrix<int, real, memoryType>
+	cusp::coo_matrix<int, real, memoryType>
 	     M,
 	     Minv, 
 	     L,    ///< Discrete Laplacian 
@@ -57,7 +58,7 @@ protected:
 	     BN, 
 	     C;
 
-	array1d<real, memoryType>
+	cusp::array1d<real, memoryType>
 	     q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1, bc[4], qOld;
 
 	size_t  timeStep, subStep, iterationCount1, iterationCount2;

@@ -20,12 +20,16 @@
 *  THE SOFTWARE.
 */
 
+/**
+* @file bodies.cu
+*/
+
 #include <bodies.h>
 
 template <typename memoryType>
 void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 {
-	std::cout << "Entered B.initialise" << std::endl;
+	std::cout << "Initialising bodies... ";
 	std::vector<body> *B = db["flow"]["bodies"].get<std::vector<body> *>();
 
 	numBodies = B->size();
@@ -76,16 +80,17 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	{
 		for(int i=offsets[k], j = offsets[k]+numPoints[k]-1; i<offsets[k]+numPoints[k];)
 		{
+			// calculate the boundary segments lengths
 			ds[i] = sqrt( (X[i]-X[j])*(X[i]-X[j]) + (Y[i]-Y[j])*(Y[i]-Y[j]) );
-			
-			/// x_i^m = X_c^m + (X_i^m - X_0^m) \cos(\theta) - (Y_i^m - Y_0^m) \sin(\theta)
+			// set the initial x-coordinates of the boundary points
 			x[i] = (*B)[k].Xc[0] + ((*B)[k].X[i]-(*B)[k].X0[0])*cos((*B)[k].Theta0) - ((*B)[k].Y[i] - (*B)[k].X0[1])*sin((*B)[k].Theta0);
-			/// y_i^m = Y_c^m + (X_i^m - X_0^m) \sin(\theta) + (Y_i^m - Y_0^m) \cos(\theta)
+			// set the initial y-coordinates of the boundary points
 			y[i] = (*B)[k].Xc[1] + ((*B)[k].X[i]-(*B)[k].X0[0])*sin((*B)[k].Theta0) + ((*B)[k].Y[i] - (*B)[k].X0[1])*cos((*B)[k].Theta0);
 			uB[i] = 0.0;
 			vB[i] = 0.0;
 			j = i++;
 		}
+		// if the body is moving, set bodiesMove to true
 		bodiesMove = bodiesMove || (*B)[k].moving[0] || (*B)[k].moving[1];
 	}
 	if(numBodies)
@@ -93,7 +98,7 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 		calculateCellIndices(D);
 		calculateBoundingBoxes(D);
 	}
-	std::cout << "Completed B.initialise" << std::endl;
+	std::cout << "DONE!" << std::endl;
 }
 
 /*
@@ -118,25 +123,25 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 
 	for(int k=1; k<totalPoints; k++)
 	{
-		/// if the next boundary point is to the left of the current boundary point
+		// if the next boundary point is to the left of the current boundary point
 		if(x[k] < x[k-1])
 		{
 			while(D.x[i] > x[k])
 				i--;
 		}
-		/// if the next boundary point is to the right of the current boundary point
+		// if the next boundary point is to the right of the current boundary point
 		else
 		{
 			while(D.x[i+1] < x[k])
 				i++;
 		}
-		/// if the next boundary point is below the current boundary point
+		// if the next boundary point is below the current boundary point
 		if(y[k] < y[k-1])
 		{
 			while(D.y[j] > y[k])
 				j--;
 		}
-		/// if the next boundary point is above the current boundary point
+		// if the next boundary point is above the current boundary point
 		else
 		{
 			while(D.y[j+1] < y[k])
@@ -203,34 +208,21 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 	
 	std::vector<body> *B = db["flow"]["bodies"].get<std::vector<body> *>();
 	
-	/// Update the location and velocity of the body
+	// Update the location and velocity of the body
 	(*B)[0].update(Time);
 
-	/// Update postitions	
-	//cusp::blas::axpby(X, ones, x, 1, -(*B)[0].X0[0]);
-	//cusp::blas::axpy(ones, x, (*B)[0].Xc[0]);
-	//cusp::blas::axpbypcz( ones, X, ones, x, (*B)[0].Xc[0],  1.0, -(*B)[0].X0[0]);
-	//cusp::blas::axpby(Y, ones, y, 1, -(*B)[0].X0[1]);
-	//cusp::blas::axpy(ones, y, (*B)[0].Xc[1]);
-	//cusp::blas::axpbypcz( ones, Y, ones, y, (*B)[0].Xc[1],  1.0, -(*B)[0].X0[1]);
-	
-	/// Update velocities
-	//cusp::blas::fill(uB, (*B)[0].vel[0]);
-	//cusp::blas::fill(vB, (*B)[0].vel[1]);
-
-
-	/// Update postitions	
-	/// x-coordinates
-	/// x_i^m = X_c^m + (X_i^m - X_0^m) \cos(\theta) - (Y_i^m - Y_0^m) \sin(\theta)
+	// Update postitions	
+	// x-coordinates
 	cusp::blas::axpbypcz( ones, X, ones, x, (*B)[0].Xc[0],  cos((*B)[0].Theta), -(*B)[0].X0[0]*cos((*B)[0].Theta) );
 	cusp::blas::axpbypcz( x,    Y, ones, x,           1.0, -sin((*B)[0].Theta),  (*B)[0].X0[1]*sin((*B)[0].Theta) );
 	/// y-coordinates
-	/// y_i^m = Y_c^m + (X_i^m - X_0^m) \sin(\theta) + (Y_i^m - Y_0^m) \cos(\theta)
 	cusp::blas::axpbypcz( ones, X, ones, y, (*B)[0].Xc[1],  sin((*B)[0].Theta), -(*B)[0].X0[0]*sin((*B)[0].Theta) );
 	cusp::blas::axpbypcz( y,    Y, ones, y,           1.0,  cos((*B)[0].Theta), -(*B)[0].X0[1]*cos((*B)[0].Theta) );
 	
-	/// Update velocities
+	// Update velocities
+	// x-velocities
 	cusp::blas::axpbypcz(ones, y, ones, uB, (*B)[0].vel[0], -(*B)[0].angVel,  (*B)[0].angVel*(*B)[0].Xc[1]);
+	// y-velocities
 	cusp::blas::axpbypcz(ones, x, ones, vB, (*B)[0].vel[1],  (*B)[0].angVel, -(*B)[0].angVel*(*B)[0].Xc[0]);
 	
 	calculateCellIndices(D);

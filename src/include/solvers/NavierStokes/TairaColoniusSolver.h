@@ -1,5 +1,5 @@
-/**
-*  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
+/*
+*  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -20,20 +20,31 @@
 *  THE SOFTWARE.
 */
 
+/**
+* @file  TairaColoniusSolver.h
+* @brief Solves the flow using the IB method described by Taira and Colonius (2007)
+*
+* <b>The immersed boundary method: a projection approach</b> \n
+* Taira, K and Colonius, T \n
+* Journal of Computational Physics \n
+* Volume 225 Number 2 \n
+* 2007
+*/
+
 #pragma once
 
 #include <solvers/NavierStokes/NSWithBody.h>
 
 /**
-* Immersed boundary method described by Taira and Colonius (2007)
+* @brief Immersed boundary method described by Taira and Colonius (2007)
 */
 template <typename memoryType>
 class TairaColoniusSolver : public NSWithBody<memoryType>
 {
 private:
-	coo_matrix<int, real, memoryType> E, ET;
+	cusp::coo_matrix<int, real, memoryType> E, ET;
 	
-	array1d<real, memoryType> FxX, FxY, FxU;
+	cusp::array1d<real, memoryType> FxX, FxY, FxU;
 	
 	void generateQT(int *QTRows, int *QTCols, real *QTVals){}
 	void generateQT();

@@ -1,5 +1,5 @@
-/**
-*  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
+/*
+*  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -18,6 +18,11 @@
 *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 *  THE SOFTWARE.
+*/
+
+/**
+* @file  types.h
+* @brief Custom types required by the code.
 */
 
 #pragma once
@@ -46,24 +51,100 @@
 
 #include <logger.h>
 
-enum bcType {DIRICHLET, NEUMANN, CONVECTIVE, PERIODIC};
-enum boundary {XMINUS, XPLUS, YMINUS, YPLUS};
-enum timeScheme {EULER_EXPLICIT, EULER_IMPLICIT, ADAMS_BASHFORTH_2, RUNGE_KUTTA_3, CRANK_NICOLSON};
-enum ibmScheme {NAVIER_STOKES, SAIKI_BIRINGEN, FADLUN_ET_AL, TAIRA_COLONIUS};
-enum preconditionerType {NONE, DIAGONAL, SMOOTHED_AGGREGATION};
+/**
+* @enum  bcType
+* @brief Specifies the type of boundary condition
+*/
+enum bcType
+{
+	DIRICHLET,  ///< Dirichlet boundary condition
+	NEUMANN,    ///< Neumann boundary condition
+	CONVECTIVE, ///< Convective boundary condition
+	PERIODIC    ///< Periodic boundary condition
+};
 
+/**
+* @enum  boundary
+* @brief Specifies the boundary of concern
+*/
+enum boundary
+{
+	XMINUS, ///< Left boundary
+	XPLUS,  ///< Right boundary
+	YMINUS, ///< Bottom boundary
+	YPLUS   ///< Top boundary
+};
+
+/**
+* @enum  timeScheme
+* @brief Numerical scheme used to discretise the time derivative
+*/
+enum timeScheme
+{
+	EULER_EXPLICIT,    ///< Explicit Euler method (first order)
+	EULER_IMPLICIT,    ///< Implicit Euler method (first order)
+	ADAMS_BASHFORTH_2, ///< Second-order Adams-Bashforth scheme
+	RUNGE_KUTTA_3,     ///< Third-order low storage Runge-Kutta method
+	CRANK_NICOLSON     ///< Crank-Nicolson scheme (second order)
+};
+
+/**
+* @enum  ibmScheme
+* @brief The immersed boundary method used to solve for the flow.
+*/
+enum ibmScheme
+{
+	NAVIER_STOKES,  ///< No immersed bodies. Perot (1993)
+	SAIKI_BIRINGEN, ///< Saiki & Biringen (1996)
+	FADLUN_ET_AL,   ///< Fadlun et al (2000)
+	TAIRA_COLONIUS, ///< Taira & Colonius (2007)
+	SU_LAI_LIN      ///< Su, Lai and Lin (2007)
+};
+
+/**
+* @enum  preconditionerType
+* @brief Specify the type of preconditioner
+*/
+enum preconditionerType
+{
+	NONE,                ///< No preconditioner
+	DIAGONAL,            ///< Diagonal preconditioner
+	SMOOTHED_AGGREGATION ///< Smoothed aggregation preconditioner
+};
+
+// Shorthand for various types
+
+/**
+* @typedef real
+* @brief Can be \c float or \c double
+*/
 typedef double real;
 
 using cusp::device_memory;
 using cusp::host_memory;
-using cusp::array1d;
-using cusp::coo_matrix;
-using cusp::csr_matrix;
 
-typedef coo_matrix<int, real, host_memory> cooH;
-typedef coo_matrix<int, real, device_memory> cooD;
-typedef csr_matrix<int, real, host_memory> csrH;
-typedef csr_matrix<int, real, device_memory> csrD;
+/**
+* @typedef cooH
+* @brief   COO matrix stored on the host.
+*/
+typedef cusp::coo_matrix<int, real, host_memory>   cooH;
 
-typedef array1d<real, host_memory> vecH;
-typedef array1d<real, device_memory> vecD;
+/**
+* @typedef cooD
+* @brief   COO matrix stored on the device.
+*/
+typedef cusp::coo_matrix<int, real, device_memory> cooD;
+
+typedef cusp::csr_matrix<int, real, host_memory>   csrH;
+typedef cusp::csr_matrix<int, real, device_memory> csrD;
+
+/**
+* @typedef vecH
+* @brief   Cusp array of real numbers stored in the host memory.
+*/
+typedef cusp::array1d<real, host_memory>   vecH;
+/**
+* @typedef vecD
+* @brief   Cusp array of real numbers stored in the device memory.
+*/
+typedef cusp::array1d<real, device_memory> vecD;

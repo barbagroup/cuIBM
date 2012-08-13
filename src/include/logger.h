@@ -1,4 +1,4 @@
-/**
+/*
 *  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -42,9 +42,9 @@ private:
 
 	double get_time() // Timer function
 	{
-		struct timeval tv;                         // Time value
-		gettimeofday(&tv, NULL);                   // Get time of day in seconds and microseconds
-		return double(tv.tv_sec+tv.tv_usec*1e-6);  // Combine seconds and microseconds and return
+		struct timeval tv;                        // Time value
+		gettimeofday(&tv, NULL);                  // Get time of day in seconds and microseconds
+		return double(tv.tv_sec+tv.tv_usec*1e-6); // Combine seconds and microseconds and return
 	}
 
 public:

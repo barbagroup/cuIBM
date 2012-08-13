@@ -69,7 +69,7 @@ void TairaColoniusSolver<memoryType>::calculateForceTC()
 	int  nx = NavierStokesSolver<memoryType>::domInfo->nx,
 	     ny = NavierStokesSolver<memoryType>::domInfo->ny;
 	
-	array1d<real, memoryType>
+	cusp::array1d<real, memoryType>
 		f(2*NSWithBody<memoryType>::B.totalPoints),
 		F((nx-1)*ny + nx*(ny-1));
 	

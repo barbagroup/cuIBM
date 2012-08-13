@@ -1,5 +1,5 @@
-/**
-*  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
+/*
+*  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -27,11 +27,15 @@
 #include <sstream>
 #include <parameterDB.h>
 
+/**
+* @class boundaryCondition
+* @brief Stores the boundary conditions for a given system
+*/
 class boundaryCondition
 {
 public:
   bcType type;
-  real value;
+  real  value;
 
   boundaryCondition() : type(DIRICHLET), value(0) {}; 
   boundaryCondition(bcType _type, real _value) : type(_type), value(_value) {}; 

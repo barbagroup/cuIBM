@@ -1,5 +1,5 @@
-/**
-*  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
+/*
+*  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,8 @@
 */
 
 /**
-* \file io.h
-* \brief Functions for input and output.
+* @file io.h
+* @brief Functions for input and output.
 */
 
 #pragma once
@@ -33,16 +33,22 @@
 #include <bodies.h>
 #include <vector>
 
+/**
+* @namespace io
+* @brief     Contains all the functions related to I/O
+*/
 namespace io
 {
   // input
 
 	void readInputs(int argc, char **argv, parameterDB &DB, domain &D); 
+
 	// read in all different config files
 	void parseDomainFile(std::string &domFile, domain &D);
 	void parseFlowFile(std::string &flowFile, parameterDB &DB);
 	void parseSimulationFile(std::string &simFile, parameterDB &DB);
 	void parseBodiesFile(std::string &bodiesFile, parameterDB &DB);
+
 	void initialiseDefaultDB(parameterDB &DB);
 	void commandLineParse1(int argc, char **argv, parameterDB &DB);
 	void commandLineParse2(int argc, char **argv, parameterDB &DB);

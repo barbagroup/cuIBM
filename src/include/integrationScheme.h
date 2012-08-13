@@ -1,5 +1,5 @@
-/**
-*  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
+/*
+*  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -21,28 +21,36 @@
 */
 
 /**
-* \file integrationScheme.h
-* 
+* @file integrationScheme.h
+* @brief Specifies the time integration scheme used.
 */
 #pragma once
 
 #include <types.h>
 
 /**
-* Class description
+* @brief Specifies the time integration scheme used.
 */
 class integrationScheme
 {
 public:
-	int  subSteps;
-	vecH gamma, // coefficent of the convection term in the current time step
-	     zeta,  // coefficient of the convection  term in the previous time step 
-	     alphaImplicit, // coefficient of the implicit diffusion term
-	     alphaExplicit; // coefficient of the explicit diffusion term
+	int  subSteps;      ///< Number of substeps in each time step
 	
+	vecH gamma,         ///< Coefficent of the convection term in the current time step
+	     zeta,          ///< Coefficient of the convection  term in the previous time step 
+	     alphaImplicit, ///< Coefficient of the implicit diffusion term
+	     alphaExplicit; ///< Coefficient of the explicit diffusion term
+	
+	/**
+	* @brief Initialises the coefficients for the time-stepping schemes
+	* @param convScheme Time-stepping scheme used for the convection term
+	* @param diffScheme Time-stepping scheme used for the diffusion term
+	*/
 	void initialise(timeScheme convScheme, timeScheme diffScheme)
 	{
 		std::cout << "Initialising integration scheme... ";
+		
+		// Set the number of substeps required for the specified scheme
 		switch(convScheme)
 		{
 			case EULER_EXPLICIT:
@@ -56,10 +64,13 @@ public:
 				break;
 		}
 		
+		// Resize the arrays
 		gamma.resize(subSteps);
 		zeta.resize(subSteps);
 		alphaExplicit.resize(subSteps);
 		alphaImplicit.resize(subSteps);
+		
+		// Set the coefficients of the convectiont terms
 		switch(convScheme)
 		{
 			case EULER_EXPLICIT:
@@ -81,6 +92,7 @@ public:
 		}
 		
 		real aI, aE;
+		// Set the coefficients of the diffusion terms
 		switch(diffScheme)
 		{
 			case EULER_EXPLICIT:
@@ -99,9 +111,10 @@ public:
 		{
 			alphaExplicit[i] = aE*(gamma[i]+zeta[i]);
 			alphaImplicit[i] = aI*(gamma[i]+zeta[i]);
-		}
-		std::cout << "DONE! " << std::endl;
-		std::cout << std::endl;
+		}	
+		std::cout << "DONE! " << std::endl << std::endl;
+		
+		// Print the coefficients
 		for(int i=0; i<subSteps; i++)
 		{
 			std::cout << '[' <<  i << ']' << " " << gamma[i] << " " << zeta[i] << " " << alphaExplicit[i] << " " << alphaImplicit[i] << std::endl;
