@@ -20,10 +20,16 @@
 *  THE SOFTWARE.
 */
 
+/**
+* @file  NSWithBody.h
+* @brief Generic Navier-Stokes solver in the presence of immersed boundaries
+*/
+
 #pragma once
 
 #include <solvers/NavierStokes/NavierStokesSolver.h>
 #include <bodies.h>
+
 /**
 * @brief Generic Navier-Stokes solver in the presence of immersed boundaries
 */

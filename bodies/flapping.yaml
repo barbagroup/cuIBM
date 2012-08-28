@@ -1,0 +1,10 @@
+- type: points
+  pointsFile: ellipse0.05.bdy
+  centerRotation: [0.0, 0.0]
+  moving: [true, true]
+  velocity: [0.0, 0.0]
+  alpha: 90.0
+  omega: 0.0
+  xOscillation: [1.4, -1.5707963268, 1.5707963268]
+  yOscillation: [0.0, 0.0, 0.0]
+  pitchOscillation: [0.7853981634, 1.5707963268, 0.0]

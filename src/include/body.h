@@ -64,6 +64,8 @@ class body
     /**
     * @brief Update the position of the center of rotation of the body and
     *        the translational and rotational velocities of the boundary points
+    *
+    * Requires a detailed description.
     */
 	void update(real Time)
 	{

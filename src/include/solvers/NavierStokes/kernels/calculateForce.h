@@ -20,6 +20,11 @@
 *  THE SOFTWARE.
 */
 
+/**
+* @file  calculateForce.h
+* @brief Calculates force on the body using a control volume approach
+*/
+
 #pragma once
 
 #include <types.h>
@@ -32,9 +37,11 @@ namespace kernels
 {
 
 /**
-* Used to calculate drag using the control volume approach. This function
-* evaluates the contribution of the left and right parts of the control
-* surface.
+* @brief Used to calculate drag using the control volume approach.
+*
+* This function evaluates the contribution of the left and right parts of the 
+* control surface.
+*
 * @param q   Raw pointer to the vector storing all the fluxes
 * @param dx  Raw pointer to the vector storing the cell widths in the x-direction
 * @param dy  Raw pointer to the vector storing the cell widths in the y-direction
@@ -50,9 +57,11 @@ void dragLeftRight(real *FxY, real *q, real *lambda, real *dx, real *dy,
                             int nx, int ny, int I, int J, int ncx, int ncy);
 
 /**
-* Used to calculate drag using the control volume approach. This function
-* evaluates the contribution of the bottom and top parts of the control
-* surface.
+* @brief Used to calculate drag using the control volume approach. 
+*
+* This function evaluates the contribution of the bottom and top parts of the 
+* control surface.
+*
 * @param q   Raw pointer to the vector storing all the fluxes
 * @param dx  Raw pointer to the vector storing the cell widths in the x-direction
 * @param dy  Raw pointer to the vector storing the cell widths in the y-direction
@@ -68,8 +77,10 @@ void dragBottomTop(real *FxX, real *q, real *dx, real *dy,
                    int nx, int ny, int I, int J, int ncx, int ncy);
 
 /**
-* Used to calculate drag using the control volume approach. This function
-* evaluates the unsteady contribution of the control volume.
+* @brief Used to calculate drag using the control volume approach. 
+*
+* This function evaluates the unsteady contribution of the control volume.
+*
 * @param q    Raw pointer to the vector storing all the fluxes
 * @param qOld Raw pointer to the flux vector at the previous time step
 * @param dx   Raw pointer to the vector storing the cell widths in the x-direction

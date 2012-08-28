@@ -21,8 +21,14 @@
 */
 
 /**
-* \file FadlunEtAlSolver.h
-* \brief Direct forcing immersed boundary method.
+* @file  FadlunEtAlSolver.h
+* @brief Modified direct forcing immersed boundary method.
+*
+* <b>Combined immersed-boundary finite-difference methods for three-dimensional complex flow simulations</b> \n
+* Fadlun, E A, Verzicco, R, Orlandi, P, and Mohd-Yusof, J \n
+* Journal of Computational Physics \n
+* Volume 161 Number 1 \n
+* 2000
 */
 
 #pragma once
