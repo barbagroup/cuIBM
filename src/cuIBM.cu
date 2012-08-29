@@ -29,12 +29,8 @@
 
 int main(int argc, char **argv)
 {
-	std::cout << std::endl;
-	
 	domain dom_info;
 	parameterDB paramDB;
-
-	cudaSetDevice(0);
 
 	io::readInputs(argc, argv, paramDB, dom_info);
 	io::printSimulationInfo(paramDB, dom_info);

@@ -1,7 +1,7 @@
 Dependencies:
-nvcc - NVIDIA CUDA Compiler
-g++  - any compatible version (4.5 and below)
-Cusp - Available at http://code.google.com/p/cusp-library/
+* nvcc - NVIDIA CUDA Compiler
+* g++  - any compatible version (4.5 and below)
+* Cusp - Available at http://code.google.com/p/cusp-library/
 
 To compile, set the environment variable CUSP_DIR to point to the directory 
 with the Cusp library. For a bash shell, add the following line to ~/.bashrc or 
@@ -21,11 +21,11 @@ Run the test:
 	
 	bin/cuIBM
 
-Update: July 31st, 2012
+Update: August 29th, 2012
 
 ATTENTION: 
-This is a work-in-progress code. Only the GPU-based routines work. The available 
-version solves flows over arbitrary bodies, but options for moving bodies, 
+This is a work-in-progress code. Only the GPU-based routines work. The available
+version solves flows over arbitrary moving bodies, but options for choosing 
 Krylov solvers and preconditioners currently do not work. However, the maximum 
 number of iterations and the relative tolerance for the linear solves can be 
 set.
@@ -48,11 +48,12 @@ Examples available in the makefile are:
 	- LidDrivenCavityRe1000
 	- cylinderRe40
 	- cylinderRe550
+	- flappingRe75
 
 * Untested
 	- cylinderRe3000
 
-The bigger grids may take a long time to converge since the preconditioners 
+The bigger grids may take a very long time to converge since the preconditioners
 have not yet been implemented.
 
 Known issues:

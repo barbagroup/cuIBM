@@ -1,5 +1,5 @@
-/**
-*  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
+/*
+*  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -73,6 +73,7 @@ void initialiseDefaultDB(parameterDB &DB)
 	DB[inputs]["bodyFile"].set<string>("bodies/cylinder.yaml");
 	DB[inputs]["domainFile"].set<string>("domains/openFlow.yaml");
 	DB[inputs]["folderName"].set<string>("new");
+	DB[inputs]["deviceNumber"].set<int>(0);
 
 	// flow parameters
 	string flow = "flow";
@@ -144,6 +145,16 @@ void commandLineParse1(int argc, char **argv, parameterDB &DB)
 			i++;
 			DB["inputs"]["folderName"].set<string>(string(argv[i]));
 		}
+		else if (strcmp(argv[i],"-deviceNumber")==0)
+		{
+			i++;
+			string devNumString = string(argv[i]);
+			std::stringstream str(devNumString);
+			int devNum;
+			str >> devNum;
+			DB["inputs"]["deviceNumber"].set<int>(devNum);
+			cudaSetDevice(devNum);
+		}
 	}
 }
 
@@ -157,8 +168,11 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 		strcmp(argv[i],"-simulationFile")==0 ||
 		strcmp(argv[i],"-bodyFile")==0 ||
 		strcmp(argv[i],"-domainFile")==0 ||
-		strcmp(argv[i],"-folderName")==0)
+		strcmp(argv[i],"-folderName")==0 ||
+		strcmp(argv[i],"-deviceNumber")==0)
 			continue;
+			
+		// Add code here
 	}
 }
 
@@ -169,14 +183,9 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	int  nt = DB["simulation"]["nt"].get<int>(),
 	     nsave = DB["simulation"]["nsave"].get<int>(),
 	     startStep = DB["simulation"]["startStep"].get<int>();
-	
-	std::cout << "\nSimulation parameters" << std::endl;
-	std::cout << "---------------------" << std::endl;
-	std::cout << "dt = " << dt << std::endl;
-	std::cout << "startStep = " << startStep << std::endl;
-	std::cout << "nt = "    << nt << std::endl;
-	std::cout << "nsave = " << nsave << std::endl;
 
+    std::cout << std::endl;
+	
 	std::cout << "\nFlow parameters" << std::endl;
 	std::cout << "---------------" << std::endl;
 	std::cout << "nu = " << DB["flow"]["nu"].get<real>() << std::endl;
@@ -184,6 +193,32 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "\nDomain" << std::endl;
 	std::cout << "------" << std::endl;
 	std::cout << D.nx << " x " << D.ny << std::endl << std::endl;
+	
+	std::cout << "\nSimulation parameters" << std::endl;
+	std::cout << "---------------------" << std::endl;
+	std::cout << "dt = " << dt << std::endl;
+	std::cout << "startStep = " << startStep << std::endl;
+	std::cout << "nt = "    << nt << std::endl;
+	std::cout << "nsave = " << nsave << std::endl;
+	
+	std::cout << "\nOutput parameters" << std::endl;
+	std::cout << "-----------------" << std::endl;
+	std::cout << "Output folder = " << DB["inputs"]["folderName"].get<string>() << std::endl;
+	std::cout << "nsave = " << DB["simulation"]["nsave"].get<int>() << std::endl;
+	
+	cudaDeviceProp deviceProp;
+	int gpu = DB["inputs"]["deviceNumber"].get<int>();
+	std::cout << gpu << std::endl;
+	cudaGetDeviceProperties(&deviceProp, gpu);
+	std::cout << "\nDevice Properties" << std::endl;
+	std::cout << "-----------------" << std::endl;
+	std::cout << "Name = " << deviceProp.name << std::endl;
+	std::cout << "Number = " << gpu << std::endl;
+	std::string ecc = deviceProp.ECCEnabled ? "yes" : "no";
+	std::cout << "Compute capability = " << deviceProp.major << "." << deviceProp.minor << std::endl;
+	std::cout << "ECC Enabled = " << ecc << std::endl;
+
+	std::cout << std::endl;
 }
 
 void printTimingInfo(Logger &logger)
