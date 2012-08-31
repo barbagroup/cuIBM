@@ -32,6 +32,7 @@
 #include <integrationScheme.h>
 #include <io/io.h>
 #include <parameterDB.h>
+#include <preconditioner.h>
 //#include <cusp/precond/smoothed_aggregation.h>
 //#include <cusp/precond/diagonal.h>
 
@@ -60,6 +61,8 @@ protected:
 
 	cusp::array1d<real, memoryType>
 	     q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1, bc[4], qOld;
+	     
+	preconditioner<cusp::coo_matrix<int, real, memoryType>, cusp::array1d<real, memoryType> > *PC1, *PC2;
 
 	size_t  timeStep, subStep, iterationCount1, iterationCount2;
 	
@@ -118,37 +121,43 @@ protected:
 
 public:
 	/**
-	* \brief Initialise stuff required for the simulation
+	* @brief Initialise stuff required for the simulation
 	*/
 	virtual void initialise();
 	
 	/**
-	* \brief Calculate all the variables at the next time step
+	* @brief Calculate all the variables at the next time step
 	*/
 	void stepTime();
 	
 	/**
-	* \brief Write the data to files
+	* @brief Write the data to files
 	*/
 	void writeData();
 	
 	/**
-	* \brief Condition required to bring the simulation to a halt.
-	* \return True if the simulation is over. False if it must continue.
+	* @brief Condition required to bring the simulation to a halt.
+	* @return True if the simulation is over. False if it must continue.
 	*/
 	bool finished();
 	
 	/**
-	* \brief Perform necessary actions to end the simulation
+	* @brief Perform necessary actions to end the simulation
 	*/
 	void shutDown();
 	
 	// Factory methods are static (not entirely sure why)
-	static NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &dom_info);
+	/**
+	* @brief  Factory method to select the required IBM solver
+	* @return Pointer to an instance of the required dervied class.
+	* @param  paramDB Description
+	* @param  domInfo
+	*/
+	static NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domInfo);
 	
 	/**
-	* \brief Give the name of the current solver 
-	* \return String that describes the type of solver
+	* @brief Give the name of the current solver 
+	* @return String that describes the type of solver
 	*/
 	virtual std::string name()
 	{

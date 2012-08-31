@@ -1,5 +1,5 @@
-/**
-*  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
+/*
+*  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -64,6 +64,7 @@ template double property::get<double>();
 template float property::get<float>();
 template int property::get<int>();
 template bool property::get<bool>();
+template preconditionerType property::get<preconditionerType>();
 template timeScheme property::get<timeScheme>();
 template ibmScheme property::get<ibmScheme>();
 template std::vector<body> *property::get<std::vector<body>*>();

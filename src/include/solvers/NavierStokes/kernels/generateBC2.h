@@ -20,6 +20,11 @@
 *  THE SOFTWARE.
 */
 
+/**
+* @file  generateBC2.h
+* @brief Contains kernals required for generation of vector bc2.
+*/
+
 #pragma once
 
 #include <types.h>

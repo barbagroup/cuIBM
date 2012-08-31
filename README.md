@@ -21,14 +21,11 @@ Run the test:
 	
 	bin/cuIBM
 
-Update: August 29th, 2012
+Update: August 31st, 2012
 
 ATTENTION: 
 This is a work-in-progress code. Only the GPU-based routines work. The available
-version solves flows over arbitrary moving bodies, but options for choosing 
-Krylov solvers and preconditioners currently do not work. However, the maximum 
-number of iterations and the relative tolerance for the linear solves can be 
-set.
+version solves flows over arbitrary moving bodies.
 
 The following time-stepping schemes have been tested for the plain 
 Navier-Stokes and the Taira & Colonius solvers:
@@ -36,6 +33,7 @@ Navier-Stokes and the Taira & Colonius solvers:
 * Convection
 	- EULER_EXPLICIT    : First-order Explicit Euler
 	- ADAMS_BASHFORTH_2 : Second-order Adams-Bashforth
+
 * Diffusion
 	- EULER_EXPLICIT : First-order explicit Euler
 	- EULER_IMPLICIT : First order implicit Euler
@@ -43,21 +41,17 @@ Navier-Stokes and the Taira & Colonius solvers:
 
 Examples available in the makefile are:
 
-* Tested
 	- LidDrivenCavityRe100
 	- LidDrivenCavityRe1000
 	- cylinderRe40
 	- cylinderRe550
-	- flappingRe75
-
-* Untested
 	- cylinderRe3000
-
-The bigger grids may take a very long time to converge since the preconditioners
-have not yet been implemented.
+	- flappingRe75
 
 Known issues:
 
 * Linker step fails on Mac OS X
+* Cannot choose the Krylov solver.
+* TairaColoniusSolver does not calculate forces if multiple bodies are present.
 * Forces are not calculated for the direct forcing method (FadlunEtAlSolver)
 * FadlunEtAlSolver has not been fully validated

@@ -34,8 +34,8 @@
 class boundaryCondition
 {
 public:
-  bcType type;
-  real  value;
+  bcType type; ///< Type of boundary condition
+  real  value; ///< Numerical value associated with the boundary condition
 
   boundaryCondition() : type(DIRICHLET), value(0) {}; 
   boundaryCondition(bcType _type, real _value) : type(_type), value(_value) {}; 

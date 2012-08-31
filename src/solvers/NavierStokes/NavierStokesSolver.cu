@@ -1,5 +1,5 @@
-/**
-*  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
+/*
+*  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,10 @@
 #include <solvers/NavierStokes/FadlunEtAlSolver.h>
 #include <solvers/NavierStokes/TairaColoniusSolver.h>
 #include <sys/stat.h>
+
+//##############################################################################
+//                              INITIALISE
+//##############################################################################
 
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialise()
@@ -181,7 +185,9 @@ void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 	int nx = domInfo->nx,
 		ny = domInfo->ny;
 
-	boundaryCondition **bcInfo = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
+	boundaryCondition 
+		**bcInfo
+	     = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
 	
 	bc[XMINUS].resize(2*ny-1);
 	bc[XPLUS].resize(2*ny-1);
@@ -211,6 +217,10 @@ void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 	bc[XPLUS][ny-1]  = bcInfo[XPLUS][0].value;
 }
 
+//##############################################################################
+//                          ASSEMBLE MATRICES
+//##############################################################################
+
 /**
 * \brief Assembles all the required matrices
 */
@@ -220,22 +230,15 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 	logger.startTimer("assembleMatrices");
 	
 	generateM();
-//	cusp::print(M);
 	generateL();
-//	cusp::print(L);
 	generateA(intgSchm.alphaImplicit[subStep]);
-//	cusp::print(A);
-	
-//	PC1 = cusp::precond::diagonal<real, memoryType>(A);
-	
+	PC1 = new preconditioner< cusp::coo_matrix<int, real, memoryType>, cusp::array1d<real, memoryType> >(A, (*paramDB)["velocitySolve"]["preconditioner"].get<preconditionerType>());
 	generateBN();
 	generateQT();
 	generateC(); // QT*BN*Q
-	
-//	PC2 = cusp::precond::smoothed_aggregation<int, real, memoryType>(C);
+	PC2 = new preconditioner< cusp::coo_matrix<int, real, memoryType>, cusp::array1d<real, memoryType> >(C, (*paramDB)["PoissonSolve"]["preconditioner"].get<preconditionerType>());
 
-	std::cout << "Assembled matrices!" << std::endl;
-	
+	std::cout << "Assembled matrices!" << std::endl;	
 	logger.stopTimer("assembleMatrices");
 }
 
@@ -280,6 +283,10 @@ void NavierStokesSolver<host_memory>::generateC()
 	C.values[0] += C.values[0];
 }
 
+//##############################################################################
+//                            TIME STEPPING
+//##############################################################################
+
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::stepTime()
 {
@@ -290,9 +297,7 @@ void NavierStokesSolver<memoryType>::stepTime()
 
 		// Set up and solve the first system for the intermediate velocity
 		generateRN();
-		//cusp::print(rn);
 		generateBC1();
-		//cusp::print(bc1);
 		assembleRHS1();
 		solveIntermediateVelocity();
 
@@ -315,6 +320,29 @@ void NavierStokesSolver<memoryType>::updateSolverState()
 //	updateQ(intgSchm.gamma[i]);
 //	updateBoundaryConditions();
 }
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::updateQ(real gamma)
+{
+//	cusp::blas::scal(Q.values, gamma/QCoeff);
+//	QCoeff = gamma;
+}
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::updateBoundaryConditions()
+{
+}
+
+template <typename memoryType>
+bool NavierStokesSolver<memoryType>::finished()
+{
+	int nt = (*paramDB)["simulation"]["nt"].get<int>();
+	return (timeStep < nt) ? false : true;
+}
+
+//##############################################################################
+//                          GENERATE VECTORS
+//##############################################################################
 
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::generateRN()
@@ -342,26 +370,38 @@ void NavierStokesSolver<memoryType>::assembleRHS1()
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
-{
-	logger.startTimer("solveIntermediateVel");
-	
-	int  maxIters = (*paramDB)["velocitySolver"]["maxIterations"].get<int>();
-	real relTol = (*paramDB)["velocitySolver"]["tolerance"].get<real>();
-
-	cusp::default_monitor<real> sys1Mon(rhs1, maxIters, relTol);
-	cusp::krylov::bicgstab(A, qStar, rhs1, sys1Mon);//, PC1);
-	//cusp::krylov::cg(A, qStar, rhs1, sys1Mon);//, PC1);
-	iterationCount1 = sys1Mon.iteration_count();
-
-	logger.stopTimer("solveIntermediateVel");
-}
-
-template <typename memoryType>
 void NavierStokesSolver<memoryType>::assembleRHS2()
 {
 	cusp::wrapped::multiply(QT, qStar, temp2);
 	cusp::blas::axpby(temp2, bc2, rhs2, 1.0, -1.0);
+}
+
+//##############################################################################
+//                           LINEAR SOLVES
+//##############################################################################
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
+{
+	logger.startTimer("solveIntermediateVel");
+	
+	int  maxIters = (*paramDB)["velocitySolve"]["maxIterations"].get<int>();
+	real relTol = (*paramDB)["velocitySolve"]["tolerance"].get<real>();
+
+	cusp::default_monitor<real> sys1Mon(rhs1, maxIters, relTol);
+	cusp::krylov::bicgstab(A, qStar, rhs1, sys1Mon, *PC1);
+	//cusp::krylov::cg(A, qStar, rhs1, sys1Mon);//, PC1);
+	iterationCount1 = sys1Mon.iteration_count();
+	if (!sys1Mon.converged())
+	{
+		std::cout << "ERROR: Solve for q* failed at time step " << timeStep << std::endl;
+		std::cout << "Iterations   : " << iterationCount1 << std::endl;          
+		std::cout << "Residual norm: " << sys1Mon.residual_norm() << std::endl;
+		std::cout << "Tolerance    : " << sys1Mon.tolerance() << std::endl;
+		std::exit(-1);
+	}
+
+	logger.stopTimer("solveIntermediateVel");
 }
 
 template <typename memoryType>
@@ -369,13 +409,13 @@ void NavierStokesSolver<memoryType>::solvePoisson()
 {
 	logger.startTimer("solvePoisson");
 	
-	int  maxIters = (*paramDB)["PoissonSolver"]["maxIterations"].get<int>();
-	real relTol = (*paramDB)["PoissonSolver"]["tolerance"].get<real>();
+	int  maxIters = (*paramDB)["PoissonSolve"]["maxIterations"].get<int>();
+	real relTol = (*paramDB)["PoissonSolve"]["tolerance"].get<real>();
 	
 	cusp::default_monitor<real> sys2Mon(rhs2, maxIters, relTol);
 	//cusp::krylov::gmres(C, lambda, rhs2, 50, sys2Mon);//, PC2);
 	//cusp::krylov::bicgstab(C, lambda, rhs2, sys2Mon);//, PC2);
-	cusp::krylov::cg(C, lambda, rhs2, sys2Mon);//, PC2);
+	cusp::krylov::cg(C, lambda, rhs2, sys2Mon, *PC2);
 	iterationCount2 = sys2Mon.iteration_count();
 	if (!sys2Mon.converged())
 	{
@@ -401,6 +441,10 @@ void NavierStokesSolver<memoryType>::projectionStep()
 	logger.stopTimer("projectionStep");
 }
 
+//##############################################################################
+//                               OUTPUT
+//##############################################################################
+
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::writeData()
 {
@@ -423,25 +467,6 @@ void NavierStokesSolver<memoryType>::writeData()
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::updateQ(real gamma)
-{
-//	cusp::blas::scal(Q.values, gamma/QCoeff);
-//	QCoeff = gamma;
-}
-
-template <typename memoryType>
-void NavierStokesSolver<memoryType>::updateBoundaryConditions()
-{
-}
-
-template <typename memoryType>
-bool NavierStokesSolver<memoryType>::finished()
-{
-	int nt = (*paramDB)["simulation"]["nt"].get<int>();
-	return (timeStep < nt) ? false : true;
-}
-
-template <typename memoryType>
 void NavierStokesSolver<memoryType>::calculateForce()
 {
 }
@@ -454,13 +479,8 @@ void NavierStokesSolver<memoryType>::shutDown()
 	iterationsFile.close();
 }
 
-/**
-* \brief Factory method to select the required IBM solver
-* \param a Description
-* \return Pointer to an instance of the required dervied class.
-*/
 template <typename memoryType>
-NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(parameterDB &paramDB, domain &dom_info)
+NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(parameterDB &paramDB, domain &domInfo)
 {
 	ibmScheme ibm = paramDB["simulation"]["ibmScheme"].get<ibmScheme>();
 	NavierStokesSolver<memoryType> *solver = 0;
@@ -478,8 +498,8 @@ NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(par
 			solver = new FadlunEtAlSolver<memoryType>;
 			break;
 	}
-  solver->paramDB = &paramDB;
-	solver->domInfo = &dom_info;
+	solver->paramDB = &paramDB;
+	solver->domInfo = &domInfo;
 	std::cout << "Selected solver: " << solver->name() << std::endl;
 	return solver;
 }

@@ -20,6 +20,10 @@
 *  THE SOFTWARE.
 */
 
+/**
+* @file  generateA.h
+* @breif Contains kernels required for the generation of matrix A.
+*/
 #pragma once
 
 #include <types.h>

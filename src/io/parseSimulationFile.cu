@@ -1,5 +1,5 @@
-/**
-*  Copyright (C) 2011 by Anush Krishnan, Simon Layton, Lorena Barba
+/*
+*  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -102,7 +102,6 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 	DB[dbKey]["ibmScheme"].set<ibmScheme>(ibmSchemeFromString(ibmSch));
 
 	const YAML::Node &solvers = node["linearSolvers"];
-	string systemKey[] = {"velocitySolver","PoissonSolver"};
 	for (unsigned int i=0; i<solvers.size(); i++)
 	{
 		string system = "velocity", solver = "CG", PC = "DIAGONAL";
@@ -116,9 +115,9 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 
 		string dbKey;
 		if (system == "velocity")
-			dbKey = "velocitySolver";
+			dbKey = "velocitySolve";
 		else if (system == "Poisson")
-			dbKey = "PoissonSolver";
+			dbKey = "PoissonSolve";
 		else
 		{
 			printf("[E]: Unknown solver system found in io::parseSimulation\n");

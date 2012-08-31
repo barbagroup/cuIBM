@@ -29,6 +29,10 @@ using std::string;
 
 namespace io
 {
+
+//##############################################################################
+//                                 INPUT
+//##############################################################################
 	
 void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 {
@@ -176,6 +180,22 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 	}
 }
 
+//##############################################################################
+//                                OUTPUT
+//##############################################################################
+
+string stringFromPreconditionerType(preconditionerType s)
+{
+  if (s == NONE)
+    return "None";
+  else if (s == DIAGONAL)
+    return "Diagonal";
+  else if (s == SMOOTHED_AGGREGATION)
+    return "Smoothed Aggregation";
+  else
+    return "Unrecognised preconditioner";
+}
+
 // output
 void printSimulationInfo(parameterDB &DB, domain &D)
 {
@@ -192,7 +212,7 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 
 	std::cout << "\nDomain" << std::endl;
 	std::cout << "------" << std::endl;
-	std::cout << D.nx << " x " << D.ny << std::endl << std::endl;
+	std::cout << D.nx << " x " << D.ny << std::endl;
 	
 	std::cout << "\nSimulation parameters" << std::endl;
 	std::cout << "---------------------" << std::endl;
@@ -201,6 +221,16 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "nt = "    << nt << std::endl;
 	std::cout << "nsave = " << nsave << std::endl;
 	
+	std::cout << "\nVelocity Solve" << std::endl;
+	std::cout << "--------------" << std::endl;
+	std::cout << "Solver = " << DB["velocitySolve"]["solver"].get<string>() << std::endl;
+	std::cout << "Preconditioner = " << stringFromPreconditionerType(DB["velocitySolve"]["preconditioner"].get<preconditionerType>()) << std::endl;
+	
+	std::cout << "\nPoisson Solve" << std::endl;
+	std::cout << "-------------" << std::endl;
+	std::cout << "Solver = " << DB["PoissonSolve"]["solver"].get<string>() << std::endl;
+	std::cout << "Preconditioner = " << stringFromPreconditionerType(DB["PoissonSolve"]["preconditioner"].get<preconditionerType>()) << std::endl;
+	
 	std::cout << "\nOutput parameters" << std::endl;
 	std::cout << "-----------------" << std::endl;
 	std::cout << "Output folder = " << DB["inputs"]["folderName"].get<string>() << std::endl;
@@ -208,7 +238,6 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	
 	cudaDeviceProp deviceProp;
 	int gpu = DB["inputs"]["deviceNumber"].get<int>();
-	std::cout << gpu << std::endl;
 	cudaGetDeviceProperties(&deviceProp, gpu);
 	std::cout << "\nDevice Properties" << std::endl;
 	std::cout << "-----------------" << std::endl;
@@ -217,7 +246,6 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::string ecc = deviceProp.ECCEnabled ? "yes" : "no";
 	std::cout << "Compute capability = " << deviceProp.major << "." << deviceProp.minor << std::endl;
 	std::cout << "ECC Enabled = " << ecc << std::endl;
-
 	std::cout << std::endl;
 }
 
@@ -225,6 +253,7 @@ void printTimingInfo(Logger &logger)
 {
 	logger.writeLegend();
 	logger.printAllTime();
+	std::cout << std::endl;
 }
 
 void writeInfoFile(parameterDB &DB, domain &D)
@@ -244,10 +273,6 @@ void writeInfoFile(parameterDB &DB, domain &D)
 	infofile << std::setw(20) << "--sim_file" << "\t"  << DB["inputs"]["simulationFile"].get<string>() << std::endl;
 	infofile << std::setw(20) << "--dom_file" << "\t"  << DB["inputs"]["domainFile"].get<string>() << std::endl;
 	infofile << std::setw(20) << "--body_file" << "\t" << DB["inputs"]["bodyFile"].get<string>() << std::endl;
-	//infofile << std::setw(20) << "--blx" << std::setw(20) << sys_params.bl.x << std::endl;
-	//infofile << std::setw(20) << "--bly" << std::setw(20) << sys_params.bl.y << std::endl;
-	//infofile << std::setw(20) << "--trx" << std::setw(20) << sys_params.tr.x << std::endl;
-	//infofile << std::setw(20) << "--try" << std::setw(20) << sys_params.tr.y << std::endl;
 	infofile.close();
 }
 
@@ -272,56 +297,56 @@ void writeGrid(std::string &folderName, domain &D)
 template <>
 void writeData<vecH>(std::string &folderName, int n, vecH &q, vecH &lambda, domain &D)//, bodies &B)
 {
-  std::string path;
-  std::stringstream out;
+	std::string path;
+	std::stringstream out;
 
-  out << folderName << '/' << std::setfill('0') << std::setw(7) << n;
-  path = out.str();
+	out << folderName << '/' << std::setfill('0') << std::setw(7) << n;
+	path = out.str();
 
-  //createDirectory(path.c_str(), S_IRWXO);
-  mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	//createDirectory(path.c_str(), S_IRWXO);
+	mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
-  out.str("");
-  out << path << "/q";
-  std::ofstream file(out.str().c_str());
-  file << q.size() << std::endl;
-  for(int i=0; i<q.size(); i++)
-    file << q[i] << std::endl;
-  file.close();
-
-  /*
-  out.str("");
-  out << path << "/bodies";
-  file.open(out.str().c_str());
-  file << '#' << std::setw(19) << "x-coordinate" << std::setw(20) << "y-coordinate" << std::endl;
-  for (int i=0; i < B.no_of_bodies; i++)
-  {
-    for (int j=0; j < B.Body[i].no_of_points; j++)
-    {
-      file << std::setw(20) << B.Body[i].bp[j].x << std::setw(20) << B.Body[i].bp[j].y << std::endl;
-      nb++;
-    }
-    file << std::endl;
-  }
-  file.close();*/
+	out.str("");
+	out << path << "/q";
+	std::ofstream file(out.str().c_str());
+	file << q.size() << std::endl;
+	for(int i=0; i<q.size(); i++)
+		file << q[i] << std::endl;
+	file.close();
+/*
+	out.str("");
+	out << path << "/bodies";
+	file.open(out.str().c_str());
+	file << '#' << std::setw(19) << "x-coordinate" << std::setw(20) << "y-coordinate" << std::endl;
+	for (int i=0; i < B.no_of_bodies; i++)
+	{
+		for (int j=0; j < B.Body[i].no_of_points; j++)
+		{
+			file << std::setw(20) << B.Body[i].bp[j].x << std::setw(20) << B.Body[i].bp[j].y << std::endl;
+			nb++;
+		}
+		file << std::endl;
+	}
+	file.close();*/
 
 	out.str("");
 	out << path << "/lambda";
 	file.open(out.str().c_str());
 	file << lambda.size() << std::endl;
-  for(int i=0; i<lambda.size(); i++)
-    file << lambda[i] << std::endl;
-  file.close();
-
-  std::cout << "Data saved to folder " << path << std::endl;
+	for(int i=0; i<lambda.size(); i++)
+		file << lambda[i] << std::endl;
+	file.close();
+	
+	std::cout << "Data saved to folder " << path << std::endl;
 }
 
 template <>
 void writeData<vecD>(std::string &folderName, int n, vecD &q, vecD &lambda, domain &D)//, bodies &B)
 {
-  vecH qH = q,
-       lambdaH = lambda;
-  writeData(folderName, n, qH, lambdaH, D);
+	vecH qH = q,
+	     lambdaH = lambda;
+	     
+	writeData(folderName, n, qH, lambdaH, D);
 }
 
 } // end namespace io
