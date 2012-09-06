@@ -1,4 +1,4 @@
-/*
+		/*
 *  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,5 +32,7 @@ void updateQFadlun(int *QRows, int *QCols, real *QVals, int QSize, int *tags);
 
 __global__
 void updateQFadlun(int *QRows, int *QCols, real *QVals, int QSize, int *tagsX, int *tagsY);
+
+void generateQT(int *QTRows, int *QTCols, real *QTVals, int nx, int ny);
 
 }

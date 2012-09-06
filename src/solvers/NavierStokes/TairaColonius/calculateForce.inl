@@ -22,6 +22,32 @@
 
 #include <solvers/NavierStokes/kernels/calculateForce.h>
 
+template <typename memoryType>
+void TairaColoniusSolver<memoryType>::calculateForceTC()
+{
+	int  nx = NavierStokesSolver<memoryType>::domInfo->nx,
+	     ny = NavierStokesSolver<memoryType>::domInfo->ny;
+	
+	cusp::array1d<real, memoryType>
+		f(2*NSWithBody<memoryType>::B.totalPoints),
+		F((nx-1)*ny + nx*(ny-1));
+	
+	real dx = NavierStokesSolver<memoryType>::domInfo->dx[ NSWithBody<memoryType>::B.I[0] ],
+	     dy = dx;
+	
+	thrust::copy(NavierStokesSolver<memoryType>::lambda.begin() + nx*ny, NavierStokesSolver<memoryType>::lambda.end(), f.begin());
+	cusp::multiply(ET, f, F);
+	NavierStokesSolver<memoryType>::forceX = (dx*dy)/dx*thrust::reduce( F.begin(), F.begin()+(nx-1)*ny );
+	NavierStokesSolver<memoryType>::forceY = (dx*dy)/dy*thrust::reduce( F.begin()+(nx-1)*ny, F.end() );
+}
+
+template <typename memoryType>
+void TairaColoniusSolver<memoryType>::calculateForce()
+{
+	calculateForceTC();
+	//calculateForce1();
+}
+
 template <>
 void TairaColoniusSolver<host_memory>::calculateForce1()
 {

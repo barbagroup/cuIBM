@@ -89,6 +89,7 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 		// if the body is moving, set bodiesMove to true
 		bodiesMove = bodiesMove || (*B)[k].moving[0] || (*B)[k].moving[1];
 	}
+		
 	if(numBodies)
 	{
 		calculateCellIndices(D);

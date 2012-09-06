@@ -20,6 +20,8 @@
 *  THE SOFTWARE.
 */
 
+#include <solvers/NavierStokes/kernels/generateQT.h>
+
 real dh_roma(real x, real h)
 {
 	real r = fabs(x)/h;
@@ -50,49 +52,15 @@ void TairaColoniusSolver<host_memory>::generateQT()
 	/// QT is an (np + 2*nb) x nuv matrix
 	QT.resize(numP + 2*B.totalPoints, numUV, 4*numP-2*(nx+ny) + 24*B.totalPoints);
 	
-	int Iu, Iv;
-	int row = 0;
-	int num_elements = 0;
+	int  *QTRows = thrust::raw_pointer_cast(&(QT.row_indices[0])),
+	     *QTCols = thrust::raw_pointer_cast(&(QT.column_indices[0]));
+	real *QTVals = thrust::raw_pointer_cast(&(QT.values[0]));
 	
-	/// Generate the GT part
-	for(int j=0; j<ny; j++)
-	{
-		for(int i=0; i<nx; i++)
-		{
-			Iu = j*(nx-1) + i;
-			Iv = j*nx + i + numU;
-			
-			if(i>0)
-			{
-				QT.row_indices[num_elements] = row;
-				QT.column_indices[num_elements] = Iu - 1;
-				QT.values[num_elements] = 1;
-				num_elements++;
-			}
-			if(i<nx-1)
-			{
-				QT.row_indices[num_elements] = row;
-				QT.column_indices[num_elements] = Iu;
-				QT.values[num_elements] = -1;
-				num_elements++;
-			}
-			if(j>0)
-			{
-				QT.row_indices[num_elements] = row;
-				QT.column_indices[num_elements] = Iv - nx;
-				QT.values[num_elements] = 1;
-				num_elements++;
-			}
-			if(j<ny-1)
-			{
-				QT.row_indices[num_elements] = row;
-				QT.column_indices[num_elements] = Iv;
-				QT.values[num_elements] = -1;
-				num_elements++;
-			}
-			row++;
-		}
-	}
+	kernels::generateQT(QTRows, QTCols, QTVals, nx, ny);
+	
+	// Temparawari
+	int row = numP;
+	int num_elements = 4*numP-2*(nx+ny);
 	
 	/// Generate E
 	int  I, J, col;
@@ -218,6 +186,13 @@ void TairaColoniusSolver<device_memory>::generateQT()
 	/// QT is an (np + 2*nb) x nuv matrix
 	cooH QTHost(numP + 2*B.totalPoints, numUV, 4*numP-2*(nx+ny) + 24*B.totalPoints);
 	
+	int  *QTRows = thrust::raw_pointer_cast(&(QTHost.row_indices[0])),
+	     *QTCols = thrust::raw_pointer_cast(&(QTHost.column_indices[0]));
+	real *QTVals = thrust::raw_pointer_cast(&(QTHost.values[0]));
+	
+	kernels::generateQT(QTRows, QTCols, QTVals, nx, ny);
+
+/*
 	int Iu, Iv;
 	int row = 0;
 	int num_elements = 0;
@@ -261,7 +236,11 @@ void TairaColoniusSolver<device_memory>::generateQT()
 			row++;
 		}
 	}
-
+*/
+	// Temparawari
+	int row = numP;
+	int num_elements = 4*numP-2*(nx+ny);
+	
 	/// Generate E
 	int  I, J, col;
 	real xB, yB, x, y, alpha, Dx;
@@ -372,6 +351,8 @@ void TairaColoniusSolver<device_memory>::generateQT()
 */
 	QT = QTHost;
 	cusp::transpose(QT, Q);
+	//cusp::print(QT);
+	std::cout << "Generated QT!" << std::endl;
 }
 
 template <typename memoryType>

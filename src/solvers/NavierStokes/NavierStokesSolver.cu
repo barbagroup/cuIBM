@@ -448,7 +448,7 @@ void NavierStokesSolver<memoryType>::projectionStep()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::writeData()
 {
-	logger.startTimer("Output");
+	logger.startTimer("output");
 	
 	int nsave = (*paramDB)["simulation"]["nsave"].get<int>();
 	std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
@@ -463,7 +463,7 @@ void NavierStokesSolver<memoryType>::writeData()
 	iterationsFile << timeStep << '\t' << iterationCount1 << '\t' << iterationCount2 << std::endl;
 //	io::writeIterations(iterationsFile, folderName, timeStep, iterationCount1, iterationCount2);
 	
-	logger.stopTimer("Output");
+	logger.stopTimer("output");
 }
 
 template <typename memoryType>

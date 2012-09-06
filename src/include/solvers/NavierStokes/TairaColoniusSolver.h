@@ -46,7 +46,6 @@ private:
 	
 	cusp::array1d<real, memoryType> FxX, FxY, FxU;
 	
-	void generateQT(int *QTRows, int *QTCols, real *QTVals){}
 	void generateQT();
 	void updateQT();
 	void generateBC2();

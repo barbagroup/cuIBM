@@ -21,11 +21,11 @@ Run the test:
 	
 	bin/cuIBM
 
-Update: August 31st, 2012
+Update: September 6th, 2012
 
 ATTENTION: 
 This is a work-in-progress code. Only the GPU-based routines work. The available
-version solves flows over arbitrary moving bodies.
+version solves flows over only one arbitrarily moving body.
 
 The following time-stepping schemes have been tested for the plain 
 Navier-Stokes and the Taira & Colonius solvers:

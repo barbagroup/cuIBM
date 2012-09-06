@@ -91,7 +91,6 @@ protected:
 	virtual void generateA(real alpha);
 	void generateBN();
 	
-	virtual void generateQT(int *QTRows, int *QTCols, real *QTVals){}
 	virtual void generateQT();
 	void updateQ(real gamma);
 	

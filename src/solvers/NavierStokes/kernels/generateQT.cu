@@ -28,7 +28,7 @@ namespace kernels
 __global__
 void updateQFadlun(int *QRows, int *QCols, real *QVals, int QSize, int *tags)
 {
-	int  I = threadIdx.x + blockIdx.x*blockDim.x;
+	int I = threadIdx.x + blockIdx.x*blockDim.x;
 	
 	if(I >= QSize) return;
 	
@@ -38,11 +38,62 @@ void updateQFadlun(int *QRows, int *QCols, real *QVals, int QSize, int *tags)
 __global__
 void updateQFadlun(int *QRows, int *QCols, real *QVals, int QSize, int *tagsX, int *tagsY)
 {
-	int  I = threadIdx.x + blockIdx.x*blockDim.x;
+	int I = threadIdx.x + blockIdx.x*blockDim.x;
 	
 	if(I >= QSize) return;
 	
 	QVals[I] *= ( tagsX[QRows[I]] == -1 && tagsY[QRows[I]] == -1 );
+}
+
+void generateQT(int *QTRows, int *QTCols, real *QTVals, int nx, int ny)
+{
+	int  numU = (nx-1)*ny;
+	
+	int Iu, Iv;
+	int row = 0;
+	int num_elements = 0;
+	
+	/// QT is an (np + 2*nb) x nuv matrix
+	
+	/// Generate the GT part
+	for(int j=0; j<ny; j++)
+	{
+		for(int i=0; i<nx; i++)
+		{
+			Iu = j*(nx-1) + i;
+			Iv = j*nx + i + numU;
+			
+			if(i>0)
+			{
+				QTRows[num_elements] = row;
+				QTCols[num_elements] = Iu - 1;
+				QTVals[num_elements] = 1;
+				num_elements++;
+			}
+			if(i<nx-1)
+			{
+				QTRows[num_elements] = row;
+				QTCols[num_elements] = Iu;
+				QTVals[num_elements] = -1;
+				num_elements++;
+			}
+			if(j>0)
+			{
+				QTRows[num_elements] = row;
+				QTCols[num_elements] = Iv - nx;
+				QTVals[num_elements] = 1;
+				num_elements++;
+			}
+			if(j<ny-1)
+			{
+				QTRows[num_elements] = row;
+				QTCols[num_elements] = Iv;
+				QTVals[num_elements] = -1;
+				num_elements++;
+			}
+			row++;
+		}
+	}
 }
 
 } // end of namespace kernels

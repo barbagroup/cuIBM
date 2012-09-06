@@ -71,9 +71,22 @@ force_look:
 	true
 
 #
+#.PHONY: test test2
 .PHONY: cavity LidDrivenCavityRe100 LidDrivenCavityRe1000
 .PHONY: cylinder cylinderRe40 cylinderRe550 cylinderRe3000
 .PHONY: flapping flappingRe75
+
+#test:
+#	bin/cuIBM \
+#		-flowFile flows/test.yaml -domainFile domains/test.yaml \
+#		-bodyFile bodies/empty.yaml -simulationFile simParams/test.yaml \
+#		-folderName test
+
+#test2:
+#	bin/cuIBM \
+#		-flowFile flows/test.yaml -domainFile domains/test2.yaml \
+#		-bodyFile bodies/test2.yaml -simulationFile simParams/test2.yaml \
+#		-folderName test2
 
 cavity:
 	bin/cuIBM \
@@ -124,7 +137,7 @@ flapping:
 	-folderName flapping
 
 flappingRe75:
-	bin/cuIBM \
+	time bin/cuIBM \
 	-flowFile flows/box.yaml -domainFile domains/flappingRe75.yaml \
 	-bodyFile bodies/flappingRe75.yaml -simulationFile simParams/flappingRe75.yaml \
 	-folderName flappingRe75

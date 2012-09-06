@@ -35,7 +35,10 @@ void operator >> (const YAML::Node &node, body &Body)
 {
 	// read in center
 	for (int i=0; i<2; i++)
+	{
 		node["centerRotation"][i] >> Body.X0[i];
+		Body.Xc[i] = Body.X0[i];
+	}
 	
 	// moving flags
 	for (int i=0; i<2; i++)
@@ -113,7 +116,7 @@ void operator >> (const YAML::Node &node, body &Body)
 	}
 	else
 		printf("[E]: unknown Body type\n");
-	printf("numPoints: %d\n",Body.numPoints);
+	printf("\nnumPoints: %d",Body.numPoints);
 }
 
 void parseBodiesFile(std::string &bodiesFile, parameterDB &DB)
