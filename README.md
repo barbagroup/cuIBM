@@ -21,11 +21,11 @@ Run the test:
 	
 	bin/cuIBM
 
-Update: September 6th, 2012
+Update: September 7th, 2012
 
 ATTENTION: 
 This is a work-in-progress code. Only the GPU-based routines work. The available
-version solves flows over only one arbitrarily moving body.
+version solves for flow over an arbitrarily moving body.
 
 The following time-stepping schemes have been tested for the plain 
 Navier-Stokes and the Taira & Colonius solvers:
@@ -47,6 +47,22 @@ Examples available in the makefile are:
 	- cylinderRe550
 	- cylinderRe3000
 	- flappingRe75
+
+Run
+	
+	make <examplename>
+
+to run any of the examples. The biggest case requires a 2GB card.
+	
+As of now, post-processing requires MATLAB. Navigate into the folder
+	
+	scripts/matlab
+	
+and run the script with the following options:
+
+	postprocess <foldername> <xmin> <xmax> <ymin> <ymax>
+
+Proper python/gnuplot scripts for the validation cases will be included later.
 
 Known issues:
 
