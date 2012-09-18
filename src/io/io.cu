@@ -225,11 +225,13 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "--------------" << std::endl;
 	std::cout << "Solver = " << DB["velocitySolve"]["solver"].get<string>() << std::endl;
 	std::cout << "Preconditioner = " << stringFromPreconditionerType(DB["velocitySolve"]["preconditioner"].get<preconditionerType>()) << std::endl;
+	std::cout << "Tolerance = " << DB["velocitySolve"]["tolerance"].get<real>() << std::endl;
 	
 	std::cout << "\nPoisson Solve" << std::endl;
 	std::cout << "-------------" << std::endl;
 	std::cout << "Solver = " << DB["PoissonSolve"]["solver"].get<string>() << std::endl;
 	std::cout << "Preconditioner = " << stringFromPreconditionerType(DB["PoissonSolve"]["preconditioner"].get<preconditionerType>()) << std::endl;
+	std::cout << "Tolerance = " << DB["PoissonSolve"]["tolerance"].get<real>() << std::endl;
 	
 	std::cout << "\nOutput parameters" << std::endl;
 	std::cout << "-----------------" << std::endl;
@@ -251,7 +253,7 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 
 void printTimingInfo(Logger &logger)
 {
-	logger.writeLegend();
+	//logger.writeLegend();
 	logger.printAllTime();
 	std::cout << std::endl;
 }
@@ -347,6 +349,14 @@ void writeData<vecD>(std::string &folderName, int n, vecD &q, vecD &lambda, doma
 	     lambdaH = lambda;
 	     
 	writeData(folderName, n, qH, lambdaH, D);
+}
+
+void printDeviceMemoryUsage(char *label)
+{
+	size_t _free, _total;
+	cudaMemGetInfo(&_free, &_total);
+	std::cout << '\n' << label << ": Memory Usage " << std::setprecision(3) << (_total-_free)/(1024.0*1024*1024) \
+	          << " / " << std::setprecision(3) << _total/(1024.0*1024*1024) << " GB" << std::setprecision(6) << '\n' << std::endl;
 }
 
 } // end namespace io

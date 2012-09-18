@@ -62,7 +62,7 @@ protected:
 	cusp::array1d<real, memoryType>
 	     q, qStar, lambda, rn, H, rhs1, rhs2, bc1, bc2, temp2, temp1, bc[4], qOld;
 	     
-	preconditioner<cusp::coo_matrix<int, real, memoryType>, cusp::array1d<real, memoryType> > *PC1, *PC2;
+	preconditioner< cusp::coo_matrix<int, real, memoryType> > *PC1, *PC2;
 
 	size_t  timeStep, subStep, iterationCount1, iterationCount2;
 	

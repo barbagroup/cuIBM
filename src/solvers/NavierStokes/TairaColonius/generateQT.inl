@@ -42,6 +42,8 @@ real delta(real x, real y, real h)
 template <>
 void TairaColoniusSolver<host_memory>::generateQT()
 {
+	logger.startTimer("generateQT");
+	
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
@@ -170,12 +172,20 @@ void TairaColoniusSolver<host_memory>::generateQT()
 		row++;
 	}
 */
+	logger.stopTimer("generateQT");
+	
+	logger.startTimer("transposeQT");
 	cusp::transpose(QT, Q);
+	logger.stopTimer("transposeQT");
+	
+	
 }
 
 template <>
 void TairaColoniusSolver<device_memory>::generateQT()
 {
+	logger.startTimer("generateQT");
+	
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
@@ -192,51 +202,6 @@ void TairaColoniusSolver<device_memory>::generateQT()
 	
 	kernels::generateQT(QTRows, QTCols, QTVals, nx, ny);
 
-/*
-	int Iu, Iv;
-	int row = 0;
-	int num_elements = 0;
-	
-	/// Generate the GT part
-	for(int j=0; j<ny; j++)
-	{
-		for(int i=0; i<nx; i++)
-		{
-			Iu = j*(nx-1) + i;
-			Iv = j*nx + i + numU;
-			
-			if(i>0)
-			{
-				QTHost.row_indices[num_elements] = row;
-				QTHost.column_indices[num_elements] = Iu - 1;
-				QTHost.values[num_elements] = 1;
-				num_elements++;
-			}
-			if(i<nx-1)
-			{
-				QTHost.row_indices[num_elements] = row;
-				QTHost.column_indices[num_elements] = Iu;
-				QTHost.values[num_elements] = -1;
-				num_elements++;
-			}
-			if(j>0)
-			{
-				QTHost.row_indices[num_elements] = row;
-				QTHost.column_indices[num_elements] = Iv - nx;
-				QTHost.values[num_elements] = 1;
-				num_elements++;
-			}
-			if(j<ny-1)
-			{
-				QTHost.row_indices[num_elements] = row;
-				QTHost.column_indices[num_elements] = Iv;
-				QTHost.values[num_elements] = -1;
-				num_elements++;
-			}
-			row++;
-		}
-	}
-*/
 	// Temparawari
 	int row = numP;
 	int num_elements = 4*numP-2*(nx+ny);
@@ -350,9 +315,12 @@ void TairaColoniusSolver<device_memory>::generateQT()
 	}
 */
 	QT = QTHost;
+	
+	logger.stopTimer("generateQT");
+	
+	logger.startTimer("transposeQT");
 	cusp::transpose(QT, Q);
-	//cusp::print(QT);
-	std::cout << "Generated QT!" << std::endl;
+	logger.stopTimer("transposeQT");
 }
 
 template <typename memoryType>
@@ -363,6 +331,8 @@ void TairaColoniusSolver<memoryType>::updateQT()
 template <>
 void TairaColoniusSolver<host_memory>::generateE()
 {
+	logger.startTimer("generateE");
+	
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
@@ -434,12 +404,19 @@ void TairaColoniusSolver<host_memory>::generateE()
 			row++;
 		}
 	}
+	
+	logger.stopTimer("generateE");
+	
+	logger.startTimer("transposeE");
 	cusp::transpose(E, ET);
+	logger.stopTimer("transposeE");
 }
 
 template <>
 void TairaColoniusSolver<device_memory>::generateE()
 {
+	logger.startTimer("generateE");
+	
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
@@ -512,5 +489,10 @@ void TairaColoniusSolver<device_memory>::generateE()
 		}
 	}
 	E = EHost;
+	
+	logger.stopTimer("generateE");
+	
+	logger.startTimer("transposeE");
 	cusp::transpose(E, ET);
+	logger.stopTimer("transposeE");
 }

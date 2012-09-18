@@ -21,7 +21,7 @@ Run the test:
 	
 	bin/cuIBM
 
-Update: September 7th, 2012
+Update: September 17th, 2012
 
 ATTENTION: 
 This is a work-in-progress code. Only the GPU-based routines work. The available
@@ -41,12 +41,12 @@ Navier-Stokes and the Taira & Colonius solvers:
 
 Examples available in the makefile are:
 
-	- LidDrivenCavityRe100
-	- LidDrivenCavityRe1000
-	- cylinderRe40
-	- cylinderRe550
-	- cylinderRe3000
-	- flappingRe75
+	LidDrivenCavityRe100
+	LidDrivenCavityRe1000
+	cylinderRe40
+	cylinderRe550
+	cylinderRe3000
+	flappingRe75
 
 Run
 	

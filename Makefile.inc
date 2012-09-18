@@ -50,9 +50,10 @@ SOLVER_DIR = src/solvers/
 # suffix rules are defined as s1s2 when the rule is to convert from s1 to s2
 
 # look up bash special parameters to find out what $? and $@ mean
-# but from what I've read, the use of $? doesn't make too much sense
-# it looks like $? lists the .cu files
-# $@ lists the corresponding .o files
+# $^ lists all the dependencies (.cu files in this case)
+# $? lists the dependencies that have changed since the last compile
+# $@ lists the corresponding .o files (since the rule is from .cu to .o)
+# otherwise, $@ is replaced by the name of the command
 # -c creates an object file
 # -o specifies the name of the file generated
 .cu.o:

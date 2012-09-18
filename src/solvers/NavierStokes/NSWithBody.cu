@@ -20,19 +20,33 @@
 *  THE SOFTWARE.
 */
 
-#if 0
 #include <solvers/NavierStokes/NSWithBody.h>
 
+/// Initialise the bodies
 template <typename memoryType>
 void NSWithBody<memoryType>::initialiseBodies()
 {
+	NavierStokesSolver<memoryType>::logger.startTimer("initialiseBodies");
+	
 	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
 	B.initialise(db, *NavierStokesSolver<memoryType>::domInfo);
+	
+	NavierStokesSolver<memoryType>::logger.stopTimer("initialiseBodies");
 }
-
+	
+	/// Update the body information at each time step during motion
 template <typename memoryType>
 void NSWithBody<memoryType>::updateBodies()
 {
+	NavierStokesSolver<memoryType>::logger.startTimer("updateBodies");
 	
-}
-#endif
+	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
+	real dt   = db["simulation"]["dt"].get<real>();
+	real Time = dt*(NavierStokesSolver<memoryType>::timeStep+1);
+	B.update(db, *NavierStokesSolver<memoryType>::domInfo, Time);
+	
+	NavierStokesSolver<memoryType>::logger.stopTimer("updateBodies");
+};
+	
+template class NSWithBody<host_memory>;
+template class NSWithBody<device_memory>;

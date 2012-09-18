@@ -66,7 +66,7 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	
 	/// write the grids information to a file
 	io::writeGrid(folderName, *domInfo);
-	
+
 	/// open the required files
 	std::stringstream out;
 	out << folderName << "/forces";
@@ -232,14 +232,19 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 	generateM();
 	generateL();
 	generateA(intgSchm.alphaImplicit[subStep]);
-	PC1 = new preconditioner< cusp::coo_matrix<int, real, memoryType>, cusp::array1d<real, memoryType> >(A, (*paramDB)["velocitySolve"]["preconditioner"].get<preconditionerType>());
+	PC1 = new preconditioner< cusp::coo_matrix<int, real, memoryType> >(A, (*paramDB)["velocitySolve"]["preconditioner"].get<preconditionerType>());
 	generateBN();
+	
+	logger.stopTimer("assembleMatrices");
+
 	generateQT();
 	generateC(); // QT*BN*Q
-	PC2 = new preconditioner< cusp::coo_matrix<int, real, memoryType>, cusp::array1d<real, memoryType> >(C, (*paramDB)["PoissonSolve"]["preconditioner"].get<preconditionerType>());
+	
+	logger.startTimer("preconditioner2");
+	PC2 = new preconditioner< cusp::coo_matrix<int, real, memoryType> >(C, (*paramDB)["PoissonSolve"]["preconditioner"].get<preconditionerType>());
+	logger.stopTimer("preconditioner2");
 
-	std::cout << "Assembled matrices!" << std::endl;	
-	logger.stopTimer("assembleMatrices");
+	std::cout << "Assembled matrices!" << std::endl;
 }
 
 /**
@@ -267,20 +272,28 @@ void NavierStokesSolver<memoryType>::generateBN<3>()
 template <>
 void NavierStokesSolver<device_memory>::generateC()
 {
+	logger.startTimer("generateC");
+	
 	cooD temp; // Should this temp matrix be created each time step?
 	cusp::wrapped::multiply(QT, BN, temp);
 	cusp::wrapped::multiply(temp, Q, C);
 	C.values[0] += C.values[0];
+	
+	logger.stopTimer("generateC");
 }
 
 template <>
 void NavierStokesSolver<host_memory>::generateC()
 {
+	logger.startTimer("generateC");
+	
 	cooH temp;
 	cusp::wrapped::multiply(QT, BN, temp);
 	cusp::wrapped::multiply(temp, Q, C);
 	C.sort_by_row_and_column();
 	C.values[0] += C.values[0];
+	
+	logger.stopTimer("generateC");
 }
 
 //##############################################################################
@@ -347,16 +360,24 @@ bool NavierStokesSolver<memoryType>::finished()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::generateRN()
 {
+	logger.startTimer("generateRN");
+	
 	generateRNFull();
 	/**
-	* Does this include the pressure term on the RHS?
+	* Does this include the pressure term on the RHS (for RK3)?
 	*/
+	
+	logger.stopTimer("generateRN");
 }
 
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::generateBC1()
 {
+	logger.startTimer("assembleBC1");
+	
 	generateBC1Full(intgSchm.alphaImplicit[subStep]);
+	
+	logger.stopTimer("assembleBC1");
 }
 
 template <typename memoryType>
@@ -372,8 +393,12 @@ void NavierStokesSolver<memoryType>::assembleRHS1()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::assembleRHS2()
 {
+	logger.startTimer("assembleRHS2");
+	
 	cusp::wrapped::multiply(QT, qStar, temp2);
 	cusp::blas::axpby(temp2, bc2, rhs2, 1.0, -1.0);
+	
+	logger.stopTimer("assembleRHS2");
 }
 
 //##############################################################################
@@ -500,7 +525,7 @@ NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(par
 	}
 	solver->paramDB = &paramDB;
 	solver->domInfo = &domInfo;
-	std::cout << "Selected solver: " << solver->name() << std::endl;
+	std::cout << "\nSelected solver: " << solver->name() << std::endl;
 	return solver;
 }
 

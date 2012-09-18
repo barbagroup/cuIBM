@@ -38,6 +38,7 @@ int main(int argc, char **argv)
 	/// choose the appropriate flow solver
 	NavierStokesSolver<device_memory> *solver = NavierStokesSolver<device_memory>::createSolver(paramDB, dom_info);
 	solver->initialise();
+	io::printDeviceMemoryUsage("Initialisation complete");
 	
 	io::writeInfoFile(paramDB, dom_info);
 	

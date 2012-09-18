@@ -39,26 +39,6 @@ class NSWithBody : public NavierStokesSolver<memoryType>
 protected:
 	bodies<memoryType> B; ///< Bodies in the flow
 
-#if 0
 	void initialiseBodies();
 	void updateBodies();
-#endif
-
-#if 1
-	/// Initialise the bodies
-	void initialiseBodies()
-	{
-		parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
-		B.initialise(db, *NavierStokesSolver<memoryType>::domInfo);
-	}
-	
-	/// Update the body information at each time step during motion
-	void updateBodies()
-	{
-		parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
-		real dt   = db["simulation"]["dt"].get<real>();
-		real Time = dt*(NavierStokesSolver<memoryType>::timeStep+1);
-		B.update(db, *NavierStokesSolver<memoryType>::domInfo, Time);
-	};
-#endif
 };

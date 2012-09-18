@@ -23,12 +23,12 @@
 #include <solvers/NavierStokes/kernels/generateQT.h>
 
 template <>
-void FadlunEtAlSolver<host_memory>::updateQFadlun()
+void FadlunEtAlSolver<host_memory>::updateQ()
 {
 }
 
 template <>
-void FadlunEtAlSolver<device_memory>::updateQFadlun()
+void FadlunEtAlSolver<device_memory>::updateQ()
 {
 	const int blocksize = 256;
 	
@@ -48,15 +48,15 @@ void FadlunEtAlSolver<device_memory>::updateQFadlun()
 	dim3 dimGrid( int((QSize-0.5)/blocksize) + 1, 1);
 	dim3 dimBlock(blocksize, 1);
 	
-//	kernels::updateQFadlun <<<dimGrid, dimBlock>>> (QRows, QCols, QVals, QSize, tags_r);
-	kernels::updateQFadlun <<<dimGrid, dimBlock>>> (QRows, QCols, QVals, QSize, tagsX_r, tagsY_r);
+//	kernels::updateQ <<<dimGrid, dimBlock>>> (QRows, QCols, QVals, QSize, tags_r);
+	kernels::updateQ <<<dimGrid, dimBlock>>> (QRows, QCols, QVals, QSize, tagsX_r, tagsY_r);
 }
 
 template <typename memoryType>
 void FadlunEtAlSolver<memoryType>::generateQT()
 {
 	NavierStokesSolver<memoryType>::generateQT();
-	updateQFadlun();
+	updateQ();
 	cusp::transpose(NavierStokesSolver<memoryType>::Q, NavierStokesSolver<memoryType>::QT);
 }
 

@@ -119,12 +119,17 @@ public:
 
 	void printAllTime()
 	{
+		double totalTime = 0.0;
 		std::cout << std::endl;
 		for( E_iter E=timer.begin(); E!=timer.end(); ++E )
 		{
+			totalTime += E->second;
 			std::cout << std::setw(24) << E->first << std::setw(13) << std::fixed \
 			          << std::setprecision(4) << E->second << std::endl;
 		}
+		std::cout << "-------------------------------------" << std::endl;
+		std::cout << std::setw(24) << "TOTAL" << std::setw(13) << std::fixed \
+			          << std::setprecision(4) << totalTime << std::endl;
 	}
   
 	void writeLegend()

@@ -27,14 +27,14 @@
 
 #pragma once
 
-#include <preconditioner.h>
+#include <types.h>
 #include <cusp/linear_operator.h>
 #include <cusp/csr_matrix.h>
 #include <cusp/precond/diagonal.h>
 #include <cusp/precond/smoothed_aggregation.h>
 #include <cusp/format.h>
 
-template <typename Matrix, typename Vector>
+template <typename Matrix>
 class preconditioner
 {	
 	preconditionerType type;
@@ -60,18 +60,18 @@ public:
 
 	// () operator
 	template <typename VectorType1, typename VectorType2>
-	void operator()(const VectorType1 &x, VectorType2 &b) const;
+	void operator()(const VectorType1 &x, VectorType2 &y) const;
 };
 
 // constructors
-template <class Matrix, class Vector>
-preconditioner<Matrix,Vector>::preconditioner()
+template <class Matrix>
+preconditioner<Matrix>::preconditioner()
 {
 }
 
 // this is simple enough
-template <class Matrix, class Vector>
-preconditioner<Matrix,Vector>::preconditioner(const Matrix &A, preconditionerType _type)
+template <class Matrix>
+preconditioner<Matrix>::preconditioner(const Matrix &A, preconditionerType _type)
 {
 	typedef typename Matrix::value_type   ValueType;
 	typedef typename Matrix::index_type   IndexType;
@@ -97,14 +97,14 @@ preconditioner<Matrix,Vector>::preconditioner(const Matrix &A, preconditionerTyp
 }
 
 // destructor
-template <typename Matrix, typename Vector>
-preconditioner<Matrix,Vector>::~preconditioner()
+template <typename Matrix>
+preconditioner<Matrix>::~preconditioner()
 {
 	delete LO;
 }
 
-template <class Matrix, class Vector>
-void preconditioner<Matrix,Vector>::update(const Matrix &A)
+template <class Matrix>
+void preconditioner<Matrix>::update(const Matrix &A)
 {
 	typedef typename Matrix::value_type   ValueType;
 	typedef typename Matrix::index_type   IndexType;
@@ -127,9 +127,9 @@ void preconditioner<Matrix,Vector>::update(const Matrix &A)
 
 // the operator defined here is ()
 // Why is this required? Need to look into the implementation of preconditioners in Cusp.
-template <typename Matrix, typename Vector>
+template <typename Matrix>
 template <typename VectorType1, typename VectorType2> 
-void preconditioner<Matrix,Vector>::operator()(const VectorType1 &x, VectorType2 &y) const
+void preconditioner<Matrix>::operator()(const VectorType1 &x, VectorType2 &y) const
 {
 
 	/*if (type == NONE)

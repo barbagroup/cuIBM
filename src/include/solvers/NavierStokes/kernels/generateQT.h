@@ -28,10 +28,10 @@ namespace kernels
 {
 
 __global__
-void updateQFadlun(int *QRows, int *QCols, real *QVals, int QSize, int *tags);
+void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tags);
 
 __global__
-void updateQFadlun(int *QRows, int *QCols, real *QVals, int QSize, int *tagsX, int *tagsY);
+void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tagsX, int *tagsY);
 
 void generateQT(int *QTRows, int *QTCols, real *QTVals, int nx, int ny);
 

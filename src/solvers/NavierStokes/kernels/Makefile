@@ -9,7 +9,7 @@ LIBNAME=libNavierStokesSolvers.a
 all: objects force_look
 
 objects: $(OBJS)
-	$(AR) $(ARFLAGS) ruv ../../$(LIBNAME) $?
+	$(AR) $(ARFLAGS) ruv ../../$(LIBNAME) $^
 	$(RANLIB) ../../$(LIBNAME)
 
 force_look:

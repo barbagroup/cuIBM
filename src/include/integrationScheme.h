@@ -112,8 +112,9 @@ public:
 			alphaExplicit[i] = aE*(gamma[i]+zeta[i]);
 			alphaImplicit[i] = aI*(gamma[i]+zeta[i]);
 		}	
-		std::cout << "DONE! " << std::endl << std::endl;
+		std::cout << "DONE! " << std::endl;
 		
+		std::cout << std::endl;
 		// Print the coefficients
 		for(int i=0; i<subSteps; i++)
 		{

@@ -63,7 +63,7 @@ private:
 	void generateL();
 	void generateQT(int *QTRows, int *QTCols, real *QTVals){}
 	void generateQT();
-	void updateQFadlun();
+	void updateQ();
 	
 	void generateRN();
 	void updateRN();

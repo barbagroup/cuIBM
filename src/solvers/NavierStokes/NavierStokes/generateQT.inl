@@ -25,6 +25,8 @@
 template <>
 void NavierStokesSolver<host_memory>::generateQT()
 {
+	logger.startTimer("generateQT");
+	
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
@@ -40,11 +42,15 @@ void NavierStokesSolver<host_memory>::generateQT()
 	
 	kernels::generateQT(QTRows, QTCols, QTVals, nx, ny);
 	cusp::transpose(QT, Q);
+	
+	logger.stopTimer("generateQT");
 }
 
 template <>
 void NavierStokesSolver<device_memory>::generateQT()
 {
+	logger.startTimer("generateQT");
+	
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
@@ -61,4 +67,6 @@ void NavierStokesSolver<device_memory>::generateQT()
 	kernels::generateQT(QTRows, QTCols, QTVals, nx, ny);
 	QT = QTHost;
 	cusp::transpose(QT, Q);
+	
+	logger.stopTimer("generateQT");
 }
