@@ -10,7 +10,7 @@ LIBNAME=libIO.a
 all: objects install force_look
 
 objects: $(OBJ)
-	$(AR) $(ARFLAGS) ruv $(LIBNAME) $^
+	$(AR) $(ARFLAGS) ruv $(LIBNAME) $?
 	$(RANLIB) $(LIBNAME)
 
 install: objects

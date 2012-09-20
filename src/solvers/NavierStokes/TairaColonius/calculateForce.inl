@@ -34,7 +34,7 @@ void TairaColoniusSolver<memoryType>::calculateForceTC()
 	
 	real dx = NavierStokesSolver<memoryType>::domInfo->dx[ NSWithBody<memoryType>::B.I[0] ],
 	     dy = dx;
-	
+
 	thrust::copy(NavierStokesSolver<memoryType>::lambda.begin() + nx*ny, NavierStokesSolver<memoryType>::lambda.end(), f.begin());
 	cusp::multiply(ET, f, F);
 	NavierStokesSolver<memoryType>::forceX = (dx*dy)/dx*thrust::reduce( F.begin(), F.begin()+(nx-1)*ny );

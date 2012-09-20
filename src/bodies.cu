@@ -98,13 +98,6 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	std::cout << "DONE!" << std::endl;
 }
 
-/*
-template <typename memoryType>
-void bodies<memoryType>::initialise(flowDescription &F, domain &D)
-{
-}
-*/
-
 template <typename memoryType>
 void bodies<memoryType>::calculateCellIndices(domain &D)
 {
@@ -148,9 +141,7 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 		J[k] = j;
 	}
 }
-/**
-* \brief This function determines the bounding box around each body.
-*/
+
 template <typename memoryType>
 void bodies<memoryType>::calculateBoundingBoxes(domain &D)
 {

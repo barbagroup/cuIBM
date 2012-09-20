@@ -248,7 +248,6 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::string ecc = deviceProp.ECCEnabled ? "yes" : "no";
 	std::cout << "Compute capability = " << deviceProp.major << "." << deviceProp.minor << std::endl;
 	std::cout << "ECC Enabled = " << ecc << std::endl;
-	std::cout << std::endl;
 }
 
 void printTimingInfo(Logger &logger)

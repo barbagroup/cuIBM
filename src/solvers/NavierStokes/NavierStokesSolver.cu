@@ -82,11 +82,6 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	logger.stopTimer("initialiseCommon");
 }
 
-/**
-* \brief Initialises all required arrays
-* \param numQ Total number velocity variables (u and v)
-* \param numLambda Number of pressure variables + twice the number of body force variables
-*/
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 {	
@@ -483,10 +478,8 @@ void NavierStokesSolver<memoryType>::writeData()
 	}
 	real dt = (*paramDB)["simulation"]["dt"].get<real>();
 	calculateForce();
-//	io::writeForce(folderName, timeStep*dt, forceX, forceY);
 	forceFile << timeStep*dt << '\t' << forceX << '\t' << forceY << std::endl;
 	iterationsFile << timeStep << '\t' << iterationCount1 << '\t' << iterationCount2 << std::endl;
-//	io::writeIterations(iterationsFile, folderName, timeStep, iterationCount1, iterationCount2);
 	
 	logger.stopTimer("output");
 }
@@ -500,7 +493,7 @@ template <typename memoryType>
 void NavierStokesSolver<memoryType>::shutDown()
 {
 	io::printTimingInfo(logger);
-//	forceFile.close();
+	forceFile.close();
 	iterationsFile.close();
 }
 

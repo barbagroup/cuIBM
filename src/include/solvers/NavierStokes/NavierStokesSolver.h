@@ -76,21 +76,24 @@ protected:
 	* Initialises stuff common to all IBM solvers
 	*/
 	void initialiseCommon();
+	
+	/**
+	* @brief Initialises all required arrays
+	* @param numQ Total number velocity variables (u and v)
+	* @param numLambda Number of pressure variables + twice the number of body force variables
+	*/
 	void initialiseArrays(int numQ, int numLambda);
 	void initialiseFluxes();
 	void initialiseBoundaryArrays();
 	void assembleMatrices(); // contains subfunctions to calculate A, QT, BN, QTBNQ
 
-	// functions to generate matrices
-	
-	void generateM();
-	
 	// Methods are defined as virtual when they are redefined in a derived class with the same name.
 	
+	// functions to generate matrices
+	void generateM();
 	virtual void generateL();
 	virtual void generateA(real alpha);
-	void generateBN();
-	
+	void generateBN();	
 	virtual void generateQT();
 	void updateQ(real gamma);
 	

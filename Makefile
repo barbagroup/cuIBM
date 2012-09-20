@@ -30,7 +30,7 @@ FINAL_LIB = lib/libcuIBM.a
 # the implicit rule .cu.o converts src/parameterDB.cu to src/parameterDB.o
 
 # link all the object files and libraries to create the executable bin/cuIBM
-cuibm: $(LIBS) $(EXT_LIBS) src/parameterDB.o src/bodies.o src/cuIBM.o
+cuibm: $(LIBS) $(EXT_LIBS) src/helpers.o src/parameterDB.o src/bodies.o src/cuIBM.o
 	nvcc $^ -o bin/cuIBM
 
 #src/preconditioner.o
@@ -59,8 +59,14 @@ external/lib/libyaml-cpp.a:
 #  1. delete all the .a and .o files
 #  2. cd to the concerned folders
 #  3. run 'make clean' as defined in the Makefiles in those folders
-.PHONY: clean
+.PHONY: clean cleanall
+
 clean:
+	@rm -f lib/*.a bin/cuIBM src/*.o
+	cd src/solvers; $(MAKE) $(MFLAGS) clean
+	cd src/io; $(MAKE) $(MFLAGS) clean
+
+cleanall:
 	@rm -f lib/*.a bin/cuIBM src/*.o
 	cd src/solvers; $(MAKE) $(MFLAGS) clean
 	cd src/cusp; $(MAKE) $(MFLAGS) clean

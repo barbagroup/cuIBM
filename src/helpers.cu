@@ -20,33 +20,21 @@
 *  THE SOFTWARE.
 */
 
-#include <types.h>
 #include <helpers.h>
-#include <domain.h>
-#include <io/io.h>
-#include <solvers/NavierStokes/NavierStokesSolver.h>
-#include <solvers/NavierStokes/TairaColoniusSolver.h>
-#include <solvers/NavierStokes/FadlunEtAlSolver.h>
 
-int main(int argc, char **argv)
+real dhRoma(real x, real h)
 {
-	domain dom_info;
-	parameterDB paramDB;
-
-	io::readInputs(argc, argv, paramDB, dom_info);
-	io::printSimulationInfo(paramDB, dom_info);
-
-	/// choose the appropriate flow solver
-	NavierStokesSolver<device_memory> *solver = NavierStokesSolver<device_memory>::createSolver(paramDB, dom_info);
-	solver->initialise();
-	io::printDeviceMemoryUsage("Initialisation complete");
+	real r = fabs(x)/h;
 	
-	io::writeInfoFile(paramDB, dom_info);
-	
-	while (!solver->finished())
-	{
-		solver->stepTime();
-		solver->writeData();
-	}
-	solver->shutDown();
+	if(r>1.5)
+		return 0.0;
+	else if(r>0.5 && r<=1.5)
+		return 1.0/(6*h)*( 5.0 - 3.0*r - sqrt(-3.0*(1-r)*(1-r) + 1.0) );
+	else
+		return 1.0/(3*h)*( 1.0 + sqrt(-3.0*r*r + 1.0) );
+}
+
+real delta(real x, real y, real h)
+{
+	return dhRoma(x, h) * dhRoma(y, h);
 }

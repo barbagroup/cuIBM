@@ -33,16 +33,18 @@ void TairaColoniusSolver<memoryType>::initialise()
 	int numP  = nx*ny;
 	
 	NSWithBody<memoryType>::initialiseBodies();
+	int numB  = NSWithBody<memoryType>::B.totalPoints; 
+	
 	NavierStokesSolver<memoryType>::initialiseCommon();
-	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP+2*NSWithBody<memoryType>::B.totalPoints);
-	NavierStokesSolver<memoryType>::assembleMatrices();
-	if(NSWithBody<memoryType>::B.totalPoints > 0)
+	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP+2*numB);
+	if(numB > 0)
 	{
-		generateE();
+		E.resize(2*numB, numUV, 24*numB);
 		FxX.resize(NSWithBody<memoryType>::B.numCellsX[0]);
 		FxY.resize(NSWithBody<memoryType>::B.numCellsY[0]);
 		FxU.resize( (NSWithBody<memoryType>::B.numCellsX[0]+1)*NSWithBody<memoryType>::B.numCellsY[0] );
 	}
+	NavierStokesSolver<memoryType>::assembleMatrices();
 }
 
 template <typename memoryType>
@@ -52,9 +54,7 @@ void TairaColoniusSolver<memoryType>::updateSolverState()
 	{
 		
 		NSWithBody<memoryType>::updateBodies();
-		//updateQT();
-		generateQT();
-		generateE();
+		updateQT();
 		NavierStokesSolver<memoryType>::generateC();
 		
 		NavierStokesSolver<memoryType>::logger.startTimer("preconditioner2");
