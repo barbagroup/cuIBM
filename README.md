@@ -1,7 +1,10 @@
+Updated: September 20th, 2012
+
 Dependencies:
-* nvcc - NVIDIA CUDA Compiler
-* g++  - any compatible version (4.5 and below)
-* Cusp - Available at http://code.google.com/p/cusp-library/
+
+* nvcc - NVIDIA CUDA Compiler (tested with nvcc-4.2)
+* g++  - any compatible version (nvcc-4.2 is compatible with g++4.6. nvcc-4.1 requires g++4.5 or below)
+* Cusp - Available at http://code.google.com/p/cusp-library/ (tested with revision 558)
 
 To compile, set the environment variable CUSP_DIR to point to the directory 
 with the Cusp library. For a bash shell, add the following line to ~/.bashrc or 
@@ -20,8 +23,6 @@ Compile all files:
 Run the test:
 	
 	bin/cuIBM
-
-Update: September 17th, 2012
 
 ATTENTION: 
 This is a work-in-progress code. Only the GPU-based routines work. The available
