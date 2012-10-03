@@ -452,48 +452,4 @@ void convectionTermVLeftRight(real *rn, real *H, real *q, \
 	rn[Iv] = ( v/dt + cTerm + dTerm ) * 0.5*(dy[I] + dy[I+1]);
 }
 
-__global__
-void updateRN(real *rn, int numUV, int *tags)
-{
-	int	I = blockIdx.x*blockDim.x + threadIdx.x;
-	
-	if(I>=numUV)
-		return;
-	
-	rn[I] = rn[I]*(tags[I]==-1);
-}
-
-__global__
-void updateRN(real *rn, int numUV, int *tagsX, int *tagsY)
-{
-	int	I = blockIdx.x*blockDim.x + threadIdx.x;
-	
-	if(I>=numUV)
-		return;
-	
-	rn[I] = rn[I]*(tagsX[I]==-1 && tagsY[I]==-1);
-}
-
-__global__
-void updateRHS1(real *rhs1, int numUV, int *tags)
-{
-	int	I = blockIdx.x*blockDim.x + threadIdx.x;
-	
-	if(I>=numUV)
-		return;
-	
-	rhs1[I] = rhs1[I]*(tags[I]==-1);
-}
-
-__global__
-void updateRHS1(real *rhs1, int numUV, int *tagsX, int *tagsY)
-{
-	int	I = blockIdx.x*blockDim.x + threadIdx.x;
-	
-	if(I>=numUV)
-		return;
-	
-	rhs1[I] = rhs1[I]*(tagsX[I]==-1 && tagsY[I]==-1);
-}
-
 } // end of namespace kernels

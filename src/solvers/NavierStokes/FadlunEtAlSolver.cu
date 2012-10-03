@@ -72,27 +72,18 @@ void FadlunEtAlSolver<memoryType>::updateSolverState()
 }*/
 
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::generateRN()
-{
-	NavierStokesSolver<memoryType>::generateRNFull();
-	updateRN();
-	
-	/**
-	* Added for testing. REMOVE SOON!!!
-	*/
-	//cusp::blas::fill(NavierStokesSolver<memoryType>::rn, 0.0);
-}
-
-template <typename memoryType>
 void FadlunEtAlSolver<memoryType>::assembleRHS1()
 {
 	NavierStokesSolver<memoryType>::assembleRHS1();
+	
+	NavierStokesSolver<memoryType>::logger.startTimer("updateRHS1");
 	updateRHS1();
+	NavierStokesSolver<memoryType>::logger.startTimer("updateRHS1");
 }
 
 #include "FadlunEtAl/tagPoints.inl"
 #include "FadlunEtAl/generateL.inl"
-#include "FadlunEtAl/updateRN.inl"
+#include "FadlunEtAl/updateRHS1.inl"
 #include "FadlunEtAl/generateQT.inl"
 
 template class FadlunEtAlSolver<host_memory>;

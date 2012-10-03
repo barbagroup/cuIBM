@@ -100,10 +100,9 @@ protected:
 	void generateC();
 
 	// generate explicit terms
-	virtual void generateRN();
+	void generateRN();
 	void calculateExplicitQTerms();
 	void calculateExplicitLambdaTerms();
-	void generateRNFull();
 	
 	virtual void generateBC1();
 	virtual void generateBC2();

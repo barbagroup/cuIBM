@@ -65,9 +65,6 @@ private:
 	void generateQT();
 	void updateQ();
 	
-	void generateRN();
-	void updateRN();
-	//void generateBC1();
 	void assembleRHS1();
 	void updateRHS1();
 

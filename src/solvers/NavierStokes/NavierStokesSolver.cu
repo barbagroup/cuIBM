@@ -115,7 +115,7 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 	initialiseFluxes();
 	initialiseBoundaryArrays();
 	
-	generateRNFull();
+	generateRN();
 	cusp::blas::scal(H, 1.0/intgSchm.gamma[subStep]);
 	std::cout << "Initialised arrays!" << std::endl;
 	
@@ -351,19 +351,6 @@ bool NavierStokesSolver<memoryType>::finished()
 //##############################################################################
 //                          GENERATE VECTORS
 //##############################################################################
-
-template <typename memoryType>
-void NavierStokesSolver<memoryType>::generateRN()
-{
-	logger.startTimer("generateRN");
-	
-	generateRNFull();
-	/**
-	* Does this include the pressure term on the RHS (for RK3)?
-	*/
-	
-	logger.stopTimer("generateRN");
-}
 
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::assembleRHS1()

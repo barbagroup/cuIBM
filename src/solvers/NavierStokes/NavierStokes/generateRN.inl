@@ -188,8 +188,12 @@ void NavierStokesSolver<host_memory>::calculateExplicitQTerms()
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::generateRNFull()
+void NavierStokesSolver<memoryType>::generateRN()
 {
+	logger.startTimer("generateRN");
+	
 	calculateExplicitQTerms();
 	calculateExplicitLambdaTerms();
+	
+	logger.stopTimer("generateRN");
 }
