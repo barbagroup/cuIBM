@@ -366,16 +366,6 @@ void NavierStokesSolver<memoryType>::generateRN()
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::generateBC1()
-{
-	logger.startTimer("assembleBC1");
-	
-	generateBC1Full(intgSchm.alphaImplicit[subStep]);
-	
-	logger.stopTimer("assembleBC1");
-}
-
-template <typename memoryType>
 void NavierStokesSolver<memoryType>::assembleRHS1()
 {
 	logger.startTimer("assembleRHS1");

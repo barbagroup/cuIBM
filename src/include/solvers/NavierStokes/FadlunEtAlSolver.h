@@ -61,14 +61,15 @@ private:
 //	void updateA();
 
 	void generateL();
-	void generateQT(int *QTRows, int *QTCols, real *QTVals){}
+	void generateQT(int *QTRows, int *QTCols, real *QTVals){} // check this!
 	void generateQT();
 	void updateQ();
 	
 	void generateRN();
 	void updateRN();
-	void generateBC1();
-	void updateBC1();
+	//void generateBC1();
+	void assembleRHS1();
+	void updateRHS1();
 
 //	void updateSolverState();
 	

@@ -84,15 +84,10 @@ void FadlunEtAlSolver<memoryType>::generateRN()
 }
 
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::generateBC1()
+void FadlunEtAlSolver<memoryType>::assembleRHS1()
 {
-	NavierStokesSolver<memoryType>::generateBC1Full(NavierStokesSolver<memoryType>::intgSchm.alphaImplicit[NavierStokesSolver<memoryType>::subStep]);
-	updateBC1();
-}
-
-template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::updateBC1()
-{
+	NavierStokesSolver<memoryType>::assembleRHS1();
+	updateRHS1();
 }
 
 #include "FadlunEtAl/tagPoints.inl"

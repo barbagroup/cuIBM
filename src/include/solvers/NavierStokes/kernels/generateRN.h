@@ -63,4 +63,10 @@ void updateRN(real *rn, int numUV, int *tags);
 __global__
 void updateRN(real *rn, int numUV, int *tagsX, int *tagsY);
 
+__global__
+void updateRHS1(real *rhs1, int numUV, int *tags);
+
+__global__
+void updateRHS1(real *rhs1, int numUV, int *tagsX, int *tagsY);
+
 } // end of namespace kernels

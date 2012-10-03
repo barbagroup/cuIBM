@@ -106,10 +106,9 @@ protected:
 	void generateRNFull();
 	
 	virtual void generateBC1();
-	void generateBC1Full(real alpha);
 	virtual void generateBC2();
 
-	void assembleRHS1();
+	virtual void assembleRHS1();
 	void assembleRHS2();
 
 	void solveIntermediateVelocity();

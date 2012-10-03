@@ -59,3 +59,41 @@ void FadlunEtAlSolver<host_memory>::updateRN()
 			rn[i] = 0.0;
 	}
 }
+
+template <>
+void FadlunEtAlSolver<device_memory>::updateRHS1()
+{
+	const int blocksize = 256;
+	
+	int  nx = domInfo->nx,
+	     ny = domInfo->ny;
+	
+	int  numUV = (nx-1)*ny + nx*(ny-1);
+	
+	real *rhs1_r   = thrust::raw_pointer_cast(&(rhs1[0]));
+//	int  *tags_r = thrust::raw_pointer_cast(&(tagsD[0]));
+	int  *tagsX_r = thrust::raw_pointer_cast(&(tagsXD[0])),\
+	     *tagsY_r = thrust::raw_pointer_cast(&(tagsYD[0]));
+	
+	dim3 dimGrid( int((numUV-0.5)/blocksize) + 1, 1);
+	dim3 dimBlock(blocksize, 1);
+	
+//	kernels::updateRHS1 <<<dimGrid, dimBlock>>> (rhs1_r, numUV, tags_r);
+	kernels::updateRHS1 <<<dimGrid, dimBlock>>> (rhs1_r, numUV, tagsX_r, tagsY_r);
+}
+
+template <>
+void FadlunEtAlSolver<host_memory>::updateRHS1()
+{
+	int  nx = domInfo->nx,
+	     ny = domInfo->ny;
+	
+	int  numUV = (nx-1)*ny + nx*(ny-1);
+	
+	for(int i=0; i<numUV; i++)
+	{
+//		if(tags[i]!=-1)
+		if(tagsX[i]!=-1 || tagsY[i]!=-1)
+			rhs1[i] = 0.0;
+	}
+}

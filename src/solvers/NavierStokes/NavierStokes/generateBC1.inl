@@ -23,8 +23,12 @@
 #include <solvers/NavierStokes/kernels/generateBC1.h>
 
 template <>
-void NavierStokesSolver<device_memory>::generateBC1Full(real alpha)
+void NavierStokesSolver<device_memory>::generateBC1()
 {
+	logger.startTimer("generateBC1");
+	
+	real alpha = intgSchm.alphaImplicit[subStep];
+	
 	// raw pointers from cusp arrays
 	real *bc1_r = thrust::raw_pointer_cast(&bc1[0]),
 	     *q_r   = thrust::raw_pointer_cast(&q[0]),
@@ -147,9 +151,11 @@ void NavierStokesSolver<device_memory>::generateBC1Full(real alpha)
 		C	= alpha * 2.0 * nu / (dx1 * (dx0+dx1));
 		kernels::bc1ConvectiveV <<<dimGridy, dimBlock>>> (bc1_r, ny-1, nx, numU, nx-1, nx, dxD, dyD, C, xplus, ny, q_r, beta);
 	}
+	
+	logger.stopTimer("generateBC1");
 }
 
 template <>
-void NavierStokesSolver<host_memory>::generateBC1Full(real alpha)
+void NavierStokesSolver<host_memory>::generateBC1()
 {
 }

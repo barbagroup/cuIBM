@@ -80,7 +80,7 @@ force_look:
 #
 #.PHONY: test test2
 .PHONY: cavity LidDrivenCavityRe100 LidDrivenCavityRe1000
-.PHONY: cylinder cylinderRe40 cylinderRe550 cylinderRe3000
+.PHONY: cylinder cylinderFadlun cylinderRe40 cylinderRe550 cylinderRe3000
 .PHONY: flapping flappingRe75
 
 #test:
@@ -118,6 +118,12 @@ cylinder:
 	-flowFile flows/openFlow.yaml -domainFile domains/openFlow.yaml \
 	-bodyFile bodies/cylinder.yaml -simulationFile simParams/openFlow.yaml \
 	-folderName cylinder
+
+cylinderFadlun:
+	bin/cuIBM \
+	-flowFile flows/openFlow.yaml -domainFile domains/openFlow.yaml \
+	-bodyFile bodies/cylinder.yaml -simulationFile simParams/openFlowFadlun.yaml \
+	-folderName cylinderFadlun
 
 cylinderRe40:
 	bin/cuIBM \
