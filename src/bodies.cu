@@ -98,6 +98,9 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	std::cout << "DONE!" << std::endl;
 }
 
+// calculates the
+// index of the x-coordinate of the bottom-left node of the containing cell
+// index of the y-coordinate of the bottom-left node of the containing cell
 template <typename memoryType>
 void bodies<memoryType>::calculateCellIndices(domain &D)
 {
@@ -145,7 +148,7 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 template <typename memoryType>
 void bodies<memoryType>::calculateBoundingBoxes(domain &D)
 {
-	real scale=2.0, dx, dy;
+	real scale=5.0, dx, dy;
 	int  i, j;
 	for(int k=0; k<numBodies; k++)
 	{

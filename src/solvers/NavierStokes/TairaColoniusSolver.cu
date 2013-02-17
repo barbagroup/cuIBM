@@ -40,9 +40,6 @@ void TairaColoniusSolver<memoryType>::initialise()
 	if(numB > 0)
 	{
 		E.resize(2*numB, numUV, 24*numB);
-		FxX.resize(NSWithBody<memoryType>::B.numCellsX[0]);
-		FxY.resize(NSWithBody<memoryType>::B.numCellsY[0]);
-		FxU.resize( (NSWithBody<memoryType>::B.numCellsX[0]+1)*NSWithBody<memoryType>::B.numCellsY[0] );
 	}
 	NavierStokesSolver<memoryType>::assembleMatrices();
 }

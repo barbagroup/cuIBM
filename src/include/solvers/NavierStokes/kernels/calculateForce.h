@@ -53,7 +53,7 @@ namespace kernels
 * @param ncy Number of cells in the y-direction in the control volume
 */
 __global__
-void dragLeftRight(real *FxY, real *q, real *lambda, real *dx, real *dy,
+void dragLeftRight(real *FxY, real *q, real *lambda, real nu, real *dx, real *dy,
                             int nx, int ny, int I, int J, int ncx, int ncy);
 
 /**
@@ -73,7 +73,7 @@ void dragLeftRight(real *FxY, real *q, real *lambda, real *dx, real *dy,
 * @param ncy Number of cells in the y-direction in the control volume
 */
 __global__
-void dragBottomTop(real *FxX, real *q, real *dx, real *dy,
+void dragBottomTop(real *FxX, real *q, real nu, real *dx, real *dy,
                    int nx, int ny, int I, int J, int ncx, int ncy);
 
 /**
@@ -96,5 +96,13 @@ void dragBottomTop(real *FxX, real *q, real *dx, real *dy,
 __global__
 void dragUnsteady(real *FxU, real *q, real *qOld, real *dx, real *dy, real dt,
                    int nx, int ny, int I, int J, int ncx, int ncy);
+
+__global__
+void forceX(real *f, real *q, real *rn, int *tagsX, int *tagsY,
+            int nx, int ny, real *dx, real *dy, 
+            real dt, real alpha, real nu);
+
+__global__
+void forceY();
                    
 } // end of namespace kernels

@@ -85,6 +85,7 @@ void FadlunEtAlSolver<memoryType>::assembleRHS1()
 #include "FadlunEtAl/generateL.inl"
 #include "FadlunEtAl/updateRHS1.inl"
 #include "FadlunEtAl/generateQT.inl"
+#include "FadlunEtAl/calculateForce.inl"
 
 template class FadlunEtAlSolver<host_memory>;
 template class FadlunEtAlSolver<device_memory>;

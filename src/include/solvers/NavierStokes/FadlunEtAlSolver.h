@@ -69,6 +69,8 @@ private:
 	void updateRHS1();
 
 //	void updateSolverState();
+	void  calculateForce();
+	void  calculateForceF();
 	
 public:
 	void initialise();

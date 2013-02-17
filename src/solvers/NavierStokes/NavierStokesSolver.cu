@@ -495,7 +495,7 @@ NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(par
 	}
 	solver->paramDB = &paramDB;
 	solver->domInfo = &domInfo;
-	std::cout << "\nSelected solver: " << solver->name() << std::endl;
+	std::cout << "\nSelected solver: " << solver->name() << '\n' << std::endl;
 	return solver;
 }
 

@@ -1,4 +1,4 @@
-Updated: September 20th, 2012
+Updated: February 17th, 2013
 
 Dependencies:
 
@@ -70,6 +70,5 @@ Known issues:
 * Linker step fails on Mac OS X
 * Cannot choose the Krylov solver.
 * TairaColoniusSolver and FadlunEtAlSolver fail if no body is present.
-* TairaColoniusSolver does not calculate forces if multiple bodies are present.
-* Forces are not calculated for the direct forcing method (FadlunEtAlSolver)
+* Individual forces are not calculated if multiple bodies are present.
 * FadlunEtAlSolver has not been fully validated

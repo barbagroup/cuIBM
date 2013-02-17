@@ -162,8 +162,8 @@ for n=start_step+nsave:nsave:nt
 	axis equal;
 	axis([xmin xmax ymin ymax]);
 	caxis([-omgmax omgmax])
-	out_file = strcat('../../', foldername, '/o', subfolder, '.pdf');
-	print('-dpdf', '-r300', out_file);
+	out_file = strcat('../../', foldername, '/o', subfolder, '.png');
+	print('-dpng', '-r300', out_file);
 	
 	lambda_file = strcat('../../', foldername, '/', subfolder, '/lambda');
 	file = fopen(lambda_file, 'r');
@@ -178,8 +178,8 @@ for n=start_step+nsave:nsave:nt
 	axis equal;
 	axis([xmin xmax ymin ymax]);
 	caxis([-pmax pmax]);
-	out_file = strcat('../../', foldername, '/p', subfolder, '.pdf');
-	print('-dpdf', '-r300', out_file);
+	out_file = strcat('../../', foldername, '/p', subfolder, '.png');
+	print('-dpng', '-r300', out_file);
 	
 	% plot u
 	%mesh(Xu, Yu, transpose(u), 'EdgeColor', 'black')

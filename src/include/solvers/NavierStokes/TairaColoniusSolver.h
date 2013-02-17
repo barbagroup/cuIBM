@@ -44,15 +44,12 @@ class TairaColoniusSolver : public NSWithBody<memoryType>
 private:
 	cusp::coo_matrix<int, real, memoryType> E, ET;
 	
-	cusp::array1d<real, memoryType> FxX, FxY, FxU;
-	
 	void generateQT();
 	void updateQT();
 	void generateBC2();
 	
 	void updateSolverState();
 	
-	void calculateForce1();
 	void calculateForceTC();
 	void calculateForce();
 	void generateE();

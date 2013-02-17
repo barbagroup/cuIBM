@@ -41,4 +41,5 @@ protected:
 
 	void initialiseBodies();
 	void updateBodies();
+	void calculateForceCV();
 };
