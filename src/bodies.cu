@@ -76,10 +76,12 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	{
 		for(int i=offsets[k], j = offsets[k]+numPoints[k]-1; i<offsets[k]+numPoints[k];)
 		{
-			// calculate the boundary segments lengths
+			// calculate the lenghts of the boundary segments
 			ds[i] = sqrt( (X[i]-X[j])*(X[i]-X[j]) + (Y[i]-Y[j])*(Y[i]-Y[j]) );
+			
 			// set the initial x-coordinates of the boundary points
 			x[i] = (*B)[k].Xc[0] + ((*B)[k].X[i]-(*B)[k].X0[0])*cos((*B)[k].Theta0) - ((*B)[k].Y[i] - (*B)[k].X0[1])*sin((*B)[k].Theta0);
+			
 			// set the initial y-coordinates of the boundary points
 			y[i] = (*B)[k].Xc[1] + ((*B)[k].X[i]-(*B)[k].X0[0])*sin((*B)[k].Theta0) + ((*B)[k].Y[i] - (*B)[k].X0[1])*cos((*B)[k].Theta0);
 			uB[i] = 0.0;
@@ -93,7 +95,7 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	if(numBodies)
 	{
 		calculateCellIndices(D);
-		calculateBoundingBoxes(D);
+		calculateBoundingBoxes(db, D);
 	}
 	std::cout << "DONE!" << std::endl;
 }
@@ -146,9 +148,10 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 }
 
 template <typename memoryType>
-void bodies<memoryType>::calculateBoundingBoxes(domain &D)
+void bodies<memoryType>::calculateBoundingBoxes(parameterDB &db, domain &D)
 {
-	real scale=5.0, dx, dy;
+	real scale = db["simulation"]["scaleCV"].get<real>(),
+	     dx, dy;
 	int  i, j;
 	for(int k=0; k<numBodies; k++)
 	{

@@ -74,12 +74,13 @@ ibmScheme ibmSchemeFromString(string &s)
 
 void parseSimulation(const YAML::Node &node, parameterDB &DB)
 {
-	real dt = 0.02;
+	real dt = 0.02, scaleCV = 5.0;
 	int nt = 100, nsave = 100, startStep = 0;
 	string convSch = "EULER_EXPLICIT", diffSch = "EULER_IMPLICIT", ibmSch = "NAVIER_STOKES";
 	bool restart = false;
 
 	node["dt"] >> dt;
+	node["scaleCV"] >> scaleCV;
 	node["nsave"] >> nsave;
 	node["nt"] >> nt;
 	node["restart"] >> restart;
@@ -92,6 +93,7 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 	// write to DB
 	string dbKey = "simulation";
 	DB[dbKey]["dt"].set<real>(dt);
+	DB[dbKey]["scaleCV"].set<real>(scaleCV);
 	DB[dbKey]["nsave"].set<int>(nsave);
 	DB[dbKey]["nt"].set<int>(nt);
 	DB[dbKey]["restart"].set<bool>(restart);

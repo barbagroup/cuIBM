@@ -199,7 +199,8 @@ string stringFromPreconditionerType(preconditionerType s)
 // output
 void printSimulationInfo(parameterDB &DB, domain &D)
 {
-	real dt = DB["simulation"]["dt"].get<real>();
+	real dt = DB["simulation"]["dt"].get<real>(),
+	     scaleCV = DB["simulation"]["scaleCV"].get<real>();
 	int  nt = DB["simulation"]["nt"].get<int>(),
 	     nsave = DB["simulation"]["nsave"].get<int>(),
 	     startStep = DB["simulation"]["startStep"].get<int>();
@@ -217,6 +218,7 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "\nSimulation parameters" << std::endl;
 	std::cout << "---------------------" << std::endl;
 	std::cout << "dt = " << dt << std::endl;
+	std::cout << "scaleCV = " << scaleCV << std::endl;
 	std::cout << "startStep = " << startStep << std::endl;
 	std::cout << "nt = "    << nt << std::endl;
 	std::cout << "nsave = " << nsave << std::endl;

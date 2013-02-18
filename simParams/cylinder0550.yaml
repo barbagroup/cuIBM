@@ -1,5 +1,6 @@
 - type: simulation
   dt: 0.0025
+  scaleCV: 5.0
   nt: 1200
   nsave: 200
   restart: false

@@ -98,7 +98,7 @@ public:
 	* @brief Calculates the bounding boxes for each body.
 	* @param D Information about the computational grid.
 	*/
-	void calculateBoundingBoxes(domain &D);
+	void calculateBoundingBoxes(parameterDB &db, domain &D);
 	
 	/**
 	* @brief Update the locations of the body points
