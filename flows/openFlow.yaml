@@ -1,6 +1,7 @@
 - type: flow
-  nu: 0.025
+  nu: 0.01
   initialVelocity: [1.0, 0.0]
+  initialPerturbation: [0.1, 0.0]
   boundaryConditions:
     - location: xMinus
       u: [DIRICHLET, 1.0]

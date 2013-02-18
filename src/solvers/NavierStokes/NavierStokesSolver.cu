@@ -125,6 +125,7 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 /**
 * \brief Sets the initial value of all the fluxes in the flow field
 */
+/*
 template <>
 void NavierStokesSolver <host_memory>::initialiseFluxes()
 {
@@ -169,6 +170,61 @@ void NavierStokesSolver <device_memory>::initialiseFluxes()
 	}
 	q = qHost;
 	qStar = q;
+}
+*/
+
+template <>
+void NavierStokesSolver <host_memory>::initialiseFluxes()
+{
+	real *q_r = thrust::raw_pointer_cast(&(q[0]));
+	initialiseFluxes(q_r);
+	qStar = q;
+}
+
+template<>
+void NavierStokesSolver <device_memory>::initialiseFluxes()
+{
+	int  nx = domInfo->nx,
+	     ny = domInfo->ny;
+	vecH qHost((nx-1)*ny+nx*(ny-1));
+	
+	// creating raw pointers
+	real *qHost_r = thrust::raw_pointer_cast(&(qHost[0]));
+	initialiseFluxes(qHost_r);
+	q = qHost;
+	qStar=q;
+}
+
+template <typename memoryType>
+void NavierStokesSolver <memoryType>::initialiseFluxes(real *q)
+{
+	int  nx = domInfo->nx,
+	     ny = domInfo->ny,
+	     I,
+	     numU  = (nx-1)*ny,
+	     numUV = numU + nx*(ny-1);
+	
+	real xmin = domInfo->x[0],
+	     xmax = domInfo->x[nx],
+	     ymin = domInfo->y[0],
+	     ymax = domInfo->y[ny];
+	
+	real uInitial = (*paramDB)["flow"]["uInitial"].get<real>(),
+	     uPerturb = (*paramDB)["flow"]["uPerturb"].get<real>(),
+	     vInitial = (*paramDB)["flow"]["vInitial"].get<real>();
+	
+	for(int j=0; j<ny; j++)
+	{
+		for(int i=0; i<nx-1; i++)
+		{
+			I = j*(nx-1) + i;
+			q[I] = ( uInitial + uPerturb * cos( 0.5*M_PI*(2*domInfo->xu[i]-xmax-xmin)/(xmax-xmin) ) * sin( M_PI * (2*domInfo->yu[j]-ymax-ymin)/(ymax-ymin) ) ) * domInfo->dy[j];
+		}
+	}
+	for(; I < numUV; I++)
+	{
+		q[I] = vInitial * domInfo->dx[(I-numU)%nx];
+	}
 }
 
 /**

@@ -67,13 +67,18 @@ void parseFlow(const YAML::Node &node, parameterDB &DB)
 {
 	string dbKey = "flow";
 	real nu = 0.01, initialU = 1, initialV = 0;
+	real uPerturb = 0, vPerturb = 0;
 	node["nu"] >> nu;
 	node["initialVelocity"][0] >> initialU;
 	node["initialVelocity"][1] >> initialV;
+	node["initialPerturbation"][0] >> uPerturb;
+	node["initialPerturbation"][1] >> vPerturb;
 
 	DB[dbKey]["nu"].set<real>(nu);
 	DB[dbKey]["uInitial"].set<real>(initialU);
 	DB[dbKey]["vInitial"].set<real>(initialV);
+	DB[dbKey]["uPerturb"].set<real>(uPerturb);
+	DB[dbKey]["vPerturb"].set<real>(vPerturb);
 
 	boundaryCondition **bc = 0;
 	bc = DB[dbKey]["boundaryConditions"].get<boundaryCondition **>();
