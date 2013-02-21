@@ -551,7 +551,9 @@ NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(par
 	}
 	solver->paramDB = &paramDB;
 	solver->domInfo = &domInfo;
-	std::cout << "\nSelected solver: " << solver->name() << '\n' << std::endl;
+	std::cout << "\nImmersed Boundary Method" << std::endl;
+	std::cout <<   "------------------------" << std::endl;
+	std::cout << solver->name() << '\n' << std::endl;
 	return solver;
 }
 

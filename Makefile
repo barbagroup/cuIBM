@@ -131,6 +131,18 @@ cylinderRe40:
 	-bodyFile bodies/cylinder0.025.yaml -simulationFile simParams/cylinder0040.yaml \
 	-folderName cylinderRe40
 
+cylinderRe100:
+	bin/cuIBM \
+	-flowFile flows/openFlow0100.yaml -domainFile domains/vonKarmanStreet.yaml \
+	-bodyFile bodies/cylinder0.020.yaml -simulationFile simParams/vonKarmanStreet.yaml \
+	-folderName cylinderRe100
+
+cylinderRe150:
+	bin/cuIBM \
+	-flowFile flows/openFlow0150.yaml -domainFile domains/vonKarmanStreet.yaml \
+	-bodyFile bodies/cylinder0.020.yaml -simulationFile simParams/vonKarmanStreet.yaml \
+	-folderName cylinderRe150
+
 cylinderRe550:
 	bin/cuIBM \
 	-flowFile flows/openFlow0550.yaml -domainFile domains/openFlow0.010.yaml \
