@@ -4,3 +4,5 @@ syntax: glob
 *.a
 *.pdf
 ._*
+Methods
+EffectOfCVSize
