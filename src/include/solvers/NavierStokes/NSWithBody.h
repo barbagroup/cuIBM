@@ -39,7 +39,15 @@ class NSWithBody : public NavierStokesSolver<memoryType>
 protected:
 	bodies<memoryType> B; ///< Bodies in the flow
 
+	real forceX, forceY;
+	
+	std::ofstream forceFile;
+
+	virtual void calculateForce();
 	void initialiseBodies();
 	void updateBodies();
-	void calculateForceCV();
+
+public:
+	void writeData();
+	void shutDown();
 };

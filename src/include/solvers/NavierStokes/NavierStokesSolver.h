@@ -66,11 +66,9 @@ protected:
 
 	size_t  timeStep, subStep, iterationCount1, iterationCount2;
 	
-	real forceX, forceY, force1;
-	
 	Logger logger;
 	
-	std::ofstream forceFile, iterationsFile;
+	std::ofstream iterationsFile;
 	
 	/**
 	* Initialises stuff common to all IBM solvers
@@ -117,8 +115,6 @@ protected:
 
 	void updateBoundaryConditions();
 	virtual void updateSolverState();
-	
-	virtual void calculateForce();
 
 public:
 	/**
@@ -134,7 +130,8 @@ public:
 	/**
 	* @brief Write the data to files
 	*/
-	void writeData();
+	virtual void writeCommon();
+	virtual void writeData();
 	
 	/**
 	* @brief Condition required to bring the simulation to a halt.
@@ -145,7 +142,7 @@ public:
 	/**
 	* @brief Perform necessary actions to end the simulation
 	*/
-	void shutDown();
+	virtual void shutDown();
 	
 	// Factory methods are static (not entirely sure why)
 	/**

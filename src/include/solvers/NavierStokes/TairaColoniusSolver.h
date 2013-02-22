@@ -43,6 +43,7 @@ class TairaColoniusSolver : public NSWithBody<memoryType>
 {
 private:
 	cusp::coo_matrix<int, real, memoryType> E, ET;
+	real fX, fY;
 	
 	void generateQT();
 	void updateQT();
@@ -50,12 +51,12 @@ private:
 	
 	void updateSolverState();
 	
-	void calculateForceTC();
 	void calculateForce();
 	void generateE();
 	
 public:
 	void initialise();
+	void writeData();
 	std::string name()
 	{
 		return "Taira & Colonius";

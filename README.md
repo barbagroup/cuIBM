@@ -20,13 +20,17 @@ And reload the file:
 
 	source ~/.bashrc
 
+Switch to the cuibm directory:
+
+	cd $CUIBM_DIR
+
 Compile all files:
 	
 	make
 
 Run the test:
 	
-	$CUIBM_DIR/bin/cuIBM
+	bin/cuIBM
 
 ## Numerical schemes
 
@@ -35,13 +39,13 @@ Run the test:
 The following schemes have been tested for the available solvers:
 
 * Convection
-	- `EULER_EXPLICIT` : First-order Explicit Euler
-	- `ADAMS_BASHFORTH_2` : Second-order Adams-Bashforth
+	- `EULER_EXPLICIT`: First-order Explicit Euler
+	- `ADAMS_BASHFORTH_2`: Second-order Adams-Bashforth
 
 * Diffusion
-	- `EULER_EXPLICIT` : First-order explicit Euler
-	- `EULER_IMPLICIT` : First order implicit Euler
-	- `CRANK_NICOLSON` : Crank-Nicolson
+	- `EULER_EXPLICIT`: First-order explicit Euler
+	- `EULER_IMPLICIT`: First order implicit Euler
+	- `CRANK_NICOLSON`: Crank-Nicolson
 
 ### Spatial discretisation 
 
@@ -83,7 +87,7 @@ The biggest case requires a graphics card with 2GB of memory.
 
 Currently, post-processing requires MATLAB. Navigate into the folder
 	
-	$CUIBM_DIR/scripts/matlab
+	cd $CUIBM_DIR/scripts/matlab
 	
 and run the script `postprocess.m` with the following options:
 

@@ -31,6 +31,11 @@ void NSWithBody<memoryType>::initialiseBodies()
 	
 	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
 	B.initialise(db, *NavierStokesSolver<memoryType>::domInfo);
+
+	std::string folderName = db["inputs"]["folderName"].get<std::string>();
+	std::stringstream out;
+	out << folderName << "/forces";
+	forceFile.open(out.str().c_str());
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("initialiseBodies");
 }
@@ -50,12 +55,12 @@ void NSWithBody<memoryType>::updateBodies()
 };
 
 template <>
-void NSWithBody<host_memory>::calculateForceCV()
+void NSWithBody<host_memory>::calculateForce()
 {
 }
 
 template <>
-void NSWithBody<device_memory>::calculateForceCV()
+void NSWithBody<device_memory>::calculateForce()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -117,6 +122,31 @@ void NSWithBody<device_memory>::calculateForceCV()
 
 	forceY = thrust::reduce(FyX.begin(), FyX.end()) + thrust::reduce(FyY.begin(), FyY.end()) + thrust::reduce(FyU.begin(), FyU.end());
 }
+
+template <typename memoryType>
+void NSWithBody<memoryType>::writeData()
+{
+	NavierStokesSolver<memoryType>::logger.startTimer("output");
 	
+	// write the velocity and pressure
+	NavierStokesSolver<memoryType>::writeCommon();
+	
+	// calculate and write the force on the body
+	calculateForce();
+	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
+	real dt = db["simulation"]["dt"].get<real>();
+	forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t' << forceX << '\t' << forceY << std::endl;
+	
+	NavierStokesSolver<memoryType>::logger.stopTimer("output");
+}
+
+template <typename memoryType>
+void NSWithBody<memoryType>::shutDown()
+{
+	io::printTimingInfo(NavierStokesSolver<memoryType>::logger);
+	forceFile.close();
+	NavierStokesSolver<memoryType>::iterationsFile.close();
+}
+
 template class NSWithBody<host_memory>;
 template class NSWithBody<device_memory>;

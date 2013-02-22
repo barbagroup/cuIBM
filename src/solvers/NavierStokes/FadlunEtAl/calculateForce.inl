@@ -69,10 +69,3 @@ void FadlunEtAlSolver<device_memory>::calculateForceF()
 	forceX = (h*h)*thrust::reduce( f.begin(), f.begin()+(nx-1)*ny );
 	forceY = (h*h)*thrust::reduce( f.begin()+(nx-1)*ny, f.end() );
 }
-
-template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::calculateForce()
-{
-	//calculateForceF();
-	NSWithBody<memoryType>::calculateForceCV();
-}

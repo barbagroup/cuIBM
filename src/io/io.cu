@@ -177,6 +177,10 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			continue;
 			
 		// Add code here
+		if ( strcmp(argv[i],"-nu")==0 )
+		{
+			i++;
+		}
 	}
 }
 

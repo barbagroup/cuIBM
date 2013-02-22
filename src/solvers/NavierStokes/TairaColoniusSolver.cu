@@ -45,6 +45,21 @@ void TairaColoniusSolver<memoryType>::initialise()
 }
 
 template <typename memoryType>
+void TairaColoniusSolver<memoryType>::writeData()
+{
+	NavierStokesSolver<memoryType>::logger.startTimer("output");
+	
+	NavierStokesSolver<memoryType>::writeCommon();
+
+	calculateForce();
+	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
+	real dt = db["simulation"]["dt"].get<real>();
+	NSWithBody<memoryType>::forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t' << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << std::endl;
+	
+	NavierStokesSolver<memoryType>::logger.stopTimer("output");
+}
+
+template <typename memoryType>
 void TairaColoniusSolver<memoryType>::updateSolverState()
 {
 	if (NSWithBody<memoryType>::B.bodiesMove)

@@ -69,9 +69,6 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 
 	/// open the required files
 	std::stringstream out;
-	out << folderName << "/forces";
-	forceFile.open(out.str().c_str());
-	out.str("");
 	out << folderName << "/iterations";
 	iterationsFile.open(out.str().c_str());
 	
@@ -125,54 +122,6 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 /**
 * \brief Sets the initial value of all the fluxes in the flow field
 */
-/*
-template <>
-void NavierStokesSolver <host_memory>::initialiseFluxes()
-{
-	int nx = domInfo->nx,
-	    ny = domInfo->ny;
-	int numU  = (nx-1)*ny;
-	int numUV = numU + nx*(ny-1);
-	int i;
-	real uInitial, vInitial;
-	uInitial = (*paramDB)["flow"]["uInitial"].get<real>();
-	vInitial = (*paramDB)["flow"]["vInitial"].get<real>();
-	for(i=0; i < numU; i++)
-	{
-		q[i] = uInitial * domInfo->dy[i/(nx-1)];
-	}
-	for(; i < numUV; i++)
-	{
-		q[i] = vInitial * domInfo->dx[(i-numU)%nx];
-	}
-	qStar = q;
-}
-
-template<>
-void NavierStokesSolver <device_memory>::initialiseFluxes()
-{
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
-	int  numU  = (nx-1)*ny;
-	int  numUV = numU + nx*(ny-1);
-	vecH qHost(numUV);
-	real uInitial, vInitial;
-	int  i;
-	uInitial = (*paramDB)["flow"]["uInitial"].get<real>();
-	vInitial = (*paramDB)["flow"]["vInitial"].get<real>();
-	for(i=0; i < numU; i++)
-	{
-		qHost[i] = uInitial * domInfo->dy[i/(nx-1)];
-	}
-	for(; i < numUV; i++)
-	{
-		qHost[i] = vInitial * domInfo->dx[(i-numU)%nx];
-	}
-	q = qHost;
-	qStar = q;
-}
-*/
-
 template <>
 void NavierStokesSolver <host_memory>::initialiseFluxes()
 {
@@ -499,34 +448,35 @@ void NavierStokesSolver<memoryType>::projectionStep()
 //##############################################################################
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::writeData()
+void NavierStokesSolver<memoryType>::writeCommon()
 {
-	logger.startTimer("output");
-	
 	int nsave = (*paramDB)["simulation"]["nsave"].get<int>();
 	std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
+	
+	// write the velocity fluxes and the pressure values
 	if (timeStep % nsave == 0)
 	{
 		io::writeData(folderName, timeStep, q, lambda, *domInfo);
 	}
-	real dt = (*paramDB)["simulation"]["dt"].get<real>();
-	calculateForce();
-	forceFile << timeStep*dt << '\t' << forceX << '\t' << forceY << std::endl;
-	iterationsFile << timeStep << '\t' << iterationCount1 << '\t' << iterationCount2 << std::endl;
 	
-	logger.stopTimer("output");
+	// write the number of iterations for each solve
+	iterationsFile << timeStep << '\t' << iterationCount1 << '\t' << iterationCount2 << std::endl;
 }
 
 template <typename memoryType>
-void NavierStokesSolver<memoryType>::calculateForce()
+void NavierStokesSolver<memoryType>::writeData()
 {
+	logger.startTimer("output");
+
+	writeCommon();	
+	
+	logger.stopTimer("output");
 }
 
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::shutDown()
 {
 	io::printTimingInfo(logger);
-	forceFile.close();
 	iterationsFile.close();
 }
 
