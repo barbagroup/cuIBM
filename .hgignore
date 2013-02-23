@@ -6,3 +6,4 @@ syntax: glob
 ._*
 Methods
 EffectOfCVSize
+Convergence

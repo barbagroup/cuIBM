@@ -32,10 +32,11 @@ void TairaColoniusSolver<memoryType>::initialise()
 	int numUV = (nx-1)*ny + nx*(ny-1);
 	int numP  = nx*ny;
 	
+	NavierStokesSolver<memoryType>::initialiseCommon();
+	
 	NSWithBody<memoryType>::initialiseBodies();
 	int numB  = NSWithBody<memoryType>::B.totalPoints; 
 	
-	NavierStokesSolver<memoryType>::initialiseCommon();
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP+2*numB);
 	if(numB > 0)
 	{
@@ -48,13 +49,21 @@ template <typename memoryType>
 void TairaColoniusSolver<memoryType>::writeData()
 {
 	NavierStokesSolver<memoryType>::logger.startTimer("output");
-	
+
 	NavierStokesSolver<memoryType>::writeCommon();
 
-	calculateForce();
 	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
 	real dt = db["simulation"]["dt"].get<real>();
+
+	// Print the forces calculated using the T&C method
+	calculateForce();
 	NSWithBody<memoryType>::forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t' << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << std::endl;
+
+	// Print forces calculated using both the T&C method and the CV approach
+	//calculateForce();
+	//NSWithBody<memoryType>::forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t' << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << '\t';
+	//NSWithBody<memoryType>::calculateForce();
+	//NSWithBody<memoryType>::forceFile << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << std::endl;
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }

@@ -32,9 +32,10 @@ void FadlunEtAlSolver<memoryType>::initialise()
 	int numUV = (nx-1)*ny + nx*(ny-1);
 	int numP  = nx*ny;
 	
+	NavierStokesSolver<memoryType>::initialiseCommon();
+	
 	NSWithBody<memoryType>::initialiseBodies();
 	
-	NavierStokesSolver<memoryType>::initialiseCommon();
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP);
 	
 	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");

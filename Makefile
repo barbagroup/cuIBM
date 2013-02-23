@@ -81,6 +81,7 @@ force_look:
 #.PHONY: test test2
 .PHONY: cavity LidDrivenCavityRe100 LidDrivenCavityRe1000
 .PHONY: cylinder cylinderFadlun cylinderRe40 cylinderRe550 cylinderRe3000
+.PHONY: cylinderRe100 cylinderRe150
 .PHONY: flapping flappingRe75
 
 #test:
