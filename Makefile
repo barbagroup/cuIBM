@@ -81,7 +81,7 @@ force_look:
 #.PHONY: test test2
 .PHONY: cavity LidDrivenCavityRe100 LidDrivenCavityRe1000
 .PHONY: cylinder cylinderFadlun cylinderRe40 cylinderRe550 cylinderRe3000
-.PHONY: cylinderRe100 cylinderRe150
+.PHONY: cylinderRe75 cylinderRe100 cylinderRe150
 .PHONY: flapping flappingRe75
 
 #test:
@@ -106,13 +106,15 @@ LidDrivenCavityRe100:
 	bin/cuIBM \
 	-flowFile flows/cavity0100.yaml -domainFile domains/cavity0100.yaml \
 	-bodyFile bodies/empty.yaml -simulationFile simParams/cavity0100.yaml \
-	-folderName LidDrivenCavityRe100
+	-folderName LidDrivenCavityRe100 \
+	-nu 0.01
 
 LidDrivenCavityRe1000:
 	bin/cuIBM \
 	-flowFile flows/cavity1000.yaml -domainFile domains/cavity1000.yaml \
 	-bodyFile bodies/empty.yaml -simulationFile simParams/cavity1000.yaml \
-	-folderName LidDrivenCavityRe1000
+	-folderName LidDrivenCavityRe1000 \
+	-nu 0.001
 
 cylinder:
 	bin/cuIBM \
@@ -128,33 +130,45 @@ cylinderFadlun:
 
 cylinderRe40:
 	bin/cuIBM \
-	-flowFile flows/openFlow0040.yaml -domainFile domains/openFlow0.025.yaml \
+	-flowFile flows/openFlow.yaml -domainFile domains/openFlow0.025.yaml \
 	-bodyFile bodies/cylinder0.025.yaml -simulationFile simParams/cylinder0040.yaml \
-	-folderName cylinderRe40
+	-folderName cylinderRe40 \
+	-nu 0.025
+
+cylinderRe75:
+	bin/cuIBM \
+	-flowFile flows/openFlow.yaml -domainFile domains/vonKarmanStreet.yaml \
+	-bodyFile bodies/cylinder0.020.yaml -simulationFile simParams/vonKarmanStreet.yaml \
+	-folderName cylinderRe75 \
+	-nu 0.013333333333 -uPerturb 0.1
 
 cylinderRe100:
 	bin/cuIBM \
-	-flowFile flows/openFlow0100.yaml -domainFile domains/vonKarmanStreet.yaml \
+	-flowFile flows/openFlow.yaml -domainFile domains/vonKarmanStreet.yaml \
 	-bodyFile bodies/cylinder0.020.yaml -simulationFile simParams/vonKarmanStreet.yaml \
-	-folderName cylinderRe100
+	-folderName cylinderRe100 \
+	-nu 0.01 -uPerturb 0.1
 
 cylinderRe150:
 	bin/cuIBM \
-	-flowFile flows/openFlow0150.yaml -domainFile domains/vonKarmanStreet.yaml \
+	-flowFile flows/openFlow.yaml -domainFile domains/vonKarmanStreet.yaml \
 	-bodyFile bodies/cylinder0.020.yaml -simulationFile simParams/vonKarmanStreet.yaml \
-	-folderName cylinderRe150
+	-folderName cylinderRe150 \
+	-nu 0.0066666666666 -uPerturb 0.1
 
 cylinderRe550:
 	bin/cuIBM \
-	-flowFile flows/openFlow0550.yaml -domainFile domains/openFlow0.010.yaml \
+	-flowFile flows/openFlow.yaml -domainFile domains/openFlow0.010.yaml \
 	-bodyFile bodies/cylinder0.010.yaml -simulationFile simParams/cylinder0550.yaml \
-	-folderName cylinderRe550
+	-folderName cylinderRe550 \
+	-nu 00181818181818
 
 cylinderRe3000:
 	bin/cuIBM \
-	-flowFile flows/openFlow3000.yaml -domainFile domains/openFlow0.004.yaml \
+	-flowFile flows/openFlow.yaml -domainFile domains/openFlow0.004.yaml \
 	-bodyFile bodies/cylinder0.004.yaml -simulationFile simParams/cylinder3000.yaml \
-	-folderName cylinderRe3000
+	-folderName cylinderRe3000 \
+	-nu 0.00033333333333
 
 flapping:
 	bin/cuIBM \

@@ -27,6 +27,16 @@
 
 using std::string;
 
+/// convert string to real number or integer
+template <typename T>
+T toNumber(string str)
+{
+     T num;
+     std::stringstream ss(str); //turn the string into a stream
+     ss >> num; //convert
+     return num;
+}
+
 namespace io
 {
 
@@ -119,7 +129,7 @@ void initialiseDefaultDB(parameterDB &DB)
 	DB[solver]["maxIterations"].set<int>(20000);
 }
 
-// first pass -- only get the files to continue
+// first pass - only get the files to continue
 void commandLineParse1(int argc, char **argv, parameterDB &DB)
 {
 	for (int i=1; i<argc; i++)
@@ -152,10 +162,7 @@ void commandLineParse1(int argc, char **argv, parameterDB &DB)
 		else if (strcmp(argv[i],"-deviceNumber")==0)
 		{
 			i++;
-			string devNumString = string(argv[i]);
-			std::stringstream str(devNumString);
-			int devNum;
-			str >> devNum;
+			int devNum = toNumber<int>(string(argv[i]));
 			DB["inputs"]["deviceNumber"].set<int>(devNum);
 			cudaSetDevice(devNum);
 		}
@@ -167,7 +174,8 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 {
 	for (int i=1; i<argc; i++)
 	{
-		// ignore these -- already parsed in pass 1
+		// ignore these - already parsed in pass 1
+		/*
 		if (strcmp(argv[i],"-flowFile")==0 ||
 		strcmp(argv[i],"-simulationFile")==0 ||
 		strcmp(argv[i],"-bodyFile")==0 ||
@@ -175,11 +183,51 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 		strcmp(argv[i],"-folderName")==0 ||
 		strcmp(argv[i],"-deviceNumber")==0)
 			continue;
+		*/
 			
 		// Add code here
+		// kinematic viscosity
 		if ( strcmp(argv[i],"-nu")==0 )
 		{
 			i++;
+			DB["flow"]["nu"].set<real>(toNumber<real>(string(argv[i])));
+		}
+		// perturbation in the x-velocity
+		if ( strcmp(argv[i],"-uPerturb")==0 )
+		{
+			i++;
+			DB["flow"]["uPerturb"].set<real>(toNumber<real>(string(argv[i])));
+		}
+		// scale the CV with respect to the body
+		if ( strcmp(argv[i],"-scaleCV")==0 )
+		{
+			i++;
+			DB["simulation"]["scaleCV"].set<real>(toNumber<real>(string(argv[i])));
+		}
+		// frequency of saving the data
+		if ( strcmp(argv[i],"-nsave")==0 )
+		{
+			i++;
+			DB["simulation"]["nsave"].set<int>(toNumber<int>(string(argv[i])));
+		}
+		// total number of time steps
+		if ( strcmp(argv[i],"-nt")==0 )
+		{
+			i++;
+			DB["simulation"]["nt"].set<int>(toNumber<int>(string(argv[i])));
+		}
+		// IBM Scheme
+		if ( strcmp(argv[i],"-ibmScheme")==0 )
+		{
+			i++;
+			if ( strcmp(argv[i],"NavierStokes")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(NAVIER_STOKES);
+			else
+			if ( strcmp(argv[i],"TairaColonius")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(TAIRA_COLONIUS);
+			else 
+			if ( strcmp(argv[i],"FadlunEtAl")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(FADLUN_ET_AL);
 		}
 	}
 }

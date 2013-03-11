@@ -68,7 +68,7 @@ private:
 	void assembleRHS1();
 	void updateRHS1();
 
-//	void updateSolverState();
+	void updateSolverState();
 	void  calculateForceF();
 	
 public:

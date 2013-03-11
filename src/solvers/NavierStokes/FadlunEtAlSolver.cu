@@ -61,16 +61,29 @@ void FadlunEtAlSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::assembleMatrices();
 }
 
-/*template <typename memoryType>
+template <typename memoryType>
 void FadlunEtAlSolver<memoryType>::updateSolverState()
 {	
-	NavierStokesSolver<memoryType>::updateBoundaryConditions();
+/*	NavierStokesSolver<memoryType>::updateBoundaryConditions();
 	if (B.bodiesMove)
 	{
 		updateBodies();
 		//updateA();
 	}
-}*/
+	
+	if (NSWithBody<memoryType>::B.bodiesMove)
+	{
+		// update the locations of the body points
+		NSWithBody<memoryType>::updateBodies();
+		
+		tagPoints();
+		NavierStokesSolver<memoryType>::assembleMatrices();
+		
+		//NavierStokesSolver<memoryType>::logger.startTimer("preconditioner2");
+		//NavierStokesSolver<memoryType>::PC2->update(NavierStokesSolver<memoryType>::C);
+		//NavierStokesSolver<memoryType>::logger.stopTimer("preconditioner2");
+	}*/
+}
 
 template <typename memoryType>
 void FadlunEtAlSolver<memoryType>::assembleRHS1()

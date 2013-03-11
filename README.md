@@ -1,6 +1,6 @@
 # cuIBM - A GPU-based immersed boundary method code
 
-*Updated: February 21st, 2013*
+*Updated: March 11th, 2013*
 
 ## Dependencies
 
@@ -55,7 +55,7 @@ second-order central difference scheme.
 
 ## Examples
 
-These are available in the default installation:
+The following are available in the default installation:
 
 * `LidDrivenCavityRe100`: Flow in a lid-driven cavity with Reynolds number 
 100.
@@ -102,4 +102,4 @@ and run the script `postprocess.m` with the following options:
 * Cannot choose the Krylov solver.
 * TairaColoniusSolver and FadlunEtAlSolver fail if no body is present.
 * Individual forces are not calculated if multiple bodies are present.
-* FadlunEtAlSolver has not been validated for cases with moving bodies.
+* FadlunEtAlSolver has not been tested for cases with multiple or moving bodies.
