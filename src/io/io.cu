@@ -257,50 +257,50 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	     nsave = DB["simulation"]["nsave"].get<int>(),
 	     startStep = DB["simulation"]["startStep"].get<int>();
 
-    std::cout << std::endl;
+    std::cout << '\n';
 	
-	std::cout << "\nFlow parameters" << std::endl;
-	std::cout << "---------------" << std::endl;
-	std::cout << "nu = " << DB["flow"]["nu"].get<real>() << std::endl;
+	std::cout << "\nFlow parameters" << '\n';
+	std::cout << "---------------" << '\n';
+	std::cout << "nu = " << DB["flow"]["nu"].get<real>() << '\n';
 
-	std::cout << "\nDomain" << std::endl;
-	std::cout << "------" << std::endl;
-	std::cout << D.nx << " x " << D.ny << std::endl;
+	std::cout << "\nDomain" << '\n';
+	std::cout << "------" << '\n';
+	std::cout << D.nx << " x " << D.ny << '\n';
 	
-	std::cout << "\nSimulation parameters" << std::endl;
-	std::cout << "---------------------" << std::endl;
-	std::cout << "dt = " << dt << std::endl;
-	std::cout << "scaleCV = " << scaleCV << std::endl;
-	std::cout << "startStep = " << startStep << std::endl;
-	std::cout << "nt = "    << nt << std::endl;
-	std::cout << "nsave = " << nsave << std::endl;
+	std::cout << "\nSimulation parameters" << '\n';
+	std::cout << "---------------------" << '\n';
+	std::cout << "dt = " << dt << '\n';
+	std::cout << "scaleCV = " << scaleCV << '\n';
+	std::cout << "startStep = " << startStep << '\n';
+	std::cout << "nt = "    << nt << '\n';
+	std::cout << "nsave = " << nsave << '\n';
 	
-	std::cout << "\nVelocity Solve" << std::endl;
-	std::cout << "--------------" << std::endl;
-	std::cout << "Solver = " << DB["velocitySolve"]["solver"].get<string>() << std::endl;
-	std::cout << "Preconditioner = " << stringFromPreconditionerType(DB["velocitySolve"]["preconditioner"].get<preconditionerType>()) << std::endl;
-	std::cout << "Tolerance = " << DB["velocitySolve"]["tolerance"].get<real>() << std::endl;
+	std::cout << "\nVelocity Solve" << '\n';
+	std::cout << "--------------" << '\n';
+	std::cout << "Solver = " << DB["velocitySolve"]["solver"].get<string>() << '\n';
+	std::cout << "Preconditioner = " << stringFromPreconditionerType(DB["velocitySolve"]["preconditioner"].get<preconditionerType>()) << '\n';
+	std::cout << "Tolerance = " << DB["velocitySolve"]["tolerance"].get<real>() << '\n';
 	
-	std::cout << "\nPoisson Solve" << std::endl;
-	std::cout << "-------------" << std::endl;
-	std::cout << "Solver = " << DB["PoissonSolve"]["solver"].get<string>() << std::endl;
-	std::cout << "Preconditioner = " << stringFromPreconditionerType(DB["PoissonSolve"]["preconditioner"].get<preconditionerType>()) << std::endl;
-	std::cout << "Tolerance = " << DB["PoissonSolve"]["tolerance"].get<real>() << std::endl;
+	std::cout << "\nPoisson Solve" << '\n';
+	std::cout << "-------------" << '\n';
+	std::cout << "Solver = " << DB["PoissonSolve"]["solver"].get<string>() << '\n';
+	std::cout << "Preconditioner = " << stringFromPreconditionerType(DB["PoissonSolve"]["preconditioner"].get<preconditionerType>()) << '\n';
+	std::cout << "Tolerance = " << DB["PoissonSolve"]["tolerance"].get<real>() << '\n';
 	
-	std::cout << "\nOutput parameters" << std::endl;
-	std::cout << "-----------------" << std::endl;
-	std::cout << "Output folder = " << DB["inputs"]["folderName"].get<string>() << std::endl;
-	std::cout << "nsave = " << DB["simulation"]["nsave"].get<int>() << std::endl;
+	std::cout << "\nOutput parameters" << '\n';
+	std::cout << "-----------------" << '\n';
+	std::cout << "Output folder = " << DB["inputs"]["folderName"].get<string>() << '\n';
+	std::cout << "nsave = " << DB["simulation"]["nsave"].get<int>() << '\n';
 	
 	cudaDeviceProp deviceProp;
 	int gpu = DB["inputs"]["deviceNumber"].get<int>();
 	cudaGetDeviceProperties(&deviceProp, gpu);
-	std::cout << "\nDevice Properties" << std::endl;
-	std::cout << "-----------------" << std::endl;
-	std::cout << "Name = " << deviceProp.name << std::endl;
-	std::cout << "Number = " << gpu << std::endl;
+	std::cout << "\nDevice Properties" << '\n';
+	std::cout << "-----------------" << '\n';
+	std::cout << "Name = " << deviceProp.name << '\n';
+	std::cout << "Number = " << gpu << '\n';
 	std::string ecc = deviceProp.ECCEnabled ? "yes" : "no";
-	std::cout << "Compute capability = " << deviceProp.major << "." << deviceProp.minor << std::endl;
+	std::cout << "Compute capability = " << deviceProp.major << "." << deviceProp.minor << '\n';
 	std::cout << "ECC Enabled = " << ecc << std::endl;
 }
 
@@ -315,19 +315,19 @@ void writeInfoFile(parameterDB &DB, domain &D)
 {
 	std::string   foldername = DB["inputs"]["folderName"].get<string>();
 	std::ofstream infofile((foldername+"/run.info").c_str());
-	infofile << std::setw(20) << "--nx"  << "\t" << D.nx << std::endl;
-	infofile << std::setw(20) << "--ny"  << "\t" << D.ny << std::endl;
-	infofile << std::setw(20) << "--start_step" << "\t" << DB["simulation"]["startStep"].get<int>() << std::endl;
-	infofile << std::setw(20) << "--nt"     << "\t" << DB["simulation"]["nt"].get<int>() << std::endl;
-	infofile << std::setw(20) << "--nsave"  << "\t" << DB["simulation"]["nsave"].get<int>() << std::endl;
-	infofile << std::setw(20) << "--dt"     << "\t" << DB["simulation"]["dt"].get<real>() << std::endl;
-	infofile << std::setw(20) << "--vortlim"<< "\t" << 15 << std::endl;
-	infofile << std::setw(20) << "--folder" << "\t" << foldername << std::endl;
-	infofile << std::setw(20) << "--nu"     << "\t" << DB["flow"]["nu"].get<real>() << std::endl;
-	infofile << std::setw(20) << "--flow_file" << "\t" << DB["inputs"]["flowFile"].get<string>() << std::endl;
-	infofile << std::setw(20) << "--sim_file" << "\t"  << DB["inputs"]["simulationFile"].get<string>() << std::endl;
-	infofile << std::setw(20) << "--dom_file" << "\t"  << DB["inputs"]["domainFile"].get<string>() << std::endl;
-	infofile << std::setw(20) << "--body_file" << "\t" << DB["inputs"]["bodyFile"].get<string>() << std::endl;
+	infofile << std::setw(20) << "--nx"  << "\t" << D.nx << '\n';
+	infofile << std::setw(20) << "--ny"  << "\t" << D.ny << '\n';
+	infofile << std::setw(20) << "--start_step" << "\t" << DB["simulation"]["startStep"].get<int>() << '\n';
+	infofile << std::setw(20) << "--nt"     << "\t" << DB["simulation"]["nt"].get<int>() << '\n';
+	infofile << std::setw(20) << "--nsave"  << "\t" << DB["simulation"]["nsave"].get<int>() << '\n';
+	infofile << std::setw(20) << "--dt"     << "\t" << DB["simulation"]["dt"].get<real>() << '\n';
+	infofile << std::setw(20) << "--vortlim"<< "\t" << 15 << '\n';
+	infofile << std::setw(20) << "--folder" << "\t" << foldername << '\n';
+	infofile << std::setw(20) << "--nu"     << "\t" << DB["flow"]["nu"].get<real>() << '\n';
+	infofile << std::setw(20) << "--flow_file" << "\t" << DB["inputs"]["flowFile"].get<string>() << '\n';
+	infofile << std::setw(20) << "--sim_file" << "\t"  << DB["inputs"]["simulationFile"].get<string>() << '\n';
+	infofile << std::setw(20) << "--dom_file" << "\t"  << DB["inputs"]["domainFile"].get<string>() << '\n';
+	infofile << std::setw(20) << "--body_file" << "\t" << DB["inputs"]["bodyFile"].get<string>() << '\n';
 	infofile.close();
 }
 
@@ -339,12 +339,12 @@ void writeGrid(std::string &folderName, domain &D)
 
 	f << D.nx << std::endl;
 	for(int i=0; i<D.nx+1; i++)
-		f << D.x[i] << std::endl;
-	f << std::endl;
+		f << D.x[i] << '\n';
+	f << '\n';
 	
-	f << D.ny << std::endl;
+	f << D.ny << '\n';
 	for(int j=0; j<D.ny+1; j++)
-		f << D.y[j] << std::endl;
+		f << D.y[j] << '\n';
 
 	f.close();
 }
