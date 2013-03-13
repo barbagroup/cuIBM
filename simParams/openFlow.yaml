@@ -1,5 +1,5 @@
 - type: simulation
-  dt: 0.003
+  dt: 0.03
   scaleCV: 5.0
   nt: 1000
   nsave: 200
