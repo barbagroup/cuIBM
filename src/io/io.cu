@@ -366,7 +366,7 @@ void writeData<vecH>(std::string &folderName, int n, vecH &q, vecH &lambda, doma
 	std::ofstream file(out.str().c_str());
 	file << q.size() << std::endl;
 	for(int i=0; i<q.size(); i++)
-		file << q[i] << std::endl;
+		file << q[i] << '\n';
 	file.close();
 /*
 	out.str("");
@@ -387,9 +387,9 @@ void writeData<vecH>(std::string &folderName, int n, vecH &q, vecH &lambda, doma
 	out.str("");
 	out << path << "/lambda";
 	file.open(out.str().c_str());
-	file << lambda.size() << std::endl;
+	file << lambda.size() << '\n';
 	for(int i=0; i<lambda.size(); i++)
-		file << lambda[i] << std::endl;
+		file << lambda[i] << '\n';
 	file.close();
 	
 	std::cout << "Data saved to folder " << path << std::endl;

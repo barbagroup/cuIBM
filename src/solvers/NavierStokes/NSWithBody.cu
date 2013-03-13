@@ -135,7 +135,7 @@ void NSWithBody<memoryType>::writeData()
 	calculateForce();
 	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
 	real dt = db["simulation"]["dt"].get<real>();
-	forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t' << forceX << '\t' << forceY << std::endl;
+	forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t' << forceX << '\t' << forceY << '\n';
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }
