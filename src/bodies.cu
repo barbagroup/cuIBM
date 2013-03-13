@@ -76,7 +76,7 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	{
 		for(int i=offsets[k], j = offsets[k]+numPoints[k]-1; i<offsets[k]+numPoints[k];)
 		{
-			// calculate the lenghts of the boundary segments
+			// calculate the lengths of the boundary segments
 			ds[i] = sqrt( (X[i]-X[j])*(X[i]-X[j]) + (Y[i]-Y[j])*(Y[i]-Y[j]) );
 			
 			// set the initial x-coordinates of the boundary points
@@ -199,6 +199,7 @@ void bodies<device_memory>::calculateCellIndices(domain &D)
 template <typename memoryType>
 void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 {
+	// UPDATE THIS FUNCTION FOR MULTIPLE BODIES
 	
 	std::vector<body> *B = db["flow"]["bodies"].get<std::vector<body> *>();
 	

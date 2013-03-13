@@ -51,8 +51,8 @@ private:
 	// For the 2D interpolations
 	cusp::array1d<int, host_memory>    tagsX, tagsY;
 	cusp::array1d<int, device_memory>  tagsXD, tagsYD;
-	vecH coeffsX, coeffsY;
-	vecD coeffsXD, coeffsYD;
+	vecH coeffsX, coeffsY, uX, uY, vX, vY;
+	vecD coeffsXD, coeffsYD, uXD, uYD, vXD, vYD;
 	
 	void tagPoints();
 	void tagPoints(real *bx, real *by);

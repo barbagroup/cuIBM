@@ -27,7 +27,8 @@
 namespace kernels
 {
 
-__global__
+// 1-d interpolation
+/*__global__
 void updateRHS1(real *rhs1, int numUV, int *tags)
 {
 	int	I = blockIdx.x*blockDim.x + threadIdx.x;
@@ -36,8 +37,9 @@ void updateRHS1(real *rhs1, int numUV, int *tags)
 		return;
 	
 	rhs1[I] = rhs1[I]*(tags[I]==-1);
-}
+}*/
 
+// 2-d interpolation
 __global__
 void updateRHS1(real *rhs1, int numUV, int *tagsX, int *tagsY)
 {
@@ -45,6 +47,8 @@ void updateRHS1(real *rhs1, int numUV, int *tagsX, int *tagsY)
 	
 	if(I>=numUV)
 		return;
+	
+	// MODIFY THIS FOR MOVING BODIES
 	
 	rhs1[I] = rhs1[I]*(tagsX[I]==-1 && tagsY[I]==-1);
 }

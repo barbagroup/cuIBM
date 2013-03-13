@@ -59,7 +59,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 	
 	/**
 	* DO NOT FORGET (IMPLEMENTED)
-	* A is generated as M-alpha*L
+	* A is generated as M-alpha*LHost
 	* But some values of L are the interpolation values of Fadlun et al
 	* These should not be multplied by alpha
 	*
@@ -94,23 +94,25 @@ void FadlunEtAlSolver<device_memory>::generateL()
 		
 		for (int i=0; i < nx-1; i++)
 		{
-			I = j*(nx-1) + i;  ///< calculate the row of the matrix
+			// calculate the row of the matrix
+			I = j*(nx-1) + i;
+	
+			// check if the node is on the boundary or not
 			notBdryNode = (tagsX[I] == -1 && tagsY[I] == -1);
 			
 			Cx0 = 2.0 * nu / ( dx[i+1]*(dx[i+1]+dx[i]) );
 			Cx1 = 2.0 * nu / ( dx[i]*(dx[i+1]+dx[i]) );
 			
-			scale = 0.5*(dx[i+1]+dx[i]);  ///< scaling factor (to obtain the normalised matrix)
+			// scaling factor (to obtain the normalised matrix)
+			scale = 0.5*(dx[i+1]+dx[i]);
 		
 			// south
-			if(j>0)  ///< no south coefficient for the bottom row
+			if(j>0)  // no south coefficient for the bottom row
 			{
 				LHost.row_indices[num_elements] = I;
 				LHost.column_indices[num_elements] = I - (nx-1);
 				
-				// if the interpolation is definitely not taking place
-				// either in the X or Y direction
-				if(notBdryNode)
+				if(notBdryNode)	// if the interpolation is definitely not taking place
 					LHost.values[num_elements] = Cy1 * scale / dy[j-1];
 				else if(tagsY[I] == I-(nx-1))
 					LHost.values[num_elements] = (1.0-coeffsX[I])*coeffsY[I] /dt * scale / dy[j-1];
@@ -120,7 +122,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 				num_elements++;
 			}
 			// west
-			if(i>0)  ///< no west coefficient for the leftmost column			
+			if(i>0)  // no west coefficient for the leftmost column			
 			{
 				LHost.row_indices[num_elements] = I;
 				LHost.column_indices[num_elements] = I - 1;
@@ -179,7 +181,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 		
 		for (int i=0; i < nx; i++)
 		{
-			I = j*nx + i + numU;		// calculate the row of the matrix
+			I = j*nx + i + numU;  // calculate the row of the matrix
 			notBdryNode = (tagsX[I] == -1 && tagsY[I] == -1);
 			
 			if((i>0) && (i<nx-1))
@@ -200,10 +202,10 @@ void FadlunEtAlSolver<device_memory>::generateL()
 			Cx0 = 2.0 * nu /( dx1*(dx1+dx0) );
 			Cx1 = 2.0 * nu /( dx0*(dx1+dx0) );
 			
-			scale = 0.5*(dy[j+1]+dy[j]);	// scaling factor (to obtain the normalised matrix)
+			scale = 0.5*(dy[j+1]+dy[j]);  // scaling factor (to obtain the normalised matrix)
 			
 			// south
-			if(j>0)													// no south coefficient for the bottom row
+			if(j>0)  // no south coefficient for the bottom row
 			{
 				LHost.row_indices[num_elements] = I;
 				LHost.column_indices[num_elements] = I - nx;
@@ -216,7 +218,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 				num_elements++;
 			}
 			// west
-			if(i>0)													// no west coefficient for the leftmost column			
+			if(i>0)  // no west coefficient for the leftmost column			
 			{
 				LHost.row_indices[num_elements] = I;
 				LHost.column_indices[num_elements] = I - 1;
@@ -237,7 +239,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 				LHost.values[num_elements] = 0.0;
 			num_elements++;
 			// east
-			if(i<nx-1)												// no east coefficient for the rightmost column
+			if(i<nx-1)  // no east coefficient for the rightmost column
 			{
 				LHost.row_indices[num_elements] = I;
 				LHost.column_indices[num_elements] = I + 1;

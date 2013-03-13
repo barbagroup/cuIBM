@@ -52,10 +52,32 @@ void FadlunEtAlSolver<host_memory>::updateRHS1()
 	
 	int  numUV = (nx-1)*ny + nx*(ny-1);
 	
-	for(int i=0; i<numUV; i++)
+	int i = 0;
+	for(; i<(nx-1)*ny; i++)
+	//for(int i=0; i<nx-1; i++)
 	{
-//		if(tags[i]!=-1)
+			
+			//if(tags[i]!=-1) // this is for 1-d interpolation
+		
+			// MODIFY THIS FOR MOVING BODIES
+			// 2-d interpolation
+			if(tagsX[i]!=-1 || tagsY[i]!=-1)
+				rhs1[i] = 0.0;
+		
+			// MULTIPLY WITH SCALE AND DT AND DIVIDE BY FACE WIDTH
+			//rhs1[I] = (tagsX[I]==-1 && tagsY[I]==-1)*rhs1[I] + (tagsX[I]!=-1)*(1.0-coeffsX[I])*(1.0-coeffsY[I])*uX[I] + (tagsY[I]!=-1)*coeffsX[I]*(1.0-coeffsY[I])*uY[I];
+	}
+	
+	for(; i<numUV; i++)
+	{
+		//if(tags[i]!=-1) // this is for 1-d interpolation
+		
+		// MODIFY THIS FOR MOVING BODIES
+		// 2-d interpolation
 		if(tagsX[i]!=-1 || tagsY[i]!=-1)
 			rhs1[i] = 0.0;
+		
+		// MULTIPLY WITH SCALE AND DT AND DIVIDE BY FACE WIDTH
+		//rhs1[i] = (tagsX[i]==-1 && tagsY[i]==-1)*rhs[i] + (tagsX[i]!=-1)*(1.0-coeffsX[i])*(1.0-coeffsY[i])*vX[i] + (tagsY[i]!=-1)*coeffsX[i]*(1.0-coeffsY[i])*vY[i];
 	}
 }

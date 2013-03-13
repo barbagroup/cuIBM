@@ -53,6 +53,14 @@ void FadlunEtAlSolver<memoryType>::initialise()
 	coeffsXD.resize(numUV);
 	coeffsY.resize(numUV);
 	coeffsYD.resize(numUV);
+	uX.resize(numUV);
+	uY.resize(numUV);
+	uXD.resize(numUV);
+	uYD.resize(numUV);
+	vX.resize(numUV);
+	vY.resize(numUV);
+	vXD.resize(numUV);
+	vYD.resize(numUV);
 	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");
 	
 	tagPoints();
@@ -63,26 +71,23 @@ void FadlunEtAlSolver<memoryType>::initialise()
 
 template <typename memoryType>
 void FadlunEtAlSolver<memoryType>::updateSolverState()
-{	
-/*	NavierStokesSolver<memoryType>::updateBoundaryConditions();
-	if (B.bodiesMove)
-	{
-		updateBodies();
-		//updateA();
-	}
-	
+{
+	/*
 	if (NSWithBody<memoryType>::B.bodiesMove)
 	{
 		// update the locations of the body points
 		NSWithBody<memoryType>::updateBodies();
 		
 		tagPoints();
+		
+		
 		NavierStokesSolver<memoryType>::assembleMatrices();
 		
 		//NavierStokesSolver<memoryType>::logger.startTimer("preconditioner2");
 		//NavierStokesSolver<memoryType>::PC2->update(NavierStokesSolver<memoryType>::C);
 		//NavierStokesSolver<memoryType>::logger.stopTimer("preconditioner2");
-	}*/
+	}
+	*/
 }
 
 template <typename memoryType>
