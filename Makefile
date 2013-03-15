@@ -126,7 +126,7 @@ cylinderFadlun:
 	bin/cuIBM \
 	-flowFile flows/openFlow.yaml -domainFile domains/openFlow.yaml \
 	-bodyFile bodies/cylinder.yaml -simulationFile simParams/openFlowFadlun.yaml \
-	-folderName cylinderFadlun
+	-folderName cylinderFadlun -ibmScheme FadlunEtAl
 
 cylinderRe40:
 	bin/cuIBM \

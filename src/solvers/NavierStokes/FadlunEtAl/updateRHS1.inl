@@ -40,7 +40,10 @@ void FadlunEtAlSolver<device_memory>::updateRHS1()
 	dim3 dimGrid( int((numUV-0.5)/blocksize) + 1, 1);
 	dim3 dimBlock(blocksize, 1);
 	
+	// 1-d interpolation
 //	kernels::updateRHS1 <<<dimGrid, dimBlock>>> (rhs1_r, numUV, tags_r);
+
+	// 2-d interpolation
 	kernels::updateRHS1 <<<dimGrid, dimBlock>>> (rhs1_r, numUV, tagsX_r, tagsY_r);
 }
 
@@ -50,13 +53,32 @@ void FadlunEtAlSolver<host_memory>::updateRHS1()
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
-	int  numUV = (nx-1)*ny + nx*(ny-1);
+	int  numU  = (nx-1)*ny,
+		 numUV = (nx-1)*ny + nx*(ny-1);
 	
-	int i = 0;
-	for(; i<(nx-1)*ny; i++)
-	//for(int i=0; i<nx-1; i++)
+	for(in j=0; j<ny; j++)
 	{
+		for(int i=0; i<nx-1; i++)
+		{
+			I = j*(nx-1)+i;
+			//if(tags[I]!=-1) // this is for 1-d interpolation
+		
+			// MODIFY THIS FOR MOVING BODIES
 			
+			// 2-d interpolation
+			if(tagsX[I]!=-1 || tagsY[I]!=-1)
+				rhs1[I] = 0.0;
+		
+			// MULTIPLY WITH SCALE AND DT AND DIVIDE BY FACE WIDTH
+			//rhs1[I] = (tagsX[I]==-1 && tagsY[I]==-1)*rhs1[I] + (tagsX[I]!=-1)*(1.0-coeffsX[I])*(1.0-coeffsY[I])*uX[I] + (tagsY[I]!=-1)*coeffsX[I]*(1.0-coeffsY[I])*uY[I];
+		}
+	}
+	
+	for(in j=0; j<ny-1; j++)
+	{
+		for(int i=0; i<nx; i++)
+		{
+			I = numU + j*nx + i;
 			//if(tags[i]!=-1) // this is for 1-d interpolation
 		
 			// MODIFY THIS FOR MOVING BODIES
@@ -65,19 +87,7 @@ void FadlunEtAlSolver<host_memory>::updateRHS1()
 				rhs1[i] = 0.0;
 		
 			// MULTIPLY WITH SCALE AND DT AND DIVIDE BY FACE WIDTH
-			//rhs1[I] = (tagsX[I]==-1 && tagsY[I]==-1)*rhs1[I] + (tagsX[I]!=-1)*(1.0-coeffsX[I])*(1.0-coeffsY[I])*uX[I] + (tagsY[I]!=-1)*coeffsX[I]*(1.0-coeffsY[I])*uY[I];
-	}
-	
-	for(; i<numUV; i++)
-	{
-		//if(tags[i]!=-1) // this is for 1-d interpolation
-		
-		// MODIFY THIS FOR MOVING BODIES
-		// 2-d interpolation
-		if(tagsX[i]!=-1 || tagsY[i]!=-1)
-			rhs1[i] = 0.0;
-		
-		// MULTIPLY WITH SCALE AND DT AND DIVIDE BY FACE WIDTH
-		//rhs1[i] = (tagsX[i]==-1 && tagsY[i]==-1)*rhs[i] + (tagsX[i]!=-1)*(1.0-coeffsX[i])*(1.0-coeffsY[i])*vX[i] + (tagsY[i]!=-1)*coeffsX[i]*(1.0-coeffsY[i])*vY[i];
+			//rhs1[i] = (tagsX[i]==-1 && tagsY[i]==-1)*rhs[i] + (tagsX[i]!=-1)*(1.0-coeffsX[i])*(1.0-coeffsY[i])*vX[i] + (tagsY[i]!=-1)*coeffsX[i]*(1.0-coeffsY[i])*vY[i];
+		}
 	}
 }
