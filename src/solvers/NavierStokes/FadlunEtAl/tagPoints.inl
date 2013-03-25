@@ -31,9 +31,11 @@ void FadlunEtAlSolver<host_memory>::tagPoints()
 	logger.startTimer("tagPoints");
 
 	real *bx = thrust::raw_pointer_cast(&(B.x[0])),
-	     *by = thrust::raw_pointer_cast(&(B.y[0]));
+	     *by = thrust::raw_pointer_cast(&(B.y[0])),
+	     *uB = thrust::raw_pointer_cast(&(B.uB[0])),
+	     *vB = thrust::raw_pointer_cast(&(B.vB[0]));
 	     
-	tagPoints(bx, by);
+	tagPoints(bx, by, uB, vB);
 
 	logger.stopTimer("tagPoints");
 }
@@ -44,21 +46,28 @@ void FadlunEtAlSolver<device_memory>::tagPoints()
 	logger.startTimer("tagPoints");
 	
 	// transferring boundary point coordinates to the host
-	vecH bxH(B.totalPoints), byH(B.totalPoints);
+	vecH bxH(B.totalPoints), byH(B.totalPoints), uBH(B.totalPoints), vBH(B.totalPoints);
 	bxH = B.x;
 	byH = B.y;
+	uBH = B.uB;
+	vBH = B.vB;
 
 	// creating raw pointers
 	real *bx = thrust::raw_pointer_cast(&(bxH[0])),
-	     *by = thrust::raw_pointer_cast(&(byH[0]));
+	     *by = thrust::raw_pointer_cast(&(byH[0])),
+	     *uB = thrust::raw_pointer_cast(&(uBH[0])),
+	     *vB = thrust::raw_pointer_cast(&(vBH[0]));
 	
-	tagPoints(bx, by);
+	//tagPoints(bx, by);
+	tagPoints(bx, by, uB, vB);
 	
 	// transferring tag and coeffs data to the device
-	tagsXD = tagsX;
-	tagsYD = tagsY;
+	tagsXD   = tagsX;
+	tagsYD   = tagsY;
 	coeffsXD = coeffsX;
 	coeffsYD = coeffsY;
+	uvXD     = uvX;
+	uvYD     = uvY;
 	
 	logger.stopTimer("tagPoints");
 }
@@ -715,7 +724,8 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 #if 1
 // Bilinear Fadlun1c-type interpolation outside the body.
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
+//void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
+void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real *vB)
 {
 	int  nx = NavierStokesSolver<memoryType>::domInfo->nx,
 	     ny = NavierStokesSolver<memoryType>::domInfo->ny;
@@ -749,7 +759,7 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 			
 			outsideX = true;
 			outsideY = true;
-			bdryFlagX = -1;
+			bdryFlagX = -1;  // stores if a point is near the boundary
 			bdryFlagY = -1;
 			flag = false;
 			
@@ -779,14 +789,16 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 				}
 				
 				// consider rays along the x-direction
-				// if the ray intersects the boundary segment (top endpoint must be strictly above the ray bottom can be on or below the ray)
+				// if the ray intersects the boundary segment (top endpoint must be strictly above the ray; bottom can be on or below the ray)
 				if (by[bottom]-eps < yu[j] && by[top]-eps > yu[j])
 				{
 					if (fabs(by[l]-by[k]) > eps)
 					{
 						// calculate the point of intersection of the double ray with the boundary
-						x = bx[k] + (bx[l]-bx[k]) * (yu[j]-by[k]) / (by[l]-by[k]);
+						x = bx[k] + (bx[l]-bx[k]) * (yu[j]-by[k])/(by[l]-by[k]);
 						
+						// calculate the body velocity at the point of intersection
+						uvX[I] = uB[k] + (uB[l]-uB[k]) * (yu[j]-by[k])/(by[l]-by[k]);
 						
 						// if the point of intersection coincides with the grid point
 						if (fabs(x-xu[i]) < eps)
@@ -794,11 +806,12 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 							outsideX   = true;
 							bdryFlagX = I;
 							cfX       = 0.0;
-							flag      = true;
+							flag      = true; // flag is true when the point of intersection coincides with the grid point
 						}
-						// if the point of intersection lies to the right of the grid point
+						// if the point of intersection lies to the right of the grid point (right-facing ray intersects the boundary)
 				 		else if (x > xu[i]+eps)
 							outsideX = !outsideX;
+						
 						// if the point of intersection is in the cell to the immediate left of the grid point
 						if (x>xu[i-1]+eps && x<xu[i]-eps)
 						{
@@ -814,12 +827,17 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 					}
 				}
 				// consider rays along the y-direction
-				if ( ( bx[left]-eps < xu[i] ) && ( bx[right]-eps > xu[i] ) && ( !flag ) )
+				// if the ray intersects the boundary segment (right endpoint must be strictly to the right of ray; left can be on or to the left of the ray)
+				if ( ( bx[left]-eps < xu[i] ) && ( bx[right]-eps > xu[i] ) && ( !flag ) ) // no need to do this part if flag is false
 				{
 					if (fabs(bx[l]-bx[k]) > eps)
 					{
 						// calculate the point of intersection of the double ray with the boundary
 						y = by[k] + (by[l]-by[k]) * (xu[i]-bx[k]) / (bx[l]-bx[k]);
+						
+						// calculate the body velocity at the point of intersection
+						uvY[I] = uB[k] + (uB[l]-uB[k]) * (xu[i]-bx[k])/(bx[l]-bx[k]);
+						
 						// if the point of intersection coincides with the grid point
 						if (fabs(y-yu[j]) < eps)
 						{
@@ -830,6 +848,7 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 						// if the point of intersection lies to the top of the grid point
 				 		else if (y > yu[j]+eps)
 							outsideY = !outsideY;
+							
 						// if point of intersection is just below the concerned grid point
 						if (y>yu[j-1]+eps && y<yu[j]-eps)
 						{
@@ -939,7 +958,9 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 					if (fabs(by[l]-by[k]) > eps)
 					{
 						// calculate the point of intersection of the double ray with the boundary
-						x = bx[k] + (bx[l]-bx[k]) * (yv[j]-by[k]) / (by[l]-by[k]);
+						x = bx[k] + (bx[l]-bx[k]) * (yv[j]-by[k])/(by[l]-by[k]);
+						// calculate the body velocity at the point of intersection
+						uvX[I] = vB[k] + (vB[l]-vB[k]) * (yv[j]-by[k])/(by[l]-by[k]);
 						// if the point of intersection coincides with the grid point
 						if (fabs(x-xv[i]) < eps)
 						{
@@ -972,7 +993,9 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 					if (fabs(bx[l]-bx[k]) > eps)
 					{
 						// calculate the point of intersection of the double ray with the boundary
-						y = by[k] + (by[l]-by[k]) * (xv[i]-bx[k]) / (bx[l]-bx[k]);
+						y = by[k] + (by[l]-by[k]) * (xv[i]-bx[k])/(bx[l]-bx[k]);
+						// calculate the body velocity at the point of intersectioin
+						uvY[I] = vB[k] + (vB[l]-vB[k]) * (xv[i]-bx[k])/(bx[l]-bx[k]);
 						// if the point of intersection coincides with the grid point
 						if (fabs(y-yv[j]) < eps)
 						{
