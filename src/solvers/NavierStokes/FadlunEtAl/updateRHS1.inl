@@ -54,9 +54,9 @@ void FadlunEtAlSolver<host_memory>::updateRHS1()
 	     ny = domInfo->ny;
 	
 	int  numU  = (nx-1)*ny,
-		 numUV = (nx-1)*ny + nx*(ny-1);
+	     I = 0;
 	
-	for(in j=0; j<ny; j++)
+	for(int j=0; j<ny; j++)
 	{
 		for(int i=0; i<nx-1; i++)
 		{
@@ -74,7 +74,7 @@ void FadlunEtAlSolver<host_memory>::updateRHS1()
 		}
 	}
 	
-	for(in j=0; j<ny-1; j++)
+	for(int j=0; j<ny-1; j++)
 	{
 		for(int i=0; i<nx; i++)
 		{

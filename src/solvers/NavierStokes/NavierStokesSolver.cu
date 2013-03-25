@@ -25,6 +25,8 @@
 #include <solvers/NavierStokes/TairaColoniusSolver.h>
 #include <sys/stat.h>
 
+#include <io/io.h>
+
 //##############################################################################
 //                              INITIALISE
 //##############################################################################
@@ -86,7 +88,7 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 	
 	q.resize(numQ);
 	qStar.resize(numQ);
-		qOld.resize(numQ);
+	qOld.resize(numQ);
 	rn.resize(numQ);
 	H.resize(numQ);
 	bc1.resize(numQ);
@@ -233,7 +235,7 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 	generateL();
 	generateA(intgSchm.alphaImplicit[subStep]);
 	PC1 = new preconditioner< cusp::coo_matrix<int, real, memoryType> >(A, (*paramDB)["velocitySolve"]["preconditioner"].get<preconditionerType>());
-	generateBN();
+	generateBN();	
 	
 	logger.stopTimer("assembleMatrices");
 
@@ -392,7 +394,7 @@ void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 
 	cusp::default_monitor<real> sys1Mon(rhs1, maxIters, relTol);
 	cusp::krylov::bicgstab(A, qStar, rhs1, sys1Mon, *PC1);
-	//cusp::krylov::cg(A, qStar, rhs1, sys1Mon);//, PC1);
+	//cusp::krylov::cg(A, qStar, rhs1, sys1Mon, *PC1);
 	iterationCount1 = sys1Mon.iteration_count();
 	if (!sys1Mon.converged())
 	{

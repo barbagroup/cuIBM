@@ -734,23 +734,29 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 	{
 		for(int i=0; i<nx-1; i++)
 		{
+			// index of the current point on the u-grid
 			I = j*(nx-1)+i;
+			
+			// tags and coefficients
 			tagsX[I] = -1;
 			tagsY[I] = -1;
 			coeffsX[I] = 0.0;
 			coeffsY[I] = 1.0;
-			outsideX = true;
-			outsideY = true;
+			
+			// initial indices of the points on the body that define the segment under consideration
 			k = NSWithBody<memoryType>::B.totalPoints - 1;
 			l = 0;
-			flag = false;
+			
+			outsideX = true;
+			outsideY = true;
 			bdryFlagX = -1;
 			bdryFlagY = -1;
+			flag = false;
 			
-			// CHANGE THIS FOR MULTIPLE BODIES
-			
+			// cycle through all the segments on the body surface
 			while( l < NSWithBody<memoryType>::B.totalPoints)
 			{
+				// figure out which of the two end points of the segment are at the bottom and the left
 				if (by[k] > by[l])
 				{
 					bottom = l;
@@ -771,12 +777,9 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 					left = k;
 					right = l;
 				}
+				
 				// consider rays along the x-direction
-				/**
-				* if the ray intersects the boundary segment
-				* top endpoint must be strictly above the ray
-				* bottom can be on or below the ray
-				*/
+				// if the ray intersects the boundary segment (top endpoint must be strictly above the ray bottom can be on or below the ray)
 				if (by[bottom]-eps < yu[j] && by[top]-eps > yu[j])
 				{
 					if (fabs(by[l]-by[k]) > eps)

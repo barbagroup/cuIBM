@@ -43,8 +43,9 @@ void FadlunEtAlSolver<device_memory>::generateA(int alpha)
 	     *LVals = thrust::raw_pointer_cast(&(L.values[0])),
 	     *AVals = thrust::raw_pointer_cast(&(A.values[0]));
 
-	const int blockSize = 256;
-	dim3 dimGrid( int((ASize-0.5)/blockSize) + 1, 1);
+	const int blockSize = 256,
+	          gridSize  = 1000;
+	dim3 dimGrid(gridSize, 1);
 	dim3 dimBlock(blockSize, 1);
 
 	kernels::generateAFadlun <<<dimGrid, dimBlock>>> (ARows, ACols, AVals, MVals, LRows, LCols, LVals, ASize, alpha, tags_r);
