@@ -58,7 +58,7 @@ private:
 	//void tagPoints(real *bx, real *by);
 	void tagPoints(real *bx, real *by, real *uB, real *vB);
 
-//	void generateA();
+	void generateA(real alpha);
 //	void updateA();
 
 	void generateL();

@@ -78,6 +78,22 @@ void FadlunEtAlSolver<memoryType>::updateSolverState()
 		
 		// assemble the matrices generated using new tags
 		NavierStokesSolver<memoryType>::assembleMatrices();
+		
+/*		logger.startTimer("assembleMatrices");
+		
+		generateL();
+		generateA(intgSchm.alphaImplicit[subStep]);
+		PC1 = new preconditioner< cusp::coo_matrix<int, real, memoryType> >(A, (*paramDB)["velocitySolve"]["preconditioner"].get<preconditionerType>());
+		generateBN();	
+	
+		logger.stopTimer("assembleMatrices");
+
+		generateQT();
+		generateC(); // QT*BN*Q
+	
+		logger.startTimer("preconditioner2");
+		PC2 = new preconditioner< cusp::coo_matrix<int, real, memoryType> >(C, (*paramDB)["PoissonSolve"]["preconditioner"].get<preconditionerType>());
+		logger.stopTimer("preconditioner2");*/
 	}
 }
 
@@ -93,6 +109,9 @@ void FadlunEtAlSolver<memoryType>::assembleRHS1()
 
 #include "FadlunEtAl/tagPoints.inl"
 #include "FadlunEtAl/generateL.inl"
+//
+#include "FadlunEtAl/generateA.inl"
+//
 #include "FadlunEtAl/updateRHS1.inl"
 #include "FadlunEtAl/generateQT.inl"
 #include "FadlunEtAl/calculateForce.inl"

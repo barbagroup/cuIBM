@@ -739,6 +739,8 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real 
 	real eps = 1.e-6;
 	real cfX = 0.0, cfY = 0.0, x, y;
 	
+	std::ofstream locations("locations.txt");
+	
 	// tag points at which u is evaluated
 	for(int j=0; j<ny; j++)
 	{
@@ -792,6 +794,7 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real 
 				// if the ray intersects the boundary segment (top endpoint must be strictly above the ray; bottom can be on or below the ray)
 				if (by[bottom]-eps < yu[j] && by[top]-eps > yu[j])
 				{
+					// if the segments is not parallel to the x-direction
 					if (fabs(by[l]-by[k]) > eps)
 					{
 						// calculate the point of intersection of the double ray with the boundary
@@ -878,6 +881,7 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real 
 			}
 		}
 	}
+	locations.close();
 	
 	std::ofstream file("tagx.txt");
 	for(int j=0; j<ny; j++)
@@ -961,6 +965,7 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real 
 						x = bx[k] + (bx[l]-bx[k]) * (yv[j]-by[k])/(by[l]-by[k]);
 						// calculate the body velocity at the point of intersection
 						uvX[I] = vB[k] + (vB[l]-vB[k]) * (yv[j]-by[k])/(by[l]-by[k]);
+
 						// if the point of intersection coincides with the grid point
 						if (fabs(x-xv[i]) < eps)
 						{

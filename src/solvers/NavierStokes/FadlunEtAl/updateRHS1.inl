@@ -51,8 +51,7 @@ void FadlunEtAlSolver<device_memory>::updateRHS1()
 //	kernels::updateRHS1 <<<dimGrid, dimBlock>>> (rhs1_r, numUV, tags_r);
 
 	// 2-d interpolation
-	//kernels::updateRHS1 <<<dimGrid, dimBlock>>> (rhs1_r, numUV, tagsX_r, tagsY_r);
-	//kernels::updateRHS1X <<<dimGrid, dimBlock>>> (rhs1_r, nx, ny, tagsX_r, tagsY_r);
+	//kernels::updateRHS1 <<<dimGrid, dimBlock>>> (rhs1_r, (nx-1)*ny+nx*(ny-1), tagsX_r, tagsY_r);
 	
 	kernels::updateRHS1X <<<dimGrid, dimBlock>>>(rhs1_r, nx, ny, dt, dx_r, tagsX_r, tagsY_r, coeffsX_r, coeffsY_r, uvX_r, uvY_r);
 	kernels::updateRHS1Y <<<dimGrid, dimBlock>>>(rhs1_r, nx, ny, dt, dy_r, tagsX_r, tagsY_r, coeffsX_r, coeffsY_r, uvX_r, uvY_r);

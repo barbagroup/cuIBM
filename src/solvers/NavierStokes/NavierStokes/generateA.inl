@@ -37,13 +37,14 @@ void NavierStokesSolver<device_memory>::generateA(real alpha)
 	     *LCols = thrust::raw_pointer_cast(&(L.column_indices[0])),
 	     *ARows = thrust::raw_pointer_cast(&(A.row_indices[0])),
 	     *ACols = thrust::raw_pointer_cast(&(A.column_indices[0]));
+	     
 
 	real *MVals = thrust::raw_pointer_cast(&(M.values[0])),
 	     *LVals = thrust::raw_pointer_cast(&(L.values[0])),
 	     *AVals = thrust::raw_pointer_cast(&(A.values[0]));
 
-	const int gridSize  = 1000,
-	          blockSize = 256;
+	const int blockSize = 256,
+	          gridSize  = 1000;
 	dim3 dimGrid(gridSize, 1);
 	dim3 dimBlock(blockSize, 1);
 	

@@ -80,7 +80,7 @@ force_look:
 #
 #.PHONY: test test2
 .PHONY: cavity LidDrivenCavityRe100 LidDrivenCavityRe1000
-.PHONY: cylinder cylinderFadlun cylinderRe40 cylinderRe550 cylinderRe3000
+.PHONY: cylinder cylinderFadlun cylinderRe40 cylinderRe550 cylinderRe3000 movingCylinder
 .PHONY: cylinderRe75 cylinderRe100 cylinderRe150
 .PHONY: flapping flappingRe75
 
@@ -128,12 +128,19 @@ cylinderFadlun:
 	-bodyFile bodies/cylinder.yaml -simulationFile simParams/openFlowFadlun.yaml \
 	-folderName cylinderFadlun -ibmScheme FadlunEtAl
 
+movingCylinder:
+	bin/cuIBM \
+	-flowFile flows/box.yaml -domainFile domains/movingCylinder.yaml \
+	-bodyFile bodies/movingCylinder.yaml -simulationFile simParams/movingCylinder.yaml \
+	-folderName movingCylinder \
+	-nu 0.025 -ibmScheme FadlunEtAl
+
 cylinderRe40:
 	bin/cuIBM \
 	-flowFile flows/openFlow.yaml -domainFile domains/openFlow0.025.yaml \
 	-bodyFile bodies/cylinder0.025.yaml -simulationFile simParams/cylinder0040.yaml \
 	-folderName cylinderRe40 \
-	-nu 0.025
+	-nu 0.025 -ibmScheme FadlunEtAl
 
 cylinderRe75:
 	bin/cuIBM \

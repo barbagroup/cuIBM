@@ -59,7 +59,6 @@ void updateRHS1X(real *rhs1, int nx, int ny, real dt, real *dx, int *tagsX, int 
 	
 	if( I < (nx-1)*ny )
 	{
-		rhs1[I] = 
 		rhs1[I] = (tagsX[I]==-1 && tagsY[I]==-1)*rhs1[I] + ( (tagsX[I]!=-1)*(1.0-coeffsX[I])*(1.0-coeffsY[I])*uvX[I] + (tagsY[I]!=-1)*coeffsX[I]*(1.0-coeffsY[I])*uvY[I] ) * 0.5*(dx[i+1]+dx[i]) / dt;
 	}
 }

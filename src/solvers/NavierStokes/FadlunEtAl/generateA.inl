@@ -23,7 +23,7 @@
 #include <solvers/NavierStokes/kernels/generateA.h>
 
 template <>
-void FadlunEtAlSolver<device_memory>::generateA(int alpha)
+void FadlunEtAlSolver  <device_memory>::generateA(real alpha)
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -37,7 +37,8 @@ void FadlunEtAlSolver<device_memory>::generateA(int alpha)
 	     *LCols = thrust::raw_pointer_cast(&(L.column_indices[0])),
 	     *ARows = thrust::raw_pointer_cast(&(A.row_indices[0])),
 	     *ACols = thrust::raw_pointer_cast(&(A.column_indices[0])),
-	     *tags_r = thrust::raw_pointer_cast(&(tagsD[0]));
+	     *tagsX_r = thrust::raw_pointer_cast(&(tagsXD[0])),
+	     *tagsY_r = thrust::raw_pointer_cast(&(tagsYD[0]));
 
 	real *MVals = thrust::raw_pointer_cast(&(M.values[0])),
 	     *LVals = thrust::raw_pointer_cast(&(L.values[0])),
@@ -48,11 +49,11 @@ void FadlunEtAlSolver<device_memory>::generateA(int alpha)
 	dim3 dimGrid(gridSize, 1);
 	dim3 dimBlock(blockSize, 1);
 
-	kernels::generateAFadlun <<<dimGrid, dimBlock>>> (ARows, ACols, AVals, MVals, LRows, LCols, LVals, ASize, alpha, tags_r);
+	kernels::generateAFadlun <<<dimGrid, dimBlock>>> (ARows, ACols, AVals, MVals, LRows, LCols, LVals, ASize, alpha, tagsX_r, tagsY_r);
 }
 
 template <>
-void FadlunEtAlSolver<host_memory>::generateA(int alpha)
+void FadlunEtAlSolver<host_memory>::generateA(real alpha)
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -66,7 +67,7 @@ void FadlunEtAlSolver<host_memory>::generateA(int alpha)
 	{
 		A.row_indices[i] = L.row_indices[i];
 		A.column_indices[i] = L.column_indices[i];
-		if(tags[A.row_indices[i]]==-1)
+		if(tagsX[A.row_indices[i]]==-1 && tagsY[A.row_indices[i]]==-1)
 			A.values[i] = -alpha*L.values[i];
 		else
 			A.values[i] = -L.values[i];

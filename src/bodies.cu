@@ -84,8 +84,11 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 			
 			// set the initial y-coordinates of the boundary points
 			y[i] = (*B)[k].Xc[1] + ((*B)[k].X[i]-(*B)[k].X0[0])*sin((*B)[k].Theta0) + ((*B)[k].Y[i] - (*B)[k].X0[1])*cos((*B)[k].Theta0);
-			uB[i] = 0.0;
-			vB[i] = 0.0;
+			
+			// set the initial velocities of the body
+			uB[i] = (*B)[k].velocity[0];
+			vB[i] = (*B)[k].velocity[1];
+			
 			j = i++;
 		}
 		// if the body is moving, set bodiesMove to true

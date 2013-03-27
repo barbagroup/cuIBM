@@ -246,7 +246,7 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 	PC2 = new preconditioner< cusp::coo_matrix<int, real, memoryType> >(C, (*paramDB)["PoissonSolve"]["preconditioner"].get<preconditionerType>());
 	logger.stopTimer("preconditioner2");
 
-	std::cout << "Assembled matrices!" << std::endl;
+	//std::cout << "Assembled matrices!" << std::endl;
 }
 
 /**

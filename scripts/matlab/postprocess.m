@@ -187,11 +187,12 @@ for n=start_step+nsave:nsave:nt
 	%print('-dpng', '-r300', out_file);
 	
 	contourf(Xu, Yu, transpose(u), [-1:0.1:1])
+	colorbar;
 	axis equal;
 	axis([xmin xmax ymin ymax]);
 	caxis([-1 1]);
-	out_file = strcat('../../', foldername, '/u', subfolder, '.pdf');
-	print('-dpdf', '-r300', out_file);
+	out_file = strcat('../../', foldername, '/u', subfolder, '.png');
+	print('-dpng', '-r300', out_file);
 	
 	% plot v
 	%mesh(Xv, Yv, transpose(v), 'EdgeColor', 'black')
@@ -199,9 +200,10 @@ for n=start_step+nsave:nsave:nt
 	%print('-dpng', '-r300', out_file);
 	
 	contourf(Xv, Yv, transpose(v), [-1:0.1:1])
+	colorbar;
 	axis equal;
 	axis([xmin xmax ymin ymax]);
 	caxis([-1 1]);
-	out_file = strcat('../../', foldername, '/v', subfolder, '.pdf');
-	print('-dpdf', '-r300', out_file); 
+	out_file = strcat('../../', foldername, '/v', subfolder, '.png');
+	print('-dpng', '-r300', out_file); 
 end
