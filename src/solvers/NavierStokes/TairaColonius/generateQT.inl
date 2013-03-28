@@ -128,5 +128,3 @@ void TairaColoniusSolver<device_memory>::generateQT()
 	
 	updateQT();
 }
-
-#endif

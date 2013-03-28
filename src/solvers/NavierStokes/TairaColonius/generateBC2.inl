@@ -131,8 +131,9 @@ void TairaColoniusSolver<device_memory>::generateBC2()
 	const int blockSize = 256;
 	dim3 dimGrid( int((nx+ny-0.5)/blockSize) + 1, 1);
 	dim3 dimBlock(blockSize, 1);
-	
 	kernels::fillBC2_v   <<<dimGrid, dimBlock>>> (bc2_r, yminus, yplus, dxD, nx, ny);
 	kernels::fillBC2_u   <<<dimGrid, dimBlock>>> (bc2_r, xminus, xplus, dyD, nx, ny);
-	kernels::fillBC2_uvB <<<dimGrid, dimBlock>>> (bc2_r, uB, vB, B.totalPoints, nx, ny);
+	
+	dim3 dimGridB( int((B.totalPoints-0.5)/blockSize) + 1, 1);
+	kernels::fillBC2_uvB <<<dimGridB, dimBlock>>> (bc2_r, uB, vB, B.totalPoints, nx, ny);
 }
