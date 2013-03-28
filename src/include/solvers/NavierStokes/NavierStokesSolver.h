@@ -109,7 +109,7 @@ protected:
 	virtual void assembleRHS1();
 	void assembleRHS2();
 
-	void solveIntermediateVelocity();
+	virtual void solveIntermediateVelocity();
 	void solvePoisson();
 	void projectionStep();
 

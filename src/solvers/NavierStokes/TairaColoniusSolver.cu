@@ -55,10 +55,6 @@ void TairaColoniusSolver<memoryType>::writeData()
 	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
 	real dt = db["simulation"]["dt"].get<real>();
 
-	// Print the forces calculated using the T&C method
-	//calculateForce();
-	//NSWithBody<memoryType>::forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t' << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << std::endl;
-
 	// Print forces calculated using both the T&C method and the CV approach
 	calculateForce();
 	NSWithBody<memoryType>::forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t' << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << '\t';

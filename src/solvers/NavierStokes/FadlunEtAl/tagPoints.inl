@@ -739,8 +739,6 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real 
 	real eps = 1.e-6;
 	real cfX = 0.0, cfY = 0.0, x, y;
 	
-	std::ofstream locations("locations.txt");
-	
 	// tag points at which u is evaluated
 	for(int j=0; j<ny; j++)
 	{
@@ -881,7 +879,6 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real 
 			}
 		}
 	}
-	locations.close();
 	
 	std::ofstream file("tagx.txt");
 	for(int j=0; j<ny; j++)

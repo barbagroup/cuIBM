@@ -43,7 +43,6 @@ class TairaColoniusSolver : public NSWithBody<memoryType>
 {
 private:
 	cusp::coo_matrix<int, real, memoryType> E, ET;
-	real fX, fY;
 	
 	void generateQT();
 	void updateQT();
