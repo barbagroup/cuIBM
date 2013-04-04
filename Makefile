@@ -133,7 +133,7 @@ movingCylinder:
 	-flowFile flows/box.yaml -domainFile domains/movingCylinder.yaml \
 	-bodyFile bodies/movingCylinder.yaml -simulationFile simParams/movingCylinder.yaml \
 	-folderName movingCylinder \
-	-nu 0.025 -ibmScheme FadlunEtAl
+	-nu 0.025
 
 cylinderRe40:
 	bin/cuIBM \

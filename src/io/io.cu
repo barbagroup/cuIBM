@@ -228,6 +228,9 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			else 
 			if ( strcmp(argv[i],"FadlunEtAl")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(FADLUN_ET_AL);
+			else 
+			if ( strcmp(argv[i],"SuLaiLin")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(SU_LAI_LIN);
 		}
 	}
 }

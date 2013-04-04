@@ -23,7 +23,9 @@
 #include <solvers/NavierStokes/NavierStokesSolver.h>
 #include <solvers/NavierStokes/FadlunEtAlSolver.h>
 #include <solvers/NavierStokes/TairaColoniusSolver.h>
+#include <solvers/NavierStokes/SuLaiLinSolver.h>
 #include <sys/stat.h>
+#include <cusp/io/matrix_market.h>
 
 #include <io/io.h>
 
@@ -389,6 +391,8 @@ void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 {
 	logger.startTimer("solveIntermediateVel");
 	
+	// Solve for qStar ========================================================
+	
 	int  maxIters = (*paramDB)["velocitySolve"]["maxIterations"].get<int>();
 	real relTol = (*paramDB)["velocitySolve"]["tolerance"].get<real>();
 
@@ -499,6 +503,9 @@ NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(par
 			break;
 		case FADLUN_ET_AL:
 			solver = new FadlunEtAlSolver<memoryType>;
+			break;
+		case SU_LAI_LIN:
+			solver = new SuLaiLinSolver<memoryType>;
 			break;
 	}
 	solver->paramDB = &paramDB;

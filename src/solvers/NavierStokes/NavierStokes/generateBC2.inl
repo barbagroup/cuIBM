@@ -52,35 +52,6 @@ void NavierStokesSolver<host_memory>::generateBC2()
 		bc2[j*nx+nx-1] += bc[XPLUS][j]*dy[j]; // u[j+1][nx]*dy;
 	}
 }
-/*
-template <>
-void NavierStokesSolver<device_memory>::generateBC2()
-{
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
-	
-	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
-	     *dy = thrust::raw_pointer_cast(&(domInfo->dy[0]));
-	
-	/// rhs2 of size np
-	cusp::blas::fill(bc2Host, 0.0);
-	
-	/// boundary conditions from the continuity equations
-	for(int i=0; i<nx; i++)
-	{
-		bc2Host[i] -= bcHost[YMINUS][i+nx-1]*dx[i]; // v[0][i+1]*dx;
-		bc2Host[(ny-1)*nx + i] += bcHost[YPLUS][i+nx-1]*dx[i]; // v[ny][i+1]*dx;
-	}
-
-	for(int j=0; j<ny; j++)
-	{
-		// left
-		bc2Host[j*nx] -= bcHost[XMINUS][j]*dy[j]; // u[j+1][0]*dy;
-		// right
-		bc2Host[j*nx+nx-1] += bcHost[XPLUS][j]*dy[j]; // u[j+1][nx]*dy;
-	}
-	bc2 = bc2Host;
-}*/
 
 template<>
 void NavierStokesSolver<device_memory>::generateBC2()

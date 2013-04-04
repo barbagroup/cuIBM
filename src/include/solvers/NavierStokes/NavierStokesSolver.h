@@ -33,8 +33,6 @@
 #include <io/io.h>
 #include <parameterDB.h>
 #include <preconditioner.h>
-//#include <cusp/precond/smoothed_aggregation.h>
-//#include <cusp/precond/diagonal.h>
 
 /**
 * Navier-Stokes solver for a rectangular domain.

@@ -23,7 +23,7 @@
 #include <solvers/NavierStokes/kernels/generateQT.h>
 
 __device__ \
-real dhRomaDevice(real x, real h)
+real dhRomaDeviceQT(real x, real h)
 {
 	real r = fabs(x)/h;
 	
@@ -36,9 +36,9 @@ real dhRomaDevice(real x, real h)
 }
 
 __device__ \
-real deltaDevice(real x, real y, real h)
+real deltaDeviceQT(real x, real y, real h)
 {
-	return dhRomaDevice(x, h) * dhRomaDevice(y, h);
+	return dhRomaDeviceQT(x, h) * dhRomaDeviceQT(y, h);
 }
 
 namespace kernels
@@ -145,7 +145,7 @@ void updateQT(int *QTRows, int *QTCols, real *QTVals,
 			QTCols[QTIdx] = j*(nx-1) + i;
 			ECols[EIdx] = QTCols[QTIdx];
 			
-			QTVals[QTIdx] = Dx*deltaDevice(x[i+1]-xB[bodyIdx], 0.5*(y[j]+y[j+1])-yB[bodyIdx], Dx);
+			QTVals[QTIdx] = Dx*deltaDeviceQT(x[i+1]-xB[bodyIdx], 0.5*(y[j]+y[j+1])-yB[bodyIdx], Dx);
 			EVals[EIdx] = QTVals[QTIdx];
 			
 			QTIdx++;
@@ -164,7 +164,7 @@ void updateQT(int *QTRows, int *QTCols, real *QTVals,
 			QTCols[QTIdx+12*totalPoints-12] = j*nx + i + (nx-1)*ny;
 			ECols[EIdx+12*totalPoints-12] = QTCols[QTIdx+12*totalPoints-12];
 			
-			QTVals[QTIdx+12*totalPoints-12] = Dx*deltaDevice(0.5*(x[i]+x[i+1])-xB[bodyIdx], y[j+1]-yB[bodyIdx], Dx);
+			QTVals[QTIdx+12*totalPoints-12] = Dx*deltaDeviceQT(0.5*(x[i]+x[i+1])-xB[bodyIdx], y[j+1]-yB[bodyIdx], Dx);
 			EVals[EIdx+12*totalPoints-12] = QTVals[QTIdx+12*totalPoints-12];
 			
 			QTIdx++;

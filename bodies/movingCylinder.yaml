@@ -1,0 +1,10 @@
+- type: circle
+  centerRotation: [0.0, 0.0]
+  moving: [true, false]
+  velocity: [-1.0, 0.0]
+  alpha: 0.0
+  omega: 0.0
+  xOscillation: [0.0, 0.0, 0.0]
+  yOscillation: [0.0, 0.0, 0.0]
+  pitchOscillation: [0.0, 0.0, 0.0]
+  circleOptions: [0.0, 0.0, 0.5, 63]
