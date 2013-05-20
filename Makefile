@@ -83,6 +83,7 @@ force_look:
 .PHONY: cylinder cylinderFadlun cylinderRe40 cylinderRe550 cylinderRe3000 movingCylinder
 .PHONY: cylinderRe75 cylinderRe100 cylinderRe150
 .PHONY: flapping flappingRe75
+.PHONY: snakeRe1000AOA30 snakeRe1000AOA35 snakeRe2000AOA30 snakeRe2000AOA35
 
 #test:
 #	bin/cuIBM \
@@ -188,3 +189,35 @@ flappingRe75:
 	-flowFile flows/box.yaml -domainFile domains/flappingRe75.yaml \
 	-bodyFile bodies/flappingRe75.yaml -simulationFile simParams/flappingRe75.yaml \
 	-folderName flappingRe75
+
+snakeRe1000AOA30:
+	time bin/cuIBM \
+	-ibmScheme TairaColonius \
+	-flowFile flows/openFlow.yaml -nu 0.001 \
+	-domainFile domains/snake.yaml \
+	-bodyFile bodies/snake/snake30.yaml -simulationFile simParams/snake.yaml \
+	-folderName snakeRe1000AOA30
+
+snakeRe1000AOA35:
+	time bin/cuIBM \
+	-ibmScheme TairaColonius \
+	-flowFile flows/openFlow.yaml -nu 0.001 \
+	-domainFile domains/snake.yaml \
+	-bodyFile bodies/snake/snake35.yaml -simulationFile simParams/snake.yaml \
+	-folderName snakeRe1000AOA35
+
+snakeRe2000AOA30:
+	time bin/cuIBM \
+	-ibmScheme TairaColonius \
+	-flowFile flows/openFlow.yaml -nu 0.0005 \
+	-domainFile domains/snake.yaml \
+	-bodyFile bodies/snake/snake30.yaml -simulationFile simParams/snake.yaml \
+	-folderName snakeRe2000AOA30
+
+snakeRe2000AOA35:
+	time bin/cuIBM \
+	-ibmScheme TairaColonius \
+	-flowFile flows/openFlow.yaml -nu 0.0005 \
+	-domainFile domains/snake.yaml \
+	-bodyFile bodies/snake/snake35.yaml -simulationFile simParams/snake.yaml \
+	-folderName snakeRe2000AOA35

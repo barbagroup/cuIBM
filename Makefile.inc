@@ -8,7 +8,7 @@
 CC = nvcc
 
 # options for the compiler
-# -arch=sm_20 compiles the program to use double precision on the GPU
+# -arch=compute_20 compiles the program to use double precision on the GPU
 # -O3 is an optimisation flag
 OPTS = -arch=compute_20 -O3 #-Xcompiler -Wall
 

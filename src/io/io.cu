@@ -192,6 +192,12 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			i++;
 			DB["flow"]["nu"].set<real>(toNumber<real>(string(argv[i])));
 		}
+		//// angle of attack
+		//if ( strcmp(argv[i],"-alpha")==0 )
+		//{
+		//	i++;
+		//	DB["flow"]["nu"].set<real>(toNumber<real>(string(argv[i])));
+		//}
 		// perturbation in the x-velocity
 		if ( strcmp(argv[i],"-uPerturb")==0 )
 		{
