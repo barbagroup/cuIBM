@@ -173,4 +173,59 @@ void updateQT(int *QTRows, int *QTCols, real *QTVals,
 	}
 }
 
+void updateQTHost(int *QTRows, int *QTCols, real *QTVals,
+              int *ERows,  int *ECols,  real *EVals,
+              int nx, int ny, real *x, real *y, real *dx,
+              int totalPoints, real *xB, real *yB, int *I, int *J)
+{
+	for(int bodyIdx=0; bodyIdx<totalPoints; bodyIdx++)
+	{
+		int  Ib=I[bodyIdx],
+		     Jb=J[bodyIdx],
+		     QTIdx = 4*nx*ny - 2*(nx+ny) + bodyIdx*12,
+		     EIdx  = bodyIdx*12,
+		     i, j;
+
+		real Dx = dx[Ib];
+	
+		// populate x-components
+		for(j=Jb-1; j<=Jb+1; j++)
+		{
+			for(i=Ib-2; i<=Ib+1; i++)
+			{
+				QTRows[QTIdx] = bodyIdx + nx*ny;
+				ERows[EIdx] = bodyIdx;
+			
+				QTCols[QTIdx] = j*(nx-1) + i;
+				ECols[EIdx] = QTCols[QTIdx];
+			
+				QTVals[QTIdx] = Dx*delta(x[i+1]-xB[bodyIdx], 0.5*(y[j]+y[j+1])-yB[bodyIdx], Dx);
+				EVals[EIdx] = QTVals[QTIdx];
+			
+				QTIdx++;
+				EIdx++;
+			}
+		}
+
+		// populate y-components
+		for(j=Jb-2; j<=Jb+1; j++)
+		{
+			for(i=Ib-1; i<=Ib+1; i++)
+			{
+				QTRows[QTIdx+12*totalPoints-12] = bodyIdx + nx*ny + totalPoints;
+				ERows[EIdx+12*totalPoints-12] = bodyIdx + totalPoints;
+			
+				QTCols[QTIdx+12*totalPoints-12] = j*nx + i + (nx-1)*ny;
+				ECols[EIdx+12*totalPoints-12] = QTCols[QTIdx+12*totalPoints-12];
+			
+				QTVals[QTIdx+12*totalPoints-12] = Dx*delta(0.5*(x[i]+x[i+1])-xB[bodyIdx], y[j+1]-yB[bodyIdx], Dx);
+				EVals[EIdx+12*totalPoints-12] = QTVals[QTIdx+12*totalPoints-12];
+			
+				QTIdx++;
+				EIdx++;
+			}
+		}
+	}
+}
+
 } // end of namespace kernels

@@ -41,4 +41,10 @@ void updateQT(int *QTRows, int *QTCols, real *QTVals,
               int *ERows,  int *ECols,  real *EVals,
               int nx, int ny, real *x, real *y, real *dx,
               int totalPoints, real *xB, real *yB, int *I, int *J);
+
+void updateQTHost(int *QTRows, int *QTCols, real *QTVals,
+              int *ERows,  int *ECols,  real *EVals,
+              int nx, int ny, real *x, real *y, real *dx,
+              int totalPoints, real *xB, real *yB, int *I, int *J);
+
 }

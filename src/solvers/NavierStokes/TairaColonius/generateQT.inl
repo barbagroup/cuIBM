@@ -27,6 +27,43 @@
 template <>
 void TairaColoniusSolver<host_memory>::updateQT()
 {
+	logger.startTimer("updateQT");
+	
+	int  *QTRows = thrust::raw_pointer_cast(&(QT.row_indices[0])),
+	     *QTCols = thrust::raw_pointer_cast(&(QT.column_indices[0]));
+	real *QTVals = thrust::raw_pointer_cast(&(QT.values[0]));
+	
+	int  *ERows = thrust::raw_pointer_cast(&(E.row_indices[0])),
+	     *ECols = thrust::raw_pointer_cast(&(E.column_indices[0]));
+	real *EVals = thrust::raw_pointer_cast(&(E.values[0]));
+	
+	real *x  = &(domInfo->x[0]),
+	     *y  = &(domInfo->y[0]),
+	     *dx = &(domInfo->dx[0]);
+	
+	real *xB = thrust::raw_pointer_cast(&(B.x[0])),
+	     *yB = thrust::raw_pointer_cast(&(B.y[0]));
+	
+	int *I = thrust::raw_pointer_cast(&(B.I[0])),
+	    *J = thrust::raw_pointer_cast(&(B.J[0]));
+	
+	int  nx = domInfo->nx,
+	     ny = domInfo->ny;
+	     
+	kernels::updateQTHost(QTRows, QTCols, QTVals,
+	                      ERows,  ECols,  EVals,
+	                      nx, ny, x, y, dx,
+                          B.totalPoints, xB, yB, I, J);
+
+	logger.stopTimer("updateQT");
+	
+	logger.startTimer("transposeQT");
+	cusp::transpose(QT, Q);
+	logger.stopTimer("transposeQT");
+	
+	logger.startTimer("transposeE");
+	cusp::transpose(E, ET);
+	logger.stopTimer("transposeE");
 }
 
 template <>
