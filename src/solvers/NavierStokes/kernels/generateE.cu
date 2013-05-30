@@ -43,6 +43,49 @@ real deltaDeviceE(real x, real y, real h)
 
 namespace kernels
 {
+	
+void generateEHost(int *ERows,  int *ECols,  real *EVals,
+                   int nx, int ny, real *x, real *y, real *dx,
+                   int totalPoints, real *xB, real *yB, int *I, int *J)
+{
+	for(int bodyIdx=0; bodyIdx<totalPoints; bodyIdx++)
+	{
+		int  Ib=I[bodyIdx],
+		     Jb=J[bodyIdx],
+		     EIdx  = bodyIdx*12,
+		     i, j;
+
+		real Dx = dx[Ib];
+	
+		// uB = integral (u * delta * dxdy)
+		// E = E_hat * R^-1 => divide E_hat by Dx
+	
+		// populate x-components
+		for(j=Jb-1; j<=Jb+1; j++)
+		{
+			for(i=Ib-2; i<=Ib+1; i++)
+			{
+				ERows[EIdx] = bodyIdx;
+				ECols[EIdx] = j*(nx-1) + i;
+				EVals[EIdx] = Dx*delta(x[i+1]-xB[bodyIdx], 0.5*(y[j]+y[j+1])-yB[bodyIdx], Dx);
+				EIdx++;
+			}
+		}
+
+		// populate y-components
+		for(j=Jb-2; j<=Jb+1; j++)
+		{
+			for(i=Ib-1; i<=Ib+1; i++)
+			{
+				ERows[EIdx+12*totalPoints-12] = bodyIdx + totalPoints;
+				ECols[EIdx+12*totalPoints-12] = j*nx + i + (nx-1)*ny;
+				EVals[EIdx+12*totalPoints-12] = Dx*delta(0.5*(x[i]+x[i+1])-xB[bodyIdx], y[j+1]-yB[bodyIdx], Dx);
+				EIdx++;
+			}
+		}
+	}
+}
+
 
 __global__ \
 void generateE(int *ERows,  int *ECols,  real *EVals,

@@ -1,9 +1,9 @@
 cuIBM - A GPU-based Immersed Boundary Method code
 =================================================
 
-*Updated: March 29th, 2013*
+*Updated: March 30th, 2013*
 
-Currently, cuIBM runs only on Linux and has been tested on Ubuntu 12.04. It is not supported on Windows and Mac OS X.
+Currently, cuIBM runs only on Linux and has been tested on Ubuntu 11.10. It is not supported on Windows and Mac OS X.
 
 Installation instructions
 -------------------------
@@ -164,4 +164,4 @@ Known issues
 Contact
 -------
 
-Please e-mail [Anush Krishnan](mailto:anush@bu.edu) if you have any questions.
+Please e-mail [Anush Krishnan](mailto:anush@bu.edu) if you have any questions, suggestions or feedback.
