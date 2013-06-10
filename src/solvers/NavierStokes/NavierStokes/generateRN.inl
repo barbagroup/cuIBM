@@ -38,7 +38,7 @@ void NavierStokesSolver<memoryType>::calculateExplicitLambdaTerms()
 	if(fabs(intgSchm.zeta[subStep]) > 1e-6)
 	{
 		// temp = Q.lambda
-		cusp::wrapped::multiply(Q, lambda, temp1);
+		cusp::multiply(Q, lambda, temp1);
 		// temp = zeta*temp
 		cusp::blas::scal(temp1, intgSchm.zeta[subStep]);
 		// rn = rn - temp

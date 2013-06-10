@@ -30,7 +30,7 @@ void SLL0Solver<memoryType>::assembleRHS1()
 	NavierStokesSolver<memoryType>::logger.startTimer("assembleRHS1");
 	
 	cusp::blas::axpby(NavierStokesSolver<memoryType>::rn, NavierStokesSolver<memoryType>::bc1, NavierStokesSolver<memoryType>::rhs1, 1.0, 1.0);
-	cusp::wrapped::multiply(NavierStokesSolver<memoryType>::Q, NavierStokesSolver<memoryType>::lambda, NavierStokesSolver<memoryType>::temp1);
+	cusp::multiply(NavierStokesSolver<memoryType>::Q, NavierStokesSolver<memoryType>::lambda, NavierStokesSolver<memoryType>::temp1);
 	cusp::blas::axpby(NavierStokesSolver<memoryType>::rhs1, NavierStokesSolver<memoryType>::temp1, NavierStokesSolver<memoryType>::rhs1, 1.0, -1.0);
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("assembleRHS1");

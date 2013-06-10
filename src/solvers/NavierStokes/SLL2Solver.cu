@@ -35,8 +35,8 @@ void SLL2Solver<memoryType>::projectionStep()
 	
 	// Calculate qTilde ========================================================
 	
-	cusp::wrapped::multiply(NavierStokesSolver<memoryType>::Q, NavierStokesSolver<memoryType>::lambda, NavierStokesSolver<memoryType>::temp1);
-	cusp::wrapped::multiply(NavierStokesSolver<memoryType>::BN, NavierStokesSolver<memoryType>::temp1, SuLaiLinSolver<memoryType>::qTilde);
+	cusp::multiply(NavierStokesSolver<memoryType>::Q, NavierStokesSolver<memoryType>::lambda, NavierStokesSolver<memoryType>::temp1);
+	cusp::multiply(NavierStokesSolver<memoryType>::BN, NavierStokesSolver<memoryType>::temp1, SuLaiLinSolver<memoryType>::qTilde);
 	cusp::blas::axpby(NavierStokesSolver<memoryType>::qStar, SuLaiLinSolver<memoryType>::qTilde, SuLaiLinSolver<memoryType>::qTilde, 1.0, -1.0);
 	
 	// Solve for f =============================================================
@@ -64,8 +64,8 @@ void SLL2Solver<memoryType>::projectionStep()
 	
 	// Obtain q^n+1 ===============================================================
 	
-	cusp::wrapped::multiply(SuLaiLinSolver<memoryType>::ET, SuLaiLinSolver<memoryType>::f, SuLaiLinSolver<memoryType>::temp3);
-	cusp::wrapped::multiply(NavierStokesSolver<memoryType>::BN, SuLaiLinSolver<memoryType>::temp3, NavierStokesSolver<memoryType>::q);
+	cusp::multiply(SuLaiLinSolver<memoryType>::ET, SuLaiLinSolver<memoryType>::f, SuLaiLinSolver<memoryType>::temp3);
+	cusp::multiply(NavierStokesSolver<memoryType>::BN, SuLaiLinSolver<memoryType>::temp3, NavierStokesSolver<memoryType>::q);
 	cusp::blas::axpby(SuLaiLinSolver<memoryType>::qTilde, NavierStokesSolver<memoryType>::q, NavierStokesSolver<memoryType>::q, 1.0, -1.0);
 
 	NavierStokesSolver<memoryType>::logger.stopTimer("projectionStep");

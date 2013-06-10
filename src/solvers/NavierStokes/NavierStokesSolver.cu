@@ -338,8 +338,8 @@ void NavierStokesSolver<device_memory>::generateC()
 	logger.startTimer("generateC");
 	
 	cooD temp; // Should this temp matrix be created each time step?
-	cusp::wrapped::multiply(QT, BN, temp);
-	cusp::wrapped::multiply(temp, Q, C);
+	cusp::multiply(QT, BN, temp);
+	cusp::multiply(temp, Q, C);
 	C.values[0] += C.values[0];
 	
 	logger.stopTimer("generateC");
@@ -351,8 +351,8 @@ void NavierStokesSolver<host_memory>::generateC()
 	logger.startTimer("generateC");
 	
 	cooH temp;
-	cusp::wrapped::multiply(QT, BN, temp);
-	cusp::wrapped::multiply(temp, Q, C);
+	cusp::multiply(QT, BN, temp);
+	cusp::multiply(temp, Q, C);
 	C.sort_by_row_and_column();
 	C.values[0] += C.values[0];
 	
@@ -378,7 +378,7 @@ void NavierStokesSolver<memoryType>::assembleRHS2()
 {
 	logger.startTimer("assembleRHS2");
 	
-	cusp::wrapped::multiply(QT, qStar, temp2);
+	cusp::multiply(QT, qStar, temp2);
 	cusp::blas::axpby(temp2, bc2, rhs2, 1.0, -1.0);
 	
 	logger.stopTimer("assembleRHS2");
@@ -444,8 +444,8 @@ void NavierStokesSolver<memoryType>::projectionStep()
 {
 	logger.startTimer("projectionStep");
 
-	cusp::wrapped::multiply(Q, lambda, temp1);
-	cusp::wrapped::multiply(BN, temp1, q);
+	cusp::multiply(Q, lambda, temp1);
+	cusp::multiply(BN, temp1, q);
 	cusp::blas::axpby(qStar, q, q, 1.0, -1.0);
 
 	logger.stopTimer("projectionStep");

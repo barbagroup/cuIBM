@@ -108,8 +108,8 @@ void SuLaiLinSolver<device_memory>::generateF()
 	logger.startTimer("generateF");
 	
 	cooD temp; // Should this temp matrix be created each time step?
-	cusp::wrapped::multiply(E, BN, temp);
-	cusp::wrapped::multiply(temp, ET, F);
+	cusp::multiply(E, BN, temp);
+	cusp::multiply(temp, ET, F);
 	
 	logger.stopTimer("generateF");
 }
@@ -120,8 +120,8 @@ void SuLaiLinSolver<host_memory>::generateF()
 	logger.startTimer("generateF");
 	
 	cooH temp;
-	cusp::wrapped::multiply(E, BN, temp);
-	cusp::wrapped::multiply(temp, ET, F);
+	cusp::multiply(E, BN, temp);
+	cusp::multiply(temp, ET, F);
 	F.sort_by_row_and_column();
 	
 	logger.stopTimer("generateF");
@@ -137,7 +137,7 @@ void SuLaiLinSolver<memoryType>::assembleRHS3()
 	NavierStokesSolver<memoryType>::logger.startTimer("assembleRHS3");
 	
 	// rhs3 = (Eq~ - uBn+1)
-	cusp::wrapped::multiply(E, qTilde, temp3);
+	cusp::multiply(E, qTilde, temp3);
 	cusp::blas::axpby(temp3, velB, rhs3, 1.0, -1.0);
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("assembleRHS3");

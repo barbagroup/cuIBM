@@ -84,8 +84,8 @@ void SLL1Solver<memoryType>::solveIntermediateVelocity()
 	
 	// [3] q* = qTilde - BN.ET.f
 	
-	cusp::wrapped::multiply(SuLaiLinSolver<memoryType>::ET, SuLaiLinSolver<memoryType>::f, SuLaiLinSolver<memoryType>::temp3);
-	cusp::wrapped::multiply(NavierStokesSolver<memoryType>::BN, SuLaiLinSolver<memoryType>::temp3, NavierStokesSolver<memoryType>::qStar);
+	cusp::multiply(SuLaiLinSolver<memoryType>::ET, SuLaiLinSolver<memoryType>::f, SuLaiLinSolver<memoryType>::temp3);
+	cusp::multiply(NavierStokesSolver<memoryType>::BN, SuLaiLinSolver<memoryType>::temp3, NavierStokesSolver<memoryType>::qStar);
 	cusp::blas::axpby(SuLaiLinSolver<memoryType>::qTilde, NavierStokesSolver<memoryType>::qStar, NavierStokesSolver<memoryType>::qStar, 1.0, -1.0);
 
 	NavierStokesSolver<memoryType>::logger.stopTimer("solveIntermediateVel");

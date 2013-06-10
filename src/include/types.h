@@ -36,16 +36,14 @@
 #include <cusp/array1d.h>
 #include <cusp/print.h>
 
-///
 #include <cusp/transpose.h>
 #include <cusp/blas.h>
 #include <cusp/krylov/cg.h>
 #include <cusp/krylov/bicgstab.h>
 #include <cusp/krylov/gmres.h>
 
-#include <cusp/wrapped/add.h>
-#include <cusp/wrapped/subtract.h>
-#include <cusp/wrapped/multiply.h>
+#include <cusp/multiply.h>
+#include <cusp/elementwise.h>
 
 #include <thrust/device_ptr.h>
 
