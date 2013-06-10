@@ -109,7 +109,7 @@ protected:
 
 	virtual void solveIntermediateVelocity();
 	void solvePoisson();
-	void projectionStep();
+	virtual void projectionStep();
 
 	void updateBoundaryConditions();
 	virtual void updateSolverState();

@@ -98,7 +98,9 @@ enum ibmScheme
 	SAIKI_BIRINGEN, ///< Saiki & Biringen (1996)
 	FADLUN_ET_AL,   ///< Fadlun et al (2000)
 	TAIRA_COLONIUS, ///< Taira & Colonius (2007)
-	SU_LAI_LIN      ///< Su, Lai and Lin (2007)
+	SLL0,           ///< SLL0
+	SLL1,           ///< SLL1
+	SLL2            ///< SLL2
 };
 
 /**

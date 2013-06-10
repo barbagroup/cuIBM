@@ -32,15 +32,17 @@ void NavierStokesSolver<host_memory>::generateBC2()
 	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
 	     *dy = thrust::raw_pointer_cast(&(domInfo->dy[0]));
 	
-	/// rhs2 of size np+2nb
+	// bc2 and rhs2 are of size np+2nb
 	
-	/// boundary conditions from the continuity equations
-		
-	cusp::blas::fill(bc2, 0.0);
+	// the boundary conditions are obtained from the continuity equations
+	
+	cusp::blas::fill(bc2, 0.0);  // initialise the elements of bc2 to zero
 	
 	for(int i=0; i<nx; i++)
 	{
+		// bottom
 		bc2[i] -= bc[YMINUS][i+nx-1]*dx[i]; // v[0][i+1]*dx;
+		// top
 		bc2[(ny-1)*nx + i] += bc[YPLUS][i+nx-1]*dx[i]; // v[ny][i+1]*dx;
 	}
 

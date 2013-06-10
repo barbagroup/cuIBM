@@ -20,36 +20,21 @@
 *  THE SOFTWARE.
 */
 
-#include <types.h>
-#include <helpers.h>
-#include <domain.h>
-#include <io/io.h>
-#include <solvers/NavierStokes/NavierStokesSolver.h>
-#include <solvers/NavierStokes/TairaColoniusSolver.h>
-#include <solvers/NavierStokes/FadlunEtAlSolver.h>
-#include <solvers/NavierStokes/SuLaiLinSolver.h>
-#include <solvers/NavierStokes/SLL2Solver.h>
+#include <solvers/NavierStokes/SLL0Solver.h>
+#include <sys/stat.h>
+#include <cusp/io/matrix_market.h>
 
-int main(int argc, char **argv)
+template <typename memoryType>
+void SLL0Solver<memoryType>::assembleRHS1()
 {
-	domain dom_info;
-	parameterDB paramDB;
-
-	io::readInputs(argc, argv, paramDB, dom_info);
-	io::printSimulationInfo(paramDB, dom_info);
-
-	/// choose the appropriate flow solver
-	NavierStokesSolver<device_memory> *solver = NavierStokesSolver<device_memory>::createSolver(paramDB, dom_info);
-	//NavierStokesSolver<host_memory> *solver = NavierStokesSolver<host_memory>::createSolver(paramDB, dom_info);
-	solver->initialise();
-	io::printDeviceMemoryUsage("Initialisation complete");
+	NavierStokesSolver<memoryType>::logger.startTimer("assembleRHS1");
 	
-	io::writeInfoFile(paramDB, dom_info);
+	cusp::blas::axpby(NavierStokesSolver<memoryType>::rn, NavierStokesSolver<memoryType>::bc1, NavierStokesSolver<memoryType>::rhs1, 1.0, 1.0);
+	cusp::wrapped::multiply(NavierStokesSolver<memoryType>::Q, NavierStokesSolver<memoryType>::lambda, NavierStokesSolver<memoryType>::temp1);
+	cusp::blas::axpby(NavierStokesSolver<memoryType>::rhs1, NavierStokesSolver<memoryType>::temp1, NavierStokesSolver<memoryType>::rhs1, 1.0, -1.0);
 	
-	while (!solver->finished())
-	{
-		solver->stepTime();
-		solver->writeData();
-	}
-	solver->shutDown();
+	NavierStokesSolver<memoryType>::logger.stopTimer("assembleRHS1");
 }
+
+template class SLL0Solver<host_memory>;
+template class SLL0Solver<device_memory>;

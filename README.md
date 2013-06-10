@@ -1,7 +1,7 @@
 cuIBM - A GPU-based Immersed Boundary Method code
 =================================================
 
-*Updated: March 30th, 2013*
+*Updated: June 10th, 2013*
 
 Currently, cuIBM runs only on Linux and has been tested on Ubuntu 11.10. It is not supported on Windows and Mac OS X.
 
@@ -45,14 +45,16 @@ Check the version of NVCC installed:
 
 cuIBM has been tested and compiles with NVCC versions 4.1, 4.2 and 5.0.
 
-**IMPORTANT**: `nvcc-4.1` is compatible only with version 4.5 or below of G++. `nvcc-4.2` and `nvcc-5.0` are compatible with `g++-4.6` and below.
+**IMPORTANT**: `nvcc-4.1` is compatible only with G++ version 4.5 (`g++-4.5`) or below. `nvcc-4.2` and `nvcc-5.0` are compatible with `g++-4.6` and below.
 
 #### CUSP Library
 
 CUSP is a library that provides routines to perform sparse linear algebra computations on Graphics Processing Units. It is written using the CUDA programming language and runs code on compatible NVIDIA GPUs. The version of CUSP that is currently used by cuIBM is hosted on [Google Code](http://code.google.com/p/cusp-library/).
 
-Create a local copy of the CUSP library using the following command:
+The instructions here assume that the CUSP library is installed in a folder called `lib` in the home directory, but any other folder with write permissions can be used. Create a local copy of the CUSP library using the following commands:
 
+    > mkdir -p $HOME/lib
+    > cd $HOME/lib
     > hg clone https://code.google.com/p/cusp-library/
 
 The above command will clone the latest revision of CUSP hosted on Google Code, i.e. revision 558. This is the version that cuIBM has been tested with and works.
@@ -61,13 +63,17 @@ The CUSP library is no longer being actively maintained on the Google Code websi
 
 ### Compiling cuIBM
 
-cuIBM is currently hosted on [BitBucket](https://bitbucket.org/anushk/cuibm). Run the following command to create a local copy on your machine:
+cuIBM is currently hosted on [BitBucket](https://bitbucket.org/anushk/cuibm). Run the following commands to create a local copy in the folder `src` in the home directory (any other folder with appropriate read/write permissions can also be used):
 
+    > mkdir -p $HOME/src
+    > cd $HOME/src
     > hg clone https://bitbucket.org/anushk/cuibm
 
 To compile, set the environment variable `CUSP_DIR` to point to the directory with the CUSP library. For a `bash` shell, add the following line to the file `~/.bashrc` or `~/.bash_profile`:
 
     export CUSP_DIR=/path/to/cusp/folder
+
+which for the above case would be `$HOME/lib/cusp-library`
 
 And reload the file:
 
@@ -76,6 +82,8 @@ And reload the file:
 Switch to the cuIBM directory:
 
     > cd /path/to/cuibm/folder
+
+The path as per the above instructions is `$HOME/src/cuibm`.
 
 Compile all the files:
 	

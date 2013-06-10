@@ -20,6 +20,17 @@
 *  THE SOFTWARE.
 */
 
+/**
+* @file  SuLaiLinSolver.h
+* @brief Solves the flow using the IB method described by Taira and Colonius (2007)
+*
+* <b>The immersed boundary method: a projection approach</b> \n
+* Taira, K and Colonius, T \n
+* Journal of Computational Physics \n
+* Volume 225 Number 2 \n
+* 2007
+*/
+
 #include <solvers/NavierStokes/SuLaiLinSolver.h>
 #include <sys/stat.h>
 #include <cusp/io/matrix_market.h>
@@ -41,8 +52,9 @@ void SuLaiLinSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP);
 	
 	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");
+
 	qTilde.resize(numUV);
-	if(numB > 0)
+	if(numB > 0) // if bodies are present in the flow, create the following ararys
 	{
 		f.resize(2*numB);
 		velB.resize(2*numB);
@@ -50,30 +62,38 @@ void SuLaiLinSolver<memoryType>::initialise()
 		temp3.resize(2*numB);
 		E.resize(2*numB, numUV, 24*numB);
 	}
+
 	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");
 	
-	// Assemble matrices
-	NavierStokesSolver<memoryType>::assembleMatrices();
+	NavierStokesSolver<memoryType>::assembleMatrices();  // Assemble matrices
 	generateE();
 	generateF();
-	cusp::io::write_matrix_market_file(F, "F.mtx");
+	generateVelB();
 	cusp::io::write_matrix_market_file(E, "E.mtx");
+	cusp::io::write_matrix_market_file(F, "F.mtx");
 	NavierStokesSolver<memoryType>::logger.startTimer("preconditioner3");
 	PC3 = new preconditioner< cusp::coo_matrix<int, real, memoryType> >(F, DIAGONAL);
 	NavierStokesSolver<memoryType>::logger.stopTimer("preconditioner3");
 }
+
+//##############################################################################
+//                            TIME STEPPING
+//##############################################################################
 
 template <typename memoryType>
 void SuLaiLinSolver<memoryType>::updateSolverState()
 {
 	if (NSWithBody<memoryType>::B.bodiesMove)
 	{
-		NSWithBody<memoryType>::updateBodies();
-		generateE();
-		generateF();
-		
+		NSWithBody<memoryType>::updateBodies();  // move the bodies
+		generateE();                             // generate the E matrix (normalised interpolation matrix)
+		generateF();                             // perform the matrix-matrix-matrix multiplication: F = E.BN.ET
+		generateVelB();                          // generate the vector containing the body velocity at the boundary points
+	
 		NavierStokesSolver<memoryType>::logger.startTimer("preconditioner3");
-		PC3->update(F);
+	
+		PC3->update(F);  // update the preconditioner for matrix F
+	
 		NavierStokesSolver<memoryType>::logger.stopTimer("preconditioner3");
 	}
 }
@@ -116,87 +136,12 @@ void SuLaiLinSolver<memoryType>::assembleRHS3()
 {
 	NavierStokesSolver<memoryType>::logger.startTimer("assembleRHS3");
 	
+	// rhs3 = (Eq~ - uBn+1)
 	cusp::wrapped::multiply(E, qTilde, temp3);
 	cusp::blas::axpby(temp3, velB, rhs3, 1.0, -1.0);
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("assembleRHS3");
 }
-
-//##############################################################################
-//                           LINEAR SOLVES
-//##############################################################################
-
-//NavierStokesSolver<memoryType>::
-
-/// MODIFY 
-
-template <typename memoryType>
-void SuLaiLinSolver<memoryType>::solveIntermediateVelocity()
-{
-	NavierStokesSolver<memoryType>::logger.startTimer("solveIntermediateVel");
-	
-	// Solve for qTilde ========================================================
-	
-	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
-	
-	int  maxIters = db["velocitySolve"]["maxIterations"].get<int>();
-	real relTol = db["velocitySolve"]["tolerance"].get<real>();
-
-	cusp::default_monitor<real> sys1Mon(NavierStokesSolver<memoryType>::rhs1, maxIters, relTol);
-	cusp::krylov::cg(NavierStokesSolver<memoryType>::A, qTilde, NavierStokesSolver<memoryType>::rhs1, sys1Mon, *NavierStokesSolver<memoryType>::PC1);
-	
-	NavierStokesSolver<memoryType>::iterationCount1 = sys1Mon.iteration_count();
-	if (!sys1Mon.converged())
-	{
-		std::cout << "ERROR: Solve for q~ failed at time step " << NavierStokesSolver<memoryType>::timeStep << std::endl;
-		std::cout << "Iterations   : " << NavierStokesSolver<memoryType>::iterationCount1 << std::endl;          
-		std::cout << "Residual norm: " << sys1Mon.residual_norm() << std::endl;
-		std::cout << "Tolerance    : " << sys1Mon.tolerance() << std::endl;
-		std::exit(-1);
-	}
-	
-	// Solve for f =============================================================
-	
-	assembleRHS3();
-	//cusp::print(rhs3);
-	
-	maxIters = 10000;
-	relTol = 1e-5;
-	
-	cusp::io::write_matrix_market_file(rhs3, "rhs3.mtx");
-	
-	cusp::default_monitor<real> sys3Mon(rhs3, maxIters, relTol);
-	cusp::krylov::cg(F, f, rhs3, sys3Mon, *PC3);
-	int iterationCount3 = sys3Mon.iteration_count();
-	if (!sys3Mon.converged())
-	{
-		std::cout << "ERROR: Solve for f failed at time step " << NavierStokesSolver<memoryType>::timeStep << std::endl;
-		std::cout << "Iterations   : " << iterationCount3 << std::endl;          
-		std::cout << "Residual norm: " << sys3Mon.residual_norm() << std::endl;
-		std::cout << "Tolerance    : " << sys3Mon.tolerance() << std::endl;
-		std::exit(-1);
-	}
-	
-	// Obtain q* ===============================================================
-	
-	cusp::wrapped::multiply(ET, f, temp3);
-	cusp::wrapped::multiply(NavierStokesSolver<memoryType>::BN, temp3, NavierStokesSolver<memoryType>::qStar);
-	cusp::blas::axpby(qTilde, NavierStokesSolver<memoryType>::qStar, NavierStokesSolver<memoryType>::qStar, 1.0, -1.0);
-
-	NavierStokesSolver<memoryType>::logger.stopTimer("solveIntermediateVel");
-}
-
-/*template <typename memoryType>
-void SuLaiLinSolver<memoryType>::intermediateProjectionStep()
-{
-	NavierStokesSolver<memoryType>::logger.startTimer("intermediateProjectionStep");
-
-	cusp::wrapped::multiply(ET, f, temp3);
-	cusp::wrapped::multiply(NavierStokesSolver<memoryType>::BN, temp3, NavierStokesSolver<memoryType>::qStar);
-	cusp::blas::axpby(qTilde, NavierStokesSolver<memoryType>::qStar, NavierStokesSolver<memoryType>::qStar, 1.0, 1.0);
-
-	NavierStokesSolver<memoryType>::logger.stopTimer("intermediateProjectionStep");
-}*/
 
 //##############################################################################
 //                               OUTPUT
@@ -212,7 +157,7 @@ void SuLaiLinSolver<memoryType>::writeData()
 	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
 	real dt = db["simulation"]["dt"].get<real>();
 
-	// Print forces calculated using both the T&C method and the CV approach
+	// Print forces calculated using both the SLL method and the CV approach
 	calculateForce();
 	NSWithBody<memoryType>::forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t' << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << '\t';
 	NSWithBody<memoryType>::calculateForce();

@@ -1,4 +1,4 @@
-/*
+	/*
 *  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,36 +20,22 @@
 *  THE SOFTWARE.
 */
 
-#include <types.h>
-#include <helpers.h>
-#include <domain.h>
-#include <io/io.h>
-#include <solvers/NavierStokes/NavierStokesSolver.h>
-#include <solvers/NavierStokes/TairaColoniusSolver.h>
-#include <solvers/NavierStokes/FadlunEtAlSolver.h>
+#pragma once
+
 #include <solvers/NavierStokes/SuLaiLinSolver.h>
-#include <solvers/NavierStokes/SLL2Solver.h>
 
-int main(int argc, char **argv)
+/**
+* @brief Immersed boundary method described by Taira and Colonius (2007)
+*/
+template <typename memoryType>
+class SLL0Solver : public SuLaiLinSolver<memoryType>
 {
-	domain dom_info;
-	parameterDB paramDB;
-
-	io::readInputs(argc, argv, paramDB, dom_info);
-	io::printSimulationInfo(paramDB, dom_info);
-
-	/// choose the appropriate flow solver
-	NavierStokesSolver<device_memory> *solver = NavierStokesSolver<device_memory>::createSolver(paramDB, dom_info);
-	//NavierStokesSolver<host_memory> *solver = NavierStokesSolver<host_memory>::createSolver(paramDB, dom_info);
-	solver->initialise();
-	io::printDeviceMemoryUsage("Initialisation complete");
+protected:
+	void assembleRHS1();
 	
-	io::writeInfoFile(paramDB, dom_info);
-	
-	while (!solver->finished())
+public:
+	std::string name()
 	{
-		solver->stepTime();
-		solver->writeData();
+		return "SLL0";
 	}
-	solver->shutDown();
-}
+};

@@ -79,6 +79,7 @@ force_look:
 
 #
 #.PHONY: test test2
+.PHONY: test
 .PHONY: cavity LidDrivenCavityRe100 LidDrivenCavityRe1000
 .PHONY: cylinder cylinderFadlun cylinderRe40 cylinderRe550 cylinderRe3000 movingCylinder
 .PHONY: cylinderRe75 cylinderRe100 cylinderRe150
@@ -96,6 +97,12 @@ force_look:
 #		-flowFile flows/test.yaml -domainFile domains/test2.yaml \
 #		-bodyFile bodies/test2.yaml -simulationFile simParams/test2.yaml \
 #		-folderName test2
+
+test:
+	bin/cuIBM \
+	-flowFile flows/openFlow.yaml -domainFile domains/openFlow.yaml \
+	-bodyFile bodies/cylinder.yaml -simulationFile simParams/test.yaml \
+	-folderName test -ibmScheme SuLaiLin
 
 cavity:
 	bin/cuIBM \
@@ -148,7 +155,7 @@ cylinderRe75:
 	-flowFile flows/openFlow.yaml -domainFile domains/vonKarmanStreet.yaml \
 	-bodyFile bodies/cylinder0.020.yaml -simulationFile simParams/vonKarmanStreet.yaml \
 	-folderName cylinderRe75 \
-	-nu 0.013333333333 -uPerturb 0.1
+	-nu 0.013333333333 -uPerturb 0.1 -ibmScheme TairaColonius
 
 cylinderRe100:
 	bin/cuIBM \
@@ -221,3 +228,7 @@ snakeRe2000AOA35:
 	-domainFile domains/snake.yaml \
 	-bodyFile bodies/snake/snake35.yaml -simulationFile simParams/snake.yaml \
 	-folderName snakeRe2000AOA35
+	
+#bin/cuIBM -flowFile flows/oFVertical.yaml -domainFile domains/vKSvertical.yaml -bodyFile bodies/cylinder0.020.yaml -simulationFile simParams/vonKarmanStreet.yaml -folderName sllv -vPerturb 0.1 -ibmScheme SuLaiLin
+
+#bin/cuIBM -flowFile flows/openFlow.yaml -domainFile domains/vonKarmanStreet.yaml -bodyFile bodies/cylinder0.020.yaml -simulationFile simParams/vonKarmanStreet.yaml -folderName cylinderRe75 -nu 0.013333333333 -uPerturb 0.1 -ibmScheme SLL1

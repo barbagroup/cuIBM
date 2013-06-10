@@ -204,6 +204,12 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			i++;
 			DB["flow"]["uPerturb"].set<real>(toNumber<real>(string(argv[i])));
 		}
+		// perturbation in the y-velocity
+		if ( strcmp(argv[i],"-vPerturb")==0 )
+		{
+			i++;
+			DB["flow"]["vPerturb"].set<real>(toNumber<real>(string(argv[i])));
+		}
 		// scale the CV with respect to the body
 		if ( strcmp(argv[i],"-scaleCV")==0 )
 		{
@@ -222,6 +228,12 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			i++;
 			DB["simulation"]["nt"].set<int>(toNumber<int>(string(argv[i])));
 		}
+		// size of time increment
+		if ( strcmp(argv[i],"-dt")==0 )
+		{
+			i++;
+			DB["simulation"]["dt"].set<real>(toNumber<real>(string(argv[i])));
+		}
 		// IBM Scheme
 		if ( strcmp(argv[i],"-ibmScheme")==0 )
 		{
@@ -235,8 +247,11 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			if ( strcmp(argv[i],"FadlunEtAl")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(FADLUN_ET_AL);
 			else 
-			if ( strcmp(argv[i],"SuLaiLin")==0 )
-				DB["simulation"]["ibmScheme"].set<ibmScheme>(SU_LAI_LIN);
+			if ( strcmp(argv[i],"SLL1")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(SLL1);
+			else 
+			if ( strcmp(argv[i],"SLL2")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(SLL2);
 		}
 	}
 }

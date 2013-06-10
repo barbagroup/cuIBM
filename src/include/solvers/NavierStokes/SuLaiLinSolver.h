@@ -1,4 +1,4 @@
-/*
+	/*
 *  Copyright (C) 2012 by Anush Krishnan, Simon Layton, Lorena Barba
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -41,7 +41,7 @@
 template <typename memoryType>
 class SuLaiLinSolver : public NSWithBody<memoryType>
 {
-private:
+protected:
 	cusp::coo_matrix<int, real, memoryType>
 	     E, ET, F;
 	
@@ -54,8 +54,6 @@ private:
 	void generateF();
 	
 	void updateSolverState();
-	void solveIntermediateVelocity();
-	//void intermediateProjectionStep();
 	
 	void generateVelB();
 	void assembleRHS3();

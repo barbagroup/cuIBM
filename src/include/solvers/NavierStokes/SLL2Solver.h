@@ -20,36 +20,33 @@
 *  THE SOFTWARE.
 */
 
-#include <types.h>
-#include <helpers.h>
-#include <domain.h>
-#include <io/io.h>
-#include <solvers/NavierStokes/NavierStokesSolver.h>
-#include <solvers/NavierStokes/TairaColoniusSolver.h>
-#include <solvers/NavierStokes/FadlunEtAlSolver.h>
+/**
+* @file  SLL2Solver.h
+* @brief Solves the flow using the IB method described by Taira and Colonius (2007)
+*
+* <b>The immersed boundary method: a projection approach</b> \n
+* Taira, K and Colonius, T \n
+* Journal of Computational Physics \n
+* Volume 225 Number 2 \n
+* 2007
+*/
+
+#pragma once
+
 #include <solvers/NavierStokes/SuLaiLinSolver.h>
-#include <solvers/NavierStokes/SLL2Solver.h>
 
-int main(int argc, char **argv)
+/**
+* @brief Immersed boundary method described by Taira and Colonius (2007)
+*/
+template <typename memoryType>
+class SLL2Solver : public SuLaiLinSolver<memoryType>
 {
-	domain dom_info;
-	parameterDB paramDB;
+protected:
+	void projectionStep();
 
-	io::readInputs(argc, argv, paramDB, dom_info);
-	io::printSimulationInfo(paramDB, dom_info);
-
-	/// choose the appropriate flow solver
-	NavierStokesSolver<device_memory> *solver = NavierStokesSolver<device_memory>::createSolver(paramDB, dom_info);
-	//NavierStokesSolver<host_memory> *solver = NavierStokesSolver<host_memory>::createSolver(paramDB, dom_info);
-	solver->initialise();
-	io::printDeviceMemoryUsage("Initialisation complete");
-	
-	io::writeInfoFile(paramDB, dom_info);
-	
-	while (!solver->finished())
+public:
+	std::string name()
 	{
-		solver->stepTime();
-		solver->writeData();
+		return "SLL2";
 	}
-	solver->shutDown();
-}
+};

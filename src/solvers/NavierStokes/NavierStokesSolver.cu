@@ -23,7 +23,8 @@
 #include <solvers/NavierStokes/NavierStokesSolver.h>
 #include <solvers/NavierStokes/FadlunEtAlSolver.h>
 #include <solvers/NavierStokes/TairaColoniusSolver.h>
-#include <solvers/NavierStokes/SuLaiLinSolver.h>
+#include <solvers/NavierStokes/SLL1Solver.h>
+#include <solvers/NavierStokes/SLL2Solver.h>
 #include <sys/stat.h>
 #include <cusp/io/matrix_market.h>
 
@@ -153,9 +154,7 @@ void NavierStokesSolver <memoryType>::initialiseFluxes(real *q)
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny,
-	     I,
-	     numU  = (nx-1)*ny,
-	     numUV = numU + nx*(ny-1);
+	     numU  = (nx-1)*ny;
 	
 	real xmin = domInfo->x[0],
 	     xmax = domInfo->x[nx],
@@ -164,19 +163,22 @@ void NavierStokesSolver <memoryType>::initialiseFluxes(real *q)
 	
 	real uInitial = (*paramDB)["flow"]["uInitial"].get<real>(),
 	     uPerturb = (*paramDB)["flow"]["uPerturb"].get<real>(),
-	     vInitial = (*paramDB)["flow"]["vInitial"].get<real>();
+	     vInitial = (*paramDB)["flow"]["vInitial"].get<real>(),
+	     vPerturb = (*paramDB)["flow"]["vPerturb"].get<real>();
 	
 	for(int j=0; j<ny; j++)
 	{
 		for(int i=0; i<nx-1; i++)
 		{
-			I = j*(nx-1) + i;
-			q[I] = ( uInitial + uPerturb * cos( 0.5*M_PI*(2*domInfo->xu[i]-xmax-xmin)/(xmax-xmin) ) * sin( M_PI * (2*domInfo->yu[j]-ymax-ymin)/(ymax-ymin) ) ) * domInfo->dy[j];
+			q[j*(nx-1) + i] = ( uInitial + uPerturb * cos( 0.5*M_PI*(2*domInfo->xu[i]-xmax-xmin)/(xmax-xmin) ) * sin( M_PI * (2*domInfo->yu[j]-ymax-ymin)/(ymax-ymin) ) ) * domInfo->dy[j];
 		}
 	}
-	for(; I < numUV; I++)
+	for(int j=0; j<ny-1; j++)
 	{
-		q[I] = vInitial * domInfo->dx[(I-numU)%nx];
+		for(int i=0; i<nx; i++)
+		{
+			q[j*nx + i + numU] = ( vInitial + vPerturb * cos( 0.5*M_PI*(2*domInfo->yv[j]-ymax-ymin)/(ymax-ymin) ) * sin( M_PI * (2*domInfo->xv[i]-xmax-xmin)/(xmax-xmin) ) ) * domInfo->dx[i];
+		}
 	}
 }
 
@@ -219,6 +221,63 @@ void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 	}
 	bc[XMINUS][ny-1] = bcInfo[XMINUS][0].value;
 	bc[XPLUS][ny-1]  = bcInfo[XPLUS][0].value;
+}
+
+//##############################################################################
+//                            TIME STEPPING
+//##############################################################################
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::stepTime()
+{
+	qOld = q;
+	for(subStep=0; subStep < intgSchm.subSteps; subStep++)
+	{
+		updateSolverState();
+
+		// Set up and solve the first system for the intermediate velocity
+		generateRN();
+		generateBC1();
+		assembleRHS1();
+		solveIntermediateVelocity();
+
+		// Set up and solve the Poisson system
+		generateBC2();
+		assembleRHS2();
+		solvePoisson();
+
+		// Projection step
+		projectionStep();
+	}
+	
+	timeStep++;
+}
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::updateSolverState()
+{
+//	generateA(intgSchm.alphaImplicit[subStep]);
+//	updateQ(intgSchm.gamma[i]);
+//	updateBoundaryConditions();
+}
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::updateQ(real gamma)
+{
+//	cusp::blas::scal(Q.values, gamma/QCoeff);
+//	QCoeff = gamma;
+}
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::updateBoundaryConditions()
+{
+}
+
+template <typename memoryType>
+bool NavierStokesSolver<memoryType>::finished()
+{
+	int nt = (*paramDB)["simulation"]["nt"].get<int>();
+	return (timeStep < nt) ? false : true;
 }
 
 //##############################################################################
@@ -298,63 +357,6 @@ void NavierStokesSolver<host_memory>::generateC()
 	C.values[0] += C.values[0];
 	
 	logger.stopTimer("generateC");
-}
-
-//##############################################################################
-//                            TIME STEPPING
-//##############################################################################
-
-template <typename memoryType>
-void NavierStokesSolver<memoryType>::stepTime()
-{
-	qOld = q;
-	for(subStep=0; subStep < intgSchm.subSteps; subStep++)
-	{
-		updateSolverState();
-
-		// Set up and solve the first system for the intermediate velocity
-		generateRN();
-		generateBC1();
-		assembleRHS1();
-		solveIntermediateVelocity();
-
-		// Set up and solve the Poisson system
-		generateBC2();
-		assembleRHS2();
-		solvePoisson();
-
-		// Projection step
-		projectionStep();
-	}
-	
-	timeStep++;
-}
-
-template <typename memoryType>
-void NavierStokesSolver<memoryType>::updateSolverState()
-{
-//	generateA(intgSchm.alphaImplicit[subStep]);
-//	updateQ(intgSchm.gamma[i]);
-//	updateBoundaryConditions();
-}
-
-template <typename memoryType>
-void NavierStokesSolver<memoryType>::updateQ(real gamma)
-{
-//	cusp::blas::scal(Q.values, gamma/QCoeff);
-//	QCoeff = gamma;
-}
-
-template <typename memoryType>
-void NavierStokesSolver<memoryType>::updateBoundaryConditions()
-{
-}
-
-template <typename memoryType>
-bool NavierStokesSolver<memoryType>::finished()
-{
-	int nt = (*paramDB)["simulation"]["nt"].get<int>();
-	return (timeStep < nt) ? false : true;
 }
 
 //##############################################################################
@@ -504,8 +506,11 @@ NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(par
 		case FADLUN_ET_AL:
 			solver = new FadlunEtAlSolver<memoryType>;
 			break;
-		case SU_LAI_LIN:
-			solver = new SuLaiLinSolver<memoryType>;
+		case SLL1:
+			solver = new SLL1Solver<memoryType>;
+			break;
+		case SLL2:
+			solver = new SLL2Solver<memoryType>;
 			break;
 	}
 	solver->paramDB = &paramDB;
