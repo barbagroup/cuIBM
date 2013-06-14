@@ -23,6 +23,7 @@
 #include <solvers/NavierStokes/NavierStokesSolver.h>
 #include <solvers/NavierStokes/FadlunEtAlSolver.h>
 #include <solvers/NavierStokes/TairaColoniusSolver.h>
+#include <solvers/NavierStokes/SLL0Solver.h>
 #include <solvers/NavierStokes/SLL1Solver.h>
 #include <solvers/NavierStokes/SLL2Solver.h>
 #include <sys/stat.h>
@@ -421,7 +422,7 @@ void NavierStokesSolver<memoryType>::solvePoisson()
 	
 	int  maxIters = (*paramDB)["PoissonSolve"]["maxIterations"].get<int>();
 	real relTol = (*paramDB)["PoissonSolve"]["tolerance"].get<real>();
-	
+
 	cusp::default_monitor<real> sys2Mon(rhs2, maxIters, relTol);
 	//cusp::krylov::gmres(C, lambda, rhs2, 50, sys2Mon);//, PC2);
 	//cusp::krylov::bicgstab(C, lambda, rhs2, sys2Mon);//, PC2);
@@ -505,6 +506,9 @@ NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(par
 			break;
 		case FADLUN_ET_AL:
 			solver = new FadlunEtAlSolver<memoryType>;
+			break;
+		case SLL0:
+			solver = new SLL0Solver<memoryType>;
 			break;
 		case SLL1:
 			solver = new SLL1Solver<memoryType>;

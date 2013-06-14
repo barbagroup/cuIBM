@@ -22,7 +22,6 @@
 
 #include <solvers/NavierStokes/SLL2Solver.h>
 #include <sys/stat.h>
-#include <cusp/io/matrix_market.h>
 
 //##############################################################################
 //                           LINEAR SOLVES
@@ -42,12 +41,9 @@ void SLL2Solver<memoryType>::projectionStep()
 	// Solve for f =============================================================
 	
 	SuLaiLinSolver<memoryType>::assembleRHS3();  // assemble rhs3 to solve for f
-		
-	//cusp::io::write_matrix_market_file(F, "F.mtx");
-	cusp::io::write_matrix_market_file(SuLaiLinSolver<memoryType>::rhs3, "rhs3.mtx");
 	
-	int maxIters = 10000;
-	int relTol = 1e-5;
+	int  maxIters = 10000;
+	real relTol = 1e-5;
 	
 	cusp::default_monitor<real> sys3Mon(SuLaiLinSolver<memoryType>::rhs3, maxIters, relTol);
 	//cusp::krylov::cg(F, f, rhs3, sys3Mon, *PC3);
@@ -64,8 +60,8 @@ void SLL2Solver<memoryType>::projectionStep()
 	
 	// Obtain q^n+1 ===============================================================
 	
-	cusp::multiply(SuLaiLinSolver<memoryType>::ET, SuLaiLinSolver<memoryType>::f, SuLaiLinSolver<memoryType>::temp3);
-	cusp::multiply(NavierStokesSolver<memoryType>::BN, SuLaiLinSolver<memoryType>::temp3, NavierStokesSolver<memoryType>::q);
+	cusp::multiply(SuLaiLinSolver<memoryType>::ET, SuLaiLinSolver<memoryType>::f, NavierStokesSolver<memoryType>::temp1);
+	cusp::multiply(NavierStokesSolver<memoryType>::BN, SuLaiLinSolver<memoryType>::temp1, NavierStokesSolver<memoryType>::q);
 	cusp::blas::axpby(SuLaiLinSolver<memoryType>::qTilde, NavierStokesSolver<memoryType>::q, NavierStokesSolver<memoryType>::q, 1.0, -1.0);
 
 	NavierStokesSolver<memoryType>::logger.stopTimer("projectionStep");

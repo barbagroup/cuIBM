@@ -40,7 +40,7 @@ void NSWithBody<memoryType>::initialiseBodies()
 	NavierStokesSolver<memoryType>::logger.stopTimer("initialiseBodies");
 }
 	
-	/// Update the body information at each time step during motion
+/// Update the body information at each time step during motion
 template <typename memoryType>
 void NSWithBody<memoryType>::updateBodies()
 {
@@ -131,11 +131,12 @@ void NSWithBody<memoryType>::writeData()
 	// write the velocity and pressure
 	NavierStokesSolver<memoryType>::writeCommon();
 	
-	// calculate and write the force on the body
-	calculateForce();
 	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
 	real dt = db["simulation"]["dt"].get<real>();
-	forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t' << forceX << '\t' << forceY << '\n';
+	
+	// calculate and write the force on the body
+	calculateForce();
+	forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t' << forceX << '\t' << forceY << std::endl;
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }

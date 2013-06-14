@@ -33,7 +33,6 @@
 
 #include <solvers/NavierStokes/SuLaiLinSolver.h>
 #include <sys/stat.h>
-#include <cusp/io/matrix_market.h>
 
 template <typename memoryType>
 void SuLaiLinSolver<memoryType>::initialise()
@@ -54,6 +53,7 @@ void SuLaiLinSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");
 
 	qTilde.resize(numUV);
+	qDagger.resize(numUV);
 	if(numB > 0) // if bodies are present in the flow, create the following ararys
 	{
 		f.resize(2*numB);
@@ -69,8 +69,6 @@ void SuLaiLinSolver<memoryType>::initialise()
 	generateE();
 	generateF();
 	generateVelB();
-	cusp::io::write_matrix_market_file(E, "E.mtx");
-	cusp::io::write_matrix_market_file(F, "F.mtx");
 	NavierStokesSolver<memoryType>::logger.startTimer("preconditioner3");
 	PC3 = new preconditioner< cusp::coo_matrix<int, real, memoryType> >(F, DIAGONAL);
 	NavierStokesSolver<memoryType>::logger.stopTimer("preconditioner3");

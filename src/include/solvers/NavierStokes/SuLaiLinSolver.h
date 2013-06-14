@@ -46,7 +46,7 @@ protected:
 	     E, ET, F;
 	
 	cusp::array1d<real, memoryType>
-	     qTilde, rhs3, f, temp3, velB;
+	     qTilde, qDagger, rhs3, f, temp3, velB; // remove qDagger later and make it a part of SLL0Solver
 	
 	preconditioner< cusp::coo_matrix<int, real, memoryType> > *PC3;
 	

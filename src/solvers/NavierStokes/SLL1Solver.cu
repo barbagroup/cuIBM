@@ -22,7 +22,6 @@
 
 #include <solvers/NavierStokes/SLL1Solver.h>
 #include <sys/stat.h>
-#include <cusp/io/matrix_market.h>
 
 //##############################################################################
 //                           LINEAR SOLVES
@@ -60,16 +59,13 @@ void SLL1Solver<memoryType>::solveIntermediateVelocity()
 	// [2] (E.BN.ET)f = E.qTilde - uBn+1
 	
 	maxIters = 10000;
-	relTol = 1e-5;
+	relTol   = 1e-5;
 	
 	SuLaiLinSolver<memoryType>::assembleRHS3();  // assemble rhs3 to solve for f
-	cusp::io::write_matrix_market_file(SuLaiLinSolver<memoryType>::F, "F.mtx");
-	cusp::io::write_matrix_market_file(SuLaiLinSolver<memoryType>::rhs3, "rhs3.mtx");
 	
 	cusp::default_monitor<real> sys3Mon(SuLaiLinSolver<memoryType>::rhs3, maxIters, relTol);
 	//cusp::krylov::bicgstab(F, f, rhs3, sys3Mon, *PC3);
 	cusp::krylov::cg(SuLaiLinSolver<memoryType>::F, SuLaiLinSolver<memoryType>::f, SuLaiLinSolver<memoryType>::rhs3, sys3Mon);//, *PC3);
-	cusp::io::write_matrix_market_file(SuLaiLinSolver<memoryType>::f, "f.mtx");
 	int iterationCount3 = sys3Mon.iteration_count();
 	if (!sys3Mon.converged())
 	{
@@ -84,8 +80,8 @@ void SLL1Solver<memoryType>::solveIntermediateVelocity()
 	
 	// [3] q* = qTilde - BN.ET.f
 	
-	cusp::multiply(SuLaiLinSolver<memoryType>::ET, SuLaiLinSolver<memoryType>::f, SuLaiLinSolver<memoryType>::temp3);
-	cusp::multiply(NavierStokesSolver<memoryType>::BN, SuLaiLinSolver<memoryType>::temp3, NavierStokesSolver<memoryType>::qStar);
+	cusp::multiply(SuLaiLinSolver<memoryType>::ET, SuLaiLinSolver<memoryType>::f, NavierStokesSolver<memoryType>::temp1);
+	cusp::multiply(NavierStokesSolver<memoryType>::BN, NavierStokesSolver<memoryType>::temp1, NavierStokesSolver<memoryType>::qStar);
 	cusp::blas::axpby(SuLaiLinSolver<memoryType>::qTilde, NavierStokesSolver<memoryType>::qStar, NavierStokesSolver<memoryType>::qStar, 1.0, -1.0);
 
 	NavierStokesSolver<memoryType>::logger.stopTimer("solveIntermediateVel");

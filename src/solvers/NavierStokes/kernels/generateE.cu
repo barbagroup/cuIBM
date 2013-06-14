@@ -86,7 +86,6 @@ void generateEHost(int *ERows,  int *ECols,  real *EVals,
 	}
 }
 
-
 __global__ \
 void generateE(int *ERows,  int *ECols,  real *EVals,
                int nx, int ny, real *x, real *y, real *dx,
@@ -94,40 +93,40 @@ void generateE(int *ERows,  int *ECols,  real *EVals,
 {
 	int bodyIdx = threadIdx.x + blockIdx.x*blockDim.x;
 	
-	if(bodyIdx >= totalPoints)
-		return;
-	
-	int  Ib=I[bodyIdx],
-	     Jb=J[bodyIdx],
-	     EIdx  = bodyIdx*12,
-	     i, j;
-
-	real Dx = dx[Ib];
-	
-	// uB = integral u * delta * dxdy
-	// E = Ehat * R^-1 => divide by Dx
-	
-	// populate x-components
-	for(j=Jb-1; j<=Jb+1; j++)
+	if(bodyIdx < totalPoints)
 	{
-		for(i=Ib-2; i<=Ib+1; i++)
+		int  Ib=I[bodyIdx],
+			 Jb=J[bodyIdx],
+			 EIdx  = bodyIdx*12,
+			 i, j;
+
+		real Dx = dx[Ib];
+	
+		// uB = integral u * delta * dxdy
+		// E = Ehat * R^-1 => divide by Dx
+	
+		// populate x-components
+		for(j=Jb-1; j<=Jb+1; j++)
 		{
-			ERows[EIdx] = bodyIdx;
-			ECols[EIdx] = j*(nx-1) + i;
-			EVals[EIdx] = Dx*deltaDeviceE(x[i+1]-xB[bodyIdx], 0.5*(y[j]+y[j+1])-yB[bodyIdx], Dx);
-			EIdx++;
+			for(i=Ib-2; i<=Ib+1; i++)
+			{
+				ERows[EIdx] = bodyIdx;
+				ECols[EIdx] = j*(nx-1) + i;
+				EVals[EIdx] = Dx*deltaDeviceE(x[i+1]-xB[bodyIdx], 0.5*(y[j]+y[j+1])-yB[bodyIdx], Dx);
+				EIdx++;
+			}
 		}
-	}
 
-	// populate y-components
-	for(j=Jb-2; j<=Jb+1; j++)
-	{
-		for(i=Ib-1; i<=Ib+1; i++)
+		// populate y-components
+		for(j=Jb-2; j<=Jb+1; j++)
 		{
-			ERows[EIdx+12*totalPoints-12] = bodyIdx + totalPoints;
-			ECols[EIdx+12*totalPoints-12] = j*nx + i + (nx-1)*ny;
-			EVals[EIdx+12*totalPoints-12] = Dx*deltaDeviceE(0.5*(x[i]+x[i+1])-xB[bodyIdx], y[j+1]-yB[bodyIdx], Dx);
-			EIdx++;
+			for(i=Ib-1; i<=Ib+1; i++)
+			{
+				ERows[EIdx+12*totalPoints-12] = bodyIdx + totalPoints;
+				ECols[EIdx+12*totalPoints-12] = j*nx + i + (nx-1)*ny;
+				EVals[EIdx+12*totalPoints-12] = Dx*deltaDeviceE(0.5*(x[i]+x[i+1])-xB[bodyIdx], y[j+1]-yB[bodyIdx], Dx);
+				EIdx++;
+			}
 		}
 	}
 }

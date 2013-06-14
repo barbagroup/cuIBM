@@ -65,7 +65,6 @@ clean:
 cleanall:
 	@rm -f lib/*.a bin/cuIBM src/*.o
 	cd src/solvers; $(MAKE) $(MFLAGS) clean
-	cd src/cusp; $(MAKE) $(MFLAGS) clean
 	cd src/io; $(MAKE) $(MFLAGS) clean
 	cd external; $(MAKE) $(MFLAGS) clean
 
