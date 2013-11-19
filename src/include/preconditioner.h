@@ -31,7 +31,7 @@
 #include <cusp/linear_operator.h>
 #include <cusp/csr_matrix.h>
 #include <cusp/precond/diagonal.h>
-#include <cusp/precond/smoothed_aggregation.h>
+#include <cusp/precond/aggregation/smoothed_aggregation.h>
 #include <cusp/format.h>
 
 template <typename Matrix>
@@ -88,7 +88,7 @@ preconditioner<Matrix>::preconditioner(const Matrix &A, preconditionerType _type
 		LO = new cusp::precond::diagonal<ValueType, MemorySpace>(A);
 	else
 	if (type == SMOOTHED_AGGREGATION)
-		LO = new cusp::precond::smoothed_aggregation<IndexType, ValueType, MemorySpace>(A);
+		LO = new cusp::precond::aggregation::smoothed_aggregation<IndexType, ValueType, MemorySpace>(A);
 	else
 	{
 		std::cout << "ERROR: Choose a valid preconditioner!\n" << std::endl;
@@ -117,7 +117,7 @@ void preconditioner<Matrix>::update(const Matrix &A)
 		*LO = cusp::precond::diagonal<ValueType, MemorySpace>(A);
 	else
 	if (type == SMOOTHED_AGGREGATION)
-		*LO = cusp::precond::smoothed_aggregation<IndexType, ValueType, MemorySpace>(A);
+		*LO = cusp::precond::aggregation::smoothed_aggregation<IndexType, ValueType, MemorySpace>(A);
 	else
 	{
 		std::cout << "ERROR: Choose a valid preconditioner!\n" << std::endl;
@@ -148,8 +148,8 @@ void preconditioner<Matrix>::operator()(const VectorType1 &x, VectorType2 &y) co
 	}
 	else if (type == SMOOTHED_AGGREGATION)
 	{
-		cusp::precond::smoothed_aggregation<index_type, value_type, memory_space> *SA =
-			static_cast<cusp::precond::smoothed_aggregation<index_type, value_type, memory_space> *>(LO);
+		cusp::precond::aggregation::smoothed_aggregation<index_type, value_type, memory_space> *SA =
+			static_cast<cusp::precond::aggregation::smoothed_aggregation<index_type, value_type, memory_space> *>(LO);
 		SA->operator()(x,y);
 	}
 	else
