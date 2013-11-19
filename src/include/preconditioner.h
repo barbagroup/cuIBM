@@ -36,9 +36,9 @@
 
 template <typename Matrix>
 class preconditioner
-{	
+{
 	preconditionerType type;
-	
+
 	cusp::linear_operator<typename Matrix::value_type,
 	                      typename Matrix::memory_space,
 	                      typename Matrix::index_type>* LO;
@@ -48,14 +48,14 @@ public:
 	typedef typename Matrix::value_type   value_type;
 	typedef typename Matrix::memory_space memory_space;
 	typedef typename cusp::unknown_format format;
-	
+
 	// constructors
 	preconditioner();
 	preconditioner(const Matrix &A, preconditionerType _type);
-	
+
 	// destructor
 	~preconditioner();
-	
+
 	void update(const Matrix &A);
 
 	// () operator
@@ -128,13 +128,13 @@ void preconditioner<Matrix>::update(const Matrix &A)
 // the operator defined here is ()
 // Why is this required? Need to look into the implementation of preconditioners in Cusp.
 template <typename Matrix>
-template <typename VectorType1, typename VectorType2> 
+template <typename VectorType1, typename VectorType2>
 void preconditioner<Matrix>::operator()(const VectorType1 &x, VectorType2 &y) const
 {
 
 	/*if (type == NONE)
 	{
-		cusp::identity_operator<value_type, memory_space> *identity = 
+		cusp::identity_operator<value_type, memory_space> *identity =
 			static_cast<cusp::identity_operator<value_type, memory_space> *>(LO);
 		printf("dispatching identity->operator()\n");
 		identity->operator()(x,b);
@@ -142,13 +142,13 @@ void preconditioner<Matrix>::operator()(const VectorType1 &x, VectorType2 &y) co
 	else*/
 	if (type == DIAGONAL)
 	{
-		cusp::precond::diagonal<value_type, memory_space> *diag = 
+		cusp::precond::diagonal<value_type, memory_space> *diag =
 			static_cast<cusp::precond::diagonal<value_type, memory_space> *>(LO);
 		diag->operator()(x,y);
 	}
 	else if (type == SMOOTHED_AGGREGATION)
 	{
-		cusp::precond::smoothed_aggregation<index_type, value_type, memory_space> *SA = 
+		cusp::precond::smoothed_aggregation<index_type, value_type, memory_space> *SA =
 			static_cast<cusp::precond::smoothed_aggregation<index_type, value_type, memory_space> *>(LO);
 		SA->operator()(x,y);
 	}
