@@ -165,7 +165,7 @@ cylinderRe550:
 	-flowFile flows/openFlow.yaml -domainFile domains/openFlow0.010.yaml \
 	-bodyFile bodies/cylinder0.010.yaml -simulationFile simParams/cylinder0550.yaml \
 	-folderName cylinderRe550 \
-	-nu 00181818181818
+	-nu 0.00181818181818
 
 cylinderRe3000:
 	bin/cuIBM \
