@@ -344,17 +344,17 @@ void writeInfoFile(parameterDB &DB, domain &D)
 	std::ofstream infofile((foldername+"/run.info").c_str());
 	infofile << std::setw(20) << "--nx"  << "\t" << D.nx << '\n';
 	infofile << std::setw(20) << "--ny"  << "\t" << D.ny << '\n';
-	infofile << std::setw(20) << "--start_step" << "\t" << DB["simulation"]["startStep"].get<int>() << '\n';
+	infofile << std::setw(20) << "--startStep" << "\t" << DB["simulation"]["startStep"].get<int>() << '\n';
 	infofile << std::setw(20) << "--nt"     << "\t" << DB["simulation"]["nt"].get<int>() << '\n';
 	infofile << std::setw(20) << "--nsave"  << "\t" << DB["simulation"]["nsave"].get<int>() << '\n';
 	infofile << std::setw(20) << "--dt"     << "\t" << DB["simulation"]["dt"].get<real>() << '\n';
 	infofile << std::setw(20) << "--vortlim"<< "\t" << 15 << '\n';
 	infofile << std::setw(20) << "--folder" << "\t" << foldername << '\n';
 	infofile << std::setw(20) << "--nu"     << "\t" << DB["flow"]["nu"].get<real>() << '\n';
-	infofile << std::setw(20) << "--flow_file" << "\t" << DB["inputs"]["flowFile"].get<string>() << '\n';
-	infofile << std::setw(20) << "--sim_file" << "\t"  << DB["inputs"]["simulationFile"].get<string>() << '\n';
-	infofile << std::setw(20) << "--dom_file" << "\t"  << DB["inputs"]["domainFile"].get<string>() << '\n';
-	infofile << std::setw(20) << "--body_file" << "\t" << DB["inputs"]["bodyFile"].get<string>() << '\n';
+	infofile << std::setw(20) << "--flowFile" << "\t" << DB["inputs"]["flowFile"].get<string>() << '\n';
+	infofile << std::setw(20) << "--simulationFile" << "\t"  << DB["inputs"]["simulationFile"].get<string>() << '\n';
+	infofile << std::setw(20) << "--domainFile" << "\t"  << DB["inputs"]["domainFile"].get<string>() << '\n';
+	infofile << std::setw(20) << "--bodyFile" << "\t" << DB["inputs"]["bodyFile"].get<string>() << '\n';
 	infofile.close();
 }
 
