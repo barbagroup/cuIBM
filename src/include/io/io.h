@@ -39,8 +39,11 @@
 */
 namespace io
 {
-  // input
-
+	std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
+	std::vector<std::string> split(const std::string &s, char delim);
+	void makeDirectory(const std::string s);
+	
+	// input
 	void readInputs(int argc, char **argv, parameterDB &DB, domain &D); 
 
 	// read in all different config files

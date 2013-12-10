@@ -68,8 +68,8 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	
 	/// create directory 
 	std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
-	mkdir(folderName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-	
+	io::makeDirectory(folderName);
+
 	/// write the grids information to a file
 	io::writeGrid(folderName, *domInfo);
 
