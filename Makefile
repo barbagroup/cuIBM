@@ -117,7 +117,7 @@ cylinder:
 	bin/cuIBM \
 	-flowFile flows/openFlow.yaml -domainFile domains/openFlow.yaml \
 	-bodyFile bodies/cylinder.yaml -simulationFile simParams/openFlow.yaml \
-	-folderName cylinder/hell/yeah
+	-folderName cylinder
 
 cylinderFadlun:
 	bin/cuIBM \
