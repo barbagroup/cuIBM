@@ -60,12 +60,14 @@ void makeDirectory(const std::string folderName)
 {
 	std::vector<std::string> x = split(folderName, '/');
 	int n = x.size();
-	std::string folder = ".";
-	for(int i=0; i<n; i++)
+	int i = 0;
+	std::string folder = x[i];
+	i++;
+	while(i<n)
 	{
 		folder = folder + '/' + x[i];
-		std::cout << folder << '\n';
 		mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+		i++;
 	}
 }
 

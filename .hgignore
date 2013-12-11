@@ -3,6 +3,7 @@ syntax: glob
 *.o
 *.a
 *.pdf
+*.mtx
 ._*
 Methods
 EffectOfCVSize

@@ -137,14 +137,14 @@ cylinderRe40:
 	-flowFile flows/openFlow.yaml -domainFile domains/openFlow0.025.yaml \
 	-bodyFile bodies/cylinder0.025.yaml -simulationFile simParams/cylinder0040.yaml \
 	-folderName cylinderRe40 \
-	-nu 0.025 -ibmScheme FadlunEtAl
+	-nu 0.025
 
 cylinderRe75:
 	bin/cuIBM \
 	-flowFile flows/openFlow.yaml -domainFile domains/vonKarmanStreet.yaml \
 	-bodyFile bodies/cylinder0.020.yaml -simulationFile simParams/vonKarmanStreet.yaml \
 	-folderName cylinderRe75 \
-	-nu 0.013333333333 -uPerturb 0.1 -ibmScheme TairaColonius
+	-nu 0.013333333333 -uPerturb 0.1
 
 cylinderRe100:
 	bin/cuIBM \

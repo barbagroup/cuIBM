@@ -1,7 +1,7 @@
 cuIBM - A GPU-based Immersed Boundary Method code
 =================================================
 
-*Updated: November 19th, 2013*
+*Updated: December 10th, 2013*
 
 Currently, cuIBM runs only on Linux and has been tested on Ubuntu 12.04. It is not supported on Windows and Mac OS X.
 
@@ -171,7 +171,6 @@ Known issues
 ------------
 
 * CPU routines do not work for FadlunEtAlSolver.
-* SuLaiLinSolver does not work.
 * Cannot specify which Krylov solver to use for solving the linear systems.
 * TairaColoniusSolver and FadlunEtAlSolver fail if no body is present.
 * Individual forces are not calculated if multiple bodies are present.
