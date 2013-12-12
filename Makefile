@@ -101,14 +101,14 @@ cavity:
 
 LidDrivenCavityRe100:
 	bin/cuIBM \
-	-flowFile flows/cavity0100.yaml -domainFile domains/cavity0100.yaml \
+	-flowFile flows/cavity.yaml -domainFile domains/cavity0100.yaml \
 	-bodyFile bodies/empty.yaml -simulationFile simParams/cavity0100.yaml \
 	-folderName LidDrivenCavityRe100 \
 	-nu 0.01
 
 LidDrivenCavityRe1000:
 	bin/cuIBM \
-	-flowFile flows/cavity1000.yaml -domainFile domains/cavity1000.yaml \
+	-flowFile flows/cavity.yaml -domainFile domains/cavity1000.yaml \
 	-bodyFile bodies/empty.yaml -simulationFile simParams/cavity1000.yaml \
 	-folderName LidDrivenCavityRe1000 \
 	-nu 0.001
