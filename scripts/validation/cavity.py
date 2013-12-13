@@ -48,8 +48,8 @@ runCommand = "%s -flowFile %s -domainFile %s -bodyFile %s -simulationFile %s -fo
 print runCommand+"\n"
 os.system(runCommand)
 
-nt, startStep, nsave = rd.readSimulationParameters(folderName)
-nx, ny, dx, dy, xu, yu, xv, yv = rd.readGridData(folderName)
+nt, _, _ = rd.readSimulationParameters(folderName)
+nx, ny, dx, dy, _, yu, xv, _ = rd.readGridData(folderName)
 u, v = rd.readVelocityData(folderName, nt, nx, ny, dx, dy)
 
 f = open(folderName+"/u.txt", 'w')
