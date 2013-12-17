@@ -62,6 +62,7 @@ void makeDirectory(const std::string folderName)
 	int n = x.size();
 	int i = 0;
 	std::string folder = x[i];
+	mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 	i++;
 	while(i<n)
 	{

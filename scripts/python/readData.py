@@ -79,7 +79,7 @@ def readGridData(folder):
 	# read the y-coordinates of the grid nodes
 	a = f.readline().strip().split()
 	y[0] = float(a[0])
-	for j in range(nx):
+	for j in range(ny):
 		a = f.readline().strip().split()
 		if a==[]:
 			break
