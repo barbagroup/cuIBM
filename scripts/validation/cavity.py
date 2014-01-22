@@ -72,7 +72,7 @@ vOutFile       = folderName + '/vRe' + Re + '.pdf'
 
 f = open(gnuplotFile, 'w')
 f.write("reset;\nset terminal pdf enhanced color font 'Palatino, 11' size 15cm, 15cm;\n\n");
-f.write("set title 'Velocity along the vertical centerline %s'\n" % Re)
+f.write("set title 'Velocity along the vertical centerline (Re=%s)'\n" % Re)
 f.write("set xlabel 'y-coordinate'\n")
 f.write("set ylabel 'Centerline u-velocity'\n")
 f.write("set output '%s'\n" % uOutFile)
@@ -82,7 +82,7 @@ f.write("'%s/u.txt' u 1:2 w l lw 5 lc rgb '#228A4C' title 'cuIBM (Taira and Colo
 
 f.write("\n")
 f.write("reset;\nset terminal pdf enhanced color font 'Palatino, 11' size 15cm, 15cm;\n\n");
-f.write("set title 'Velocity along the horizontal centerline %s'\n" % Re)
+f.write("set title 'Velocity along the horizontal centerline (Re=%s)'\n" % Re)
 f.write("set xlabel 'x-coordinate'\n")
 f.write("set ylabel 'Centerline v-velocity'\n")
 f.write("set output '%s'\n" % vOutFile)

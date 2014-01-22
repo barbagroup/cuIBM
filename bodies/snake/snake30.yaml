@@ -1,5 +1,5 @@
 - type: points
-  pointsFile: snake/snake0.004.bdy
+  pointsFile: snake/0.004.bdy
   centerRotation: [0.0, 0.0]
   moving: [false, false]
   velocity: [0.0, 0.0]
