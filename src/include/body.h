@@ -46,8 +46,8 @@ class body
     
     real Xc[2],     ///< Actual centre of rotation (x- and y-coordinates)
          Theta,     ///< Actual angle of attack (counterclockwise is positive)
-         vel[2],    ///< Uniform translational velocity (x- and y- components)
-         angVel;    ///< Uniform angular velocity (counterlockwise is positive)
+         vel[2],    ///< translational velocity (x- and y- components)
+         angVel;    ///< angular velocity (counterlockwise is positive)
 
     vecH X,         ///< Reference x-coordinate of boundary points
          Y;         ///< Reference y-coordinate of boundary points

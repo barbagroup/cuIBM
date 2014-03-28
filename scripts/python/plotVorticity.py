@@ -40,6 +40,8 @@ if not args.plot_only:
 	k = startStep + nsave
 	while k < (nt+1):
 		u, v = rd.readVelocityData(folder, k, nx, ny, dx, dy)
+		if u==None or v==None:
+			break
 		vortFile = args.folder + ("/%07d" % k) + "/vorticity"
 		print vortFile
 		f = open(vortFile, 'w')

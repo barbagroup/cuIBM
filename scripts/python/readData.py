@@ -98,7 +98,11 @@ def readVelocityData(folder, timeStep, nx, ny, dx, dy):
 	v = np.zeros(nx*(ny-1))  # vector to store V
 	
 	fluxFile = folder + '/' + ("%07d" % timeStep) + "/q"
-	f = open(fluxFile, 'r')
+	try:
+		f = open(fluxFile, 'r')
+	except IOError:
+		print "File %s missing!" % fluxFile
+		return None, None
 
 	# length of vector q
 	a = f.readline().strip().split()

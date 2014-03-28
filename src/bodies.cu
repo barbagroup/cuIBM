@@ -28,8 +28,10 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	std::cout << "Initialising bodies... ";
 	std::vector<body> *B = db["flow"]["bodies"].get<std::vector<body> *>();
 
+	// number of bodies in the flow
 	numBodies = B->size();
 
+	// set the sizes of all the arrays
 	numPoints.resize(numBodies);
 	offsets.resize(numBodies);
 	
@@ -42,7 +44,11 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	xmax.resize(numBodies);
 	ymin.resize(numBodies);
 	ymax.resize(numBodies);
+	
+	forceX.resize(numBodies);
+	forceY.resize(numBodies);
 
+	// calculate offsets, number of points in each body and the total number of points
 	totalPoints = 0;
 	for(int k=0; k<numBodies; k++)
 	{
@@ -51,6 +57,7 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 		totalPoints += numPoints[k];
 	}
 	
+	// fill up coordinates of body points
 	X.resize(totalPoints);
 	Y.resize(totalPoints);
 	ds.resize(totalPoints);
@@ -63,7 +70,7 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 			X[i+offsets[k]] = (*B)[k].X[i];
 			Y[i+offsets[k]] = (*B)[k].Y[i];
 		}
-	}
+	}	
 	x.resize(totalPoints);
 	y.resize(totalPoints);
 	uB.resize(totalPoints);
@@ -74,26 +81,19 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	bodiesMove = false;
 	for(int k=0; k<numBodies; k++)
 	{
+		// ASSUMING CLOSED LOOPS
 		for(int i=offsets[k], j = offsets[k]+numPoints[k]-1; i<offsets[k]+numPoints[k];)
 		{
 			// calculate the lengths of the boundary segments
 			ds[i] = sqrt( (X[i]-X[j])*(X[i]-X[j]) + (Y[i]-Y[j])*(Y[i]-Y[j]) );
-			
-			// set the initial x-coordinates of the boundary points
-			x[i] = (*B)[k].Xc[0] + ((*B)[k].X[i]-(*B)[k].X0[0])*cos((*B)[k].Theta0) - ((*B)[k].Y[i] - (*B)[k].X0[1])*sin((*B)[k].Theta0);
-			
-			// set the initial y-coordinates of the boundary points
-			y[i] = (*B)[k].Xc[1] + ((*B)[k].X[i]-(*B)[k].X0[0])*sin((*B)[k].Theta0) + ((*B)[k].Y[i] - (*B)[k].X0[1])*cos((*B)[k].Theta0);
-			
-			// set the initial velocities of the body
-			uB[i] = (*B)[k].velocity[0];
-			vB[i] = (*B)[k].velocity[1];
 			
 			j = i++;
 		}
 		// if the body is moving, set bodiesMove to true
 		bodiesMove = bodiesMove || (*B)[k].moving[0] || (*B)[k].moving[1];
 	}
+	// set initial position of the body
+	update(db, D, 0.0);
 		
 	if(numBodies)
 	{
@@ -193,35 +193,60 @@ void bodies<memoryType>::calculateBoundingBoxes(parameterDB &db, domain &D)
 	}
 }
 
-/*
-template <>
-void bodies<device_memory>::calculateCellIndices(domain &D)
-{
-}*/
-
 template <typename memoryType>
 void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 {
-	// UPDATE THIS FUNCTION FOR MULTIPLE BODIES
+	typedef typename cusp::array1d<real, memoryType> Array;
+	typedef typename Array::iterator                 Iterator;
+	typedef cusp::array1d_view<Iterator>             View;
+
+	// Views of the vectors that store the coordinates and velocities of all the body points
+	View    XView, YView, xView, yView, onesView, uBView, vBView;
 	
+	// body data
 	std::vector<body> *B = db["flow"]["bodies"].get<std::vector<body> *>();
 	
-	// Update the location and velocity of the body
-	(*B)[0].update(Time);
-
-	// Update postitions	
-	// x-coordinates
-	cusp::blas::axpbypcz( ones, X, ones, x, (*B)[0].Xc[0],  cos((*B)[0].Theta), -(*B)[0].X0[0]*cos((*B)[0].Theta) );
-	cusp::blas::axpbypcz( x,    Y, ones, x,           1.0, -sin((*B)[0].Theta),  (*B)[0].X0[1]*sin((*B)[0].Theta) );
-	/// y-coordinates
-	cusp::blas::axpbypcz( ones, X, ones, y, (*B)[0].Xc[1],  sin((*B)[0].Theta), -(*B)[0].X0[0]*sin((*B)[0].Theta) );
-	cusp::blas::axpbypcz( y,    Y, ones, y,           1.0,  cos((*B)[0].Theta), -(*B)[0].X0[1]*cos((*B)[0].Theta) );
+	for(int l=0; l<numBodies; l++)
+	{
+		// Update the location and velocity of the body
+		(*B)[l].update(Time);
+		
+		// create the views for the current body
+		if(l < numBodies-1)
+		{
+			XView    = View(X.begin()+offsets[l], X.begin()+offsets[l+1]);
+			YView    = View(Y.begin()+offsets[l], Y.begin()+offsets[l+1]);
+			xView    = View(x.begin()+offsets[l], x.begin()+offsets[l+1]);
+			yView    = View(y.begin()+offsets[l], y.begin()+offsets[l+1]);
+			onesView = View(ones.begin()+offsets[l], ones.begin()+offsets[l+1]);
+			uBView   = View(uB.begin()+offsets[l], uB.begin()+offsets[l+1]);
+			vBView   = View(vB.begin()+offsets[l], vB.begin()+offsets[l+1]);
+		}
+		else
+		{
+			XView    = View(X.begin()+offsets[l], X.end());
+			YView    = View(Y.begin()+offsets[l], Y.end());
+			xView    = View(x.begin()+offsets[l], x.end());
+			yView    = View(y.begin()+offsets[l], y.end());
+			onesView = View(ones.begin()+offsets[l], ones.end());
+			uBView   = View(uB.begin()+offsets[l], uB.end());
+			vBView   = View(vB.begin()+offsets[l], vB.end());
+		}
+		
+		// Update postitions	
+		// x-coordinates
+		cusp::blas::axpbypcz( onesView, XView, onesView, xView, (*B)[l].Xc[0],  cos((*B)[l].Theta), -(*B)[l].X0[0]*cos((*B)[l].Theta) );
+		cusp::blas::axpbypcz( xView,    YView, onesView, xView,           1.0, -sin((*B)[l].Theta),  (*B)[l].X0[1]*sin((*B)[l].Theta) );
+		/// y-coordinates
+		cusp::blas::axpbypcz( onesView, XView, onesView, yView, (*B)[l].Xc[1],  sin((*B)[l].Theta), -(*B)[l].X0[0]*sin((*B)[l].Theta) );
+		cusp::blas::axpbypcz( yView,    YView, onesView, yView,           1.0,  cos((*B)[l].Theta), -(*B)[l].X0[1]*cos((*B)[l].Theta) );
 	
-	// Update velocities
-	// x-velocities
-	cusp::blas::axpbypcz(ones, y, ones, uB, (*B)[0].vel[0], -(*B)[0].angVel,  (*B)[0].angVel*(*B)[0].Xc[1]);
-	// y-velocities
-	cusp::blas::axpbypcz(ones, x, ones, vB, (*B)[0].vel[1],  (*B)[0].angVel, -(*B)[0].angVel*(*B)[0].Xc[0]);
+		// Update velocities
+		// x-velocities
+		cusp::blas::axpbypcz(onesView, yView, onesView, uBView, (*B)[l].vel[0], -(*B)[l].angVel,  (*B)[l].angVel*(*B)[l].Xc[1]);
+		// y-velocities
+		cusp::blas::axpbypcz(onesView, xView, onesView, vBView, (*B)[l].vel[1],  (*B)[l].angVel, -(*B)[l].angVel*(*B)[l].Xc[0]);
+	}
 	
 	calculateCellIndices(D);
 }

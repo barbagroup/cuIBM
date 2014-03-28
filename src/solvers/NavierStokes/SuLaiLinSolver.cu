@@ -46,7 +46,7 @@ void SuLaiLinSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::initialiseCommon();
 	
 	NSWithBody<memoryType>::initialiseBodies();
-	int numB  = NSWithBody<memoryType>::B.totalPoints; 
+	int totalPoints  = NSWithBody<memoryType>::B.totalPoints; 
 	
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP);
 	
@@ -54,13 +54,13 @@ void SuLaiLinSolver<memoryType>::initialise()
 
 	qTilde.resize(numUV);
 	qDagger.resize(numUV);
-	if(numB > 0) // if bodies are present in the flow, create the following ararys
+	if(totalPoints > 0) // if bodies are present in the flow, create the following ararys
 	{
-		f.resize(2*numB);
-		velB.resize(2*numB);
-		rhs3.resize(2*numB);
-		temp3.resize(2*numB);
-		E.resize(2*numB, numUV, 24*numB);
+		f.resize(2*totalPoints);
+		velB.resize(2*totalPoints);
+		rhs3.resize(2*totalPoints);
+		temp3.resize(2*totalPoints);
+		E.resize(2*totalPoints, numUV, 24*totalPoints);
 	}
 
 	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");

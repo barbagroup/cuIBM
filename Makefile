@@ -74,12 +74,12 @@ force_look:
 
 #
 #.PHONY: test test2
-.PHONY: test
 .PHONY: cavity LidDrivenCavityRe100 LidDrivenCavityRe1000
 .PHONY: cylinder cylinderFadlun cylinderRe40 cylinderRe550 cylinderRe3000 movingCylinder
 .PHONY: cylinderRe75 cylinderRe100 cylinderRe150
 .PHONY: flapping flappingRe75
 .PHONY: snakeRe1000AOA30 snakeRe1000AOA35 snakeRe2000AOA30 snakeRe2000AOA35
+.PHONY: multiBody
 
 #test:
 #	bin/cuIBM \
@@ -217,3 +217,12 @@ snakeRe2000AOA35:
 	-domainFile domains/snake.yaml \
 	-bodyFile bodies/snake/snake35.yaml -simulationFile simParams/snake.yaml \
 	-folderName snakeRe2000AOA35
+
+#oscillatingCylinder:
+
+multiBody:
+	time bin/cuIBM \
+	-flowFile flows/openFlow.yaml -nu 0.01 \
+	-domainFile domains/multiBody.yaml \
+	-bodyFile bodies/multiBody.yaml -simulationFile simParams/multiBody.yaml \
+	-folderName multiBody

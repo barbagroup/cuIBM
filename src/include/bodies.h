@@ -57,6 +57,10 @@ public:
 		xmax,  ///< Highest x-coordinate for the bounding box of a body
 		ymin,  ///< Lowest y-coordinate for the bounding box of a body
 		ymax;  ///< Highest y-coordinate for the bounding box of a body
+	
+	cusp::array1d<real, memoryType>
+		forceX,
+		forceY;
 
 	cusp::array1d<real, memoryType>
 		X,     ///< reference x-coordinates of the boundary points

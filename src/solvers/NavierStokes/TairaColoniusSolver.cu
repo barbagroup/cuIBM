@@ -35,31 +35,41 @@ void TairaColoniusSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::initialiseCommon();
 	
 	NSWithBody<memoryType>::initialiseBodies();
-	int numB  = NSWithBody<memoryType>::B.totalPoints; 
+	int totalPoints  = NSWithBody<memoryType>::B.totalPoints; 
 	
-	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP+2*numB);
-	if(numB > 0)
+	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP+2*totalPoints);
+	if(totalPoints > 0)
 	{
-		E.resize(2*numB, numUV, 24*numB);
+		E.resize(2*totalPoints, numUV, 24*totalPoints);
 	}
 	NavierStokesSolver<memoryType>::assembleMatrices();
 }
 
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::writeData()
-{
+{	
 	NavierStokesSolver<memoryType>::logger.startTimer("output");
 
 	NavierStokesSolver<memoryType>::writeCommon();
 
-	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
-	real dt = db["simulation"]["dt"].get<real>();
+	parameterDB  &db = *NavierStokesSolver<memoryType>::paramDB;
+	real         dt  = db["simulation"]["dt"].get<real>();
+	int          numBodies  = NSWithBody<memoryType>::B.numBodies;
 
-	// Print forces calculated using both the T&C method and the CV approach
+	// Calculate forces using the T&C method
 	calculateForce();
-	NSWithBody<memoryType>::forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t' << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << '\t';
-	NSWithBody<memoryType>::calculateForce();
-	NSWithBody<memoryType>::forceFile << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << std::endl;
+	
+	// Print to file
+	NSWithBody<memoryType>::forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t';
+	for(int l=0; l<numBodies; l++)
+	{
+		NSWithBody<memoryType>::forceFile << NSWithBody<memoryType>::B.forceX[l] << '\t' << NSWithBody<memoryType>::B.forceY[l] << '\t';
+	}
+	NSWithBody<memoryType>::forceFile << '\n';
+	
+	// Print forces calculated using the CV approach
+	//NSWithBody<memoryType>::calculateForce();
+	//NSWithBody<memoryType>::forceFile << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << std::endl;
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }
