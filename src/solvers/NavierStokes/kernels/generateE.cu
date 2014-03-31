@@ -102,8 +102,9 @@ void generateE(int *ERows,  int *ECols,  real *EVals,
 
 		real Dx = dx[Ib];
 	
-		// uB = integral u * delta * dxdy
+		// uB = integral u * delta * dxdy = Ehat * u
 		// E = Ehat * R^-1 => divide by Dx
+		// E = Dx * delta
 	
 		// populate x-components
 		for(j=Jb-1; j<=Jb+1; j++)

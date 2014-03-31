@@ -65,7 +65,7 @@ void TairaColoniusSolver<memoryType>::writeData()
 	{
 		NSWithBody<memoryType>::forceFile << NSWithBody<memoryType>::B.forceX[l] << '\t' << NSWithBody<memoryType>::B.forceY[l] << '\t';
 	}
-	NSWithBody<memoryType>::forceFile << '\n';
+	NSWithBody<memoryType>::forceFile << std::endl;
 	
 	// Print forces calculated using the CV approach
 	//NSWithBody<memoryType>::calculateForce();
