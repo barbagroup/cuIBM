@@ -8,7 +8,6 @@ syntax: glob
 Methods
 EffectOfCVSize
 Convergence
-validation/cylinder*
-validation/naca0008*
-validation/lidDrivenCavity*
 gridIndependence/cylinder*
+validation/NACA0008/04_0.004*
+validation/NACA0008/0.002_04*

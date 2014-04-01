@@ -16,15 +16,9 @@ args = parser.parse_args()
 Re = args.Re
 
 if Re=='100':
-	domainFile     = '/cavity0100.yaml'
-	simulationFile = '/cavity0100.yaml'
-	nu             = '0.01'
 	uCol           = '2'
 	vCol           = '6'
 elif Re=='1000':
-	domainFile     = '/cavity1000.yaml'
-	simulationFile = '/cavity1000.yaml'
-	nu             = '0.001'	
 	uCol           = '3'
 	vCol           = '7'
 else:
@@ -32,11 +26,7 @@ else:
 	sys.exit()
 
 validationData = '/cavity-GGS82.txt'
-folderName     = cuibmFolder + '/validation/lidDrivenCavity/Re' + Re
-flowFile       = cuibmFolder + '/flows/cavity.yaml'
-bodyFile       = cuibmFolder + '/bodies/empty.yaml'
-domainFile     = cuibmFolder + '/domains' + domainFile
-simulationFile = cuibmFolder + '/simParams' + simulationFile
+caseFolder     = cuibmFolder + '/validation/lidDrivenCavity/Re' + Re
 validationData = cuibmFolder + '/validation-data' + validationData
 execPath       = cuibmFolder + '/bin/cuIBM'
 
@@ -44,20 +34,20 @@ print "\n"+"-"*120
 print "Running the validation case for flow in a lid-driven cavity at Reynolds number %s" % Re
 print "-"*120+"\n"
 
-runCommand = "%s -flowFile %s -domainFile %s -bodyFile %s -simulationFile %s -folderName %s -nu %s" % (execPath, flowFile, domainFile, bodyFile, simulationFile, folderName, nu)
+runCommand = "%s -caseFolder %s" % (execPath, caseFolder)
 print runCommand+"\n"
 os.system(runCommand)
 
-nt, _, _ = rd.readSimulationParameters(folderName)
-nx, ny, dx, dy, _, yu, xv, _ = rd.readGridData(folderName)
-u, v = rd.readVelocityData(folderName, nt, nx, ny, dx, dy)
+nt, _, _ = rd.readSimulationParameters(caseFolder)
+nx, ny, dx, dy, _, yu, xv, _ = rd.readGridData(caseFolder)
+u, v = rd.readVelocityData(caseFolder, nt, nx, ny, dx, dy)
 
-f = open(folderName+"/u.txt", 'w')
+f = open(caseFolder+"/u.txt", 'w')
 for j in range(len(yu)):
 	f.write("%f\t%f\n" % (yu[j], u[j*(nx-1)+nx/2-1]) )
 f.close()
 
-f = open(folderName+"/v.txt", 'w')
+f = open(caseFolder+"/v.txt", 'w')
 for i in range(len(xv)):
 	f.write("%f\t%f\n" % (xv[i], v[(ny/2-1)*nx + i]) )
 f.close()
@@ -66,9 +56,9 @@ print "-"*120
 print "Plotting the centerline velocities for flow in a lid-driven cavity at Reynolds number %s" % Re
 print "-"*120
 
-gnuplotFile    = cuibmFolder + '/scripts/validation/cavityRe' + Re + '.plt'
-uOutFile       = folderName + '/uRe' + Re + '.pdf'
-vOutFile       = folderName + '/vRe' + Re + '.pdf'
+gnuplotFile    = caseFolder + '/cavityRe' + Re + '.plt'
+uOutFile       = caseFolder + '/uRe' + Re + '.pdf'
+vOutFile       = caseFolder + '/vRe' + Re + '.pdf'
 
 f = open(gnuplotFile, 'w')
 f.write("reset;\nset terminal pdf enhanced color font 'Palatino, 11' size 15cm, 15cm;\n\n");
@@ -78,7 +68,7 @@ f.write("set ylabel 'Centerline u-velocity'\n")
 f.write("set output '%s'\n" % uOutFile)
 f.write("plot [0:1] [-0.7:1.3] \\\n")
 f.write("'%s' u 1:%s w p pt 13 ps 1 lc rgb '#4B5ED7' title 'Ghia et al, 1982', \\\n" % (validationData, uCol) )
-f.write("'%s/u.txt' u 1:2 w l lw 5 lc rgb '#228A4C' title 'cuIBM (Taira and Colonius, 2005)'\n" % folderName)
+f.write("'%s/u.txt' u 1:2 w l lw 5 lc rgb '#228A4C' title 'cuIBM (Taira and Colonius, 2005)'\n" % caseFolder)
 
 f.write("\n")
 f.write("reset;\nset terminal pdf enhanced color font 'Palatino, 11' size 15cm, 15cm;\n\n");
@@ -88,11 +78,11 @@ f.write("set ylabel 'Centerline v-velocity'\n")
 f.write("set output '%s'\n" % vOutFile)
 f.write("plot [0:1] [-0.7:1.3] \\\n")
 f.write("'%s' u 5:%s w p pt 13 ps 1 lc rgb '#4B5ED7' title 'Ghia et al, 1982', \\\n" % (validationData, vCol) )
-f.write("'%s/v.txt' u 1:2 w l lw 5 lc rgb '#228A4C' title 'cuIBM (Taira and Colonius, 2005)'\n" % folderName)
+f.write("'%s/v.txt' u 1:2 w l lw 5 lc rgb '#228A4C' title 'cuIBM (Taira and Colonius, 2005)'\n" % caseFolder)
 
 f.close()
 
 print "\nCreated gnuplot script "+gnuplotFile
 runCommand = "gnuplot "+gnuplotFile
 os.system(runCommand)
-print "\nDone plotting! Plots saved in folder "+folderName+"\n"
+print "\nDone plotting! Plots saved in folder " + caseFolder + "\n"

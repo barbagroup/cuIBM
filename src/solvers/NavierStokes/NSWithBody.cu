@@ -10,9 +10,9 @@ void NSWithBody<memoryType>::initialiseBodies()
 	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
 	B.initialise(db, *NavierStokesSolver<memoryType>::domInfo);
 
-	std::string folderName = db["inputs"]["folderName"].get<std::string>();
+	std::string folder = db["inputs"]["caseFolder"].get<std::string>();
 	std::stringstream out;
-	out << folderName << "/forces";
+	out << folder << "/forces";
 	forceFile.open(out.str().c_str());
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("initialiseBodies");

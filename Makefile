@@ -68,161 +68,52 @@ cleanall:
 	cd src/io; $(MAKE) $(MFLAGS) clean
 	cd external; $(MAKE) $(MFLAGS) clean
 
-#
 force_look:
 	true
 
-#
-#.PHONY: test test2
-.PHONY: cavity LidDrivenCavityRe100 LidDrivenCavityRe1000
-.PHONY: cylinder cylinderFadlun cylinderRe40 cylinderRe550 cylinderRe3000 movingCylinder
-.PHONY: cylinderRe75 cylinderRe100 cylinderRe150
-.PHONY: flapping flappingRe75
-.PHONY: snakeRe1000AOA30 snakeRe1000AOA35 snakeRe2000AOA30 snakeRe2000AOA35
-.PHONY: multiBody
-
-#test:
-#	bin/cuIBM \
-#		-flowFile flows/test.yaml -domainFile domains/test.yaml \
-#		-bodyFile bodies/empty.yaml -simulationFile simParams/test.yaml \
-#		-folderName test
-
-#test2:
-#	bin/cuIBM \
-#		-flowFile flows/test.yaml -domainFile domains/test2.yaml \
-#		-bodyFile bodies/test2.yaml -simulationFile simParams/test2.yaml \
-#		-folderName test2
-
-cavity:
-	bin/cuIBM \
-	-flowFile flows/cavity.yaml -domainFile domains/cavity.yaml \
-	-bodyFile bodies/empty.yaml -simulationFile simParams/cavity.yaml \
-	-folderName cavity
-
 LidDrivenCavityRe100:
-	bin/cuIBM \
-	-flowFile flows/cavity.yaml -domainFile domains/cavity0100.yaml \
-	-bodyFile bodies/empty.yaml -simulationFile simParams/cavity0100.yaml \
-	-folderName LidDrivenCavityRe100 \
-	-nu 0.01
+	bin/cuIBM -caseFolder cases/lidDrivenCavity/Re100
 
 LidDrivenCavityRe1000:
-	bin/cuIBM \
-	-flowFile flows/cavity.yaml -domainFile domains/cavity1000.yaml \
-	-bodyFile bodies/empty.yaml -simulationFile simParams/cavity1000.yaml \
-	-folderName LidDrivenCavityRe1000 \
-	-nu 0.001
+	bin/cuIBM -caseFolder cases/lidDrivenCavity/Re1000
 
 cylinder:
-	bin/cuIBM \
-	-flowFile flows/openFlow.yaml -domainFile domains/openFlow.yaml \
-	-bodyFile bodies/cylinder.yaml -simulationFile simParams/openFlow.yaml \
-	-folderName cylinder
-
-cylinderFadlun:
-	bin/cuIBM \
-	-flowFile flows/openFlow.yaml -domainFile domains/openFlow.yaml \
-	-bodyFile bodies/cylinder.yaml -simulationFile simParams/openFlowFadlun.yaml \
-	-folderName cylinderFadlun -ibmScheme FadlunEtAl
-
-movingCylinder:
-	bin/cuIBM \
-	-flowFile flows/box.yaml -domainFile domains/movingCylinder.yaml \
-	-bodyFile bodies/movingCylinder.yaml -simulationFile simParams/movingCylinder.yaml \
-	-folderName movingCylinder \
-	-nu 0.025
+	bin/cuIBM -caseFolder cases/cylinder/test
 
 cylinderRe40:
-	bin/cuIBM \
-	-flowFile flows/openFlow.yaml -domainFile domains/openFlow0.025.yaml \
-	-bodyFile bodies/cylinder0.025.yaml -simulationFile simParams/cylinder0040.yaml \
-	-folderName cylinderRe40 \
-	-nu 0.025
-
-cylinderRe75:
-	bin/cuIBM \
-	-flowFile flows/openFlow.yaml -domainFile domains/vonKarmanStreet.yaml \
-	-bodyFile bodies/cylinder0.020.yaml -simulationFile simParams/vonKarmanStreet.yaml \
-	-folderName cylinderRe75 \
-	-nu 0.013333333333 -uPerturb 0.1
-
-cylinderRe100:
-	bin/cuIBM \
-	-flowFile flows/openFlow.yaml -domainFile domains/vonKarmanStreet.yaml \
-	-bodyFile bodies/cylinder0.020.yaml -simulationFile simParams/vonKarmanStreet.yaml \
-	-folderName cylinderRe100 \
-	-nu 0.01 -uPerturb 0.1
-
-cylinderRe150:
-	bin/cuIBM \
-	-flowFile flows/openFlow.yaml -domainFile domains/vonKarmanStreet.yaml \
-	-bodyFile bodies/cylinder0.020.yaml -simulationFile simParams/vonKarmanStreet.yaml \
-	-folderName cylinderRe150 \
-	-nu 0.0066666666666 -uPerturb 0.1
+	bin/cuIBM -caseFolder cases/cylinder/Re40
 
 cylinderRe550:
-	bin/cuIBM \
-	-flowFile flows/openFlow.yaml -domainFile domains/openFlow0.010.yaml \
-	-bodyFile bodies/cylinder0.010.yaml -simulationFile simParams/cylinder0550.yaml \
-	-folderName cylinderRe550 \
-	-nu 0.00181818181818
+	bin/cuIBM -caseFolder cases/cylinder/Re550
 
 cylinderRe3000:
-	bin/cuIBM \
-	-flowFile flows/openFlow.yaml -domainFile domains/openFlow0.004.yaml \
-	-bodyFile bodies/cylinder0.004.yaml -simulationFile simParams/cylinder3000.yaml \
-	-folderName cylinderRe3000 \
-	-nu 0.00033333333333
+	bin/cuIBM -caseFolder cases/cylinder/Re3000
 
-flapping:
-	bin/cuIBM \
-	-flowFile flows/box.yaml -domainFile domains/flapping.yaml \
-	-bodyFile bodies/flapping.yaml -simulationFile simParams/flapping.yaml \
-	-folderName flapping
+cylinderRe75:
+	bin/cuIBM -caseFolder cases/cylinder/Re75
 
-flappingRe75:
-	time bin/cuIBM \
-	-flowFile flows/box.yaml -domainFile domains/flappingRe75.yaml \
-	-bodyFile bodies/flappingRe75.yaml -simulationFile simParams/flappingRe75.yaml \
-	-folderName flappingRe75
+cylinderRe100:
+	bin/cuIBM -caseFolder cases/cylinder/Re100
+
+cylinderRe150:
+	bin/cuIBM -caseFolder cases/cylinder/Re150
+
+#cylinderFadlun
 
 snakeRe1000AOA30:
-	time bin/cuIBM \
-	-ibmScheme TairaColonius \
-	-flowFile flows/openFlow.yaml -nu 0.001 \
-	-domainFile domains/snake.yaml \
-	-bodyFile bodies/snake/snake30.yaml -simulationFile simParams/snake.yaml \
-	-folderName snakeRe1000AOA30
+	time bin/cuIBM -caseFolder cases/flyingSnake/Re1000_AoA30
 
 snakeRe1000AOA35:
-	time bin/cuIBM \
-	-ibmScheme TairaColonius \
-	-flowFile flows/openFlow.yaml -nu 0.001 \
-	-domainFile domains/snake.yaml \
-	-bodyFile bodies/snake/snake35.yaml -simulationFile simParams/snake.yaml \
-	-folderName snakeRe1000AOA35
+	time bin/cuIBM -caseFolder cases/flyingSnake/Re1000_AoA35
 
 snakeRe2000AOA30:
-	time bin/cuIBM \
-	-ibmScheme TairaColonius \
-	-flowFile flows/openFlow.yaml -nu 0.0005 \
-	-domainFile domains/snake.yaml \
-	-bodyFile bodies/snake/snake30.yaml -simulationFile simParams/snake.yaml \
-	-folderName snakeRe2000AOA30
+	time bin/cuIBM -caseFolder cases/flyingSnake/Re2000_AoA30
 
 snakeRe2000AOA35:
-	time bin/cuIBM \
-	-ibmScheme TairaColonius \
-	-flowFile flows/openFlow.yaml -nu 0.0005 \
-	-domainFile domains/snake.yaml \
-	-bodyFile bodies/snake/snake35.yaml -simulationFile simParams/snake.yaml \
-	-folderName snakeRe2000AOA35
+	time bin/cuIBM -caseFolder cases/flyingSnake/Re2000_AoA35
 
-#oscillatingCylinder:
+flappingRe75:
+	time bin/cuIBM -caseFolder cases/flappingRe75
 
-multiBody:
-	time bin/cuIBM \
-	-flowFile flows/openFlow.yaml -nu 0.01 \
-	-domainFile domains/multiBody.yaml \
-	-bodyFile bodies/multiBody.yaml -simulationFile simParams/multiBody.yaml \
-	-folderName multiBody
+oscillatingCylinders:
+	time bin/cuIBM -caseFolder oscillatingCylinders

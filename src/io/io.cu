@@ -34,9 +34,9 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return elems;
 }
 
-void makeDirectory(const std::string folderName)
+void makeDirectory(const std::string folderPath)
 {
-	std::vector<std::string> x = split(folderName, '/');
+	std::vector<std::string> x = split(folderPath, '/');
 	int n = x.size();
 	int i = 0;
 	std::string folder = x[i];
@@ -63,20 +63,23 @@ void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 	// first pass of command line arguments
 	commandLineParse1(argc, argv, DB);
 	
+	// case folder
+	string folder = DB["inputs"]["caseFolder"].get<string>();
+	
 	// read the simulation file
-	string fname = DB["inputs"]["simulationFile"].get<string>();
+	string fname = folder + "/simParams.yaml";
 	parseSimulationFile(fname, DB);
 	
 	// read the flow file
-	fname = DB["inputs"]["flowFile"].get<string>();
+	fname = folder + "/flow.yaml";
 	parseFlowFile(fname, DB);
 
 	// read the domain file
-	fname = DB["inputs"]["domainFile"].get<string>();
+	fname = folder + "/domain.yaml";
 	parseDomainFile(fname, D);
 	
 	// read the body file
-	fname = DB["inputs"]["bodyFile"].get<string>();
+	fname = folder + "/bodies.yaml";
 	parseBodiesFile(fname, DB);
 	
 	// second pass of command line -- overwrite values in DB
@@ -93,11 +96,7 @@ void initialiseDefaultDB(parameterDB &DB)
 
 	// default input files
 	string inputs = "inputs";
-	DB[inputs]["flowFile"].set<string>("flows/openFlow.yaml");
-	DB[inputs]["simulationFile"].set<string>("simParams/openFlow.yaml");
-	DB[inputs]["bodyFile"].set<string>("bodies/cylinder.yaml");
-	DB[inputs]["domainFile"].set<string>("domains/openFlow.yaml");
-	DB[inputs]["folderName"].set<string>("new");
+	DB[inputs]["caseFolder"].set<string>("cases/cylinder");
 	DB[inputs]["deviceNumber"].set<int>(0);
 
 	// flow parameters
@@ -145,30 +144,10 @@ void commandLineParse1(int argc, char **argv, parameterDB &DB)
 {
 	for (int i=1; i<argc; i++)
 	{
-		if (strcmp(argv[i],"-flowFile")==0)
+		if (strcmp(argv[i],"-caseFolder")==0)
 		{
 			i++;
-			DB["inputs"]["flowFile"].set<string>(string(argv[i]));
-		}
-		else if (strcmp(argv[i],"-simulationFile")==0)
-		{
-			i++;
-			DB["inputs"]["simulationFile"].set<string>(string(argv[i]));
-		}
-		else if (strcmp(argv[i],"-bodyFile")==0)
-		{
-			i++;
-			DB["inputs"]["bodyFile"].set<string>(string(argv[i]));
-		}
-		else if (strcmp(argv[i],"-domainFile")==0)
-		{
-			i++;
-			DB["inputs"]["domainFile"].set<string>(string(argv[i]));
-		}
-		else if (strcmp(argv[i],"-folderName")==0)
-		{
-			i++;
-			DB["inputs"]["folderName"].set<string>(string(argv[i]));
+			DB["inputs"]["caseFolder"].set<string>(string(argv[i]));
 		}
 		else if (strcmp(argv[i],"-deviceNumber")==0)
 		{
@@ -185,18 +164,6 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 {
 	for (int i=1; i<argc; i++)
 	{
-		// ignore these - already parsed in pass 1
-		/*
-		if (strcmp(argv[i],"-flowFile")==0 ||
-		strcmp(argv[i],"-simulationFile")==0 ||
-		strcmp(argv[i],"-bodyFile")==0 ||
-		strcmp(argv[i],"-domainFile")==0 ||
-		strcmp(argv[i],"-folderName")==0 ||
-		strcmp(argv[i],"-deviceNumber")==0)
-			continue;
-		*/
-			
-		// Add code here
 		// kinematic viscosity
 		if ( strcmp(argv[i],"-nu")==0 )
 		{
@@ -327,7 +294,7 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	
 	std::cout << "\nOutput parameters" << '\n';
 	std::cout << "-----------------" << '\n';
-	std::cout << "Output folder = " << DB["inputs"]["folderName"].get<string>() << '\n';
+	std::cout << "Output folder = " << DB["inputs"]["caseFolder"].get<string>() << '\n';
 	std::cout << "nsave = " << DB["simulation"]["nsave"].get<int>() << '\n';
 	
 	cudaDeviceProp deviceProp;
@@ -351,8 +318,8 @@ void printTimingInfo(Logger &logger)
 
 void writeInfoFile(parameterDB &DB, domain &D)
 {
-	std::string   foldername = DB["inputs"]["folderName"].get<string>();
-	std::ofstream infofile((foldername+"/run.info").c_str());
+	std::string   folder = DB["inputs"]["caseFolder"].get<string>();
+	std::ofstream infofile((folder+"/run.info").c_str());
 	infofile << std::setw(20) << "--nx"  << "\t" << D.nx << '\n';
 	infofile << std::setw(20) << "--ny"  << "\t" << D.ny << '\n';
 	infofile << std::setw(20) << "--startStep" << "\t" << DB["simulation"]["startStep"].get<int>() << '\n';
@@ -360,19 +327,15 @@ void writeInfoFile(parameterDB &DB, domain &D)
 	infofile << std::setw(20) << "--nsave"  << "\t" << DB["simulation"]["nsave"].get<int>() << '\n';
 	infofile << std::setw(20) << "--dt"     << "\t" << DB["simulation"]["dt"].get<real>() << '\n';
 	infofile << std::setw(20) << "--vortlim"<< "\t" << 15 << '\n';
-	infofile << std::setw(20) << "--folder" << "\t" << foldername << '\n';
+	infofile << std::setw(20) << "--folder" << "\t" << folder << '\n';
 	infofile << std::setw(20) << "--nu"     << "\t" << DB["flow"]["nu"].get<real>() << '\n';
-	infofile << std::setw(20) << "--flowFile" << "\t" << DB["inputs"]["flowFile"].get<string>() << '\n';
-	infofile << std::setw(20) << "--simulationFile" << "\t"  << DB["inputs"]["simulationFile"].get<string>() << '\n';
-	infofile << std::setw(20) << "--domainFile" << "\t"  << DB["inputs"]["domainFile"].get<string>() << '\n';
-	infofile << std::setw(20) << "--bodyFile" << "\t" << DB["inputs"]["bodyFile"].get<string>() << '\n';
 	infofile.close();
 }
 
-void writeGrid(std::string &folderName, domain &D)
+void writeGrid(std::string &caseFolder, domain &D)
 {
 	std::stringstream out;
-	out << folderName << "/grid";
+	out << caseFolder << "/grid";
 	std::ofstream f(out.str().c_str());
 
 	f << D.nx << std::endl;
@@ -388,12 +351,12 @@ void writeGrid(std::string &folderName, domain &D)
 }
 
 template <>
-void writeData<vecH>(std::string &folderName, int n, vecH &q, vecH &lambda, domain &D)//, bodies &B)
+void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, domain &D)//, bodies &B)
 {
 	std::string path;
 	std::stringstream out;
 
-	out << folderName << '/' << std::setfill('0') << std::setw(7) << n;
+	out << caseFolder << '/' << std::setfill('0') << std::setw(7) << n;
 	path = out.str();
 
 	//createDirectory(path.c_str(), S_IRWXO);
@@ -434,12 +397,12 @@ void writeData<vecH>(std::string &folderName, int n, vecH &q, vecH &lambda, doma
 }
 
 template <>
-void writeData<vecD>(std::string &folderName, int n, vecD &q, vecD &lambda, domain &D)//, bodies &B)
+void writeData<vecD>(std::string &caseFolder, int n, vecD &q, vecD &lambda, domain &D)//, bodies &B)
 {
 	vecH qH = q,
 	     lambdaH = lambda;
 	     
-	writeData(folderName, n, qH, lambdaH, D);
+	writeData(caseFolder, n, qH, lambdaH, D);
 }
 
 void printDeviceMemoryUsage(char *label)

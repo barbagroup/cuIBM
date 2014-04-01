@@ -45,15 +45,15 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	timeStep = (*paramDB)["simulation"]["startStep"].get<int>();
 	
 	/// create directory 
-	std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
-	io::makeDirectory(folderName);
+	std::string folder = (*paramDB)["inputs"]["caseFolder"].get<std::string>();
+	io::makeDirectory(folder);
 
 	/// write the grids information to a file
-	io::writeGrid(folderName, *domInfo);
+	io::writeGrid(folder, *domInfo);
 
 	/// open the required files
 	std::stringstream out;
-	out << folderName << "/iterations";
+	out << folder << "/iterations";
 	iterationsFile.open(out.str().c_str());
 	
 	/// write the plot information to a file
@@ -438,12 +438,12 @@ template <typename memoryType>
 void NavierStokesSolver<memoryType>::writeCommon()
 {
 	int nsave = (*paramDB)["simulation"]["nsave"].get<int>();
-	std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
+	std::string folder = (*paramDB)["inputs"]["caseFolder"].get<std::string>();
 	
 	// write the velocity fluxes and the pressure values
 	if (timeStep % nsave == 0)
 	{
-		io::writeData(folderName, timeStep, q, lambda, *domInfo);
+		io::writeData(folder, timeStep, q, lambda, *domInfo);
 	}
 	
 	// write the number of iterations for each solve

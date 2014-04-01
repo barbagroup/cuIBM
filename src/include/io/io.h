@@ -39,8 +39,8 @@ namespace io
 	void printTimingInfo(Logger &logger);
 	
 	void writeInfoFile(parameterDB &DB, domain &D);
-	void writeGrid(std::string &folderName, domain &D);
+	void writeGrid(std::string &caseFolder, domain &D);
 	template <typename Vector>
-	void writeData(std::string &folderName, int n, Vector &q, Vector &lambda, domain &D);//, bodies &B);
+	void writeData(std::string &caseFolder, int n, Vector &q, Vector &lambda, domain &D);//, bodies &B);
 	void printDeviceMemoryUsage(char *label);
 }
