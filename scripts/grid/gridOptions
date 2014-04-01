@@ -1,0 +1,8 @@
+DomainBottomLeft: [-15, -15]
+DomainTopRight  : [15, 15]
+
+UniformRegionBottomLeft: [-0.52, -2]
+UniformRegionTopRight  : [3.48, 2]
+
+FinestMeshSpacing: 0.004
+StretchingRatio  : 1.01

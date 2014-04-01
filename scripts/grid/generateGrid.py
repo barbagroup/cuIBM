@@ -2,142 +2,154 @@
 import argparse
 import numpy as np
 import sys
+import os
+import re
 
 # Generate optionsfile as per command line options
 parser = argparse.ArgumentParser()
 
 # Command line options
-parser.add_argument("--outfile", dest="outfile", help="name of file generated", default="domain.yaml")
-parser.add_argument("--d-blx", type=float, dest="d_blx", help="bottom-left x-coordinate of the domain", default=-15)
-parser.add_argument("--d-bly", type=float, dest="d_bly", help="bottom-left y-coordinate of the domain", default=-15)
-parser.add_argument("--d-trx", type=float, dest="d_trx", help="top-right x-coordinate of the domain", default=15)
-parser.add_argument("--d-try", type=float, dest="d_try", help="top-right y-coordinate of the domain", default=15)
-parser.add_argument("--u-blx", type=float, dest="u_blx", help="bottom-left x-coordinate of the uniform region", default=-0.52)
-parser.add_argument("--u-bly", type=float, dest="u_bly", help="bottom-left y-coordinate of the uniform region", default=-2)
-parser.add_argument("--u-trx", type=float, dest="u_trx", help="top-right x-coordinate of the uniform region", default=3.48)
-parser.add_argument("--u-try", type=float, dest="u_try", help="top-right y-coordinate of the uniform region", default=2)
-parser.add_argument("--h", type=float, dest="h", help="cell width in uniform region", default=0.004)
-parser.add_argument("--sr", type=float, dest="sr", help="stretching ratio", default=1.01)
+parser.add_argument("--output", dest="output", help="name of file generated", default="domain.yaml")
+parser.add_argument("--input", dest="input", help="name of input file", default="gridOptions")
 
 args = parser.parse_args()
 
+inFile = os.path.expandvars("${CUIBM_DIR}/scripts/grid/"+args.input);
+
+f = open(inFile, 'r')
+for line in f:
+	b = filter(None, re.split('\[|\]|\n|:|,| ', line))
+	if b != []:
+		if b[0] == 'DomainBottomLeft':
+			d_blx = float(b[1])
+			d_bly = float(b[2])
+		elif b[0] == 'DomainTopRight':
+			d_trx = float(b[1])
+			d_try = float(b[2])
+		elif b[0] == 'UniformRegionBottomLeft':
+			u_blx = float(b[1])
+			u_bly = float(b[2])
+		elif b[0] == 'UniformRegionTopRight':
+			u_trx = float(b[1])
+			u_try = float(b[2])
+		elif b[0] == 'FinestMeshSpacing':
+			h = float(b[1])
+		elif b[0] == 'StretchingRatio':
+			sr = float(b[1])
+
 print '-'*120
 print "Domain:"
-print "\t(%s, %s) to (%s, %s)" % (str(args.d_blx), str(args.d_bly), str(args.d_trx), str(args.d_try))
+print "\t(%s, %s) to (%s, %s)\n" % (str(d_blx), str(d_bly), str(d_trx), str(d_try))
 print 'Uniform region:'
-print "\t(%s, %s) to (%s, %s)\n" % (str(args.u_blx), str(args.u_bly), str(args.u_trx), str(args.u_try))
+print "\t(%s, %s) to (%s, %s)\n" % (str(u_blx), str(u_bly), str(u_trx), str(u_try))
 
-unx = int((args.u_trx-args.u_blx)/args.h + 0.5)
-chx = abs((args.u_trx-args.u_blx)/args.h - unx)
+unx = int((u_trx-u_blx)/h + 0.5)
+chx = abs((u_trx-u_blx)/h - unx)
 
-uny = int((args.u_try-args.u_bly)/args.h + 0.5)
-chy = abs((args.u_try-args.u_bly)/args.h - uny)
+uny = int((u_try-u_bly)/h + 0.5)
+chy = abs((u_try-u_bly)/h - uny)
 
 if chx > 1e-6 or chy > 1e-6:
 	print "Non-integer number of cells in the uniform region! Choose a different h or change the extent of the uniform region.\n"
 	sys.exit(0)
 
-f = open(args.outfile, 'w')
+f = open(args.output, 'w')
 
 # domain description in the x-direction
 
 nx = unx
 
 f.write("- direction: x\n")
-f.write("  start: %s\n" % str(args.d_blx))
+f.write("  start: %s\n" % str(d_blx))
 f.write("  subDomains:\n")
 
 n = 2
-L = (args.u_blx - args.d_blx)
-h1 = L * (args.sr - 1)/(args.sr**n - 1)
-while h1>args.h:
+L = (u_blx - d_blx)
+h1 = L * (sr - 1)/(sr**n - 1)
+while h1>h:
 	n = n+1
-	h1 = L * (args.sr - 1)/(args.sr**n - 1)
+	h1 = L * (sr - 1)/(sr**n - 1)
 n = n-1
 nx = nx + n
-h1 = L * (args.sr - 1)/(args.sr**n - 1)
-h2 = h1 * args.sr**(n-1)
+h1 = L * (sr - 1)/(sr**n - 1)
+h2 = h1 * sr**(n-1)
 print "-X :  h1: %.6f    h2: %.6f    AR: %.1f" % (h1, h2, h2/h1)
 
-f.write("    - end: %s\n" % str(args.u_blx))
+f.write("    - end: %s\n" % str(u_blx))
 f.write("      cells: %d\n" % n)
-f.write("      stretchRatio: %s\n" % str(1.0/args.sr))
+f.write("      stretchRatio: %s\n" % str(1.0/sr))
 
-f.write("    - end: %s\n" % str(args.u_trx))
+f.write("    - end: %s\n" % str(u_trx))
 f.write("      cells: %d\n" % unx)
 f.write("      stretchRatio: 1.0\n")
 
 n = 2
-L = (args.d_trx - args.u_trx)
-h1 = L * (args.sr - 1)/(args.sr**n - 1)
-while h1>args.h:
+L = (d_trx - u_trx)
+h1 = L * (sr - 1)/(sr**n - 1)
+while h1>h:
 	n = n+1
-	h1 = L * (args.sr - 1)/(args.sr**n - 1)
+	h1 = L * (sr - 1)/(sr**n - 1)
 n = n-1
 nx = nx + n
-h1 = L * (args.sr - 1)/(args.sr**n - 1)
-h2 = h1 * args.sr**(n-1)
+h1 = L * (sr - 1)/(sr**n - 1)
+h2 = h1 * sr**(n-1)
 print "+X :  h1: %.6f    h2: %.6f    AR: %.1f" % (h1, h2, h2/h1)
 
-f.write("    - end: %s\n" % str(args.d_trx))
+f.write("    - end: %s\n" % str(d_trx))
 f.write("      cells: %d\n" % n)
-f.write("      stretchRatio: %s\n\n" % str(args.sr))
+f.write("      stretchRatio: %s\n\n" % str(sr))
 
 # domain description in the y-direction
 
 ny = uny
 
 f.write("- direction: y\n")
-f.write("  start: %s\n" % str(args.d_bly))
+f.write("  start: %s\n" % str(d_bly))
 f.write("  subDomains:\n")
 
 n = 2
-L = (args.u_bly - args.d_bly)
-h1 = L * (args.sr - 1)/(args.sr**n - 1)
-while h1>args.h:
+L = (u_bly - d_bly)
+h1 = L * (sr - 1)/(sr**n - 1)
+while h1>h:
 	n = n+1
-	h1 = L * (args.sr - 1)/(args.sr**n - 1)
+	h1 = L * (sr - 1)/(sr**n - 1)
 n = n-1
 ny = ny + n
-h1 = L * (args.sr - 1)/(args.sr**n - 1)
-h2 = h1 * args.sr**(n-1)
+h1 = L * (sr - 1)/(sr**n - 1)
+h2 = h1 * sr**(n-1)
 print "-Y :  h1: %.6f    h2: %.6f    AR: %.1f" % (h1, h2, h2/h1)
 
-f.write("    - end: %s\n" % str(args.u_bly))
+f.write("    - end: %s\n" % str(u_bly))
 f.write("      cells: %d\n" % n)
-f.write("      stretchRatio: %s\n" % str(1.0/args.sr))
+f.write("      stretchRatio: %s\n" % str(1.0/sr))
 
-f.write("    - end: %s\n" % str(args.u_try))
+f.write("    - end: %s\n" % str(u_try))
 f.write("      cells: %d\n" % uny)
 f.write("      stretchRatio: 1.0\n")
 
 n = 2
-L = (args.u_bly - args.d_bly)
-h1 = L * (args.sr - 1)/(args.sr**n - 1)
-while h1>args.h:
+L = (u_bly - d_bly)
+h1 = L * (sr - 1)/(sr**n - 1)
+while h1>h:
 	n = n+1
-	h1 = L * (args.sr - 1)/(args.sr**n - 1)
+	h1 = L * (sr - 1)/(sr**n - 1)
 n = n-1
 ny = ny + n
-h1 = L * (args.sr - 1)/(args.sr**n - 1)
-h2 = h1 * args.sr**(n-1)
+h1 = L * (sr - 1)/(sr**n - 1)
+h2 = h1 * sr**(n-1)
 print "+Y :  h1: %.6f    h2: %.6f    AR: %.1f" % (h1, h2, h2/h1)
 print ''
 
-f.write("    - end: %s\n" % str(args.d_try))
+f.write("    - end: %s\n" % str(d_try))
 f.write("      cells: %d\n" % n)
-f.write("      stretchRatio: %s\n" % str(args.sr))
+f.write("      stretchRatio: %s\n" % str(sr))
 
 f.close()
 
-print "h  : " + str(args.h)
-print "sr : " + str(args.sr) + '\n'
+print "h  : " + str(h)
+print "sr : " + str(sr) + '\n'
 print "Mesh size : " + str(nx) + " x " + str(ny) + '\n'
 
-print "Domain information written to file " + args.outfile
+print "Domain information written to file " + args.output
 
 print '-'*120
-
-#time bin/cuIBM -flowFile flows/openFlow.yaml -domainFile domains/gI0203.yaml -bodyFile bodies/snake_0.003.yaml -simulationFile simParams/openFlow.yaml -folderName gI0203 -nu 0.0005 -ibmScheme TairaColonius -dt 0.0003 -nt 266665 -nsave 53333 -deviceNumber 3 -uPerturb 0.0
-#time bin/cuIBM -flowFile flows/openFlow.yaml -domainFile domains/gI0103.yaml -bodyFile bodies/snake_0.003.yaml -simulationFile simParams/openFlow.yaml -folderName gI0103 -nu 0.0005 -ibmScheme TairaColonius -dt 0.0003 -nt 266665 -nsave 53333 -deviceNumber 3 -uPerturb 0.0
-
