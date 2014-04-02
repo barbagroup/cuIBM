@@ -11,12 +11,21 @@ using std::string;
 
 void operator >> (const YAML::Node &node, body &Body)
 {
-	// read in center
+	// read in center of rotation
 	for (int i=0; i<2; i++)
-	{
 		node["centerRotation"][i] >> Body.X0[i];
-		Body.Xc[i] = Body.X0[i];
+	
+	// initial configuration
+	for(int i=0; i<2; i++)
+	{
+		node["initialOffset"][i] >> Body.Xc0[i];
+		Body.Xc[i] = Body.Xc0[i];
 	}
+	
+	// initial angle of attack
+	node["angleOfAttack"] >> Body.Theta0;
+	Body.Theta0 *= M_PI/180.0;
+	Body.Theta = Body.Theta0;
 	
 	// moving flags
 	for (int i=0; i<2; i++)
@@ -26,21 +35,24 @@ void operator >> (const YAML::Node &node, body &Body)
 	for (int i=0; i<2; i++)
 		node["velocity"][i] >> Body.velocity[i];
 
-	// alpha
-	node["alpha"] >> Body.Theta0;
-	Body.Theta0 = Body.Theta0 * M_PI/180.0;
-	Body.Theta  = Body.Theta0;
-
 	// omega
 	node["omega"] >> Body.omega;
 	
-	// oscillation in X, Y, pitch
+	// oscillation in X
 	for (int i=0; i<3; i++)
 		node["xOscillation"][i] >> Body.xOscillation[i];
+	Body.xOscillation[1] *= 2*M_PI;
+	
+	// oscillation in Y
 	for (int i=0; i<3; i++)
 		node["yOscillation"][i] >> Body.yOscillation[i];
+	Body.yOscillation[1] *= 2*M_PI;
+	
+	// pitch oscillation
 	for (int i=0; i<3; i++)
 		node["pitchOscillation"][i] >> Body.pitchOscillation[i];
+	Body.pitchOscillation[0] *= M_PI/180.0;
+	Body.pitchOscillation[1] *= 2*M_PI;
 
 	// get the type of Body and read in appropriate details
 	string type;

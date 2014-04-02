@@ -226,7 +226,8 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 		cusp::blas::axpbypcz(onesView, xView, onesView, vBView, (*B)[l].vel[1],  (*B)[l].angVel, -(*B)[l].angVel*(*B)[l].Xc[0]);
 	}
 	
-	calculateCellIndices(D);
+	if(numBodies)
+		calculateCellIndices(D);
 }
 
 template class bodies<host_memory>;

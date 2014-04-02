@@ -1,7 +1,7 @@
 cuIBM - A GPU-based Immersed Boundary Method code
 =================================================
 
-*Updated: March 31st, 2014*
+*Updated: April 1st, 2014*
 
 Currently, cuIBM runs only on Linux and has been tested on Ubuntu 12.04. It is not supported on Windows and Mac OS X.
 
@@ -81,17 +81,25 @@ To compile, set the environment variable `CUSP_DIR` to point to the directory wi
 
     export CUSP_DIR=/path/to/cusp/folder
 
-which for the present case would be `$HOME/lib/cusplibrary-0.4.0`
+which for the present case would be `$HOME/lib/cusplibrary-0.4.0`.
 
-And reload the file:
+We also recommend setting the environment variable `CUIBM_DIR` to point to the location of the cuIBM folder. While the code can be compiled and run without setting this variable, some of the validation scripts provided make use of it.
+
+    export CUIBM_DIR=/path/to/cuibm/folder
+    
+which is `$HOME/src/cuibm`, as per the above instructions.
+
+Reload the file:
 
     > source ~/.bashrc
 
 Switch to the cuIBM directory:
 
-    > cd /path/to/cuibm/folder
+    > cd $HOME/src/cuibm
 
-The path as per the above instructions is `$HOME/src/cuibm`.
+or if you've set the environment variable,
+
+    > cd $CUIBM_DIR
 
 Compile all the files:
 	
@@ -128,16 +136,19 @@ Examples
 
 The following are available in the default installation:
 
-* `LidDrivenCavityRe100`: Flow in a lid-driven cavity with Reynolds number 
+* `lidDrivenCavityRe100`: Flow in a lid-driven cavity with Reynolds number 
 100.
-* `LidDrivenCavityRe1000`: Flow in a lid-driven cavity with Reynolds number 
+* `lidDrivenCavityRe1000`: Flow in a lid-driven cavity with Reynolds number 
 1000.
 * `cylinderRe40`: Flow over a circular cylinder at Reynolds number 40. The 
 flow eventually reaches a steady state.
+* `cylinderRe75`: Flow over a circular cylinder at Reynolds number 75. The 
+initial flow field has an asymmetric perturbation that triggers instability in 
+the flow and vortex shedding is observed in the wake.
 * `cylinderRe100`: Flow over a circular cylinder at Reynolds number 100. The 
 initial flow field has an asymmetric perturbation that triggers instability in 
 the flow and vortex shedding is observed in the wake.
-* `cylinderRe150`: Flow over a circular cylinder at Reynolds number 100. The 
+* `cylinderRe150`: Flow over a circular cylinder at Reynolds number 150. The 
 initial flow field has an asymmetric perturbation that triggers instability in 
 the flow and vortex shedding is observed in the wake.
 * `cylinderRe550`: Initial flow over an impulsively started cylinder at 
@@ -145,27 +156,26 @@ Reynolds number 550.
 * `cylinderRe3000`: Initial flow over an impulsively started cylinder at 
 Reynolds number 3000.
 * `flappingRe75`: Flow around a flapping airfoil.
+* `oscillatingCylinders`: Flow across two oscillating cylinders.
 
 ### Run the tests
 	
 To run any of the examples:
 
-	make <examplename>
+    > make <examplename>
 
 The biggest case (`cylinderRe3000`) requires a graphics card with 2GB of memory.
 
 Post-processing
 ---------------
 
-Currently, post-processing requires MATLAB. Navigate into the folder
-	
-	cd $CUIBM_DIR/scripts/matlab
-	
-and run the script `postprocess.m` with the following options:
+The only currently available post-processing script is `$CUIBM_DIR/scripts/python/plotVorticity.py`. It plots the vorticity field of the flow at all the saved time steps. To display a list of all the command line options (which include the case folder, and the coordinates of the corners of the region of interest), run:
 
-	postprocess <foldername> <xmin> <xmax> <ymin> <ymax>
+    > python $CUIBM_DIR/scripts/python/plotVorticity.py --help
 
-`python`/`gnuplot` scripts for the validation cases will be included soon.
+To obtain the vorticity plots, navigate to a case folder (or specify it using the command line option) and run the script:
+
+    > python $CUIBM_DIR/scripts/python/plotVorticity.py
 
 Known issues
 ------------

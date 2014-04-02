@@ -71,10 +71,10 @@ cleanall:
 force_look:
 	true
 
-LidDrivenCavityRe100:
+lidDrivenCavityRe100:
 	bin/cuIBM -caseFolder cases/lidDrivenCavity/Re100
 
-LidDrivenCavityRe1000:
+lidDrivenCavityRe1000:
 	bin/cuIBM -caseFolder cases/lidDrivenCavity/Re1000
 
 cylinder:
@@ -116,4 +116,4 @@ flappingRe75:
 	time bin/cuIBM -caseFolder cases/flappingRe75
 
 oscillatingCylinders:
-	time bin/cuIBM -caseFolder oscillatingCylinders
+	time bin/cuIBM -caseFolder cases/oscillatingCylinders
