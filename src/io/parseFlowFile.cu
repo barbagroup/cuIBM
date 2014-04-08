@@ -34,6 +34,8 @@ bcType bcTypeFromString(string &s)
     return CONVECTIVE;
   else if (s == "PERIODIC")
     return PERIODIC;
+  else if (s == "SPECIAL")
+    return SPECIAL;
   else
   {
     printf("[E]: invalid boundary condition type specified\n");

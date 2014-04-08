@@ -36,7 +36,8 @@ enum bcType
 	DIRICHLET,  ///< Dirichlet boundary condition
 	NEUMANN,    ///< Neumann boundary condition
 	CONVECTIVE, ///< Convective boundary condition
-	PERIODIC    ///< Periodic boundary condition
+	PERIODIC,   ///< Periodic boundary condition
+	SPECIAL
 };
 
 /**

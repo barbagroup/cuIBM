@@ -34,7 +34,7 @@ def readSimulationParameters(folder):
 	# parse options list
 	args = parser.parse_args(optionsList)
 	
-	return args.nt, args.startStep, args.nsave
+	return args.nt, args.startStep, args.nsave, args.dt
 
 def readGridData(folder):
 	# open the file with the grid data

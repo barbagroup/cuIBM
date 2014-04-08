@@ -59,4 +59,21 @@ void bc1ConvectiveV(real *bc1, int N, int nx, int numU, int offset, int stride, 
 	bc1[numU + I] += bc[idx+numUbc] * C * 0.5*(dy[j] + dy[j+1]);
 }
 
+__global__
+void bc1SpecialU(real *bc1, int N, int nx, int offset, int stride, real *dx, real C, real *bc, real time)
+{
+	int idx	= threadIdx.x + blockIdx.x*blockDim.x;
+	
+	if ( idx >= N ) return;	/// check if idx too high
+	
+	int	I = (offset + idx*stride),
+		i = I % (nx-1);
+		
+	const real T = 10.0;
+	
+	bc[idx] = sin(M_PI*time/T);
+	
+	bc1[I] += bc[idx] * C * 0.5*(dx[i] + dx[i+1]);
+}
+
 } // end of namespace kernels

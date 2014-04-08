@@ -86,6 +86,18 @@ void NavierStokesSolver<device_memory>::generateBC1()
 		C	= alpha * 2.0 * nu / (dy[ny-1] * (dy[ny-1]+dy[ny-2]));
 		kernels::bc1ConvectiveV <<<dimGridx, dimBlock>>> (bc1_r, nx, nx, numU, nx*(ny-2), 1, dxD, dyD, C, yplus, nx-1, q_r, beta);
 	}
+	else if(bcInfo[YPLUS][0].type == SPECIAL)
+	{
+		/// u
+		dy0	= 0.5*(dy[ny-2] + dy[ny-1]);
+		dy1	= 0.5*(dy[ny-1]);
+		C	= alpha * 2.0 * nu / (dy1 * (dy0+dy1));
+		kernels::bc1SpecialU <<<dimGridx, dimBlock>>> (bc1_r, nx-1, nx, (nx-1)*(ny-1), 1, dxD, C, yplus, (timeStep+1)*dt);
+		
+		/// v
+		C	= alpha * 2.0 * nu / (dy[ny-1] * (dy[ny-1]+dy[ny-2]));
+		kernels::bc1DirichletV <<<dimGridx, dimBlock>>> (bc1_r, nx, nx, numU, nx*(ny-2), 1, dyD, C, yplus, nx-1);
+	}
 	
 	/// left
 	if(bcInfo[XMINUS][0].type == DIRICHLET)

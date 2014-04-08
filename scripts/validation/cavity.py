@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 
 import argparse
+import numpy as np
+
 import os
 import os.path
-import sys
-import numpy as np
-import readData as rd
-
 cuibmFolder = os.path.expandvars("${CUIBM_DIR}")
+
+import sys
+sys.path.insert(0, cuibmFolder+'/scripts/python')
+
+import readData as rd
 
 # Parse command line options
 parser = argparse.ArgumentParser()
@@ -17,12 +20,15 @@ Re = args.Re
 
 if Re=='100':
 	uCol           = '2'
-	vCol           = '6'
+	vCol           = '7'
 elif Re=='1000':
 	uCol           = '3'
-	vCol           = '7'
+	vCol           = '8'
+elif Re=='10000':
+	uCol           = '5'
+	vCol           = '10'
 else:
-	print "Unavailable option for Reynolds number. Choose 100 or 1000."
+	print "Unavailable option for Reynolds number. Choose 100, 1000 or 10000."
 	sys.exit()
 
 validationData = '/cavity-GGS82.txt'
@@ -38,7 +44,7 @@ runCommand = "%s -caseFolder %s" % (execPath, caseFolder)
 print runCommand+"\n"
 os.system(runCommand)
 
-nt, _, _ = rd.readSimulationParameters(caseFolder)
+nt, _, _, _ = rd.readSimulationParameters(caseFolder)
 nx, ny, dx, dy, _, yu, xv, _ = rd.readGridData(caseFolder)
 u, v = rd.readVelocityData(caseFolder, nt, nx, ny, dx, dy)
 
@@ -77,7 +83,7 @@ f.write("set xlabel 'x-coordinate'\n")
 f.write("set ylabel 'Centerline v-velocity'\n")
 f.write("set output '%s'\n" % vOutFile)
 f.write("plot [0:1] [-0.7:1.3] \\\n")
-f.write("'%s' u 5:%s w p pt 13 ps 1 lc rgb '#4B5ED7' title 'Ghia et al, 1982', \\\n" % (validationData, vCol) )
+f.write("'%s' u 6:%s w p pt 13 ps 1 lc rgb '#4B5ED7' title 'Ghia et al, 1982', \\\n" % (validationData, vCol) )
 f.write("'%s/v.txt' u 1:2 w l lw 5 lc rgb '#228A4C' title 'cuIBM (Taira and Colonius, 2005)'\n" % caseFolder)
 
 f.close()
