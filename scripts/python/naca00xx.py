@@ -3,11 +3,11 @@ import argparse
 from numpy import *
 
 # Generate optionsfile as per command line options
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="Generates a NACA 00xx airfoil using the specified options.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 # Command line options
 parser.add_argument("--t", type=int, dest="t", help="thickness of symmetric NACA airfoil", default=12)
-parser.add_argument("--ds", type=float, dest="ds", help="segment length", default=0.004)
+parser.add_argument("--ds", type=float, dest="ds", help="x-distance between segments", default=0.004)
 
 args = parser.parse_args()
 

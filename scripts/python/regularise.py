@@ -2,14 +2,11 @@
 import argparse
 import numpy as np
 
-# Generate optionsfile as per command line options
-parser = argparse.ArgumentParser()
-
-# Command line options
+# parse command line options
+parser = argparse.ArgumentParser(description="Creates a body with uniform segment lengths from a given body input", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--ds", type=float, dest="ds", help="segment length", default=0.004)
 parser.add_argument("--infile", dest="infile", help="name of input file", default="snake_cross_section.txt")
 parser.add_argument("--outfile", dest="outfile", help="prefix of output file generated", default="snake")
-
 args = parser.parse_args()
 
 x0 = np.arange(0)

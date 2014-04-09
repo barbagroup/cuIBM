@@ -3,7 +3,7 @@ import argparse
 from numpy import *
 
 # Generate optionsfile as per command line options
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="Generates an elliptical body with uniform segment lengths using the specified options.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 # Command line options
 parser.add_argument("--a", type=float, dest="a", help="semi-axis along X", default=0.5)

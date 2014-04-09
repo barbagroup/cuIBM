@@ -5,13 +5,10 @@ import sys
 import os
 import re
 
-# Generate optionsfile as per command line options
-parser = argparse.ArgumentParser()
-
-# Command line options
+# parse command line options
+parser = argparse.ArgumentParser(description="Generates a cartesian mesh with a uniform region surrounded by a stretched grid", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--output", dest="output", help="name of file generated", default="domain.yaml")
 parser.add_argument("--input", dest="input", help="name of input file", default="gridOptions")
-
 args = parser.parse_args()
 
 inFile = os.path.expandvars("${CUIBM_DIR}/scripts/grid/"+args.input);

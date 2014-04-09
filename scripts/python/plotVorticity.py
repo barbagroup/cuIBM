@@ -6,7 +6,7 @@ import numpy as np
 import readData as rd
 
 # Generate optionsfile as per command line options
-parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser(description="Plots the vorticity field at all save points for a specified simulation", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--folder", dest="folder", help="Case folder", default=".")
 parser.add_argument("--blx", type=float, dest="bl_x", help="x-coordinate of the bottom left of the plot region", default=-2)
 parser.add_argument("--bly", type=float, dest="bl_y", help="y-coordinate of the bottom left of the plot region", default=-3)

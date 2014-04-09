@@ -1,20 +1,26 @@
 #!/usr/bin/env python
+import sys
 import argparse
 import numpy as np
 
-# Generate optionsfile as per command line options
-parser = argparse.ArgumentParser()
-
-# Command line options
-parser.add_argument("--filename", dest="filename", help="name of file containing body data", default="naca0012.bdy")
-
+# Parse command line options
+parser = argparse.ArgumentParser(description="Displays the properties of elements in a specified body file.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("--filename", dest="filename", help="name of file containing body data")
 args = parser.parse_args()
 
 filename = args.filename
 x=[]
 y=[]
 nb = 0
-f = open(filename, 'r')
+try:
+	f = open(filename, 'r')
+except TypeError:
+	print "File name missing! Specify with flag --filename."
+	sys.exit()
+except IOError:
+	print "File name invalid! This file does not exist."
+	sys.exit()
+
 a = f.readline().strip().split()
 a = f.readline().strip().split()
 x0 = float(a[0])
@@ -47,7 +53,8 @@ while True:
 			dsmin = temp;
 	if temp > dsmax:
 			dsmax = temp;
-print dsmin, dsmax
-print xmax-xmin
+print "Size of largest element : ", dsmin
+print "Size of smallest element: ", dsmax
+print "X-width of the body: ", xmax-xmin
 f.close()
 	

@@ -8,7 +8,7 @@ import sys
 cuibmFolder = os.path.expandvars("${CUIBM_DIR}")
 
 # Parse command line options
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="Runs the validation case for flow over a NACA 0008 airfoil at angle of attack 4 degrees at Reynolds number 2000", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--h", dest="h", help="Cell width near the body", default='0.004')
 args = parser.parse_args()
 

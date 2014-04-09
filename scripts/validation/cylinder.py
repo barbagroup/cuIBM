@@ -8,7 +8,7 @@ import sys
 cuibmFolder = os.path.expandvars("${CUIBM_DIR}")
 
 # Parse command line options
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="Runs the validation case for impulsively started flow over a circular cylinder for a specified Reynolds number", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--Re", dest="Re", help="Reynolds number", default='40')
 args = parser.parse_args()
 Re = args.Re

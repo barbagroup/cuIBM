@@ -13,7 +13,7 @@ sys.path.insert(0, cuibmFolder+'/scripts/python')
 import readData as rd
 
 # Parse command line options
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="Runs the validation case for flow in a lid-driven cavity for a specified Reynolds number", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--Re", dest="Re", help="Reynolds number", default='100')
 args = parser.parse_args()
 Re = args.Re

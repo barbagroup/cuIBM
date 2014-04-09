@@ -3,7 +3,7 @@ import argparse
 from numpy import *
 
 # Generate optionsfile as per command line options
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="Rotates a given body about a given center and generates a new body file", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("--alpha", dest="alpha", help="angle of rotation", default="-4")
 parser.add_argument("--xc", type=float, dest="xc", help="x-coordinate of the center of rotation", default=0.0)
 parser.add_argument("--yc", type=float, dest="yc", help="y-coordinate of the center of rotation", default=0.0)
