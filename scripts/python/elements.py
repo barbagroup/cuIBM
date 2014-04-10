@@ -22,6 +22,7 @@ except IOError:
 	sys.exit()
 
 a = f.readline().strip().split()
+numElements = int(a[0])
 a = f.readline().strip().split()
 x0 = float(a[0])
 y0 = float(a[1])
@@ -53,8 +54,9 @@ while True:
 			dsmin = temp;
 	if temp > dsmax:
 			dsmax = temp;
-print "Size of largest element : ", dsmin
-print "Size of smallest element: ", dsmax
-print "X-width of the body: ", xmax-xmin
+print "Number of elements:", numElements
+print "Size of largest element :", dsmin
+print "Size of smallest element:", dsmax
+print "X-width of the body:", xmax-xmin
 f.close()
 	
