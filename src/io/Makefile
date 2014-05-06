@@ -20,4 +20,4 @@ force_look:
 	true
 
 clean:
-	@rm *.o
+	@rm -f *.o
