@@ -1,7 +1,7 @@
 cuIBM - A GPU-based Immersed Boundary Method code
 =================================================
 
-*Updated: April 1st, 2014*
+*Updated: May 6th, 2014*
 
 Currently, cuIBM runs only on Linux and has been tested on Ubuntu 12.04. It is not supported on Windows and Mac OS X.
 
@@ -180,7 +180,7 @@ To obtain the vorticity plots, navigate to a case folder (or specify it using th
 Known issues
 ------------
 
-* CPU routines do not work for FadlunEtAlSolver.
+* CPU routines do not work.
 * Cannot specify which Krylov solver to use for solving the linear systems.
 * TairaColoniusSolver and FadlunEtAlSolver fail if no body is present.
 * FadlunEtAlSolver has not been tested for cases with multiple or moving bodies.

@@ -4,12 +4,8 @@ syntax: glob
 *.a
 *.pdf
 *.mtx
+*.pyc
 ._*
-Methods
-EffectOfCVSize
-Convergence
-gridIndependence/cylinder*
 validation/NACA0008/04_0.004*
 validation/NACA0008/0.002_04*
 validation/lidDrivenCavity/Re10000*
-cases/lidDrivenCavity/Avi*

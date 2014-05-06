@@ -98,7 +98,8 @@ cylinderRe100:
 cylinderRe150:
 	bin/cuIBM -caseFolder cases/cylinder/Re150
 
-#cylinderFadlun
+cylinderFadlun:
+	bin/cuIBM -caseFolder cases/cylinder/Re40 -ibmScheme FadlunEtAl
 
 snakeRe1000AOA30:
 	time bin/cuIBM -caseFolder cases/flyingSnake/Re1000_AoA30

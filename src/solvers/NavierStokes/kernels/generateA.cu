@@ -21,8 +21,8 @@ void generateAFadlun(int *ARows, int *ACols, real *AVals, real *MVals, int *LRow
 	{
 		ARows[I] = LRows[I];
 		ACols[I] = LCols[I];
-		AVals[I] = - (tagsX[LRows[I]] == -1 && tagsY[LRows[I]] == -1)*alpha*LVals[I] // if the current location is untagged, add -alpha*L
-		           - (tagsX[LRows[I]] != -1 || tagsY[LRows[I]] != -1)*LVals[I] // if the current location is tagged, add -L
+		AVals[I] =   (tagsX[LRows[I]] == -1 && tagsY[LRows[I]] == -1)*(-alpha*LVals[I]) // if the current location is untagged, add -alpha*L
+		           + (tagsX[LRows[I]] != -1 || tagsY[LRows[I]] != -1)*(-LVals[I]) // if the current location is tagged, add -L
 		           + (LRows[I]==LCols[I])*MVals[LRows[I]]; // if it is a diagonal, add M
 	}
 }
