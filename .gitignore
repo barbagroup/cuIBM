@@ -1,6 +1,7 @@
 # file types
 *.o
 *.a
+*.pyc
 
 # folders
 bin/*
