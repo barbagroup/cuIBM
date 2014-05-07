@@ -105,14 +105,15 @@ def readSimulationParameters(infoFile):
 	return args.nsave, args.nt, args.startStep
 
 if __name__ == "__main__":
-	# run the case of the flow over a cylinder at Re=40
-	# for meshes of four different sizes
-	runCommand = os.path.expandvars("${CUIBM_DIR}/scripts/convergence/cylinderRe40.sh")
-	os.system(runCommand)
-
 	# list of folders from which velocity data is to be obtained
 	folders = ['400', '600', '900', '1350']
 	numFolders = len(folders)
+
+	# for each of the above case folders with different mesh sizes
+	# simulate flow over a cylinder at Re=40
+	for case in folders:
+		runCommand = os.path.expandvars("${CUIBM_DIR}/bin/cuIBM -caseFolder ${CUIBM_DIR}/orderOfConvergence/cylinderRe40/%s" % case)
+		os.system(runCommand)
 
 	# define the grid on which the values are interpolated
 	# it is uniform and of size 41 x 41 and encompasses the region [-1,1]x[-1,1]

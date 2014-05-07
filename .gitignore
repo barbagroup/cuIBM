@@ -1,0 +1,6 @@
+# file types
+*.o
+*.a
+
+# folders
+bin/*
