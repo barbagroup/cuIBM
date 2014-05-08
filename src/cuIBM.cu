@@ -2,11 +2,7 @@
 #include <helpers.h>
 #include <domain.h>
 #include <io/io.h>
-#include <solvers/NavierStokes/NavierStokesSolver.h>
-#include <solvers/NavierStokes/TairaColoniusSolver.h>
-#include <solvers/NavierStokes/FadlunEtAlSolver.h>
-#include <solvers/NavierStokes/SuLaiLinSolver.h>
-#include <solvers/NavierStokes/SLL2Solver.h>
+#include <solvers/NavierStokes/createSolver.h>
 
 int main(int argc, char **argv)
 {
@@ -17,8 +13,7 @@ int main(int argc, char **argv)
 	io::printSimulationInfo(paramDB, dom_info);
 
 	/// choose the appropriate flow solver
-	NavierStokesSolver<device_memory> *solver = NavierStokesSolver<device_memory>::createSolver(paramDB, dom_info);
-	//NavierStokesSolver<host_memory> *solver = NavierStokesSolver<host_memory>::createSolver(paramDB, dom_info);
+	NavierStokesSolver<device_memory> *solver = createSolver<device_memory>(paramDB, dom_info);
 	solver->initialise();
 	io::printDeviceMemoryUsage("Initialisation complete");
 	

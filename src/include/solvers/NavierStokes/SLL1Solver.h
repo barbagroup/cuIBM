@@ -23,6 +23,7 @@ protected:
 	void solveIntermediateVelocity();
 	
 public:
+	SLL1Solver(parameterDB *pDB=NULL, domain *dInfo=NULL);
 	std::string name()
 	{
 		return "SLL1";

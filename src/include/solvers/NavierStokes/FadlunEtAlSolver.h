@@ -51,6 +51,7 @@ private:
 	void  calculateForceF();
 	
 public:
+	FadlunEtAlSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
 	void initialise();
 	std::string name()
 	{

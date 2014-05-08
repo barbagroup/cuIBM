@@ -85,6 +85,13 @@ void FadlunEtAlSolver<memoryType>::assembleRHS1()
 	NavierStokesSolver<memoryType>::logger.startTimer("updateRHS1");
 }
 
+template <typename memoryType>
+FadlunEtAlSolver<memoryType>::FadlunEtAlSolver(parameterDB *pDB, domain *dInfo)
+{
+	NavierStokesSolver<memoryType>::paramDB = pDB;
+	NavierStokesSolver<memoryType>::domInfo = dInfo;
+}
+
 #include "FadlunEtAl/tagPoints.inl"
 #include "FadlunEtAl/generateL.inl"
 //

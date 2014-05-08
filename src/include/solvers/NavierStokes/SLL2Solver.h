@@ -23,6 +23,7 @@ protected:
 	void projectionStep();
 
 public:
+	SLL2Solver(parameterDB *pDB=NULL, domain *dInfo=NULL);
 	std::string name()
 	{
 		return "SLL2";

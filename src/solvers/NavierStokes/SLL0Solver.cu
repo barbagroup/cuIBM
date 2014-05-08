@@ -91,5 +91,12 @@ void SLL0Solver<memoryType>::solveIntermediateVelocity()
 	NavierStokesSolver<memoryType>::logger.stopTimer("solveIntermediateVel");
 }
 
+template <typename memoryType>
+SLL0Solver<memoryType>::SLL0Solver(parameterDB *pDB, domain *dInfo)
+{
+	NavierStokesSolver<memoryType>::paramDB = pDB;
+	NavierStokesSolver<memoryType>::domInfo = dInfo;
+}
+
 template class SLL0Solver<host_memory>;
 template class SLL0Solver<device_memory>;

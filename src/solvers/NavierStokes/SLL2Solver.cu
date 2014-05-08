@@ -46,5 +46,12 @@ void SLL2Solver<memoryType>::projectionStep()
 	
 }
 
+template <typename memoryType>
+SLL2Solver<memoryType>::SLL2Solver(parameterDB *pDB, domain *dInfo)
+{
+	NavierStokesSolver<memoryType>::paramDB = pDB;
+	NavierStokesSolver<memoryType>::domInfo = dInfo;
+}
+
 template class SLL2Solver<host_memory>;
 template class SLL2Solver<device_memory>;

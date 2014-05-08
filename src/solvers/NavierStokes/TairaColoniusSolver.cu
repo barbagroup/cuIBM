@@ -68,6 +68,13 @@ void TairaColoniusSolver<memoryType>::updateSolverState()
 	}
 }
 
+template <typename memoryType>
+TairaColoniusSolver<memoryType>::TairaColoniusSolver(parameterDB *pDB, domain *dInfo)
+{
+	NavierStokesSolver<memoryType>::paramDB = pDB;
+	NavierStokesSolver<memoryType>::domInfo = dInfo;
+}
+
 #include "TairaColonius/generateQT.inl"
 #include "TairaColonius/generateBC2.inl"
 #include "TairaColonius/calculateForce.inl"

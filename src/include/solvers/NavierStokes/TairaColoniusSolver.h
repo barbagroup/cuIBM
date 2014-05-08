@@ -32,6 +32,7 @@ private:
 	void generateE();
 	
 public:
+	TairaColoniusSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
 	void initialise();
 	void writeData();
 	std::string name()

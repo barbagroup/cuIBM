@@ -1,11 +1,5 @@
 #include <solvers/NavierStokes/NavierStokesSolver.h>
-#include <solvers/NavierStokes/FadlunEtAlSolver.h>
-#include <solvers/NavierStokes/TairaColoniusSolver.h>
-#include <solvers/NavierStokes/SLL0Solver.h>
-#include <solvers/NavierStokes/SLL1Solver.h>
-#include <solvers/NavierStokes/SLL2Solver.h>
 #include <sys/stat.h>
-#include <cusp/io/matrix_market.h>
 
 #include <io/io.h>
 
@@ -468,39 +462,10 @@ void NavierStokesSolver<memoryType>::shutDown()
 }
 
 template <typename memoryType>
-NavierStokesSolver<memoryType>* NavierStokesSolver<memoryType>::createSolver(parameterDB &paramDB, domain &domInfo)
+NavierStokesSolver<memoryType>::NavierStokesSolver(parameterDB *pDB, domain *dInfo)
 {
-	ibmScheme ibm = paramDB["simulation"]["ibmScheme"].get<ibmScheme>();
-	NavierStokesSolver<memoryType> *solver = 0;
-	switch(ibm)
-	{
-		case SAIKI_BIRINGEN:
-			break;
-		case TAIRA_COLONIUS:
-			solver = new TairaColoniusSolver<memoryType>;
-			break;
-		case NAVIER_STOKES:
-			solver = new NavierStokesSolver<memoryType>;
-			break;
-		case FADLUN_ET_AL:
-			solver = new FadlunEtAlSolver<memoryType>;
-			break;
-		case SLL0:
-			solver = new SLL0Solver<memoryType>;
-			break;
-		case SLL1:
-			solver = new SLL1Solver<memoryType>;
-			break;
-		case SLL2:
-			solver = new SLL2Solver<memoryType>;
-			break;
-	}
-	solver->paramDB = &paramDB;
-	solver->domInfo = &domInfo;
-	std::cout << "\nImmersed Boundary Method" << std::endl;
-	std::cout <<   "------------------------" << std::endl;
-	std::cout << solver->name() << '\n' << std::endl;
-	return solver;
+	paramDB = pDB;
+	domInfo = dInfo;
 }
 
 #include "NavierStokes/generateM.inl"

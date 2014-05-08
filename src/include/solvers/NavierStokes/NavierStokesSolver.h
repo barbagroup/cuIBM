@@ -57,8 +57,8 @@ protected:
 	* @param numLambda Number of pressure variables + twice the number of body force variables
 	*/
 	void initialiseArrays(int numQ, int numLambda);
-	void initialiseFluxes();
-	void initialiseFluxes(real *q);
+	virtual void initialiseFluxes();
+	virtual void initialiseFluxes(real *q);
 	void initialiseBoundaryArrays();
 	void assembleMatrices(); // contains subfunctions to calculate A, QT, BN, QTBNQ
 
@@ -93,6 +93,7 @@ protected:
 	virtual void updateSolverState();
 
 public:
+	NavierStokesSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
 	/**
 	* @brief Initialise stuff required for the simulation
 	*/
@@ -127,7 +128,7 @@ public:
 	* @param  paramDB Description
 	* @param  domInfo
 	*/
-	static NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domInfo);
+	//	static NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domInfo);
 	
 	/**
 	* @brief Give the name of the current solver 
