@@ -65,6 +65,3 @@ if not args.plot_only:
 		plt.clf()
 
 		k = k + nsave
-
-vortFile = "%s/vorticity.plt" % folder
-f = open( vortFile, 'w')

@@ -68,6 +68,7 @@ lib/libTests.a: force_look
 
 clean:
 	@rm -f lib/*.a bin/cuIBM src/*.o src/unitTests/*.o
+	@rm -f body.txt tagx.txt tagy.txt
 	cd src/solvers; $(MAKE) $(MFLAGS) clean
 	cd src/io; $(MAKE) $(MFLAGS) clean
 

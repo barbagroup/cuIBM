@@ -698,9 +698,9 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 }
 #endif
 
-/********************* SAME AS ABOVE, BUT FOR MOVING BODY **************************/
+/*********************** Fadlun-1c for MOVING BODY ***************************/
 #if 1
-// Bilinear Fadlun1c-type interpolation outside the body.
+// Bilinear Fadlun1c-type interpolation outside the body, for a moving body.
 template <typename memoryType>
 //void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real *vB)

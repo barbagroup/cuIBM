@@ -162,11 +162,27 @@ if __name__ == "__main__":
 	print meshSize
 	print errNorm
 
-	outFile = os.path.expandvars("${CUIBM_DIR}/DirectForcingMethod/errNorms.txt");
+	outFile = os.path.expandvars("${CUIBM_DIR}/DirectForcingMethod/%s/errNorms.txt" % args.folder);
 	f = open(outFile, 'w')
 	for c1, c2 in zip(meshSize, errNorm):
 		f.write("%d\t%f\n" % (c1, c2))
 	f.close()
 
-	runCommand = os.path.expandvars("gnuplot ${CUIBM_DIR}/DirectForcingMethod/convergence.plt")
+	gnuplotFile = os.path.expandvars("${CUIBM_DIR}/DirectForcingMethod/%s/convergence.plt" % args.folder) 
+	f = open(gnuplotFile, 'w')
+	f.write("reset;\n")
+	f.write("set terminal pdf enhanced color font 'Palatino, 16' size 20cm, 15cm;\n")
+	f.write("set output \"`echo ${CUIBM_DIR}`/DirectForcingMethod/%s/convergence.pdf\";\n" % args.folder)
+	f.write("set xlabel 'Mesh size'\n")
+	f.write("set ylabel 'L2-norm of solution differences'\n")
+	f.write("set log xy\n")
+	f.write("f(x) = a*x+b\n")
+	f.write("fit f(x) \"`echo ${CUIBM_DIR}`/DirectForcingMethod/%s/errNorms.txt\" u (log10($1)):(log10($2)) via a,b\n" % args.folder)
+	f.write("plot [50:1000] [0.001:1] \\\n")
+	f.write("\"`echo ${CUIBM_DIR}`/DirectForcingMethod/%s/errNorms.txt\" u 1:2 w lp lw 5 pt 13 ps 1.5 lc rgb '#4B5ED7' title 'L2-norm', \\\n" % args.folder)
+	f.write("10/x lt 2 lw 3 lc rgb 'grey' title 'First-order convergence', \\\n")
+	f.write("1000/(x*x) lt 3 lw 3 lc rgb 'black' title 'Second-order convergence'")
+	f.close()
+
+	runCommand = os.path.expandvars("gnuplot %s" % gnuplotFile)
 	os.system(runCommand)
