@@ -5,6 +5,7 @@ include ../../../../Makefile.inc
 SRCS=$(wildcard *.cu)
 OBJS=$(SRCS:.cu=.o)
 LIBNAME=libNavierStokesSolvers.a
+LIBTESTS=libTests.a
 
 all: objects force_look
 
@@ -17,3 +18,9 @@ force_look:
 
 clean:
 	@rm -f *.o
+
+tests: tests_objects force_look
+
+tests_objects: generateA.o generateBC1.o generateBC2.o generateM.o generateQT.o generateRN.o
+	$(AR) $(ARFLAGS) ruv ../../${LIBTESTS} $?
+	$(RANLIB) ../../$(LIBTESTS)

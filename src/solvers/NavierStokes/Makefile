@@ -30,3 +30,13 @@ force_look:
 clean:
 	cd kernels; $(MAKE) $(MFLAGS) clean
 	@rm -f *.o
+	@rm -f unitTests/*.o
+
+tests: tests_objects tests_kernels force_look
+
+tests_objects: NavierStokesSolver.o unitTests/convectionTerm.o
+	$(AR) $(ARFLAGS) ruv ../libTests.a $?
+	$(RANLIB) ../libTests.a
+
+tests_kernels:
+	cd kernels; ${MAKE} ${MFLAGS} tests

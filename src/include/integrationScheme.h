@@ -92,12 +92,10 @@ public:
 		}	
 		std::cout << "DONE! " << std::endl;
 		
-		std::cout << std::endl;
 		// Print the coefficients
 		for(int i=0; i<subSteps; i++)
 		{
 			std::cout << '[' <<  i << ']' << " " << gamma[i] << " " << zeta[i] << " " << alphaExplicit[i] << " " << alphaImplicit[i] << std::endl;
 		}
-		std::cout << std::endl;
 	}
 };
