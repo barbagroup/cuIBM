@@ -38,6 +38,9 @@ cuibm: $(LIBS) $(EXT_LIBS) src/helpers.o src/parameterDB.o src/bodies.o src/cuIB
 unitTests/convectionTerm: $(TESTLIBS) $(EXT_LIBS) src/helpers.o src/parameterDB.o src/unitTests/convectionTerm.o
 	nvcc $^ -o bin/unitTests/convectionTerm
 
+unitTests/diffusionTerm: $(TESTLIBS) $(EXT_LIBS) src/helpers.o src/parameterDB.o src/unitTests/diffusionTerm.o
+	nvcc $^ -o bin/unitTests/diffusionTerm
+
 #src/preconditioner.o
 
 #lib/libcuIBM.a: $(LIBS) $(EXT_LIBS)
@@ -67,7 +70,7 @@ lib/libTests.a: force_look
 .PHONY: clean cleanall
 
 clean:
-	@rm -f lib/*.a bin/cuIBM src/*.o src/unitTests/*.o
+	@rm -f lib/*.a bin/cuIBM bin/unitTests/* src/*.o src/unitTests/*.o
 	@rm -f body.txt tagx.txt tagy.txt
 	cd src/solvers; $(MAKE) $(MFLAGS) clean
 	cd src/io; $(MAKE) $(MFLAGS) clean
@@ -85,6 +88,12 @@ testConvection:
 	bin/unitTests/convectionTerm -caseFolder cases/unitTests/convectionTerm/6
 	bin/unitTests/convectionTerm -caseFolder cases/unitTests/convectionTerm/12
 	bin/unitTests/convectionTerm -caseFolder cases/unitTests/convectionTerm/24
+
+testDiffusion:
+	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/6
+	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/12
+	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/24
+	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/48
 
 lidDrivenCavityRe100:
 	bin/cuIBM -caseFolder cases/lidDrivenCavity/Re100

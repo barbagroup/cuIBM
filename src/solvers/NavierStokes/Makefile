@@ -4,9 +4,11 @@ include ../../../Makefile.inc
 
 # list of all files with extension .cu
 SRCS=$(wildcard *.cu)
+TESTSRCS=$(wildcard unitTests/*.cu)
 
 # takes the list of files in SRCS, replaces .cu with .o
 OBJS=$(SRCS:.cu=.o)
+TESTOBJS=$(TESTSRCS:.cu=.o)
 LIBNAME=libNavierStokesSolvers.a
 
 # all is the default target that is always run
@@ -34,7 +36,7 @@ clean:
 
 tests: tests_objects tests_kernels force_look
 
-tests_objects: NavierStokesSolver.o unitTests/convectionTerm.o
+tests_objects: NavierStokesSolver.o ${TESTOBJS}
 	$(AR) $(ARFLAGS) ruv ../libTests.a $?
 	$(RANLIB) ../libTests.a
 
