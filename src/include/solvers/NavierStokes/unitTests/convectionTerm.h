@@ -16,7 +16,7 @@ class convectionTerm : public NavierStokesSolver<memoryType>
 {
 private:
 	cusp::array1d<real, memoryType>
-	     HExact;
+	    HExact;
 	void initialiseFluxes();
 	void initialiseFluxes(real *q);
 	void initialiseExactSolution();
