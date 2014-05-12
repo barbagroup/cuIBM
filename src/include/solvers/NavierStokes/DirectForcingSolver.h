@@ -1,22 +1,18 @@
 /**
-* @file  FadlunEtAlSolver.h
+* @file  DirectForcingSolver.h
 * @brief Modified direct forcing immersed boundary method.
-*
-* <b>Combined immersed-boundary finite-difference methods for three-dimensional complex flow simulations</b> \n
-* Fadlun, E A, Verzicco, R, Orlandi, P, and Mohd-Yusof, J \n
-* Journal of Computational Physics \n
-* Volume 161 Number 1 \n
-* 2000
 */
 
 #pragma once
 
 #include <solvers/NavierStokes/NSWithBody.h>
 /**
-* Immersed boundary method described by Fadlun et al (2000)
+* A fully discrete formulation of the direct forcing method
+* first proposed by Fadlun et al (2000) 
+* with modifications by Kim et al (2001)
 */
 template <typename memoryType>
-class FadlunEtAlSolver : public NSWithBody<memoryType>
+class DirectForcingSolver : public NSWithBody<memoryType>
 {
 private:
 /*
@@ -51,10 +47,10 @@ private:
 	void  calculateForceF();
 	
 public:
-	FadlunEtAlSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
+	DirectForcingSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
 	void initialise();
 	std::string name()
 	{
-		return "Fadlun et al";
+		return "Direct Forcing";
 	}
 };

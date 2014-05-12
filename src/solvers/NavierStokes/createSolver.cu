@@ -15,8 +15,8 @@ NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domIn
 		case NAVIER_STOKES:
 			solver = new NavierStokesSolver<memoryType>(&paramDB, &domInfo);
 			break;
-		case FADLUN_ET_AL:
-			solver = new FadlunEtAlSolver<memoryType>(&paramDB, &domInfo);
+		case DIRECT_FORCING:
+			solver = new DirectForcingSolver<memoryType>(&paramDB, &domInfo);
 			break;
 		case SLL0:
 			solver = new SLL0Solver<memoryType>(&paramDB, &domInfo);

@@ -222,8 +222,8 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			if ( strcmp(argv[i],"TairaColonius")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(TAIRA_COLONIUS);
 			else 
-			if ( strcmp(argv[i],"FadlunEtAl")==0 )
-				DB["simulation"]["ibmScheme"].set<ibmScheme>(FADLUN_ET_AL);
+			if ( strcmp(argv[i],"DirectForcing")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(DIRECT_FORCING);
 			else 
 			if ( strcmp(argv[i],"SLL0")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(SLL0);

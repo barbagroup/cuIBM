@@ -1,7 +1,7 @@
 #include <solvers/NavierStokes/kernels/generateA.h>
 
 template <>
-void FadlunEtAlSolver  <device_memory>::generateA(real alpha)
+void DirectForcingSolver  <device_memory>::generateA(real alpha)
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -27,11 +27,11 @@ void FadlunEtAlSolver  <device_memory>::generateA(real alpha)
 	dim3 dimGrid(gridSize, 1);
 	dim3 dimBlock(blockSize, 1);
 
-	kernels::generateAFadlun <<<dimGrid, dimBlock>>> (ARows, ACols, AVals, MVals, LRows, LCols, LVals, ASize, alpha, tagsX_r, tagsY_r);
+	kernels::generateADirectForcing <<<dimGrid, dimBlock>>> (ARows, ACols, AVals, MVals, LRows, LCols, LVals, ASize, alpha, tagsX_r, tagsY_r);
 }
 
 template <>
-void FadlunEtAlSolver<host_memory>::generateA(real alpha)
+void DirectForcingSolver<host_memory>::generateA(real alpha)
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;

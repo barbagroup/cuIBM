@@ -1,8 +1,8 @@
-#include <solvers/NavierStokes/FadlunEtAlSolver.h>
+#include <solvers/NavierStokes/DirectForcingSolver.h>
 #include <sys/stat.h>
 
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::initialise()
+void DirectForcingSolver<memoryType>::initialise()
 {
 	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
         ny = NavierStokesSolver<memoryType>::domInfo->ny;
@@ -44,7 +44,7 @@ void FadlunEtAlSolver<memoryType>::initialise()
 }
 
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::updateSolverState()
+void DirectForcingSolver<memoryType>::updateSolverState()
 {
 	if (NSWithBody<memoryType>::B.bodiesMove)
 	{
@@ -76,7 +76,7 @@ void FadlunEtAlSolver<memoryType>::updateSolverState()
 }
 
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::assembleRHS1()
+void DirectForcingSolver<memoryType>::assembleRHS1()
 {
 	NavierStokesSolver<memoryType>::assembleRHS1();
 	
@@ -86,20 +86,20 @@ void FadlunEtAlSolver<memoryType>::assembleRHS1()
 }
 
 template <typename memoryType>
-FadlunEtAlSolver<memoryType>::FadlunEtAlSolver(parameterDB *pDB, domain *dInfo)
+DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *dInfo)
 {
 	NavierStokesSolver<memoryType>::paramDB = pDB;
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
 }
 
-#include "FadlunEtAl/tagPoints.inl"
-#include "FadlunEtAl/generateL.inl"
+#include "DirectForcing/tagPoints.inl"
+#include "DirectForcing/generateL.inl"
 //
-#include "FadlunEtAl/generateA.inl"
+#include "DirectForcing/generateA.inl"
 //
-#include "FadlunEtAl/updateRHS1.inl"
-#include "FadlunEtAl/generateQT.inl"
-#include "FadlunEtAl/calculateForce.inl"
+#include "DirectForcing/updateRHS1.inl"
+#include "DirectForcing/generateQT.inl"
+#include "DirectForcing/calculateForce.inl"
 
-template class FadlunEtAlSolver<host_memory>;
-template class FadlunEtAlSolver<device_memory>;
+template class DirectForcingSolver<host_memory>;
+template class DirectForcingSolver<device_memory>;

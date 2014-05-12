@@ -3,12 +3,12 @@
 #define BSZ 16
 
 template <>
-void FadlunEtAlSolver<host_memory>::calculateForceF()
+void DirectForcingSolver<host_memory>::calculateForceF()
 {
 }
 
 template <>
-void FadlunEtAlSolver<device_memory>::calculateForceF()
+void DirectForcingSolver<device_memory>::calculateForceF()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;

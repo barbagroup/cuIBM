@@ -42,8 +42,8 @@ ibmScheme ibmSchemeFromString(string &s)
     return NAVIER_STOKES;
   else if (s == "SAIKI_BIRINGEN")
     return SAIKI_BIRINGEN;
-  else if (s == "FADLUN_ET_AL")
-    return FADLUN_ET_AL;
+  else if (s == "DIRECT_FORCING")
+    return DIRECT_FORCING;
   else if (s == "TAIRA_COLONIUS")
     return TAIRA_COLONIUS;
   else

@@ -4,7 +4,7 @@
 */
 
 template <>
-void FadlunEtAlSolver<host_memory>::tagPoints()
+void DirectForcingSolver<host_memory>::tagPoints()
 {
 	logger.startTimer("tagPoints");
 
@@ -19,7 +19,7 @@ void FadlunEtAlSolver<host_memory>::tagPoints()
 }
 
 template <>
-void FadlunEtAlSolver<device_memory>::tagPoints()
+void DirectForcingSolver<device_memory>::tagPoints()
 {
 	logger.startTimer("tagPoints");
 	
@@ -52,7 +52,7 @@ void FadlunEtAlSolver<device_memory>::tagPoints()
 #if 0
 // Bilinear Fadlun1c-type interpolation inside the body.
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
+void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by)
 {
 	int  nx = NavierStokesSolver<memoryType>::domInfo->nx,
 	     ny = NavierStokesSolver<memoryType>::domInfo->ny;
@@ -374,7 +374,7 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 #if 0
 // Bilinear Fadlun1c-type interpolation outside the body.
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
+void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by)
 {
 	int  nx = NavierStokesSolver<memoryType>::domInfo->nx,
 	     ny = NavierStokesSolver<memoryType>::domInfo->ny;
@@ -702,8 +702,8 @@ void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
 #if 1
 // Bilinear Fadlun1c-type interpolation outside the body, for a moving body.
 template <typename memoryType>
-//void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by)
-void FadlunEtAlSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real *vB)
+//void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by)
+void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real *vB)
 {
 	int  nx = NavierStokesSolver<memoryType>::domInfo->nx,
 	     ny = NavierStokesSolver<memoryType>::domInfo->ny;

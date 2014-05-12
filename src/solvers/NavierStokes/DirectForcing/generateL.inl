@@ -1,16 +1,16 @@
 /*template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::generateL()
+void DirectForcingSolver<memoryType>::generateL()
 {
 	
 }*/
 
 template <>
-void FadlunEtAlSolver<host_memory>::generateL() 
+void DirectForcingSolver<host_memory>::generateL() 
 {
 }
 
 template <>
-void FadlunEtAlSolver<device_memory>::generateL() 
+void DirectForcingSolver<device_memory>::generateL() 
 {
 #if 1
 	int  nx = domInfo->nx,
@@ -38,7 +38,7 @@ void FadlunEtAlSolver<device_memory>::generateL()
 	/**
 	* DO NOT FORGET (IMPLEMENTED)
 	* A is generated as M-alpha*LHost
-	* But some values of L are the interpolation values of Fadlun et al
+	* But some values of L are the interpolation values of the direct forcing method
 	* These should not be multplied by alpha
 	*
 	* The sign of the interpolation coeffs

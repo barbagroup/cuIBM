@@ -73,6 +73,7 @@ enum ibmScheme
 {
 	NAVIER_STOKES,  ///< No immersed bodies. Perot (1993)
 	SAIKI_BIRINGEN, ///< Saiki & Biringen (1996)
+	DIRECT_FORCING, ///< Fully discrete direct forcing method
 	FADLUN_ET_AL,   ///< Fadlun et al (2000)
 	TAIRA_COLONIUS, ///< Taira & Colonius (2007)
 	SLL0,           ///< SLL0

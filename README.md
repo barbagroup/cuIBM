@@ -182,8 +182,8 @@ Known issues
 
 * CPU routines do not work.
 * Cannot specify which Krylov solver to use for solving the linear systems.
-* TairaColoniusSolver and FadlunEtAlSolver fail if no body is present.
-* FadlunEtAlSolver has not been tested for cases with multiple or moving bodies.
+* TairaColoniusSolver and DirectForcingSolver fail if no body is present.
+* DirectForcingSolver has not been tested for cases with multiple or moving bodies.
 
 Contact
 -------

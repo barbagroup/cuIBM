@@ -1,12 +1,12 @@
 #include <solvers/NavierStokes/kernels/generateQT.h>
 
 template <>
-void FadlunEtAlSolver<host_memory>::updateQ()
+void DirectForcingSolver<host_memory>::updateQ()
 {
 }
 
 template <>
-void FadlunEtAlSolver<device_memory>::updateQ()
+void DirectForcingSolver<device_memory>::updateQ()
 {
 	const int blocksize = 256;
 	
@@ -31,7 +31,7 @@ void FadlunEtAlSolver<device_memory>::updateQ()
 }
 
 template <typename memoryType>
-void FadlunEtAlSolver<memoryType>::generateQT()
+void DirectForcingSolver<memoryType>::generateQT()
 {
 	NavierStokesSolver<memoryType>::generateQT();
 	updateQ();
@@ -40,7 +40,7 @@ void FadlunEtAlSolver<memoryType>::generateQT()
 
 /*
 template <>
-void FadlunEtAlSolver<host_memory>::generateQT()
+void DirectForcingSolver<host_memory>::generateQT()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -99,11 +99,11 @@ void FadlunEtAlSolver<host_memory>::generateQT()
 	
 	cusp::transpose(QT, Q);
 	
-	updateQFadlun();
+	updateQDirectForcing();
 }
 
 template <>
-void FadlunEtAlSolver<device_memory>::generateQT()
+void DirectForcingSolver<device_memory>::generateQT()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -165,7 +165,7 @@ void FadlunEtAlSolver<device_memory>::generateQT()
 //	cusp::print(QT);
 	cusp::transpose(QT, Q);
 	
-	updateQFadlun();
+	updateQDirectForcing();
 	
 	cusp::transpose(Q, QT);
 //	cusp::print(Q);

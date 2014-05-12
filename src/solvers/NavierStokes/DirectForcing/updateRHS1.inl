@@ -1,7 +1,7 @@
 #include <solvers/NavierStokes/kernels/updateRHS1.h>
 
 template <>
-void FadlunEtAlSolver<device_memory>::updateRHS1()
+void DirectForcingSolver<device_memory>::updateRHS1()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -36,7 +36,7 @@ void FadlunEtAlSolver<device_memory>::updateRHS1()
 }
 
 template <>
-void FadlunEtAlSolver<host_memory>::updateRHS1()
+void DirectForcingSolver<host_memory>::updateRHS1()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;

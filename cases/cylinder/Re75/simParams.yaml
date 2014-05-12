@@ -6,7 +6,7 @@
   restart: false
   startStep: 0
   timeScheme: [ADAMS_BASHFORTH_2, CRANK_NICOLSON]
-  ibmScheme: FADLUN_ET_AL
+  ibmScheme: TAIRA_COLONIUS
   linearSolvers:
     - system: velocity
       solver: CG
