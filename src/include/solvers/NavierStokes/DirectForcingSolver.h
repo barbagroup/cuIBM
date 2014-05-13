@@ -14,7 +14,7 @@
 template <typename memoryType>
 class DirectForcingSolver : public NSWithBody<memoryType>
 {
-private:
+protected:
 /*
 	// For the 1D interpolations
 	cusp::array1d<int, host_memory>    tags;
