@@ -44,7 +44,6 @@ protected:
 	void updateRHS1();
 
 	void updateSolverState();
-	void  calculateForceF();
 	
 public:
 	DirectForcingSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);

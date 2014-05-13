@@ -99,7 +99,6 @@ DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *d
 //
 #include "DirectForcing/updateRHS1.inl"
 #include "DirectForcing/generateQT.inl"
-#include "DirectForcing/calculateForce.inl"
 
 template class DirectForcingSolver<host_memory>;
 template class DirectForcingSolver<device_memory>;

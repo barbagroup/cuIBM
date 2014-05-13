@@ -5,3 +5,6 @@
 
 # folders
 data/*
+
+# files
+bin/cuIBM
