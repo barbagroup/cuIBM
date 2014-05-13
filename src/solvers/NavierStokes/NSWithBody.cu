@@ -102,20 +102,21 @@ void NSWithBody<device_memory>::calculateForce()
 }
 
 template <typename memoryType>
-void NSWithBody<memoryType>::writeData()
-{
+void NSWithBody<memoryType>::writeCommon()
+{	
 	NavierStokesSolver<memoryType>::logger.startTimer("output");
-	
-	// write the velocity and pressure
+
+	parameterDB  &db = *NavierStokesSolver<memoryType>::paramDB;
+	std::string  caseFolder = db["inputs"]["caseFolder"].get<std::string>();
+	int          nsave = db["simulation"]["nsave"].get<int>();
+	int          timeStep = NavierStokesSolver<memoryType>::timeStep;
+
 	NavierStokesSolver<memoryType>::writeCommon();
 	
-	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
-	real dt = db["simulation"]["dt"].get<real>();
-	
-	// calculate and write the force on the body
-	calculateForce();
-	forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t' << forceX << '\t' << forceY << std::endl;
-	
+	// write the coordinates of the body points
+	if (timeStep % nsave == 0)
+		B.writeToFile(caseFolder, timeStep);
+
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }
 

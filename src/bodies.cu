@@ -230,5 +230,38 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 		calculateCellIndices(D);
 }
 
+template <>
+void bodies<host_memory>::writeToFile(std::string &caseFolder, int timeStep)
+{
+	 real *bx = thrust::raw_pointer_cast(&(x[0])),
+	      *by = thrust::raw_pointer_cast(&(y[0]));
+	 writeToFile(bx, by, caseFolder, timeStep);
+}
+
+template <>
+void bodies<device_memory>::writeToFile(std::string &caseFolder, int timeStep)
+{
+	vecH xHost = x,
+	     yHost = y;
+	real *bx = thrust::raw_pointer_cast(&(xHost[0])),
+	     *by = thrust::raw_pointer_cast(&(yHost[0]));
+	writeToFile(bx, by, caseFolder, timeStep);
+}
+
+template <typename memoryType>
+void bodies<memoryType>::writeToFile(real *bx, real *by, std::string &caseFolder, int timeStep)
+{
+	std::string       path;
+	std::stringstream out;
+	out << caseFolder << '/' << std::setfill('0') << std::setw(7) << timeStep << "/bodies";
+	std::ofstream file(out.str().c_str());
+	file << '#' << std::setw(19) << "x-coordinate" << std::setw(20) << "y-coordinate" << std::endl;
+	for (int l=0; l < totalPoints; l++)
+	{
+		file << bx[l] << '\t' << by[l] << '\n';
+	}
+	file.close();
+}
+
 template class bodies<host_memory>;
 template class bodies<device_memory>;

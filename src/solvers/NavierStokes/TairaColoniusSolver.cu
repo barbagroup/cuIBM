@@ -28,7 +28,7 @@ void TairaColoniusSolver<memoryType>::writeData()
 {	
 	NavierStokesSolver<memoryType>::logger.startTimer("output");
 
-	NavierStokesSolver<memoryType>::writeCommon();
+	NSWithBody<memoryType>::writeCommon();
 
 	parameterDB  &db = *NavierStokesSolver<memoryType>::paramDB;
 	real         dt  = db["simulation"]["dt"].get<real>();

@@ -91,4 +91,7 @@ public:
 	* \f$y_{i,m} = Y^c_m + (X_{i,m} - X^0_m) \sin\theta + (Y_{i,m} - Y^0_m) \cos\theta\f$
 	*/
 	void update(parameterDB &db, domain &D, real Time);
+
+	void writeToFile(std::string &caseFolder, int timeStep);
+	void writeToFile(real *bx, real *by, std::string &caseFolder, int timeStep);
 };

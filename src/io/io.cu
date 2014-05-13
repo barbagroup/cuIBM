@@ -372,21 +372,6 @@ void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, doma
 	for(int i=0; i<q.size(); i++)
 		file << q[i] << '\n';
 	file.close();
-/*
-	out.str("");
-	out << path << "/bodies";
-	file.open(out.str().c_str());
-	file << '#' << std::setw(19) << "x-coordinate" << std::setw(20) << "y-coordinate" << std::endl;
-	for (int i=0; i < B.no_of_bodies; i++)
-	{
-		for (int j=0; j < B.Body[i].no_of_points; j++)
-		{
-			file << std::setw(20) << B.Body[i].bp[j].x << std::setw(20) << B.Body[i].bp[j].y << std::endl;
-			nb++;
-		}
-		file << std::endl;
-	}
-	file.close();*/
 
 	out.str("");
 	out << path << "/lambda";
