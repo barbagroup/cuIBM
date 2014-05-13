@@ -4,3 +4,4 @@
 *.pyc
 
 # folders
+data/*
