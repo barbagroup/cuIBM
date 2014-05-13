@@ -33,13 +33,13 @@ FINAL_LIB = lib/libcuIBM.a
 
 # link all the object files and libraries to create the executable bin/cuIBM
 cuibm: $(LIBS) $(EXT_LIBS) src/helpers.o src/parameterDB.o src/bodies.o src/cuIBM.o
-	nvcc $^ -o bin/cuIBM
+	${CC} $^ -o bin/cuIBM
 
 unitTests/convectionTerm: $(TESTLIBS) $(EXT_LIBS) src/helpers.o src/parameterDB.o src/unitTests/convectionTerm.o
-	nvcc $^ -o bin/unitTests/convectionTerm
+	${CC} $^ -o bin/unitTests/convectionTerm
 
 unitTests/diffusionTerm: $(TESTLIBS) $(EXT_LIBS) src/helpers.o src/parameterDB.o src/unitTests/diffusionTerm.o
-	nvcc $^ -o bin/unitTests/diffusionTerm
+	${CC} $^ -o bin/unitTests/diffusionTerm
 
 #src/preconditioner.o
 

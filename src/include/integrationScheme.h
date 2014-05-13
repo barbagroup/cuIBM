@@ -40,6 +40,8 @@ public:
 			case RUNGE_KUTTA_3:
 				subSteps = 3;
 				break;
+			default:
+				break;
 		}
 		
 		// Resize the arrays
@@ -67,6 +69,8 @@ public:
 				gamma[2] = 3.0/4;
 				zeta[2]  = -5.0/12;
 				break;
+			default:
+				break;
 		}
 		
 		real aI, aE;
@@ -84,6 +88,8 @@ public:
 			case CRANK_NICOLSON:
 				aI = 0.5;
 				aE = 0.5;
+			default:
+				break;
 		}
 		for(int i=0; i<subSteps; i++)
 		{

@@ -1,8 +1,8 @@
 .PHONY: lib
 .SUFFIXES: .cpp
 
-CC = g++
-OPTS = -O2 -I../include
+CC = nvcc ${OSXOPTS}
+OPTS = -arch=compute_20 -O3 -I../include
 
 SRC=$(wildcard *.cpp)
 OBJ=$(SRC:.cpp=.o)

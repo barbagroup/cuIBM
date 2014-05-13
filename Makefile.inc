@@ -5,12 +5,12 @@
 
 # compiler
 # nvcc - NVIDIA's CUDA compiler
-CC = nvcc
+CC = nvcc ${OSXOPTS}
 
 # options for the compiler
 # -arch=compute_20 compiles the program to use double precision on the GPU
 # -O3 is an optimisation flag
-OPTS = -arch=compute_20 -O3 #-Xcompiler -Wall
+OPTS = -arch=compute_20 -O3
 
 # root directory of the project
 # MAKEFILE_LIST is a special variable
