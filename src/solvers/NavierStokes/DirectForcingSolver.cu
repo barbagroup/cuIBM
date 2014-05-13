@@ -86,6 +86,24 @@ void DirectForcingSolver<memoryType>::assembleRHS1()
 }
 
 template <typename memoryType>
+void DirectForcingSolver<memoryType>::writeData()
+{	
+	NavierStokesSolver<memoryType>::logger.startTimer("output");
+
+	parameterDB  &db = *NavierStokesSolver<memoryType>::paramDB;
+	real         dt  = db["simulation"]["dt"].get<real>();
+	int          timeStep = NavierStokesSolver<memoryType>::timeStep;
+
+	NSWithBody<memoryType>::writeCommon();
+	
+	// Print forces calculated using the CV approach
+	NSWithBody<memoryType>::calculateForce();
+	NSWithBody<memoryType>::forceFile << timeStep*dt << '\t' << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << std::endl;
+	
+	NavierStokesSolver<memoryType>::logger.stopTimer("output");
+}
+
+template <typename memoryType>
 DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *dInfo)
 {
 	NavierStokesSolver<memoryType>::paramDB = pDB;

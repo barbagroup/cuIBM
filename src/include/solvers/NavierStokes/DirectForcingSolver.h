@@ -48,6 +48,7 @@ protected:
 public:
 	DirectForcingSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
 	void initialise();
+	void writeData();
 	std::string name()
 	{
 		return "Direct Forcing";
