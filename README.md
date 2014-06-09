@@ -3,7 +3,7 @@ cuIBM - A GPU-based Immersed Boundary Method code
 
 *Updated: June 9th, 2014*
 
-**ATTENTION: cuIBM has moved to [GitHub](https://github.com/cusplibrary/cusplibrary). Please take note of the new address and download the repository from there. However, we will continue to push changes to both repositories and keep them synchronised.**
+**ATTENTION: The primary respository for cuIBM shall henceforth be hosted on [GitHub](https://github.com/barbagroup/cuIBM). However, we will continue to push changes to both Github and the (old Bitbucket repository)[https://bitbucket.org/anushk/cuibm] and keep the code synchronised.**
 
 Currently, cuIBM runs only on Unix-based systems and has been tested on Ubuntu 12.04. It is not supported on Windows.
 
@@ -80,10 +80,6 @@ Run the following commands to create a local copy of the repository in the folde
     > mkdir -p $HOME/src
     > cd $HOME/src
     > git clone https://github.com/barbagroup/cuIBM.git
-
-or
-
-    > git clone https://bitbucket.org/anushk/cuibm.git
 
 To compile, set the environment variable `CUSP_DIR` to point to the directory with the CUSP library. For a `bash` shell, add the following line to the file `~/.bashrc` or `~/.bash_profile`:
 
