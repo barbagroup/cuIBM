@@ -1,9 +1,11 @@
 cuIBM - A GPU-based Immersed Boundary Method code
 =================================================
 
-*Updated: May 6th, 2014*
+*Updated: June 9th, 2014*
 
-Currently, cuIBM runs only on Linux and has been tested on Ubuntu 12.04. It is not supported on Windows and Mac OS X.
+**ATTENTION: cuIBM has moved to [GitHub](https://github.com/cusplibrary/cusplibrary). Please take note of the new address and download the repository from there. However, we will continue to push changes to both repositories and keep them synchronised.**
+
+Currently, cuIBM runs only on Unix-based systems and has been tested on Ubuntu 12.04. It is not supported on Windows.
 
 Installation instructions
 -------------------------
@@ -12,16 +14,16 @@ Installation instructions
 
 Please ensure that the following dependencies are installed before compiling cuIBM:
 
-* Mercurial revision control tool (`hg`)
+* Git distributed version control system (`git`)
 * GNU C++ Compiler(`g++`)
 * NVIDIA's CUDA Compiler (`nvcc`)
 * CUSP Library (available [here](https://github.com/cusplibrary/cusplibrary))
 
-#### Mercurial (`hg`)
+#### Git (`git`)
 
-Install the package `mercurial`. On Ubuntu, this can be done via the Terminal using the following command:
+Install `git`. On Ubuntu, this can be done via the Terminal using the following command:
 
-    > sudo apt-get install mercurial
+    > sudo apt-get install git-core
 
 #### GNU C++ Compiler (`g++`)
 
@@ -43,9 +45,9 @@ Check the version of NVCC installed:
 
     > nvcc --version
 
-cuIBM has been tested and compiles with NVCC versions 4.1, 4.2 and 5.0.
+cuIBM has been compiled and tested with NVCC versions 4.1 to 6.0.
 
-**IMPORTANT**: `nvcc-4.1` is compatible only with G++ version 4.5 (`g++-4.5`) or below. `nvcc-4.2` and `nvcc-5.0` are compatible with `g++-4.6` and below.
+**IMPORTANT**: `nvcc-4.1` is compatible only with G++ version 4.5 (`g++-4.5`) or below. `nvcc-4.2` and above are compatible with `g++-4.6` and below.
 
 #### CUSP Library
 
@@ -71,11 +73,17 @@ which creates the folder `$HOME/lib/cusplibrary`.
 
 ### Compiling cuIBM
 
-cuIBM is currently hosted on [BitBucket](https://bitbucket.org/anushk/cuibm). Run the following commands to create a local copy in the folder `$HOME/src` (or any other folder with appropriate read/write/execute permissions):
+cuIBM is currently hosted on both [Github](https://github.com/barbagroup/cuIBM) and [BitBucket](https://bitbucket.org/anushk/cuibm). The Github repository is the official one, but both will reflect the latest changes.
+
+Run the following commands to create a local copy of the repository in the folder `$HOME/src` (or any other folder with appropriate read/write/execute permissions):
 
     > mkdir -p $HOME/src
     > cd $HOME/src
-    > hg clone https://bitbucket.org/anushk/cuibm
+    > git clone https://github.com/barbagroup/cuIBM.git
+
+or
+
+    > git clone https://bitbucket.org/anushk/cuibm.git
 
 To compile, set the environment variable `CUSP_DIR` to point to the directory with the CUSP library. For a `bash` shell, add the following line to the file `~/.bashrc` or `~/.bash_profile`:
 
@@ -102,13 +110,13 @@ or if you've set the environment variable,
     > cd $CUIBM_DIR
 
 Compile all the files:
-	
+    
     > make
 
 Run the test:
-	
+    
     > bin/cuIBM
-	
+    
 **IMPORTANT**: If your NVIDIA card supports only compute capability 1.3, then edit Line 13 of the Makefile in the cuIBM root directory before compiling: replace `compute_20` with `compute_13`.
 
 Numerical schemes
@@ -119,13 +127,13 @@ Numerical schemes
 The following schemes have been tested for the available solvers:
 
 * Convection
-	- `EULER_EXPLICIT`: First-order Explicit Euler
-	- `ADAMS_BASHFORTH_2`: Second-order Adams-Bashforth
+    - `EULER_EXPLICIT`: First-order Explicit Euler
+    - `ADAMS_BASHFORTH_2`: Second-order Adams-Bashforth
 
 * Diffusion
-	- `EULER_EXPLICIT`: First-order explicit Euler
-	- `EULER_IMPLICIT`: First order implicit Euler
-	- `CRANK_NICOLSON`: Crank-Nicolson
+    - `EULER_EXPLICIT`: First-order explicit Euler
+    - `EULER_IMPLICIT`: First order implicit Euler
+    - `CRANK_NICOLSON`: Crank-Nicolson
 
 ### Spatial discretisation 
 
@@ -159,7 +167,7 @@ Reynolds number 3000.
 * `oscillatingCylinders`: Flow across two oscillating cylinders.
 
 ### Run the tests
-	
+    
 To run any of the examples:
 
     > make <examplename>
