@@ -3,7 +3,7 @@ cuIBM - A GPU-based Immersed Boundary Method code
 
 *Updated: June 9th, 2014*
 
-**ATTENTION: The primary respository for cuIBM shall henceforth be hosted on [GitHub](https://github.com/barbagroup/cuIBM). However, we will continue to push changes to both Github and the (old Bitbucket repository)[https://bitbucket.org/anushk/cuibm] and keep the code synchronised.**
+**ATTENTION: The primary respository for cuIBM shall henceforth be hosted on [GitHub](https://github.com/barbagroup/cuIBM). However, we will continue to push changes to both Github and the [old Bitbucket repository](https://bitbucket.org/anushk/cuibm) and keep the code synchronised.**
 
 Currently, cuIBM runs only on Unix-based systems and has been tested on Ubuntu 12.04. It is not supported on Windows.
 
