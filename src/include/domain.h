@@ -1,12 +1,15 @@
-/**
+/***************************************************************************//**
 * \file domain.h
-* \brief Stores the grid information
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Declaration of the class \c domain \c
 */
 #pragma once
 
 #include <types.h>
-/**
-* \brief Stores the grid information
+
+/***************************************************************************//**
+* \class domain
+* \brief Stores the mesh grid information
 */
 class domain
 {

@@ -1,6 +1,7 @@
-/**
-* @file  parameterDB.h
-* @brief Database of all the simluation parameters
+/***************************************************************************//**
+* \file parameterDB.h
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Database of all the simulation parameters.
 */
 
 #pragma once
@@ -13,9 +14,9 @@
 #include <iostream>
 #include <boundaryCondition.h>
 
-// generic property storage
-/**
-* @class property
+/***************************************************************************//**
+* \class property
+* \brief generic property storage
 */
 class property
 {
@@ -24,38 +25,44 @@ class property
 	// hack to get around std::type_info not having a default constructor
 	const std::type_info *type;
 	
-	/// 64 bytes of storage for the name of the 
-	char value[64];
+	char value[64]; ///< 64 bytes of storage for the name of the value
 
 public:
-	/// Constructor. Intialises the memory to zero.
+	/********************//**
+	* \brief Constructor of the class \c property \c initializing the memory to zero
+	*/
 	property()
 	{
 		memset(value, 0, 64);
 	}
 	
-	/// Get a value given a type
+	/********************//**
+	* \brief Returns the value of the property as a given type
+	*/
 	template <typename T> T get();
 	
-	/**
-	* @brief Set a value given a type
+	/********************//**
+	* \brief Sets the value given a type
 	*
-	* @param v The value
+	* \param v The value
 	*/
 	template <typename T> void set(T v);
 
-	// return string describing value of property as appropriate
+	/********************//**
+	* \brief Returns a string describing the value of property as appropriate
+	*/
 	const char *print();
 };
 
-/**
-* @typedef componentParameter
-* @typedef Maps from strings to a property 
+/********************//**
+* \typedef componentParameter
+* \brief Maps from a string to a \c property \c
 */
 typedef std::map<std::string, property> componentParameter;
 
-/**
-* @typedef parameterDB
+/********************//**
+* \typedef parameterDB
+* \brief Maps from a string to a \c componentParameter \c
 */
 typedef std::map<std::string, componentParameter> parameterDB;
 
@@ -71,4 +78,3 @@ void printDB(parameterDB &DB)
   }
 }
 */
-

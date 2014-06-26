@@ -5,6 +5,8 @@
 
 # folders
 data/*
+html/*
+latex/*
 
 # files
 bin/cuIBM

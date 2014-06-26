@@ -1,3 +1,9 @@
+/***************************************************************************//**
+* \file cuIBM.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Main source file of <B>cuIBM</B>
+*/
+
 #include <types.h>
 #include <helpers.h>
 #include <domain.h>
@@ -6,7 +12,9 @@
 
 int main(int argc, char **argv)
 {
+	// Initializes the computational domain
 	domain dom_info;
+
 	parameterDB paramDB;
 
 	io::readInputs(argc, argv, paramDB, dom_info);

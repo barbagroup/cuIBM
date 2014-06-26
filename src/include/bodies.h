@@ -1,6 +1,8 @@
-/**
-* @file  bodies.h
-* @brief Stores information about the body points in arrays
+/***************************************************************************//**
+* \file  bodies.h
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Declaration of the class bodies. 
+* Stores information about the body points in arrays.
 */
 
 #pragma once
@@ -9,6 +11,10 @@
 #include <parameterDB.h>
 #include <body.h>
 
+/***************************************************************************//**
+* \class bodies
+* \brief Stores information about the body
+*/
 template <typename memoryType>
 class bodies
 {
@@ -16,7 +22,7 @@ public:
 	int  numBodies,   ///< number of bodies
 	     totalPoints; ///< total number of boundary points (all bodies)
 
-	bool bodiesMove;  ///< Tells whether the body is moving or not
+	bool bodiesMove;  ///< tells whether the body is moving or not
 
 	cusp::array1d<int, memoryType>
 		numPoints,    ///< number of points in a body
@@ -50,40 +56,41 @@ public:
 		uB,    ///< x-velocity of the boundary points
 		vB;    ///< y-velocity of the boundary points
 
-	/**
-	* @brief Initialise the arrays in the class with information from the
-	*        @link body @endlink instances.
+	/********************//**
+	* \brief Initialise the arrays in the class with information from the
+	*        \link body \endlink instances.
 	*
 	* Information regarding the coordinates of the body points and the motion 
 	* of the bodies is stored on the host as an array of instances of the 
-	* class @link body @endlink. This function transfers that information to
+	* class \link body \endlink. This function transfers that information to
 	* arrays on the device, where they are stored as a structure of arrays.  
 	* This makea computation more efficient.
 	*
-	* @param db Database that contains all the simulation parameters
-	* @param D  Information about the computaional grid.
+	* \param db Database that contains all the simulation parameters
+	* \param D  Information about the computaional grid
 	*/
 	void initialise(parameterDB &db, domain &D);
 	
-	/**
-	* @brief Calculates the indices of the cells in which the boundary points 
+	/********************//**
+	* \brief Calculates the indices of the cells in which the boundary points 
 	*        are present.
 	* 
 	* This information is useful when transferring data between the 
 	* boundary points and the computational grid.
 	*
-	* @param D Information about the computational grid.
+	* \param D Information about the computational grid.
 	*/
 	void calculateCellIndices(domain &D);
 	
-	/**
-	* @brief Calculates the bounding boxes for each body.
-	* @param D Information about the computational grid.
+	/********************//**
+	* \brief Calculates the bounding boxes for each body
+	* \param D Information about the computational grid
 	*/
 	void calculateBoundingBoxes(parameterDB &db, domain &D);
 	
-	/**
-	* @brief Update the locations of the body points
+	/********************//**
+	* \brief Update the locations of the body points
+	* 
 	* This is done using the formulae:
 	*
 	* \f$x_{i,m} = X^c_m + (X_{i,m} - X^0_m) \cos\theta - (Y_{i,m} - Y^0_m) \sin\theta\f$ and

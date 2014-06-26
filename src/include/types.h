@@ -1,6 +1,7 @@
-/**
-* @file  types.h
-* @brief Custom types required by the code.
+/***************************************************************************//**
+* \file types.h
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Custom types required by the code.
 */
 
 #pragma once
@@ -27,9 +28,9 @@
 
 #include <logger.h>
 
-/**
-* @enum  bcType
-* @brief Specifies the type of boundary condition
+/********************//**
+* \enum  bcType
+* \brief Specifies the type of boundary condition
 */
 enum bcType
 {
@@ -40,9 +41,9 @@ enum bcType
 	SPECIAL
 };
 
-/**
-* @enum  boundary
-* @brief Specifies the boundary of concern
+/********************//**
+* \enum  boundary
+* \brief Specifies the boundary of concern
 */
 enum boundary
 {
@@ -52,9 +53,9 @@ enum boundary
 	YPLUS   ///< Top boundary
 };
 
-/**
-* @enum  timeScheme
-* @brief Numerical scheme used to discretise the time derivative
+/********************//**
+* \enum  timeScheme
+* \brief Numerical scheme used to discretise the time derivative
 */
 enum timeScheme
 {
@@ -65,9 +66,9 @@ enum timeScheme
 	CRANK_NICOLSON     ///< Crank-Nicolson scheme (second order)
 };
 
-/**
-* @enum  ibmScheme
-* @brief The immersed boundary method used to solve for the flow.
+/********************//**
+* \enum  ibmScheme
+* \brief Specifies the immersed boundary method used to solve the flow
 */
 enum ibmScheme
 {
@@ -81,9 +82,9 @@ enum ibmScheme
 	SLL2            ///< SLL2
 };
 
-/**
-* @enum  preconditionerType
-* @brief Specify the type of preconditioner
+/********************//**
+* \enum  preconditionerType
+* \brief Specifies the type of preconditioner
 */
 enum preconditionerType
 {
@@ -92,39 +93,47 @@ enum preconditionerType
 	SMOOTHED_AGGREGATION ///< Smoothed aggregation preconditioner
 };
 
-// Shorthand for various types
-
-/**
-* @typedef real
-* @brief Can be \c float or \c double
+/********************//**
+* \typedef real
+* \brief Can be \c float or \c double
 */
 typedef double real;
 
 using cusp::device_memory;
 using cusp::host_memory;
 
-/**
-* @typedef cooH
-* @brief   COO matrix stored on the host.
+/********************//**
+* \typedef cooH
+* \brief   COO matrix stored on the host
 */
 typedef cusp::coo_matrix<int, real, host_memory>   cooH;
 
-/**
-* @typedef cooD
-* @brief   COO matrix stored on the device.
+/********************//**
+* \typedef cooD
+* \brief   COO matrix stored on the device
 */
 typedef cusp::coo_matrix<int, real, device_memory> cooD;
 
+/********************//**
+* \typedef csrH
+* \brief   CSR matrix stored on the host
+*/
 typedef cusp::csr_matrix<int, real, host_memory>   csrH;
+
+/********************//**
+* \typedef csrD
+* \brief   CSR matrix stored on the device
+*/
 typedef cusp::csr_matrix<int, real, device_memory> csrD;
 
-/**
-* @typedef vecH
-* @brief   Cusp array of real numbers stored in the host memory.
+/********************//**
+* \typedef vecH
+* \brief   Cusp 1D array of real numbers stored in the host memory
 */
 typedef cusp::array1d<real, host_memory>   vecH;
-/**
-* @typedef vecD
-* @brief   Cusp array of real numbers stored in the device memory.
+
+/********************//**
+* \typedef vecD
+* \brief   Cusp 1D array of real numbers stored in the device memory
 */
 typedef cusp::array1d<real, device_memory> vecD;
