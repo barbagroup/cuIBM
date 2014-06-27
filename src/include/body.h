@@ -1,13 +1,14 @@
-/**
-* @file body.h
-* @brief Stores the locations of the body points and the motion parameters
+/***************************************************************************//**
+* \file body.h
+* \author Krishnan, A. (anus@bu.edu)
+* \brief Declaration and definition of the class \c body
 */
 
 #pragma once
 
-/**
-* @class body
-* @brief Information about an immersed body in the flow
+/***************************************************************************//**
+* \class body
+* \brief Information about an immersed body in the flow
 *
 * The number of boundary points and the reference x- and y-coordinates of the
 * boundary points are provided. The motion of the body is also described.
@@ -29,21 +30,21 @@ class body
     
     real Xc[2],     ///< Actual centre of rotation (x- and y-coordinates)
 	     Theta,     ///< Actual angle of attack (counterclockwise is positive)
-	     vel[2],    ///< translational velocity (x- and y- components)
-	     angVel;    ///< angular velocity (counterlockwise is positive)
+	     vel[2],    ///< Translational velocity (x- and y- components)
+	     angVel;    ///< Angular velocity (counterlockwise is positive)
 
 	bool moving[2]; ///< Flag to indicate if the body is moving (translating or rotating)
 
-	real velocity[2], ///< uniform translational velocity (x- and y-components)
-	     omega;       ///< uniform rotational velocity
+	real velocity[2], ///< Uniform translational velocity (x- and y-components)
+	     omega;       ///< Uniform rotational velocity
          
-	real xOscillation[3],     ///< amplitude, angular frequency and phase difference of oscillation in the x-direction
-         yOscillation[3],     ///< amplitude, angular frequency and phase difference of oscillation in the y-direction
-         pitchOscillation[3]; ///< amplitude, angular frequency and phase difference of pitch oscillation
+	real xOscillation[3],     ///< Amplitude, angular frequency and phase difference of oscillation in the x-direction
+         yOscillation[3],     ///< Amplitude, angular frequency and phase difference of oscillation in the y-direction
+         pitchOscillation[3]; ///< Amplitude, angular frequency and phase difference of pitch oscillation
     
-	/**
-	* @brief Update the position of the center of rotation of the body and
-	*        the translational and rotational velocities of the boundary points
+	/********************//**
+	* \brief Update the position of the center of rotation of the body and
+	*        the translational and rotational velocities of the boundary points.
 	*
 	* Requires a detailed description.
 	*/

@@ -1,3 +1,9 @@
+/***************************************************************************//**
+* \file logger.h
+* \author Krishnan, A. (anush@bu.edu)
+* \brief To do
+*/
+
 #pragma once
 
 #include <sys/time.h>
@@ -5,9 +11,16 @@
 #include <string>
 #include <iostream>
 
+/********************//**
+* \typedef
+* \brief Maps from a \c std::string to a \c double
+*/
 typedef std::map<std::string, double>            Event;
 typedef std::map<std::string, double>::iterator  E_iter;
 
+/***************************************************************************//**
+* \class Logger
+*/
 class Logger {
 private:
 	std::ofstream file;
@@ -18,7 +31,10 @@ private:
 	Event         timeStep; // times for 1 step
 	Event         memory;
 
-	double get_time() // Timer function
+	/********************//**
+	* \brief Timer function
+	*/
+	double get_time()
 	{
 		struct timeval tv;                        // Time value
 		gettimeofday(&tv, NULL);                  // Get time of day in seconds and microseconds
@@ -28,8 +44,15 @@ private:
 public:
 	bool printNow;
 
+	/********************//**
+	* \brief Constructor of the class
+	*/
 	Logger(){}
 	
+	/********************//**
+	* \brief Overloaded constructor of the class
+	* \param folder the case folder
+	*/
 	Logger(std::string folder)
 	{
 		file.open((folder + "/time").c_str());
@@ -37,6 +60,10 @@ public:
 		legendFile.open((folder + "/profiling_legend").c_str());
 		printNow = false;
 	}
+
+	/********************//**
+	* \brief Destructor of the class
+	*/
 	~Logger()
 	{
 		writeLegend();
@@ -44,11 +71,20 @@ public:
 		stepFile.close();
 	}
 
+	/********************//**
+	* \brief Starts the timer
+	* \param event a string to describe the event
+	*/
 	void startTimer(std::string event)
 	{
 		tic[event] = get_time();
 	}
 
+	/********************//**
+	* \brief Stops the timer
+	* \param event the string that describes the event
+	* \param print do you want to print the time?
+	*/
 	void stopTimer(std::string event, bool print=false)
 	{
 		double toc = get_time();
@@ -58,6 +94,10 @@ public:
 			std::cout << event << " : " << timer[event] << std::endl;
 	}
 
+	/********************//**
+	* \brief Erases the timer
+	* \param event the string that describes the event
+	*/
 	void eraseTimer(std::string event)
 	{
 		timer.erase(event);
@@ -126,10 +166,9 @@ public:
   
 	void writeTimeStep(int n)
 	{
-		// std::cout << "writeTimeStep called" << std::endl;
 		stepFile << n << "\t";
 		for ( E_iter E=timeStep.begin(); E!=timeStep.end(); ++E )
-			stepFile << E->second << "\t"; //  << std::endl;
+			stepFile << E->second << "\t";
 		stepFile << std::endl;
 	}
 

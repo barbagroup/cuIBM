@@ -1,8 +1,10 @@
 /***************************************************************************//**
 * \file  bodies.h
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Declaration of the class bodies. 
+* \brief Declaration of the class \c bodies.
+*
 * Stores information about the body points in arrays.
+*
 */
 
 #pragma once
@@ -57,48 +59,26 @@ public:
 		vB;    ///< y-velocity of the boundary points
 
 	/********************//**
-	* \brief Initialise the arrays in the class with information from the
-	*        \link body \endlink instances.
-	*
-	* Information regarding the coordinates of the body points and the motion 
-	* of the bodies is stored on the host as an array of instances of the 
-	* class \link body \endlink. This function transfers that information to
-	* arrays on the device, where they are stored as a structure of arrays.  
-	* This makea computation more efficient.
-	*
-	* \param db Database that contains all the simulation parameters
-	* \param D  Information about the computaional grid
+	* \brief Initializes the arrays in the class with information from \c body instances
 	*/
 	void initialise(parameterDB &db, domain &D);
 	
 	/********************//**
-	* \brief Calculates the indices of the cells in which the boundary points 
-	*        are present.
-	* 
-	* This information is useful when transferring data between the 
-	* boundary points and the computational grid.
-	*
-	* \param D Information about the computational grid.
+	* \brief Calculates the indices of the cells in which the boundary points are present
 	*/
 	void calculateCellIndices(domain &D);
 	
 	/********************//**
 	* \brief Calculates the bounding boxes for each body
-	* \param D Information about the computational grid
 	*/
 	void calculateBoundingBoxes(parameterDB &db, domain &D);
 	
 	/********************//**
-	* \brief Update the locations of the body points
-	* 
-	* This is done using the formulae:
-	*
-	* \f$x_{i,m} = X^c_m + (X_{i,m} - X^0_m) \cos\theta - (Y_{i,m} - Y^0_m) \sin\theta\f$ and
-	*
-	* \f$y_{i,m} = Y^c_m + (X_{i,m} - X^0_m) \sin\theta + (Y_{i,m} - Y^0_m) \cos\theta\f$
+	* \brief Updates the locations of the body points
 	*/
 	void update(parameterDB &db, domain &D, real Time);
 
 	void writeToFile(std::string &caseFolder, int timeStep);
+
 	void writeToFile(real *bx, real *by, std::string &caseFolder, int timeStep);
 };

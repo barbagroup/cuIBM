@@ -1,7 +1,7 @@
 /***************************************************************************//**
 * \file parameterDB.h
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Database of all the simulation parameters.
+* \brief Database of all the simulation parameters
 */
 
 #pragma once
@@ -16,7 +16,7 @@
 
 /***************************************************************************//**
 * \class property
-* \brief generic property storage
+* \brief Generic property storage
 */
 class property
 {
@@ -29,7 +29,9 @@ class property
 
 public:
 	/********************//**
-	* \brief Constructor of the class \c property \c initializing the memory to zero
+	* \brief Constructor of the class \c property.
+	*
+	* Initializes the memory to zero.
 	*/
 	property()
 	{
@@ -42,9 +44,7 @@ public:
 	template <typename T> T get();
 	
 	/********************//**
-	* \brief Sets the value given a type
-	*
-	* \param v The value
+	* \brief Sets the value of the property given a type
 	*/
 	template <typename T> void set(T v);
 
@@ -56,13 +56,13 @@ public:
 
 /********************//**
 * \typedef componentParameter
-* \brief Maps from a string to a \c property \c
+* \brief Maps from a string to a \c property
 */
 typedef std::map<std::string, property> componentParameter;
 
 /********************//**
 * \typedef parameterDB
-* \brief Maps from a string to a \c componentParameter \c
+* \brief Maps from a string to a \c componentParameter
 */
 typedef std::map<std::string, componentParameter> parameterDB;
 

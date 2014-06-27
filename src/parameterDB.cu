@@ -1,14 +1,18 @@
 /***************************************************************************//**
 * \file parameterDB.cu
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the class \c property \c
+* \brief Definition of the class \c property
 */
 
 #include <parameterDB.h>
 #include <body.h>
 #include <boundaryCondition.h>
 
-// converts a number to a string
+/***************************************************************************//**
+* \brief Converts a number to a string
+* \param num a number
+* \return a string
+*/
 template <typename T>
 std::string toString(T num)
 {
@@ -17,7 +21,11 @@ std::string toString(T num)
   return ss.str();
 }
 
-// converts a type of boundary condition to a string
+/***************************************************************************//**
+* \brief Converts a type of boundary condition to a string
+* \param b a type of boundary condition
+* \return a string
+*/
 template <>
 std::string toString(bcType b)
 {
@@ -31,14 +39,20 @@ std::string toString(bcType b)
     return "Error";
 }
 
-// returns the value of the property as a string
+/***************************************************************************//**
+* \brief Returns the value of the property as a string
+* \return a string
+*/
 template <>
 std::string property::get()
 {
   return std::string(value);
 }
 
-// returns the value of the property as a given type
+/***************************************************************************//**
+* \brief Returns the value of the property as a given type
+* \return the value of the property as a given type
+*/
 template <typename T>
 T property::get()
 {
@@ -58,7 +72,10 @@ template ibmScheme property::get<ibmScheme>();
 template std::vector<body> *property::get<std::vector<body>*>();
 template boundaryCondition **property::get<boundaryCondition **>();
 
-// returns the value of the property as a string
+/***************************************************************************//**
+* \brief Returns a string describing the value of property as appropriate
+* \return a constant character pointer
+*/
 const char *property::print()
 { 
     if (*type == typeid(int))
@@ -73,18 +90,24 @@ const char *property::print()
       return "not found";
 }
 
-// sets the value of the property given a string
+/***************************************************************************//**
+* \brief Sets the value of the property given a string
+* \param s a string
+*/
 template <>
 void property::set(std::string s)
 {
   strncpy(value,s.c_str(),64);
 }
 
-// sets the value of the property given the type
+/***************************************************************************//**
+* \brief Sets the value of the property given a type
+* \param v the value
+*/
 template <typename T>
 void property::set(T v)
 {
-  // assume we have enough space (64 bytes)
+  // assumes we have enough space (64 bytes)
   type = &typeid(T);
   *reinterpret_cast<T*>(&value[0]) = v;
 }

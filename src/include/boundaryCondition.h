@@ -1,3 +1,9 @@
+/***************************************************************************//**
+* \file boundaryCondition.h
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Definition of the class \c boundaryCondition
+*/
+
 #pragma once
 
 #include <types.h>
@@ -5,9 +11,9 @@
 #include <sstream>
 #include <parameterDB.h>
 
-/**
-* @class boundaryCondition
-* @brief Stores the boundary conditions for a given system
+/***************************************************************************//**
+* \class boundaryCondition
+* \brief Stores the boundary conditions for a given system
 */
 class boundaryCondition
 {

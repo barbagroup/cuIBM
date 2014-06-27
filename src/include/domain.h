@@ -1,7 +1,7 @@
 /***************************************************************************//**
 * \file domain.h
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Declaration of the class \c domain \c
+* \brief Declaration of the class \c domain
 */
 #pragma once
 

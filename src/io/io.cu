@@ -1,3 +1,9 @@
+/***************************************************************************//**
+* \file io.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Definition of functions related to input and output
+*/
+
 #include <io/io.h>
 #include <types.h>
 #include <sys/stat.h>
@@ -5,7 +11,11 @@
 
 using std::string;
 
-/// convert string to real number or integer
+/***************************************************************************//**
+* \brief Converts a string to a number
+* \param str a string
+* \return a number (\c real or \c integer)
+*/
 template <typename T>
 T toNumber(string str)
 {
@@ -54,7 +64,12 @@ void makeDirectory(const std::string folderPath)
 //##############################################################################
 //                                 INPUT
 //##############################################################################
-	
+
+/***************************************************************************//**
+* \brief Reads inputs by parsing the command-line and simulation files
+* \param DB database containing all simulation parameters
+* \param D contains information related to the computational grid
+*/
 void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 {
 	// get a default database
@@ -86,6 +101,10 @@ void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 	commandLineParse2(argc, argv, DB);
 }
 
+/***************************************************************************//**
+* \brief Initializes the database with default values
+* \param DB the database containing all simulation parameters
+*/
 void initialiseDefaultDB(parameterDB &DB)
 {
 	DB["inputs"] = componentParameter();
@@ -139,7 +158,12 @@ void initialiseDefaultDB(parameterDB &DB)
 	DB[solver]["maxIterations"].set<int>(20000);
 }
 
-// first pass - only get the files to continue
+/***************************************************************************//**
+* \brief Parses the command-line to get the case folder name and the device number
+* \param argc number of arguments in the command-line
+* \param argv pointer on the arguments of the command-line
+* \param DB database containing all simulation parameters
+*/
 void commandLineParse1(int argc, char **argv, parameterDB &DB)
 {
 	for (int i=1; i<argc; i++)
@@ -154,12 +178,18 @@ void commandLineParse1(int argc, char **argv, parameterDB &DB)
 			i++;
 			int devNum = toNumber<int>(string(argv[i]));
 			DB["inputs"]["deviceNumber"].set<int>(devNum);
+			// sets devNum as the current device for the calling host thread
 			cudaSetDevice(devNum);
 		}
 	}
 }
 
-// overwrite values in the DB from command line
+/***************************************************************************//**
+* \brief Overwrites values of the database with additional arguments of the command-line
+* \param argc number of arguments in the command-line
+* \param argv pointer on the arguments of the command-line
+* \param DB database containing all the simulation parameters
+*/
 void commandLineParse2(int argc, char **argv, parameterDB &DB)
 {
 	for (int i=1; i<argc; i++)
@@ -244,6 +274,11 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 //                                OUTPUT
 //##############################################################################
 
+/***************************************************************************//**
+* \brief Converts a \c preconditionerType to a \c std::string
+* \param s the preconditioner
+* \return a string
+*/
 string stringFromPreconditionerType(preconditionerType s)
 {
   if (s == NONE)
@@ -256,7 +291,11 @@ string stringFromPreconditionerType(preconditionerType s)
     return "Unrecognised preconditioner";
 }
 
-// output
+/***************************************************************************//**
+* \brief Prints simulation parameters
+* \param DB database containing all simulation parameters
+* \param D information related to the computational grid
+*/
 void printSimulationInfo(parameterDB &DB, domain &D)
 {
 	real dt = DB["simulation"]["dt"].get<real>(),
@@ -319,6 +358,11 @@ void printTimingInfo(Logger &logger)
 	std::cout << std::endl;
 }
 
+/***************************************************************************//**
+* \brief Writes information about the run into a file
+* \param DB database containing all simulation parameters
+* \param D information related to the ocmputational grid
+*/
 void writeInfoFile(parameterDB &DB, domain &D)
 {
 	std::string   folder = DB["inputs"]["caseFolder"].get<string>();
@@ -335,6 +379,11 @@ void writeInfoFile(parameterDB &DB, domain &D)
 	infofile.close();
 }
 
+/***************************************************************************//**
+* \brief Writes the mesh points into a file
+* \param caseFolder path of the case folder
+* \param D information related to the ocmputational grid
+*/
 void writeGrid(std::string &caseFolder, domain &D)
 {
 	std::stringstream out;

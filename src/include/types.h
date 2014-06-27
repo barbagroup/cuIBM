@@ -1,7 +1,7 @@
 /***************************************************************************//**
 * \file types.h
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Custom types required by the code.
+* \brief Custom types required by the code
 */
 
 #pragma once
@@ -14,13 +14,11 @@
 #include <cusp/csr_matrix.h>
 #include <cusp/array1d.h>
 #include <cusp/print.h>
-
 #include <cusp/transpose.h>
 #include <cusp/blas.h>
 #include <cusp/krylov/cg.h>
 #include <cusp/krylov/bicgstab.h>
 #include <cusp/krylov/gmres.h>
-
 #include <cusp/multiply.h>
 #include <cusp/elementwise.h>
 
@@ -95,7 +93,7 @@ enum preconditionerType
 
 /********************//**
 * \typedef real
-* \brief Can be \c float or \c double
+* \brief Can be \c float or \c double depending on the machine precision
 */
 typedef double real;
 

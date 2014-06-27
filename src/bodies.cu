@@ -1,5 +1,23 @@
+/***************************************************************************//**
+* \file bodies.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Definition of the class \c bodies
+*/
+
 #include <bodies.h>
 
+/***************************************************************************//**
+* \brief Initializes the arrays in the class with information from \c body instances.
+*
+* Information regarding the coordinates of the body points and motion of the bodies
+* is stored on the host as an array of instances of the class \c body.
+* This function transfers that information to arrays on the device,
+* where they are stored as a structur of arrays.
+* This makes computation more efficient.
+*
+* \param db database that contains all the simulation parameters
+* \param D Information about the computational grid
+*/
 template <typename memoryType>
 void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 {
@@ -81,15 +99,22 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	std::cout << "DONE!" << std::endl;
 }
 
-// calculates the
-// index of the x-coordinate of the bottom-left node of the containing cell
-// index of the y-coordinate of the bottom-left node of the containing cell
+/***************************************************************************//**
+* \brief Calculates the indices of the cells in which the boundary points are present.
+*
+* It calculates the index of the x-coordinate and the index of the y-coordinate
+* of the bottom-left node of the containing cell.
+* This information is useful when transferring data between the boundary points
+* and the computational grid.
+*
+* \param D information of the computational grid
+*/
 template <typename memoryType>
 void bodies<memoryType>::calculateCellIndices(domain &D)
 {
 	int	i=0, j=0;
 
-	/// find the cell for the zeroth point
+	// find the cell for the zeroth point
 	while(D.x[i+1] < x[0])
 		i++;
 	while(D.y[j+1] < y[0])
@@ -128,6 +153,10 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 	}
 }
 
+/***************************************************************************//**
+* \brief Calculates the bounding boxes for each body
+* \param D information about the computational grid
+*/
 template <typename memoryType>
 void bodies<memoryType>::calculateBoundingBoxes(parameterDB &db, domain &D)
 {
@@ -171,6 +200,18 @@ void bodies<memoryType>::calculateBoundingBoxes(parameterDB &db, domain &D)
 	}
 }
 
+/***************************************************************************//**
+* \brief Updates the locations of the body points.
+*
+* This is done using the formulae:
+* \f$x_{i,m} = X^c_m + (X_{i,m} - X^0_m) \cos\theta - (Y_{i,m} - Y^0_m) \sin\theta\f$
+* and
+* \f$y_{i,m} = Y^c_m + (X_{i,m} - X^0_m) \sin\theta + (Y_{i,m} - Y^0_m) \cos\theta\f$
+*
+* \param db Database containing all the simulation parameters
+* \param D Information related to the computational grid
+* \param Time the time
+*/
 template <typename memoryType>
 void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 {
@@ -230,6 +271,8 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 		calculateCellIndices(D);
 }
 
+/***************************************************************************//**
+*/
 template <>
 void bodies<host_memory>::writeToFile(std::string &caseFolder, int timeStep)
 {
@@ -238,6 +281,8 @@ void bodies<host_memory>::writeToFile(std::string &caseFolder, int timeStep)
 	 writeToFile(bx, by, caseFolder, timeStep);
 }
 
+/***************************************************************************//**
+*/
 template <>
 void bodies<device_memory>::writeToFile(std::string &caseFolder, int timeStep)
 {
@@ -248,6 +293,8 @@ void bodies<device_memory>::writeToFile(std::string &caseFolder, int timeStep)
 	writeToFile(bx, by, caseFolder, timeStep);
 }
 
+/***************************************************************************//**
+*/
 template <typename memoryType>
 void bodies<memoryType>::writeToFile(real *bx, real *by, std::string &caseFolder, int timeStep)
 {
