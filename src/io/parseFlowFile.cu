@@ -1,3 +1,9 @@
+/***************************************************************************//**
+* \file parseFlowFile.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Parses the flow file to get boundary and initial conditions
+*/
+
 #include <io/io.h>
 #include <fstream>
 #include <yaml-cpp/yaml.h>
@@ -7,6 +13,7 @@ namespace io
 
 using std::string;
 
+// converts a boundary location string to a boundary location type
 boundary boundaryFromString(string &s)
 {
   if (s == "xMinus")
@@ -24,6 +31,7 @@ boundary boundaryFromString(string &s)
   }
 }
 
+// converts a boundary condition string to a boundary condition type
 bcType bcTypeFromString(string &s)
 {
   if (s == "DIRICHLET")
@@ -43,6 +51,7 @@ bcType bcTypeFromString(string &s)
   }
 }
 
+// fills the database
 void parseFlow(const YAML::Node &node, parameterDB &DB)
 {
 	string dbKey = "flow";
@@ -87,6 +96,7 @@ void parseFlow(const YAML::Node &node, parameterDB &DB)
 	}
 }
 
+// parses the flow file using YAML
 void parseFlowFile(std::string &flowFile, parameterDB &DB)
 {
 	std::ifstream fin(flowFile.c_str());

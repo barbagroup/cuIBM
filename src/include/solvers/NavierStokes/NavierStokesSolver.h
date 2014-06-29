@@ -1,6 +1,7 @@
-/**
-* @file NavierStokesSolver.h
-* @brief Solves the Navier-Stokes equations in a rectangular domain.
+/***************************************************************************//**
+* \file NavierStokesSolver.h
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Solves the Navier-Stokes equations in a rectangular domain
 */
 
 #pragma once
@@ -12,27 +13,28 @@
 #include <parameterDB.h>
 #include <preconditioner.h>
 
-/**
-* Navier-Stokes solver for a rectangular domain.
+/***************************************************************************//**
+* \class NavierStrokesSolver 
+* \brief Navier-Stokes solver for a rectangular domain
 */
 template <typename memoryType>
 class NavierStokesSolver
 {
 protected:
-	parameterDB *paramDB;
-	domain      *domInfo;
-	integrationScheme intgSchm;
+	parameterDB *paramDB; ///< pointer to the database containing all simulation parameters
+	domain      *domInfo; ///< pointer to the computational grid information
+	integrationScheme intgSchm; ///< object of the class \c integrationScheme
 
 	real QCoeff;
 	
 	cusp::coo_matrix<int, real, memoryType>
-	     M,
-	     Minv, 
+	     M,    ///< diagonal mass matrix
+	     Minv, ///< inverse of the mass matrix
 	     L,    ///< Discrete Laplacian 
-	     A, 
-	     QT,   ///< 
-	     Q, 
-	     BN, 
+	     A,    ///< mass and Laplacian matrices
+	     QT,   ///< transposed matrix of Q
+	     Q,    ///< gathers the gradient matrix and the transpose of the extrapolation matrix
+	     BN,   ///< N-th order Taylor series expansion of  A^-1
 	     C;
 
 	cusp::array1d<real, memoryType>
@@ -46,20 +48,31 @@ protected:
 	
 	std::ofstream iterationsFile;
 	
-	/**
-	* Initialises stuff common to all IBM solvers
+	/********************//**
+	* \brief Initializes stuff common to all Immersed Boundary Method solvers
 	*/
 	void initialiseCommon();
 	
-	/**
-	* @brief Initialises all required arrays
-	* @param numQ Total number velocity variables (u and v)
-	* @param numLambda Number of pressure variables + twice the number of body force variables
+	/********************//**
+	* \brief Initializes all required arrays
 	*/
 	void initialiseArrays(int numQ, int numLambda);
+	
+	/********************//**
+	* \brief Sets the initial value of all the fluxes in the flow field
+	*/
 	virtual void initialiseFluxes();
+	
 	virtual void initialiseFluxes(real *q);
+	
+	/********************//**
+	* \brief Sets the initial values of the boundary velocities
+	*/
 	void initialiseBoundaryArrays();
+	
+	/********************//**
+	* \brief Assembles all the required matrices
+	*/
 	void assembleMatrices(); // contains subfunctions to calculate A, QT, BN, QTBNQ
 
 	// Methods are defined as virtual when they are redefined in a derived class with the same name.
@@ -93,46 +106,53 @@ protected:
 	virtual void updateSolverState();
 
 public:
+	/********************//**
+	* \brief Constructor of the class \c NavierStokesSolver
+	*/
 	NavierStokesSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
-	/**
-	* @brief Initialise stuff required for the simulation
+
+	/********************//**
+	* \brief Initializes stuff required for the simulation
 	*/
 	virtual void initialise();
 	
-	/**
-	* @brief Calculate all the variables at the next time step
+	/********************//**
+	* \brief Calculates all the variables at the next time step
 	*/
 	void stepTime();
 	
-	/**
-	* @brief Write the data to files
+	/********************//**
+	* \brief Writes common data to files
 	*/
 	virtual void writeCommon();
+	
+	/********************//**
+	* \brief Writes data to files
+	*/
 	virtual void writeData();
 	
-	/**
-	* @brief Condition required to bring the simulation to a halt.
-	* @return True if the simulation is over. False if it must continue.
+	/********************//**
+	* \brief Condition required to bring the simulation to a halt.
 	*/
 	bool finished();
 	
-	/**
-	* @brief Perform necessary actions to end the simulation
+	/********************//**
+	* \brief Performs necessary actions to end the simulation
 	*/
 	virtual void shutDown();
 	
 	// Factory methods are static (not entirely sure why)
-	/**
-	* @brief  Factory method to select the required IBM solver
-	* @return Pointer to an instance of the required dervied class.
-	* @param  paramDB Description
-	* @param  domInfo
+	/********************//**
+	* \brief  Factory method to select the required IBM solver
+	* \return Pointer to an instance of the required dervied class.
+	* \param  paramDB Description
+	* \param  domInfo
 	*/
 	//	static NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domInfo);
 	
-	/**
-	* @brief Give the name of the current solver 
-	* @return String that describes the type of solver
+	/********************//**
+	* \brief Gives the name of the current solver 
+	* \return string that describes the type of solver
 	*/
 	virtual std::string name()
 	{

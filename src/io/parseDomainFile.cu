@@ -1,3 +1,9 @@
+/***************************************************************************//**
+* \file parseDomainFile.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Parses the domain file to get information about the computational grid
+*/
+
 #include <io/io.h>
 #include <yaml-cpp/yaml.h>
 #include <fstream>
@@ -7,6 +13,7 @@ namespace io
 
 using std::string;
 
+// overloads the operator >>
 void operator >> (const YAML::Node &node, domain &D)
 {
 	string dir;
@@ -109,6 +116,7 @@ void operator >> (const YAML::Node &node, domain &D)
 	}
 }
 
+// parses the domain file using YAML
 void parseDomainFile(std::string &domFile, domain &D)
 {
 	std::ifstream fin(domFile.c_str());

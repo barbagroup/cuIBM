@@ -1,3 +1,9 @@
+/***************************************************************************//**
+* \file parseBodiesFile.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Parses the boies file to get information about immersed bodies
+*/
+
 #include <io/io.h>
 #include <yaml-cpp/yaml.h>
 #include <body.h>
@@ -9,6 +15,7 @@ namespace io
 
 using std::string;
 
+// overloads the operator >>
 void operator >> (const YAML::Node &node, body &Body)
 {
 	// read in center of rotation
@@ -109,6 +116,7 @@ void operator >> (const YAML::Node &node, body &Body)
 	printf("\nnumPoints: %d",Body.numPoints);
 }
 
+// parses bodies file using YAML
 void parseBodiesFile(std::string &bodiesFile, parameterDB &DB)
 {
 	std::ifstream fin(bodiesFile.c_str());

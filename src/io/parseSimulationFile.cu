@@ -1,3 +1,9 @@
+/***************************************************************************//**
+* \file parseSimulationFile.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Parses the simulation file
+*/
+
 #include <io/io.h>
 #include <parameterDB.h>
 #include <yaml-cpp/yaml.h>
@@ -8,6 +14,7 @@ namespace io
 
 using std::string;
 
+// converts a time scheme string to a time scheme type
 timeScheme timeSchemeFromString(string &s)
 {
   if (s == "EULER_EXPLICIT")
@@ -24,6 +31,7 @@ timeScheme timeSchemeFromString(string &s)
     return EULER_EXPLICIT;
 }
 
+// converts a preconditioner string to a preconditioner type
 preconditionerType preconditionerTypeFromString(string &s)
 {
   if (s == "NONE")
@@ -52,6 +60,7 @@ ibmScheme ibmSchemeFromString(string &s)
     return NAVIER_STOKES;
 }
 
+// fills the database
 void parseSimulation(const YAML::Node &node, parameterDB &DB)
 {
 	real dt = 0.02, scaleCV = 5.0;
@@ -114,6 +123,7 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 	}
 }
 
+// parses the simulation file using YAML
 void parseSimulationFile(std::string &simFile, parameterDB &DB)
 {
 	std::ifstream fin(simFile.c_str());
