@@ -1,5 +1,18 @@
+/***************************************************************************//**
+* \file generateM.inl
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Computes the mass matrix and its inverse
+*/
+
 #include <solvers/NavierStokes/kernels/generateM.h>
 
+/***************************************************************************//**
+* \brief Computes the mass matrix and its inverse on the host.
+*
+* The mass diagonal matrix is COO format. 
+* The time-step coefficient is included in the matrix
+*
+*/
 template <>
 void NavierStokesSolver<host_memory>::generateM()
 {
@@ -50,6 +63,13 @@ void NavierStokesSolver<host_memory>::generateM()
 	}
 }
 
+/***************************************************************************//**
+* \brief Computes the mass matrix and its inverse on the device.
+*
+* The mass diagonal matrix is COO format. 
+* The time-step coefficient is included in the matrix
+*
+*/
 template<>
 void NavierStokesSolver<device_memory>::generateM()
 {

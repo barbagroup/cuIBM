@@ -1,3 +1,9 @@
+/***************************************************************************//**
+* \file generateL.inl
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Generates the Laplacian matrix
+*/
+
 template <>
 void NavierStokesSolver<host_memory>::generateL()
 {
