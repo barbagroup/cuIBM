@@ -77,12 +77,13 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	bodiesMove = false;
 	for(int k=0; k<numBodies; k++)
 	{
-		// ASSUMING CLOSED LOOPS
+		// it assumes a closed body (closed loop)
 		for(int i=offsets[k], j = offsets[k]+numPoints[k]-1; i<offsets[k]+numPoints[k];)
 		{
 			// calculate the lengths of the boundary segments
 			ds[i] = sqrt( (X[i]-X[j])*(X[i]-X[j]) + (Y[i]-Y[j])*(Y[i]-Y[j]) );
-			
+
+			// j takes the value of i then i is incremented
 			j = i++;
 		}
 		// if the body is moving, set bodiesMove to true
@@ -154,7 +155,8 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 }
 
 /***************************************************************************//**
-* \brief Calculates the bounding boxes for each body
+* \brief Calculates the bounding box for each body
+* \param db database containing all simulation parameters
 * \param D information about the computational grid
 */
 template <typename memoryType>
@@ -204,9 +206,12 @@ void bodies<memoryType>::calculateBoundingBoxes(parameterDB &db, domain &D)
 * \brief Updates the locations of the body points.
 *
 * This is done using the formulae:
-* \f$x_{i,m} = X^c_m + (X_{i,m} - X^0_m) \cos\theta - (Y_{i,m} - Y^0_m) \sin\theta\f$
+*
+* \f$ x_{i,m} = X^c_m + (X_{i,m} - X^0_m) \cos\theta - (Y_{i,m} - Y^0_m) \sin\theta \f$
+*
 * and
-* \f$y_{i,m} = Y^c_m + (X_{i,m} - X^0_m) \sin\theta + (Y_{i,m} - Y^0_m) \cos\theta\f$
+*
+* \f$ y_{i,m} = Y^c_m + (X_{i,m} - X^0_m) \sin\theta + (Y_{i,m} - Y^0_m) \cos\theta \f$
 *
 * \param db Database containing all the simulation parameters
 * \param D Information related to the computational grid

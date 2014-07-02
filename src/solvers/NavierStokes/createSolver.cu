@@ -1,5 +1,18 @@
+/***************************************************************************//**
+* \file createSolver.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Definition of the function to create the Navier-Stokes solver
+*/
+
 #include <solvers/NavierStokes/createSolver.h>
 
+/***************************************************************************//**
+* \fn
+* \brief Create a Navier-Stokes solver
+* \param paramDB data base with all simulation parameters
+* \param domInfo information about the computational grid
+* \return pointer to an object of the class NavierStokesSolver
+*/
 template <typename memoryType>
 NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domInfo)
 {
@@ -37,5 +50,6 @@ NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domIn
 	return solver;
 }
 
+// specializations of the template function
 template NavierStokesSolver<host_memory>* createSolver(parameterDB &paramDB, domain &domInfo);
 template NavierStokesSolver<device_memory>* createSolver(parameterDB &paramDB, domain &domInfo);

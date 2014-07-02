@@ -17,9 +17,6 @@
 /***************************************************************************//**
 * \fn
 * \brief Create a Navier-Stokes solver
-* \param paramDB database with all simulation parameters
-* \param domInfo information related to the computational grid
-* \return pointer to an object of the class NavierStokesSolver
 */
 template <typename memoryType>
 NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domInfo);

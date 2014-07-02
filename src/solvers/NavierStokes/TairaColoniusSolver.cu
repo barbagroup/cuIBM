@@ -18,6 +18,9 @@ void TairaColoniusSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP+2*totalPoints);
 	if(totalPoints > 0)
 	{
+		// for each Lagragian point, 24 velocity values could be used
+		// when caluclating the discrete delta function
+		// 12*2 in 2D
 		E.resize(2*totalPoints, numUV, 24*totalPoints);
 	}
 	NavierStokesSolver<memoryType>::assembleMatrices();

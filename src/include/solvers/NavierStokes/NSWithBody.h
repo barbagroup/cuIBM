@@ -1,6 +1,7 @@
-/**
-* @file  NSWithBody.h
-* @brief Generic Navier-Stokes solver in the presence of immersed boundaries
+/***************************************************************************//**
+* \file  NSWithBody.h
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Generic Navier-Stokes solver in the presence of immersed boundaries
 */
 
 #pragma once

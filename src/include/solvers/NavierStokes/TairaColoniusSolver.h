@@ -1,6 +1,7 @@
-/**
-* @file  TairaColoniusSolver.h
-* @brief Solves the flow using the IB method described by Taira and Colonius (2007)
+/***************************************************************************//**
+* \file  TairaColoniusSolver.h
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Solves the flow using the IB method described by Taira and Colonius (2007)
 *
 * <b>The immersed boundary method: a projection approach</b> \n
 * Taira, K and Colonius, T \n
