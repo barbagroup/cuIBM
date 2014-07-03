@@ -96,7 +96,7 @@ void initialiseDefaultDB(parameterDB &DB)
 
 	// default input files
 	string inputs = "inputs";
-	DB[inputs]["caseFolder"].set<string>("cases/cylinder");
+	DB[inputs]["caseFolder"].set<string>("cases/cylinder/Re40");
 	DB[inputs]["deviceNumber"].set<int>(0);
 
 	// flow parameters
