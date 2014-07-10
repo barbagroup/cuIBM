@@ -1,6 +1,15 @@
+/***************************************************************************//**
+* \file TairaColoniusSolver.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief definition of the methods of the class TairaColonius
+*/
+
 #include <solvers/NavierStokes/TairaColoniusSolver.h>
 #include <sys/stat.h>
 
+/********************//**
+* \brief Initialize the solver and assemble the matrices
+*/
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::initialise()
 {	
@@ -26,6 +35,11 @@ void TairaColoniusSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::assembleMatrices();
 }
 
+/********************//**
+* \brief Write the time and forces for each body in the flow fieldi
+*
+* The forces are calculated using the method of Taira and Colonius (2007).
+*/
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::writeData()
 {	
@@ -37,10 +51,10 @@ void TairaColoniusSolver<memoryType>::writeData()
 	real         dt  = db["simulation"]["dt"].get<real>();
 	int          numBodies  = NSWithBody<memoryType>::B.numBodies;
 
-	// Calculate forces using the T&C method
+	// calculate forces using the T&C method
 	calculateForce();
 	
-	// Print to file
+	// print to file
 	NSWithBody<memoryType>::forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t';
 	for(int l=0; l<numBodies; l++)
 	{
@@ -48,13 +62,16 @@ void TairaColoniusSolver<memoryType>::writeData()
 	}
 	NSWithBody<memoryType>::forceFile << std::endl;
 	
-	// Print forces calculated using the CV approach
+	// print forces calculated using the CV approach
 	//NSWithBody<memoryType>::calculateForce();
 	//NSWithBody<memoryType>::forceFile << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << std::endl;
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }
 
+/********************//**
+* \brief Update the location of the bodies and re-compute matrices
+*/
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::updateSolverState()
 {
@@ -71,6 +88,12 @@ void TairaColoniusSolver<memoryType>::updateSolverState()
 	}
 }
 
+/********************//**
+* \brief Constructor of the class TairaColoniusSolver.
+*
+* Get the simulation parameters of the database.
+* Get the computational grid.
+*/
 template <typename memoryType>
 TairaColoniusSolver<memoryType>::TairaColoniusSolver(parameterDB *pDB, domain *dInfo)
 {
@@ -78,9 +101,11 @@ TairaColoniusSolver<memoryType>::TairaColoniusSolver(parameterDB *pDB, domain *d
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
 }
 
+// include inline files located in "./TairaColonius/"
 #include "TairaColonius/generateQT.inl"
 #include "TairaColonius/generateBC2.inl"
 #include "TairaColonius/calculateForce.inl"
 
+// specialization of the class TairaColoniusSolver
 template class TairaColoniusSolver<host_memory>;
 template class TairaColoniusSolver<device_memory>;

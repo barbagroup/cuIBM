@@ -1,5 +1,14 @@
+/***************************************************************************//**
+* \file generateQT.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Definition of the kernels required to generate matrix QT
+*/
+
 #include <solvers/NavierStokes/kernels/generateQT.h>
 
+/**
+* \brief To be documented
+*/
 __device__ \
 real dhRomaDeviceQT(real x, real h)
 {
@@ -13,15 +22,25 @@ real dhRomaDeviceQT(real x, real h)
 		return 1.0/(3*h)*( 1.0 + sqrt(-3.0*r*r + 1.0) );
 }
 
+/**
+* \brief To be documented
+*/
 __device__ \
 real deltaDeviceQT(real x, real y, real h)
 {
 	return dhRomaDeviceQT(x, h) * dhRomaDeviceQT(y, h);
 }
 
+/*******************//**
+* \namespace kernels
+* \brief Contain all custom-written CUDA kernels
+*/
 namespace kernels
 {
 
+/**
+* \brief To be documented
+*/
 __global__ \
 void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tags)
 {
@@ -32,6 +51,9 @@ void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tags)
 	QVals[I] *= ( tags[QRows[I]] == -1 );
 }
 
+/**
+* \brief To be documented
+*/
 __global__ \
 void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tagsX, int *tagsY)
 {
@@ -42,6 +64,9 @@ void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tagsX, int *ta
 	QVals[I] *= ( tagsX[QRows[I]] == -1 && tagsY[QRows[I]] == -1 );
 }
 
+/**
+* \brief To be documented
+*/
 void generateQT(int *QTRows, int *QTCols, real *QTVals, int nx, int ny)
 {
 	int  numU = (nx-1)*ny;
@@ -93,6 +118,9 @@ void generateQT(int *QTRows, int *QTCols, real *QTVals, int nx, int ny)
 	}
 }
 
+/**
+* \brief To be documented
+*/
 __global__ \
 void updateQT(int *QTRows, int *QTCols, real *QTVals,
               int *ERows,  int *ECols,  real *EVals,
@@ -151,6 +179,9 @@ void updateQT(int *QTRows, int *QTCols, real *QTVals,
 	}
 }
 
+/**
+* \brief To be documented
+*/
 void updateQTHost(int *QTRows, int *QTCols, real *QTVals,
               int *ERows,  int *ECols,  real *EVals,
               int nx, int ny, real *x, real *y, real *dx,

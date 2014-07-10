@@ -1,10 +1,23 @@
+/***************************************************************************//**
+* \file generateRN.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Definition of the kernels required to generate vector rn
+*/
+
 #include <solvers/NavierStokes/kernels/generateRN.h>
 
 #define BSZ 16
 
+/********************//**
+* \namespace kernels
+* \brief Contain all custom-written CUDA kernels
+*/
 namespace kernels
 {
 
+/**
+\brief To be documented
+*/
 // CUDA kernel to generate Hx and rn
 __global__ void convectionTermU(real *rn, real *H, real *q,
                                   int nx, int ny, real *dx, real *dy, 
@@ -73,6 +86,9 @@ __global__ void convectionTermU(real *rn, real *H, real *q,
 	}
 }
 
+/**
+* \brief To be documented
+*/
 // CUDA kernel to generate Hy and rn
 __global__ void convectionTermV(real *rn, real *H, real *q,
                                   int nx, int ny, real *dx, real *dy,
@@ -141,6 +157,9 @@ __global__ void convectionTermV(real *rn, real *H, real *q,
 	}
 }
 
+/**
+* \brief To be documented
+*/
 __global__
 void convectionTermVBottomTop(real *rn, real *H, real *q, \
                                       int nx, int ny, real *dx, real *dy, \
@@ -198,6 +217,9 @@ void convectionTermVBottomTop(real *rn, real *H, real *q, \
 	rn[Iv] = ( q[Iv]/(dx[I]*dt) + cTerm + dTerm ) * 0.5*(dy[ny-2] + dy[ny-1]);
 }
 
+/**
+* \brief To be documented
+*/
 __global__
 void convectionTermUBottomTop(real *rn, real *H, real *q, \
                               int nx, int ny, real *dx, real *dy, \
@@ -286,6 +308,9 @@ void convectionTermUBottomTop(real *rn, real *H, real *q, \
 	rn[Iu] = ( u/dt + cTerm + dTerm) * 0.5*(dx[I] + dx[I+1]);
 }
 
+/**
+* \brief To be documented
+*/
 __global__
 void convectionTermULeftRight(real *rn, real *H, real *q, \
                               int nx, int ny, real *dx, real *dy, \
@@ -343,6 +368,9 @@ void convectionTermULeftRight(real *rn, real *H, real *q, \
 	rn[Iu] = ( q[Iu]/(dy[I]*dt) + cTerm + dTerm ) * 0.5*(dx[nx-2] + dx[nx-1]);
 }
 
+/**
+* \brief To be documented
+*/
 __global__
 void convectionTermVLeftRight(real *rn, real *H, real *q, \
                              int nx, int ny, real *dx, real *dy, \

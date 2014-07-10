@@ -1,5 +1,14 @@
+/***************************************************************************//**
+* \file generateE.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Definition of the kernels required to generate matrix E
+*/
+
 #include <solvers/NavierStokes/kernels/generateE.h>
 
+/**
+* \brief To be documented
+*/
 __device__ \
 real dhRomaDeviceE(real x, real h)
 {
@@ -13,15 +22,25 @@ real dhRomaDeviceE(real x, real h)
 		return 1.0/(3*h)*( 1.0 + sqrt(-3.0*r*r + 1.0) );
 }
 
+/**
+* \brief To be documented
+*/
 __device__ \
 real deltaDeviceE(real x, real y, real h)
 {
 	return dhRomaDeviceE(x, h) * dhRomaDeviceE(y, h);
 }
 
+/********************//**
+* \namespace kernels
+* \brief Contain all custom-written CUDA kernels
+*/
 namespace kernels
 {
 	
+/**
+* \brief To be documented
+*/
 void generateEHost(int *ERows,  int *ECols,  real *EVals,
                    int nx, int ny, real *x, real *y, real *dx,
                    int totalPoints, real *xB, real *yB, int *I, int *J)
@@ -64,6 +83,9 @@ void generateEHost(int *ERows,  int *ECols,  real *EVals,
 	}
 }
 
+/**
+* \brief To be documented
+*/
 __global__ \
 void generateE(int *ERows,  int *ECols,  real *EVals,
                int nx, int ny, real *x, real *y, real *dx,

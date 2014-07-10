@@ -1,6 +1,15 @@
+/***************************************************************************//**
+* \file NSWithBody.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Definition of the methods of the class \c NSWithBody
+*/
+
 #include <solvers/NavierStokes/NSWithBody.h>
 #include <solvers/NavierStokes/kernels/calculateForce.h>
 
+/**
+* \brief To be documented
+*/
 /// Initialise the bodies
 template <typename memoryType>
 void NSWithBody<memoryType>::initialiseBodies()
@@ -18,6 +27,9 @@ void NSWithBody<memoryType>::initialiseBodies()
 	NavierStokesSolver<memoryType>::logger.stopTimer("initialiseBodies");
 }
 	
+/**
+* \brief To be documented
+*/
 /// Update the body information at each time step during motion
 template <typename memoryType>
 void NSWithBody<memoryType>::updateBodies()
@@ -32,11 +44,17 @@ void NSWithBody<memoryType>::updateBodies()
 	NavierStokesSolver<memoryType>::logger.stopTimer("updateBodies");
 };
 
+/**
+* \brief To be documented
+*/
 template <>
 void NSWithBody<host_memory>::calculateForce()
 {
 }
 
+/**
+* \brief To be documented
+*/
 template <>
 void NSWithBody<device_memory>::calculateForce()
 {
@@ -101,6 +119,9 @@ void NSWithBody<device_memory>::calculateForce()
 	forceY = thrust::reduce(FyX.begin(), FyX.end()) + thrust::reduce(FyY.begin(), FyY.end()) + thrust::reduce(FyU.begin(), FyU.end());
 }
 
+/**
+* \brief To be documented
+*/
 template <typename memoryType>
 void NSWithBody<memoryType>::writeCommon()
 {	
@@ -120,6 +141,9 @@ void NSWithBody<memoryType>::writeCommon()
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }
 
+/**
+* \brief To be documented
+*/
 template <typename memoryType>
 void NSWithBody<memoryType>::shutDown()
 {
@@ -128,5 +152,6 @@ void NSWithBody<memoryType>::shutDown()
 	NavierStokesSolver<memoryType>::iterationsFile.close();
 }
 
+// specialization of the class
 template class NSWithBody<host_memory>;
 template class NSWithBody<device_memory>;

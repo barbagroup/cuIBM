@@ -1,6 +1,15 @@
+/***************************************************************************//**
+* \file DirectForcingSolver.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Definition of the methods of the class \c DirectForcingSolver
+*/
+
 #include <solvers/NavierStokes/DirectForcingSolver.h>
 #include <sys/stat.h>
 
+/**
+* \brief To be documented
+*/
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::initialise()
 {
@@ -43,6 +52,9 @@ void DirectForcingSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::assembleMatrices();
 }
 
+/**
+* \brief To be documented
+*/
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::updateSolverState()
 {
@@ -75,6 +87,9 @@ void DirectForcingSolver<memoryType>::updateSolverState()
 	}
 }
 
+/**
+* \brief To be documented
+*/
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::assembleRHS1()
 {
@@ -85,6 +100,9 @@ void DirectForcingSolver<memoryType>::assembleRHS1()
 	NavierStokesSolver<memoryType>::logger.startTimer("updateRHS1");
 }
 
+/**
+* \brief To be documented
+*/
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::writeData()
 {	
@@ -103,6 +121,9 @@ void DirectForcingSolver<memoryType>::writeData()
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }
 
+/**
+* \brief To be documented
+*/
 template <typename memoryType>
 DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *dInfo)
 {
@@ -112,11 +133,10 @@ DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *d
 
 #include "DirectForcing/tagPoints.inl"
 #include "DirectForcing/generateL.inl"
-//
 #include "DirectForcing/generateA.inl"
-//
 #include "DirectForcing/updateRHS1.inl"
 #include "DirectForcing/generateQT.inl"
 
+// specialization of the class
 template class DirectForcingSolver<host_memory>;
 template class DirectForcingSolver<device_memory>;

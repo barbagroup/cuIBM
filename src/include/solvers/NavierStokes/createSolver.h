@@ -14,7 +14,7 @@
 #include <solvers/NavierStokes/SLL1Solver.h>
 #include <solvers/NavierStokes/SLL2Solver.h>
 
-/***************************************************************************//**
+/********************//**
 * \fn
 * \brief Create a Navier-Stokes solver
 */

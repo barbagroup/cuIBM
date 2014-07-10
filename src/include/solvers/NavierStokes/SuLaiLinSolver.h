@@ -1,20 +1,23 @@
-/**
-* @file  SuLaiLinSolver.h
-* @brief Solves the flow using the IB method described by Taira and Colonius (2007)
+/***************************************************************************//**
+* \file  SuLaiLinSolver.h
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Solves the flow using the IB method described by Taira and Colonius (2007)
 *
 * <b>The immersed boundary method: a projection approach</b> \n
 * Taira, K and Colonius, T \n
 * Journal of Computational Physics \n
 * Volume 225 Number 2 \n
 * 2007
+*
 */
 
 #pragma once
 
 #include <solvers/NavierStokes/NSWithBody.h>
 
-/**
-* @brief Immersed boundary method described by Taira and Colonius (2007)
+/********************//**
+* \class SuLaiLinSolver
+* \brief Immersed boundary method described by Taira and Colonius (2007)
 */
 template <typename memoryType>
 class SuLaiLinSolver : public NSWithBody<memoryType>

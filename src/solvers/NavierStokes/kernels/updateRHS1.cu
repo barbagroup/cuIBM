@@ -1,7 +1,17 @@
+/***************************************************************************//**
+* \file updateRHS1.cu
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Definition of the kernels required to update vector rhs1
+*/
+
 #include <solvers/NavierStokes/kernels/updateRHS1.h>
 
 #define BSZ 16
 
+/********************//**
+* \namespace kernels
+* \brief COntain all custom-written CUDA kernels
+*/
 namespace kernels
 {
 
@@ -17,6 +27,9 @@ void updateRHS1(real *rhs1, int numUV, int *tags)
 	rhs1[I] = rhs1[I]*(tags[I]==-1);
 }*/
 
+/**
+* \brief To be documented
+*/
 // 2-d interpolation
 __global__
 void updateRHS1(real *rhs1, int numUV, int *tagsX, int *tagsY)
@@ -29,6 +42,9 @@ void updateRHS1(real *rhs1, int numUV, int *tagsX, int *tagsY)
 	rhs1[I] = rhs1[I]*(tagsX[I]==-1 && tagsY[I]==-1);
 }
 
+/**
+* \brief To be documented
+*/
 __global__
 void updateRHS1X(real *rhs1, int nx, int ny, real dt, real *dx, int *tagsX, int *tagsY, real *coeffsX, real *coeffsY, real *uvX, real *uvY)
 {
@@ -41,6 +57,9 @@ void updateRHS1X(real *rhs1, int nx, int ny, real dt, real *dx, int *tagsX, int 
 	}
 }
 
+/**
+* \brief To be documented
+*/
 __global__
 void updateRHS1Y(real *rhs1, int nx, int ny, real dt, real *dy, int *tagsX, int *tagsY, real *coeffsX, real *coeffsY, real *uvX, real *uvY)
 {

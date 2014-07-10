@@ -6,9 +6,10 @@
 
 #include <solvers/NavierStokes/createSolver.h>
 
-/***************************************************************************//**
+/********************//**
 * \fn
 * \brief Create a Navier-Stokes solver
+*
 * \param paramDB data base with all simulation parameters
 * \param domInfo information about the computational grid
 * \return pointer to an object of the class NavierStokesSolver
