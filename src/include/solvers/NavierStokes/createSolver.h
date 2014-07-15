@@ -14,9 +14,9 @@
 #include <solvers/NavierStokes/SLL1Solver.h>
 #include <solvers/NavierStokes/SLL2Solver.h>
 
-/********************//**
+/**
 * \fn
-* \brief Create a Navier-Stokes solver
+* \brief Create a Navier-Stokes solver, depending on the type IBM used
 */
 template <typename memoryType>
 NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domInfo);

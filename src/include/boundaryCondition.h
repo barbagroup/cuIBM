@@ -11,18 +11,33 @@
 #include <sstream>
 #include <parameterDB.h>
 
-/***************************************************************************//**
+/**
 * \class boundaryCondition
-* \brief Stores the boundary conditions for a given system
+* \brief Store the boundary conditions for a given system
 */
 class boundaryCondition
 {
 public:
-  bcType type; ///< Type of boundary condition
-  real  value; ///< Numerical value associated with the boundary condition
+	bcType type; ///< type of boundary condition
+	real  value; ///< numerical value associated with the boundary condition
+	
+	/**
+	* \brief Constructor of the class \c boundaryCondition.
+	*
+	* Initialize with a Dirichlet-type boundary condition
+	* with a value sets to zero.
+	*
+	*/
+	boundaryCondition() : type(DIRICHLET), value(0) {};
 
-  boundaryCondition() : type(DIRICHLET), value(0) {}; 
-  boundaryCondition(bcType _type, real _value) : type(_type), value(_value) {}; 
+	/**
+	* \brief Other constructor of the class \c boundaryCondition.
+	*
+	* Initialize with a given boundary condition type
+	* and a given value.
+	*
+	*/
+	boundaryCondition(bcType _type, real _value) : type(_type), value(_value) {}; 
 
 
   /*const char *print()

@@ -1,7 +1,7 @@
 /***************************************************************************//**
 * \file io.h
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Declaration of functions related to input and output
+* \brief Declaration of the functions of the namespace \c io
 */
 
 #pragma once
@@ -12,9 +12,9 @@
 #include <bodies.h>
 #include <vector>
 
-/***************************************************************************//**
+/**
 * \namespace io
-* \brief Contains all the functions related to I/O
+* \brief Contain functions related to I/O tasks
 */
 namespace io
 {

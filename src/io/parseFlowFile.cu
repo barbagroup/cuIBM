@@ -1,19 +1,29 @@
 /***************************************************************************//**
 * \file parseFlowFile.cu
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Parses the flow file to get boundary and initial conditions
+* \brief Parse the \a flow file to get boundary and initial conditions
 */
 
 #include <io/io.h>
 #include <fstream>
 #include <yaml-cpp/yaml.h>
 
+/**
+* \namespace io
+* \brief Contain functions related to I/O tasks
+*/
 namespace io
 {
 
 using std::string;
 
-// converts a boundary location string to a boundary location type
+/**
+* \brief Convert a string to a boundary location type
+*
+* \param s the string that describes the location of the boundary
+*
+* \return a boundary location type
+*/
 boundary boundaryFromString(string &s)
 {
   if (s == "xMinus")
@@ -31,7 +41,13 @@ boundary boundaryFromString(string &s)
   }
 }
 
-// converts a boundary condition string to a boundary condition type
+/**
+* \brief Converta string to a boundary condition type
+*
+* \param s the string that describes the condition to impose on the boundary
+*
+* \return a boundary condition type
+*/
 bcType bcTypeFromString(string &s)
 {
   if (s == "DIRICHLET")
@@ -51,7 +67,12 @@ bcType bcTypeFromString(string &s)
   }
 }
 
-// fills the database
+/**
+* \brief Fill the database with the flow parameters
+*
+* \param node the parsed file
+* \param DB the database to be filled
+*/
 void parseFlow(const YAML::Node &node, parameterDB &DB)
 {
 	string dbKey = "flow";
@@ -96,7 +117,12 @@ void parseFlow(const YAML::Node &node, parameterDB &DB)
 	}
 }
 
-// parses the flow file using YAML
+/**
+* \brief Parse the \a flow file using YAML
+*
+* \param flowFile the file that contains information about the flow
+* \param DB the database that will be filled with information about the flow
+*/
 void parseFlowFile(std::string &flowFile, parameterDB &DB)
 {
 	std::ifstream fin(flowFile.c_str());

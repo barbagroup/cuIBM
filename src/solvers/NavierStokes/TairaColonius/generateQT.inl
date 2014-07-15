@@ -1,7 +1,16 @@
+/***************************************************************************//**
+* \file generateQT.inl
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Definition of the methods of the class \c TairaColoniusSolver related to matrix QT
+*/
+
 #include <solvers/NavierStokes/kernels/generateQT.h>
 
 #define BLOCKSIZE 256
 
+/**
+* \brief To be documented
+*/
 template <>
 void TairaColoniusSolver<host_memory>::updateQT()
 {
@@ -44,6 +53,9 @@ void TairaColoniusSolver<host_memory>::updateQT()
 	logger.stopTimer("transposeE");
 }
 
+/**
+* \brief To be documented
+*/
 template <>
 void TairaColoniusSolver<device_memory>::updateQT()
 {
@@ -90,6 +102,9 @@ void TairaColoniusSolver<device_memory>::updateQT()
 	logger.stopTimer("transposeE");
 }
 
+/**
+* \brief To be documented
+*/
 template <>
 void TairaColoniusSolver<host_memory>::generateQT()
 {
@@ -116,6 +131,9 @@ void TairaColoniusSolver<host_memory>::generateQT()
 	updateQT();	
 }
 
+/**
+* \brief To be documented
+*/
 template <>
 void TairaColoniusSolver<device_memory>::generateQT()
 {

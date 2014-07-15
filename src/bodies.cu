@@ -6,17 +6,17 @@
 
 #include <bodies.h>
 
-/***************************************************************************//**
-* \brief Initializes the arrays in the class with information from \c body instances.
+/**
+* \brief Initialize the arrays in the class with information from \c body instances.
 *
 * Information regarding the coordinates of the body points and motion of the bodies
 * is stored on the host as an array of instances of the class \c body.
 * This function transfers that information to arrays on the device,
-* where they are stored as a structur of arrays.
+* where they are stored as a structure of arrays.
 * This makes computation more efficient.
 *
 * \param db database that contains all the simulation parameters
-* \param D Information about the computational grid
+* \param D information about the computational grid
 */
 template <typename memoryType>
 void bodies<memoryType>::initialise(parameterDB &db, domain &D)
@@ -77,13 +77,13 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	bodiesMove = false;
 	for(int k=0; k<numBodies; k++)
 	{
-		// it assumes a closed body (closed loop)
+		// assume a closed body (closed loop)
 		for(int i=offsets[k], j = offsets[k]+numPoints[k]-1; i<offsets[k]+numPoints[k];)
 		{
 			// calculate the lengths of the boundary segments
 			ds[i] = sqrt( (X[i]-X[j])*(X[i]-X[j]) + (Y[i]-Y[j])*(Y[i]-Y[j]) );
 
-			// j takes the value of i then i is incremented
+			// j takes the value of i, then i is incremented
 			j = i++;
 		}
 		// if the body is moving, set bodiesMove to true
@@ -100,15 +100,15 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	std::cout << "DONE!" << std::endl;
 }
 
-/***************************************************************************//**
-* \brief Calculates the indices of the cells in which the boundary points are present.
+/**
+* \brief Calculate the indices of the cells in which the boundary points are located.
 *
 * It calculates the index of the x-coordinate and the index of the y-coordinate
 * of the bottom-left node of the containing cell.
 * This information is useful when transferring data between the boundary points
 * and the computational grid.
 *
-* \param D information of the computational grid
+* \param D information about the computational grid
 */
 template <typename memoryType>
 void bodies<memoryType>::calculateCellIndices(domain &D)
@@ -154,9 +154,10 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 	}
 }
 
-/***************************************************************************//**
-* \brief Calculates the bounding box for each body
-* \param db database containing all simulation parameters
+/**
+* \brief Calculate the bounding box of each body
+*
+* \param db database that contains all the simulation parameters
 * \param D information about the computational grid
 */
 template <typename memoryType>
@@ -202,8 +203,8 @@ void bodies<memoryType>::calculateBoundingBoxes(parameterDB &db, domain &D)
 	}
 }
 
-/***************************************************************************//**
-* \brief Updates the locations of the body points.
+/**
+* \brief Update the location of the body points.
 *
 * This is done using the formulae:
 *
@@ -213,8 +214,8 @@ void bodies<memoryType>::calculateBoundingBoxes(parameterDB &db, domain &D)
 *
 * \f$ y_{i,m} = Y^c_m + (X_{i,m} - X^0_m) \sin\theta + (Y_{i,m} - Y^0_m) \cos\theta \f$
 *
-* \param db Database containing all the simulation parameters
-* \param D Information related to the computational grid
+* \param db database that contains all the simulation parameters
+* \param D information about the computational grid
 * \param Time the time
 */
 template <typename memoryType>
@@ -261,7 +262,7 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 		// x-coordinates
 		cusp::blas::axpbypcz( onesView, XView, onesView, xView, (*B)[l].Xc[0],  cos((*B)[l].Theta), -(*B)[l].X0[0]*cos((*B)[l].Theta) );
 		cusp::blas::axpbypcz( xView,    YView, onesView, xView,           1.0, -sin((*B)[l].Theta),  (*B)[l].X0[1]*sin((*B)[l].Theta) );
-		/// y-coordinates
+		// y-coordinates
 		cusp::blas::axpbypcz( onesView, XView, onesView, yView, (*B)[l].Xc[1],  sin((*B)[l].Theta), -(*B)[l].X0[0]*sin((*B)[l].Theta) );
 		cusp::blas::axpbypcz( yView,    YView, onesView, yView,           1.0,  cos((*B)[l].Theta), -(*B)[l].X0[1]*cos((*B)[l].Theta) );
 	
@@ -276,7 +277,11 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 		calculateCellIndices(D);
 }
 
-/***************************************************************************//**
+/**
+* \brief Write the body coordinates into a file (on the host)
+*
+* \param caseFolder folder of the simulation
+* \param timeStep time-step of the simulation
 */
 template <>
 void bodies<host_memory>::writeToFile(std::string &caseFolder, int timeStep)
@@ -286,7 +291,11 @@ void bodies<host_memory>::writeToFile(std::string &caseFolder, int timeStep)
 	 writeToFile(bx, by, caseFolder, timeStep);
 }
 
-/***************************************************************************//**
+/**
+* \brief Write the body coordinates into a file (on the device)
+*
+* \param caseFolder folder of the simulation
+* \param timeStep time-step of the simulation
 */
 template <>
 void bodies<device_memory>::writeToFile(std::string &caseFolder, int timeStep)
@@ -298,7 +307,13 @@ void bodies<device_memory>::writeToFile(std::string &caseFolder, int timeStep)
 	writeToFile(bx, by, caseFolder, timeStep);
 }
 
-/***************************************************************************//**
+/**
+* \brief Write the body coordinates into a file called \a bodies
+*
+* \param bx x-coordinates of the bodies
+* \param by y-coordinates of the bodies
+* \param caseFolder folder of the simulation
+* \param timeStep time-step of the simulation
 */
 template <typename memoryType>
 void bodies<memoryType>::writeToFile(real *bx, real *by, std::string &caseFolder, int timeStep)
@@ -315,5 +330,6 @@ void bodies<memoryType>::writeToFile(real *bx, real *by, std::string &caseFolder
 	file.close();
 }
 
+// specialization of the class bodies
 template class bodies<host_memory>;
 template class bodies<device_memory>;

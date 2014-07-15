@@ -1,10 +1,7 @@
 /***************************************************************************//**
-* \file  bodies.h
+* \file bodies.h
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Declaration of the class \c bodies.
-*
-* Stores information about the body points in arrays.
-*
+* \brief Declaration of the class \c bodies
 */
 
 #pragma once
@@ -13,9 +10,9 @@
 #include <parameterDB.h>
 #include <body.h>
 
-/***************************************************************************//**
+/**
 * \class bodies
-* \brief Stores information about the body
+* \brief Store information about the body points in arrays
 */
 template <typename memoryType>
 class bodies
@@ -27,26 +24,26 @@ public:
 	bool bodiesMove;  ///< tells whether the body is moving or not
 
 	cusp::array1d<int, memoryType>
-		numPoints,    ///< number of points in a body
-		offsets,      ///< array index of the first point of a body
-		I,            ///< x-index of the cell in which a body point is present
-		J;            ///< y-index of the cell in which a body point is present
+		numPoints,    ///< number of points for each body
+		offsets,      ///< array index of the first point of each body
+		I,            ///< x-index of the cell in which a body point is located
+		J;            ///< y-index of the cell in which a body point is located
 	
 	cusp::array1d<int, memoryType>
-		startI,       ///< Starting cell index of the bounding box of a body
-		startJ,       ///< Starting cell index of the bounding box of a body
-		numCellsX,    ///< Number of cells in the x-direction in the bounding box of a body
-		numCellsY;    ///< Number of cells in the y-direction in the bounding box of a body
+		startI,       ///< starting cell index of the bounding box of a body
+		startJ,       ///< starting cell index of the bounding box of a body
+		numCellsX,    ///< number of cells in the x-direction in the bounding box of a body
+		numCellsY;    ///< number of cells in the y-direction in the bounding box of a body
 		
 	cusp::array1d<real, memoryType>
-		xmin,  ///< Lowest x-coordinate for the bounding box of a body
-		xmax,  ///< Highest x-coordinate for the bounding box of a body
-		ymin,  ///< Lowest y-coordinate for the bounding box of a body
-		ymax;  ///< Highest y-coordinate for the bounding box of a body
+		xmin,  ///< lowest x-coordinate for the bounding box of a body
+		xmax,  ///< highest x-coordinate for the bounding box of a body
+		ymin,  ///< lowest y-coordinate for the bounding box of a body
+		ymax;  ///< highest y-coordinate for the bounding box of a body
 	
 	cusp::array1d<real, memoryType>
-		forceX,
-		forceY;
+		forceX,		///< force acting on a body in the x-direction
+		forceY;		///< force acting on a body in the y-direction
 
 	cusp::array1d<real, memoryType>
 		X,     ///< reference x-coordinates of the boundary points
@@ -58,27 +55,33 @@ public:
 		uB,    ///< x-velocity of the boundary points
 		vB;    ///< y-velocity of the boundary points
 
-	/********************//**
-	* \brief Initializes the arrays in the class with information from \c body instances
+	/**
+	* \brief Initialize the arrays in the class with information from \c body instances
 	*/
 	void initialise(parameterDB &db, domain &D);
 	
-	/********************//**
-	* \brief Calculates the indices of the cells in which the boundary points are present
+	/**
+	* \brief Calculate the indices of the cells in which the boundary points are located
 	*/
 	void calculateCellIndices(domain &D);
 	
-	/********************//**
-	* \brief Calculates the bounding boxes for each body
+	/**
+	* \brief Calculate the bounding box of each body
 	*/
 	void calculateBoundingBoxes(parameterDB &db, domain &D);
 	
-	/********************//**
-	* \brief Updates the locations of the body points
+	/**
+	* \brief Update the location of the body points
 	*/
 	void update(parameterDB &db, domain &D, real Time);
 
+	/**
+	* \brief Write the body coordinates into a file
+	*/
 	void writeToFile(std::string &caseFolder, int timeStep);
 
+	/**
+	* \brief Write the body coordinates into a file called \a bodies 
+	*/
 	void writeToFile(real *bx, real *by, std::string &caseFolder, int timeStep);
 };

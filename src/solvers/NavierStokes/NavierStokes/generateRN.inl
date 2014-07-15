@@ -1,7 +1,16 @@
+/***************************************************************************//**
+* \file generateRN.inl
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Generate the explicit terms in the momentum equation
+*/
+
 #include <solvers/NavierStokes/kernels/generateRN.h>
 
 #define BSZ 16
 
+/**
+* \brief Doing nothing !
+*/
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::calculateExplicitLambdaTerms()
 {
@@ -25,6 +34,9 @@ void NavierStokesSolver<memoryType>::calculateExplicitLambdaTerms()
 */
 }
 
+/**
+* \brief Generate explicit flux terms on the device
+*/
 template <>
 void NavierStokesSolver<device_memory>::calculateExplicitQTerms()
 {
@@ -74,6 +86,9 @@ void NavierStokesSolver<device_memory>::calculateExplicitQTerms()
 	kernels::convectionTermVLeftRight <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, nu, yminus, yplus, xminus, xplus);
 }
 
+/**
+* \brief Generate explicit flux terms on the host
+*/
 template <>
 void NavierStokesSolver<host_memory>::calculateExplicitQTerms()
 {
@@ -165,6 +180,9 @@ void NavierStokesSolver<host_memory>::calculateExplicitQTerms()
 	}
 }
 
+/**
+* \brief Generate explicit terms in the momentum equation
+*/
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::generateRN()
 {

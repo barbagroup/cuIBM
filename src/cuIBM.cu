@@ -20,20 +20,21 @@
 
 int main(int argc, char **argv)
 {
-	// initializes the computational domain
+	// initialize the computational domain
 	domain dom_info;
 
-	// initializes the parameters of the simulation
+	// initialize the parameters of the simulation
 	parameterDB paramDB;
 
-	// reads input files
+	// read input files
 	io::readInputs(argc, argv, paramDB, dom_info);
 	
 	io::printSimulationInfo(paramDB, dom_info);
 
-	// chooses the appropriate flow solver
+	// create and initialize the appropriate flow solver
 	NavierStokesSolver<device_memory> *solver = createSolver<device_memory>(paramDB, dom_info);
 	solver->initialise();
+
 	io::printDeviceMemoryUsage("Initialisation complete");
 	
 	io::writeInfoFile(paramDB, dom_info);

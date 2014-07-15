@@ -1,5 +1,14 @@
+/***************************************************************************//**
+* \file generateBC2.inl
+* \author Krishnan, A. (anush@bu.edu)
+* \brief Generate the array bc2 that contains inhomogeneous boundary conditions and boundary velocities
+*/
+
 #include <solvers/NavierStokes/kernels/generateBC2.h>
 
+/**
+* \brief Generate the array bc2 on the host
+*/
 template <>
 void TairaColoniusSolver<host_memory>::generateBC2()
 {
@@ -43,6 +52,9 @@ void TairaColoniusSolver<host_memory>::generateBC2()
 	}
 }
 
+/**
+* \brief Generate the array bc2 on the device
+*/
 template<>
 void TairaColoniusSolver<device_memory>::generateBC2()
 {

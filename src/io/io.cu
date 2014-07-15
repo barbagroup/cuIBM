@@ -1,7 +1,7 @@
 /***************************************************************************//**
 * \file io.cu
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of functions related to input and output
+* \brief Definition of functions of the namespace \c io
 */
 
 #include <io/io.h>
@@ -11,9 +11,11 @@
 
 using std::string;
 
-/***************************************************************************//**
-* \brief Converts a string to a number
+/**
+* \brief Convert a string to a number
+*
 * \param str a string
+*
 * \return a number (\c real or \c integer)
 */
 template <typename T>
@@ -25,9 +27,21 @@ T toNumber(string str)
      return num;
 }
 
+/**
+* \namespace io
+* \brief Contain functions related to I/O tasks
+*/
 namespace io
 {
 
+/**
+* \brief Split a string given a delimiter
+*
+* \param s the string to split
+* \param delim the delimiter
+*
+* \return a vector that contains the different elements of the string
+*/
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss(s);
     std::string item;
@@ -37,13 +51,27 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
     return elems;
 }
 
-
+/**
+* \brief Split a string given a delimiter
+*
+* \param s the string to split
+* \param delim the delimiter
+*
+* \return a vector that contains the different elements of the string
+*/
 std::vector<std::string> split(const std::string &s, char delim) {
     std::vector<std::string> elems;
     split(s, delim, elems);
     return elems;
 }
 
+/**
+* \brief Make a directory.
+*
+* If the parent directory does not exist, it will be created.
+*
+* \param folderPath the path of the directory
+*/
 void makeDirectory(const std::string folderPath)
 {
 	std::vector<std::string> x = split(folderPath, '/');
@@ -60,15 +88,15 @@ void makeDirectory(const std::string folderPath)
 	}
 }
 
-
 //##############################################################################
 //                                 INPUT
 //##############################################################################
 
-/***************************************************************************//**
-* \brief Reads inputs by parsing the command-line and simulation files
-* \param DB database containing all simulation parameters
-* \param D contains information related to the computational grid
+/**
+* \brief Read inputs by parsing the command-line and simulation files
+*
+* \param DB database that contains all the simulation parameters
+* \param D contains information about the computational grid
 */
 void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 {
@@ -101,9 +129,10 @@ void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 	commandLineParse2(argc, argv, DB);
 }
 
-/***************************************************************************//**
-* \brief Initializes the database with default values
-* \param DB the database containing all simulation parameters
+/**
+* \brief Initialize the database with default values
+*
+* \param DB the database that contains all the simulation parameters
 */
 void initialiseDefaultDB(parameterDB &DB)
 {
@@ -127,6 +156,7 @@ void initialiseDefaultDB(parameterDB &DB)
 	std::vector<body> *bodyVec = new std::vector<body>;
 	DB[flow]["bodies"].set<std::vector<body> *>(bodyVec);
 
+	// boundary conditions
 	boundaryCondition **bc = new boundaryCondition*[4];
 	for (int i=0; i<4; i++)
 		bc[i] = new boundaryCondition[2];
@@ -158,11 +188,12 @@ void initialiseDefaultDB(parameterDB &DB)
 	DB[solver]["maxIterations"].set<int>(20000);
 }
 
-/***************************************************************************//**
-* \brief Parses the command-line to get the case folder name and the device number
+/**
+* \brief Parse the command-line to get the case folder name and the device number
+*
 * \param argc number of arguments in the command-line
 * \param argv pointer on the arguments of the command-line
-* \param DB database containing all simulation parameters
+* \param DB database that contains all the simulation parameters
 */
 void commandLineParse1(int argc, char **argv, parameterDB &DB)
 {
@@ -184,11 +215,12 @@ void commandLineParse1(int argc, char **argv, parameterDB &DB)
 	}
 }
 
-/***************************************************************************//**
-* \brief Overwrites values of the database with additional arguments of the command-line
+/**
+* \brief Overwrite values in the database with additional arguments of the command-line
+*
 * \param argc number of arguments in the command-line
 * \param argv pointer on the arguments of the command-line
-* \param DB database containing all the simulation parameters
+* \param DB database that contains all the simulation parameters
 */
 void commandLineParse2(int argc, char **argv, parameterDB &DB)
 {
@@ -274,9 +306,11 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 //                                OUTPUT
 //##############################################################################
 
-/***************************************************************************//**
-* \brief Converts a \c preconditionerType to a \c std::string
+/**
+* \brief Convert a \c preconditionerType to a \c std::string
+*
 * \param s the preconditioner
+*
 * \return a string
 */
 string stringFromPreconditionerType(preconditionerType s)
@@ -291,9 +325,10 @@ string stringFromPreconditionerType(preconditionerType s)
     return "Unrecognised preconditioner";
 }
 
-/***************************************************************************//**
-* \brief Prints simulation parameters
-* \param DB database containing all simulation parameters
+/**
+* \brief Print the parameters of the simulation
+*
+* \param DB database that contains all the simulation parameters
 * \param D information related to the computational grid
 */
 void printSimulationInfo(parameterDB &DB, domain &D)
@@ -351,6 +386,11 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "ECC Enabled = " << ecc << std::endl;
 }
 
+/**
+* \brief Print the time spent on certain tasks
+*
+* \param logger object that contains the name and time spent related to tasks
+*/
 void printTimingInfo(Logger &logger)
 {
 	//logger.writeLegend();
@@ -358,10 +398,11 @@ void printTimingInfo(Logger &logger)
 	std::cout << std::endl;
 }
 
-/***************************************************************************//**
-* \brief Writes information about the run into a file
-* \param DB database containing all simulation parameters
-* \param D information related to the ocmputational grid
+/**
+* \brief Write information about the run into a file
+*
+* \param DB database that contains all the simulation parameters
+* \param D information about the computational grid
 */
 void writeInfoFile(parameterDB &DB, domain &D)
 {
@@ -379,10 +420,11 @@ void writeInfoFile(parameterDB &DB, domain &D)
 	infofile.close();
 }
 
-/***************************************************************************//**
-* \brief Writes the mesh points into a file
-* \param caseFolder path of the case folder
-* \param D information related to the ocmputational grid
+/**
+* \brief Write the mesh points into a file named \a grid
+*
+* \param caseFolder the path of the case folder
+* \param D information about the computational grid
 */
 void writeGrid(std::string &caseFolder, domain &D)
 {
@@ -402,6 +444,19 @@ void writeGrid(std::string &caseFolder, domain &D)
 	f.close();
 }
 
+/**
+* \brief Write numerical data at a given iteration number.
+*
+* It creates a directory whose name is the iteration number
+* and stores the fluxes, the pressures (and potentially the body forces)
+* into the files \a q, \a lambda, respectively.
+*
+* \param caseFolder the path of the folder case
+* \param n the iteration number
+* \param q Cusp array that contains the fluxes
+* \param lambda Cusp array that contains the pressures (and potentially the body forces)
+* \param D information about the computational grid
+*/
 template <>
 void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, domain &D)//, bodies &B)
 {
@@ -433,6 +488,19 @@ void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, doma
 	std::cout << "Data saved to folder " << path << std::endl;
 }
 
+/**
+* \brief Write numerical data at a given iteration number.
+*
+* It creates a directory whose name is the iteration number
+* and stores the fluxes, the pressures (and potentially the body forces)
+* into the files \a q, \a lambda, respectively.
+*
+* \param caseFolder the path of the folder case
+* \param n the iteration number
+* \param q Cusp array that contains the fluxes
+* \param lambda Cusp array that contains the pressures (and potentially the body forces)
+* \param D information about the computational grid
+*/
 template <>
 void writeData<vecD>(std::string &caseFolder, int n, vecD &q, vecD &lambda, domain &D)//, bodies &B)
 {
@@ -442,6 +510,11 @@ void writeData<vecD>(std::string &caseFolder, int n, vecD &q, vecD &lambda, doma
 	writeData(caseFolder, n, qH, lambdaH, D);
 }
 
+/**
+* \brief Print the memory usage on the device
+*
+* \param label the label of the device
+*/
 void printDeviceMemoryUsage(char *label)
 {
 	size_t _free, _total;

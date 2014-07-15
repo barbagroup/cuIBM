@@ -1,26 +1,27 @@
 /***************************************************************************//**
 * \file domain.h
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Declaration of the class \c domain
+* \brief Definition of the class \c domain
 */
+
 #pragma once
 
 #include <types.h>
 
-/***************************************************************************//**
+/**
 * \class domain
-* \brief Stores the mesh grid information
+* \brief Store the mesh grid information
 */
 class domain
 {
 public:
-	int   nx, ///< Number of cells in the x-direction
-	      ny; ///< Number of cells in the y-direction
+	int   nx, ///< number of cells in the x-direction
+	      ny; ///< number of cells in the y-direction
 	
 	vecH  x,  ///< x-coordinates of the nodes
 	      y,  ///< y-coordinates of the nodes
-	      dx, ///< Cell widths in the x-direction
-	      dy; ///< Cell widths in the y-direction
+	      dx, ///< cell widths in the x-direction
+	      dy; ///< cell widths in the y-direction
 	
 	vecD  xD,  ///< x-coordinates of the nodes stored on the device
 	      yD,  ///< y-coordinates of the nodes stored on the device

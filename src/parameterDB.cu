@@ -8,9 +8,11 @@
 #include <body.h>
 #include <boundaryCondition.h>
 
-/***************************************************************************//**
-* \brief Converts a number to a string
+/**
+* \brief Convert a number to a string
+*
 * \param num a number
+*
 * \return a string
 */
 template <typename T>
@@ -21,9 +23,11 @@ std::string toString(T num)
   return ss.str();
 }
 
-/***************************************************************************//**
-* \brief Converts a type of boundary condition to a string
+/**
+* \brief Convert a type of boundary condition to a string
+*
 * \param b a type of boundary condition
+*
 * \return a string
 */
 template <>
@@ -39,9 +43,10 @@ std::string toString(bcType b)
     return "Error";
 }
 
-/***************************************************************************//**
-* \brief Returns the value of the property as a string
-* \return a string
+/**
+* \brief Get the value of the property as a string
+*
+* \return the value of the property as a string
 */
 template <>
 std::string property::get()
@@ -49,8 +54,9 @@ std::string property::get()
   return std::string(value);
 }
 
-/***************************************************************************//**
-* \brief Returns the value of the property as a given type
+/**
+* \brief Get the value of the property as a given type
+*
 * \return the value of the property as a given type
 */
 template <typename T>
@@ -72,8 +78,9 @@ template ibmScheme property::get<ibmScheme>();
 template std::vector<body> *property::get<std::vector<body>*>();
 template boundaryCondition **property::get<boundaryCondition **>();
 
-/***************************************************************************//**
-* \brief Returns a string describing the value of property as appropriate
+/**
+* \brief Return a string describing the value of property as appropriate
+*
 * \return a constant character pointer
 */
 const char *property::print()
@@ -90,8 +97,9 @@ const char *property::print()
       return "not found";
 }
 
-/***************************************************************************//**
-* \brief Sets the value of the property given a string
+/**
+* \brief Set the value of the property given a string
+*
 * \param s a string
 */
 template <>
@@ -100,14 +108,15 @@ void property::set(std::string s)
   strncpy(value,s.c_str(),64);
 }
 
-/***************************************************************************//**
-* \brief Sets the value of the property given a type
+/**
+* \brief Set the value of the property given a type
+*
 * \param v the value
 */
 template <typename T>
 void property::set(T v)
 {
-  // assumes we have enough space (64 bytes)
+  // assume we have enough space (64 bytes)
   type = &typeid(T);
   *reinterpret_cast<T*>(&value[0]) = v;
 }

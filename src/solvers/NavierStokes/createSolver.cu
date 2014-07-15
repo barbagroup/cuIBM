@@ -6,13 +6,19 @@
 
 #include <solvers/NavierStokes/createSolver.h>
 
-/********************//**
+/**
 * \fn
-* \brief Create a Navier-Stokes solver
+* \brief Create a Navier-Stokes solver, depending on the type of IBM used.
 *
-* \param paramDB data base with all simulation parameters
+* The kind of solver depends on the IBM chosen.
+* If there is no immersed body in the flow, an instance of the class \c NavierStokesSolver is created.
+* If \c TAIRA_COLONIUS is the IBM chosen, an instance of the class \c TairaColoniusSolver is created, 
+* that inherits from the class \c NavierStokesSolver.
+*
+* \param paramDB database that contains all the simulation parameters
 * \param domInfo information about the computational grid
-* \return pointer to an object of the class NavierStokesSolver
+*
+* \return a pointer on an instance of the appropriate class
 */
 template <typename memoryType>
 NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domInfo)

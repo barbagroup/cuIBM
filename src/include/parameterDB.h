@@ -1,7 +1,7 @@
 /***************************************************************************//**
 * \file parameterDB.h
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Database of all the simulation parameters
+* \brief Database that contains all the simulation parameters
 */
 
 #pragma once
@@ -14,7 +14,7 @@
 #include <iostream>
 #include <boundaryCondition.h>
 
-/***************************************************************************//**
+/**
 * \class property
 * \brief Generic property storage
 */
@@ -28,41 +28,42 @@ class property
 	char value[64]; ///< 64 bytes of storage for the name of the value
 
 public:
-	/********************//**
+	/**
 	* \brief Constructor of the class \c property.
 	*
-	* Initializes the memory to zero.
+	* Initialize the memory to zero.
+	*
 	*/
 	property()
 	{
 		memset(value, 0, 64);
 	}
 	
-	/********************//**
-	* \brief Returns the value of the property as a given type
+	/**
+	* \brief Get the value of the property as a given type
 	*/
 	template <typename T> T get();
 	
-	/********************//**
-	* \brief Sets the value of the property given a type
+	/**
+	* \brief Set the value of the property given a type
 	*/
 	template <typename T> void set(T v);
 
-	/********************//**
-	* \brief Returns a string describing the value of property as appropriate
+	/**
+	* \brief Return a string describing the value of property as appropriate
 	*/
 	const char *print();
 };
 
-/********************//**
+/**
 * \typedef componentParameter
-* \brief Maps from a string to a \c property
+* \brief Map from a string to a \c property
 */
 typedef std::map<std::string, property> componentParameter;
 
-/********************//**
+/**
 * \typedef parameterDB
-* \brief Maps from a string to a \c componentParameter
+* \brief Map from a string to a \c componentParameter
 */
 typedef std::map<std::string, componentParameter> parameterDB;
 

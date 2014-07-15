@@ -26,53 +26,53 @@
 
 #include <logger.h>
 
-/********************//**
+/**
 * \enum  bcType
-* \brief Specifies the type of boundary condition
+* \brief Specify the type of boundary condition
 */
 enum bcType
 {
 	DIRICHLET,  ///< Dirichlet boundary condition
 	NEUMANN,    ///< Neumann boundary condition
-	CONVECTIVE, ///< Convective boundary condition
-	PERIODIC,   ///< Periodic boundary condition
+	CONVECTIVE, ///< convective boundary condition
+	PERIODIC,   ///< periodic boundary condition
 	SPECIAL
 };
 
-/********************//**
+/**
 * \enum  boundary
-* \brief Specifies the boundary of concern
+* \brief Specify the boundary of concern
 */
 enum boundary
 {
-	XMINUS, ///< Left boundary
-	XPLUS,  ///< Right boundary
-	YMINUS, ///< Bottom boundary
-	YPLUS   ///< Top boundary
+	XMINUS, ///< left boundary
+	XPLUS,  ///< right boundary
+	YMINUS, ///< bottom boundary
+	YPLUS   ///< top boundary
 };
 
-/********************//**
+/**
 * \enum  timeScheme
 * \brief Numerical scheme used to discretise the time derivative
 */
 enum timeScheme
 {
-	EULER_EXPLICIT,    ///< Explicit Euler method (first order)
-	EULER_IMPLICIT,    ///< Implicit Euler method (first order)
-	ADAMS_BASHFORTH_2, ///< Second-order Adams-Bashforth scheme
-	RUNGE_KUTTA_3,     ///< Third-order low storage Runge-Kutta method
+	EULER_EXPLICIT,    ///< explicit Euler method (first order)
+	EULER_IMPLICIT,    ///< implicit Euler method (first order)
+	ADAMS_BASHFORTH_2, ///< second-order Adams-Bashforth scheme
+	RUNGE_KUTTA_3,     ///< third-order low storage Runge-Kutta method
 	CRANK_NICOLSON     ///< Crank-Nicolson scheme (second order)
 };
 
-/********************//**
+/**
 * \enum  ibmScheme
-* \brief Specifies the immersed boundary method used to solve the flow
+* \brief Specify the immersed boundary method used to solve the flow
 */
 enum ibmScheme
 {
-	NAVIER_STOKES,  ///< No immersed bodies. Perot (1993)
+	NAVIER_STOKES,  ///< no immersed bodies - Perot (1993)
 	SAIKI_BIRINGEN, ///< Saiki & Biringen (1996)
-	DIRECT_FORCING, ///< Fully discrete direct forcing method
+	DIRECT_FORCING, ///< fully discrete direct forcing method
 	FADLUN_ET_AL,   ///< Fadlun et al (2000)
 	TAIRA_COLONIUS, ///< Taira & Colonius (2007)
 	SLL0,           ///< SLL0
@@ -80,18 +80,18 @@ enum ibmScheme
 	SLL2            ///< SLL2
 };
 
-/********************//**
+/**
 * \enum  preconditionerType
-* \brief Specifies the type of preconditioner
+* \brief Specify the type of preconditioner
 */
 enum preconditionerType
 {
-	NONE,                ///< No preconditioner
-	DIAGONAL,            ///< Diagonal preconditioner
-	SMOOTHED_AGGREGATION ///< Smoothed aggregation preconditioner
+	NONE,                ///< no preconditioner
+	DIAGONAL,            ///< diagonal preconditioner
+	SMOOTHED_AGGREGATION ///< smoothed aggregation preconditioner
 };
 
-/********************//**
+/**
 * \typedef real
 * \brief Can be \c float or \c double depending on the machine precision
 */
@@ -100,38 +100,38 @@ typedef double real;
 using cusp::device_memory;
 using cusp::host_memory;
 
-/********************//**
+/**
 * \typedef cooH
-* \brief   COO matrix stored on the host
+* \brief COO matrix stored on the host
 */
 typedef cusp::coo_matrix<int, real, host_memory>   cooH;
 
-/********************//**
+/**
 * \typedef cooD
-* \brief   COO matrix stored on the device
+* \brief COO matrix stored on the device
 */
 typedef cusp::coo_matrix<int, real, device_memory> cooD;
 
-/********************//**
+/**
 * \typedef csrH
-* \brief   CSR matrix stored on the host
+* \brief CSR matrix stored on the host
 */
 typedef cusp::csr_matrix<int, real, host_memory>   csrH;
 
-/********************//**
+/**
 * \typedef csrD
-* \brief   CSR matrix stored on the device
+* \brief CSR matrix stored on the device
 */
 typedef cusp::csr_matrix<int, real, device_memory> csrD;
 
-/********************//**
+/**
 * \typedef vecH
-* \brief   Cusp 1D array of real numbers stored in the host memory
+* \brief Cusp 1D array stored in the host
 */
 typedef cusp::array1d<real, host_memory>   vecH;
 
-/********************//**
+/**
 * \typedef vecD
-* \brief   Cusp 1D array of real numbers stored in the device memory
+* \brief Cusp 1D array stored in the device
 */
 typedef cusp::array1d<real, device_memory> vecD;

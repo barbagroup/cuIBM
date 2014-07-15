@@ -1,7 +1,7 @@
 /***************************************************************************//**
 * \file parseSimulationFile.cu
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Parses the simulation file
+* \brief Parse the \a simulation file to fill the databse
 */
 
 #include <io/io.h>
@@ -9,12 +9,22 @@
 #include <yaml-cpp/yaml.h>
 #include <fstream>
 
+/**
+* \namespace io
+* \brief Contain functions related to I/O tasks
+*/
 namespace io
 {
 
 using std::string;
 
-// converts a time scheme string to a time scheme type
+/**
+* \brief Convert a string to a time-scheme type
+*
+* \param s the string that describes the time-scheme
+*
+* \return a time-scheme type
+*/
 timeScheme timeSchemeFromString(string &s)
 {
   if (s == "EULER_EXPLICIT")
@@ -31,7 +41,13 @@ timeScheme timeSchemeFromString(string &s)
     return EULER_EXPLICIT;
 }
 
-// converts a preconditioner string to a preconditioner type
+/**
+* \brief Convert a string to a prconditioner type
+*
+* \param s the string that describes the preconditioner
+*
+* \return a preconditioner type
+*/
 preconditionerType preconditionerTypeFromString(string &s)
 {
   if (s == "NONE")
@@ -44,6 +60,13 @@ preconditionerType preconditionerTypeFromString(string &s)
     return NONE;
 }
 
+/**
+* \brief Convert a string to an IBM scheme
+*
+* \param s the string that describes the IBM scheme
+*
+* \return an IBM-scheme type
+*/
 ibmScheme ibmSchemeFromString(string &s)
 {
   if (s == "NAVIER_STOKES")
@@ -60,7 +83,12 @@ ibmScheme ibmSchemeFromString(string &s)
     return NAVIER_STOKES;
 }
 
-// fills the database
+/**
+* \brief Fill the database with the simulation parameters
+*
+* \param node the parsed file
+* \param DB database that contains the simulation parameters
+*/
 void parseSimulation(const YAML::Node &node, parameterDB &DB)
 {
 	real dt = 0.02, scaleCV = 5.0;
@@ -123,7 +151,12 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 	}
 }
 
-// parses the simulation file using YAML
+/**
+* \brief Parse the \a simulation file using YAML
+*
+* \param simFile the file that contains the simulation parameters
+* \param DB the database that will be filled with the simulation parameters
+*/
 void parseSimulationFile(std::string &simFile, parameterDB &DB)
 {
 	std::ifstream fin(simFile.c_str());

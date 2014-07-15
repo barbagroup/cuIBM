@@ -1,7 +1,7 @@
 /***************************************************************************//**
 * \file  preconditioner.h
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the class \c preconditioner
+* \brief Declaration and definition of the class \c preconditioner
 */
 
 #pragma once
@@ -13,14 +13,14 @@
 #include <cusp/precond/aggregation/smoothed_aggregation.h>
 #include <cusp/format.h>
 
-/***************************************************************************//**
-* \file preconditioner
-* \brief Stores the preconditioner for a given system
+/**
+* \class preconditioner
+* \brief Store the preconditioner for a given system
 */
 template <typename Matrix>
 class preconditioner
 {
-	preconditionerType type;
+	preconditionerType type;	///< type of preconditioner
 
 	cusp::linear_operator<typename Matrix::value_type,
 	                      typename Matrix::memory_space,
@@ -32,47 +32,47 @@ public:
 	typedef typename Matrix::memory_space memory_space;
 	typedef typename cusp::unknown_format format;
 
-	/********************//**
-	* \brief Constructor
+	/**
+	* \brief Constructor of the class \c preconditioner
 	*/
 	preconditioner();
 
-	/********************//**
-	* \brief Overloaded constructor
+	/**
+	* \brief Overloaded constructor of the class \c preconditioner
 	*/
 	preconditioner(const Matrix &A, preconditionerType _type);
 
-	/********************//**
-	* \brief Destructor
+	/**
+	* \brief Destructor of the class \c preconditioner
 	*/
 	~preconditioner();
 
-	/********************//**
-	* \brief Update
+	/**
+	* \brief Update the preconditioner of the system
 	*/
 	void update(const Matrix &A);
 
-	/********************//**
-	* \brief Overload of the operator ()
+	/**
+	* \brief Overload the operator ()
 	*/
 	template <typename VectorType1, typename VectorType2>
 	void operator()(const VectorType1 &x, VectorType2 &y) const;
 };
 
-/***************************************************************************//**
-* \brief Constructor
+/**
+* \brief Constructor of the class \c preconditioner
 */
 template <class Matrix>
 preconditioner<Matrix>::preconditioner()
 {
 }
 
-/***************************************************************************//**
-* \brief Overloaded constructor
-* \param A a matrix
+/**
+* \brief Overloaded constructor of the class \c preconditioner
+*
+* \param A matrix of the system
 * \param _type the type of preconditioner
 */
-// this is simple enough
 template <class Matrix>
 preconditioner<Matrix>::preconditioner(const Matrix &A, preconditionerType _type)
 {
@@ -99,8 +99,8 @@ preconditioner<Matrix>::preconditioner(const Matrix &A, preconditionerType _type
 	}
 }
 
-/***************************************************************************//**
-* \brief Destructor
+/**
+* \brief Destructor of the class \c preconditioner
 */
 template <typename Matrix>
 preconditioner<Matrix>::~preconditioner()
@@ -108,9 +108,10 @@ preconditioner<Matrix>::~preconditioner()
 	delete LO;
 }
 
-/***************************************************************************//**
-* \brief Update
-* \param A a matrix
+/**
+* \brief Update the preconditioner of the system
+*
+* \param A matrix of the system
 */
 template <class Matrix>
 void preconditioner<Matrix>::update(const Matrix &A)
@@ -134,15 +135,14 @@ void preconditioner<Matrix>::update(const Matrix &A)
 	}
 }
 
-/***************************************************************************//**
+// Why is this required? Need to look into the implementation of preconditioners in Cusp.
+/**
 * \brief Overload of the operator ()
 */
-// Why is this required? Need to look into the implementation of preconditioners in Cusp.
 template <typename Matrix>
 template <typename VectorType1, typename VectorType2>
 void preconditioner<Matrix>::operator()(const VectorType1 &x, VectorType2 &y) const
 {
-
 	/*if (type == NONE)
 	{
 		cusp::identity_operator<value_type, memory_space> *identity =

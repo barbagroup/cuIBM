@@ -1,7 +1,7 @@
 /***************************************************************************//**
 * \file TairaColoniusSolver.cu
 * \author Krishnan, A. (anush@bu.edu)
-* \brief definition of the methods of the class TairaColonius
+* \brief Definition of the methods of the class TairaColoniusSolver
 */
 
 #include <solvers/NavierStokes/TairaColoniusSolver.h>
