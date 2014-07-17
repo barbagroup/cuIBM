@@ -1,14 +1,14 @@
 /***************************************************************************//**
 * \file calculateForce.cu
 * \author Krishnan, A. (anus@bu.edu)
-* \brief Calculate force on the body using a control-volume approach
+* \brief Calculate forces acting on the body using a control-volume approach
 */
 
 #include <solvers/NavierStokes/kernels/calculateForce.h>
 
 #define BSZ 16
 
-/********************//**
+/**
 * \namespace kernels
 * \brief Contains all the custom-written CUDA kernels
 */
@@ -17,9 +17,9 @@ namespace kernels
 
 /**
 * \fn
-* \brief Calculate drag using a control-volume approach (left-right)
+* \brief Calculate drag using a control-volume approach (left-right).
 *
-* Evaluate the contribution from the left and right parts of the control surface
+* Evaluate the contribution from the left and right parts of the control surface.
 *
 * \param FxX raw pointer to the vector storing the drag in the x-direction
 * \param lambda raw pointer to the vector storing all the pressure and Lagrangian forces
@@ -64,9 +64,9 @@ void dragLeftRight(real *FxX, real *q, real *lambda, real nu, real *dx, real *dy
 
 /**
 * \fn
-* \brief Calculate drag using a control-volume approach (bottom-top)
+* \brief Calculate drag using a control-volume approach (bottom-top).
 *
-* Evaluate the contribution from the bottom and top parts of the control surface
+* Evaluate the contribution from the bottom and top parts of the control surface.
 *
 * \param FxY raw pointer to the vector storing the drag in the y-direction
 * \param q raw pointer to the vector storing all the fluxes
@@ -118,9 +118,9 @@ void dragBottomTop(real *FxY, real *q, real nu, real *dx, real *dy,
 
 /**
 * \fn
-* \brief Calculate drag using a control-volume approach (unsteady)
+* \brief Calculate drag using a control-volume approach (unsteady).
 *
-* Evaluate the unsteady contribution of the control volume
+* Evaluate the unsteady contribution of the control volume.
 *
 * \param FxU raw pointer to the vector storing the unsteady drag components
 * \param q raw pointer to the vector storing all the fluxes
@@ -154,9 +154,9 @@ void dragUnsteady(real *FxU, real *q, real *qOld, real *dx, real *dy, real dt,
 
 /**
 * \fn
-* \brief Calculate lift using a control-volume approach (left-right)
+* \brief Calculate lift using a control-volume approach (left-right).
 *
-* Evaluate the contribution from the left and right parts of the control surface
+* Evaluate the contribution from the left and right parts of the control surface.
 *
 * \param FyX raw pointer to the vector storing the lift components in the x-direction
 * \param q raw pointer to the vector storing all the fluxes
@@ -207,9 +207,9 @@ void liftLeftRight(real *FyX, real *q, real nu, real *dx, real *dy,
 
 /**
 * \fn
-* \brief Calculate lift using a control-volume approach (bottom-top)
+* \brief Calculate lift using a control-volume approach (bottom-top).
 *
-* Evaluate the contribution from the bottom and top parts of the control surface
+* Evaluate the contribution from the bottom and top parts of the control surface.
 *
 * \param FyY raw pointer to the vector storing the lift components in the y-direction
 * \param q raw pointer to the vector storing all the fluxes
@@ -254,9 +254,9 @@ void liftBottomTop(real *FyY, real *q, real *lambda, real nu, real *dx, real *dy
             
 /**
 * \fn
-* \brief Calculate lift using a control-volume approach (unsteady)
+* \brief Calculate lift using a control-volume approach (unsteady).
 *
-* Evaluate the unsteady contribution of the control volume
+* Evaluate the unsteady contribution of the control volume.
 *
 * \param FyU raw pointer to the vector storing the unsteady lift components
 * \param q raw pointer to the vector storing all the fluxes
@@ -343,7 +343,7 @@ void forceX(real *f, real *q, real *rn, int *tagsX, int *tagsY,
 }
 
 /**
-* \brief To be documented
+* \brief Doing nothing !
 */
 __global__
 void forceY(){}

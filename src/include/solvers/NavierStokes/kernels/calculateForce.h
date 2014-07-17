@@ -1,14 +1,14 @@
 /***************************************************************************//**
 * \file  calculateForce.h
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Calculate force on the body using a control volume approach
+* \brief Calculate forces acting on the body using a control volume approach
 */
 
 #pragma once
 
 #include <types.h>
 
-/********************//**
+/**
 * \namespace kernels
 * \brief Contain all the custom-written CUDA kernels
 */
@@ -66,7 +66,7 @@ void forceX(real *f, real *q, real *rn, int *tagsX, int *tagsY,
             real dt, real alpha, real nu);
 
 /**
-* \brief To be documented
+* \brief Doing nothing !
 */
 __global__
 void forceY();

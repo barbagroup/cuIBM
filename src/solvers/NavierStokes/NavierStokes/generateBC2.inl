@@ -60,7 +60,8 @@ void NavierStokesSolver<device_memory>::generateBC2()
 	
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
-	
+
+	// initialize array with zeros
 	cusp::blas::fill(bc2, 0.0);
 	
 	const int blockSize = 256;

@@ -9,7 +9,7 @@
 #define BLOCKSIZE 256
 
 /**
-* \brief To be documented
+* \brief Update the interpolation matrix with current location of body points on the host
 */
 template <>
 void TairaColoniusSolver<host_memory>::updateQT()
@@ -54,7 +54,7 @@ void TairaColoniusSolver<host_memory>::updateQT()
 }
 
 /**
-* \brief To be documented
+* \brief Update the interpolation matrix with current location of body points on the device
 */
 template <>
 void TairaColoniusSolver<device_memory>::updateQT()
@@ -103,7 +103,7 @@ void TairaColoniusSolver<device_memory>::updateQT()
 }
 
 /**
-* \brief To be documented
+* \brief Generate matrix containing discrete divergence operator and interpolation matrix on the host
 */
 template <>
 void TairaColoniusSolver<host_memory>::generateQT()
@@ -132,7 +132,7 @@ void TairaColoniusSolver<host_memory>::generateQT()
 }
 
 /**
-* \brief To be documented
+* \brief Generate matrix containing discrete divergence operator and interpolation matrix on the device
 */
 template <>
 void TairaColoniusSolver<device_memory>::generateQT()

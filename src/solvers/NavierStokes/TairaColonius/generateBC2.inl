@@ -1,13 +1,16 @@
 /***************************************************************************//**
 * \file generateBC2.inl
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Generate the array bc2 that contains inhomogeneous boundary conditions and boundary velocities
+* \brief Definition of the methods of the class \c TairaColoniusSolver related to bc2
 */
 
 #include <solvers/NavierStokes/kernels/generateBC2.h>
 
 /**
-* \brief Generate the array bc2 on the host
+* \brief Create an array that contains
+* 		the inhomogeneous boundary conditions from the continuity equation
+*		and the no-slip boundary conditions
+*		on the host
 */
 template <>
 void TairaColoniusSolver<host_memory>::generateBC2()
@@ -53,7 +56,10 @@ void TairaColoniusSolver<host_memory>::generateBC2()
 }
 
 /**
-* \brief Generate the array bc2 on the device
+* \brief Create an array that contains
+* 		the inhomogeneous boundary conditions from the continuity equation
+*		and the no-slip boundary conditions
+*		on the device
 */
 template<>
 void TairaColoniusSolver<device_memory>::generateBC2()

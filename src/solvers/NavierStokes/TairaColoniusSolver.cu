@@ -1,14 +1,17 @@
 /***************************************************************************//**
 * \file TairaColoniusSolver.cu
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the methods of the class TairaColoniusSolver
+* \brief Definition of the methods of the class \c TairaColoniusSolver
 */
 
 #include <solvers/NavierStokes/TairaColoniusSolver.h>
 #include <sys/stat.h>
 
-/********************//**
-* \brief Initialize the solver and assemble the matrices
+/**
+* \brief Initialize the solver.
+*
+* It initializes the bodies, the arrays and assemble the matrices of the system.
+*
 */
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::initialise()
@@ -35,10 +38,8 @@ void TairaColoniusSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::assembleMatrices();
 }
 
-/********************//**
-* \brief Write the time and forces for each body in the flow fieldi
-*
-* The forces are calculated using the method of Taira and Colonius (2007).
+/**
+* \brief Calculate forces and write time and forces for each body in a file
 */
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::writeData()
@@ -69,7 +70,7 @@ void TairaColoniusSolver<memoryType>::writeData()
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }
 
-/********************//**
+/**
 * \brief Update the location of the bodies and re-compute matrices
 */
 template <typename memoryType>
@@ -88,11 +89,8 @@ void TairaColoniusSolver<memoryType>::updateSolverState()
 	}
 }
 
-/********************//**
-* \brief Constructor of the class TairaColoniusSolver.
-*
-* Get the simulation parameters of the database.
-* Get the computational grid.
+/**
+* \brief Constructor of the class \c TairaColoniusSolver
 */
 template <typename memoryType>
 TairaColoniusSolver<memoryType>::TairaColoniusSolver(parameterDB *pDB, domain *dInfo)

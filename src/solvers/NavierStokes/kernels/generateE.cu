@@ -1,13 +1,18 @@
 /***************************************************************************//**
 * \file generateE.cu
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the kernels required to generate matrix E
+* \brief Definition of the kernels required to generate elements of the interpolation matrix
 */
 
 #include <solvers/NavierStokes/kernels/generateE.h>
 
 /**
-* \brief To be documented
+* \brief Discrete delta function defined by Roma et al. (1999)
+*
+* \param x x- or y- component of the vector defined between a body point and a grid point
+* \param h grid-spacing near the body point
+*
+* \return the value of the discrete Delta function
 */
 __device__ \
 real dhRomaDeviceE(real x, real h)
@@ -23,7 +28,14 @@ real dhRomaDeviceE(real x, real h)
 }
 
 /**
-* \brief To be documented
+* \brief Compute the discrete Delta function in 2D 
+*		using the definition by Roma et al. (1999)
+*
+* \param x x-component of the vector defined between a body point and a grid point
+* \param y y-component of the vector defined between a body point and a grid point
+* \param h grid-spacing near the body point
+*
+* \return the discrete Delta function in 2D
 */
 __device__ \
 real deltaDeviceE(real x, real y, real h)
@@ -31,7 +43,7 @@ real deltaDeviceE(real x, real y, real h)
 	return dhRomaDeviceE(x, h) * dhRomaDeviceE(y, h);
 }
 
-/********************//**
+/**
 * \namespace kernels
 * \brief Contain all custom-written CUDA kernels
 */
@@ -39,7 +51,21 @@ namespace kernels
 {
 	
 /**
-* \brief To be documented
+* \brief Compute elements of the interpolation matrix on the host
+*
+* \param ERows rows of the COO matrix \c E
+* \param ECols columns of the COO matrix \c E
+* \param EVals values of the COO matrix \c E
+* \param nx number of cells in the x-direction
+* \param ny number of cells in the y-direction
+* \param x x-component of the Eulerian grid points
+* \param y y-component of the Eulerian grid points
+* \param dx cell-widths in the x-direction
+* \param totalPoints total number of body points (all bodies included)
+* \param xB x-coordinate of the body points
+* \param yB y-coordinate of the body points
+* \param I x-index of the cell in which the body point is located
+* \param J y-index of the cell in which the body point is located
 */
 void generateEHost(int *ERows,  int *ECols,  real *EVals,
                    int nx, int ny, real *x, real *y, real *dx,
@@ -84,7 +110,21 @@ void generateEHost(int *ERows,  int *ECols,  real *EVals,
 }
 
 /**
-* \brief To be documented
+* \brief Kernel to compute an element of the interpolation matrix on the device
+*
+* \param ERows rows of the COO matrix \c E
+* \param ECols columns of the COO matrix \c E
+* \param EVals values of the COO matrix \c E
+* \param nx number of cells in the x-direction
+* \param ny number of cells in the y-direction
+* \param x x-component of the Eulerian grid points
+* \param y y-component of the Eulerian grid points
+* \param dx cell-widths in the x-direction
+* \param totalPoints total number of body points (all bodies included)
+* \param xB x-coordinate of the body points
+* \param yB y-coordinate of the body points
+* \param I x-index of the cell in which the body point is located
+* \param J y-index of the cell in which the body point is located
 */
 __global__ \
 void generateE(int *ERows,  int *ECols,  real *EVals,

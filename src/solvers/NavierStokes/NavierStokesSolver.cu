@@ -190,7 +190,8 @@ void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 	boundaryCondition 
 		**bcInfo
 	     = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
-	
+
+	// resize boundary arrays by the number of velocity points on boundaries (u and v points)
 	bc[XMINUS].resize(2*ny-1);
 	bc[XPLUS].resize(2*ny-1);
 	bc[YMINUS].resize(2*nx-1);

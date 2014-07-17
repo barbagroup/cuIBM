@@ -1,7 +1,7 @@
 /***************************************************************************//**
 * \file NSWithBody.h
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Generic Navier-Stokes solver in the presence of immersed boundaries
+* \brief Declaration of the class \c NSWithBody
 */
 
 #pragma once
@@ -28,28 +28,28 @@ protected:
 	std::ofstream forceFile;	///< file to write the forces
 
 	/**
-	* \brief To be documented
+	* \brief Calculate drag and lift for each immersed body
 	*/
 	virtual void calculateForce();
 	
 	/**
-	* \brief To be documented
+	* \brief Initialize immersed bodies
 	*/
 	void initialiseBodies();
 	
 	/**
-	* \brief To be documented
+	* \brief Update location and velocity of immersed bodies at current time
 	*/
 	void updateBodies();
 
 public:
 	/**
-	* \brief To be documented
+	* \brief Write flow variables and location of body points into files
 	*/
 	void writeCommon();
 	
 	/**
-	* \brief To be documented
+	* \brief Close iteration file and force file
 	*/
 	void shutDown();
 };

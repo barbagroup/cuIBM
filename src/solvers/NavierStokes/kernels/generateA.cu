@@ -6,7 +6,7 @@
 
 #include <solvers/NavierStokes/kernels/generateA.h>
 
-/********************//**
+/**
 * namespace kernels
 * \brief Contain all the custom-written CUDA kernels
 */
@@ -14,7 +14,17 @@ namespace kernels
 {
 
 /**
-* \brief To be documented
+* \brief Generate the matrix A
+*
+* \param ARows rows of the COO matrix A
+* \param ACols columns of the COO matrix A
+* \param AVals values of the COO matrix A
+* \param MVals values of the COO matrix M
+* \param LRows rows of the COO matrix L
+* \param LCols columns of the COO matrix L
+* \param LVals values of the COO matrix A
+* \param ASize number of entries of the COO matrix A
+* \param alpha implicit coefficient of the diffusive scheme
 */
 __global__
 void generateA(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int *LCols, real *LVals, int ASize, real alpha)
@@ -28,7 +38,19 @@ void generateA(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int
 }
 
 /**
-* \brief To be documented
+* \brief Generate the matrix A for the direct forcing method
+*
+* \param ARows rows of the COO matrix A
+* \param ACols columns of the COO matrix A
+* \param AVals values of the COO matrix A
+* \param MVals values of the COO matrix M
+* \param LRows rows of the COO matrix L
+* \param LCols columns of the COO matrix L
+* \param LVals values of the COO matrix A
+* \param ASize number of entries of the COO matrix A
+* \param alpha implicit coefficient of the diffusive scheme
+* \param tagsX
+* \param tagsY
 */
 __global__
 void generateADirectForcing(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int *LCols, real *LVals, int ASize, real alpha, int *tagsX, int *tagsY)

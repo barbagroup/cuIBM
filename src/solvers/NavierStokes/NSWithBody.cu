@@ -8,9 +8,8 @@
 #include <solvers/NavierStokes/kernels/calculateForce.h>
 
 /**
-* \brief To be documented
+* \brief Initialize immersed bodies
 */
-/// Initialise the bodies
 template <typename memoryType>
 void NSWithBody<memoryType>::initialiseBodies()
 {
@@ -28,9 +27,8 @@ void NSWithBody<memoryType>::initialiseBodies()
 }
 	
 /**
-* \brief To be documented
+* \brief Update location and velocity of immersed bodies at current time
 */
-/// Update the body information at each time step during motion
 template <typename memoryType>
 void NSWithBody<memoryType>::updateBodies()
 {
@@ -45,7 +43,7 @@ void NSWithBody<memoryType>::updateBodies()
 };
 
 /**
-* \brief To be documented
+* \brief Doing nothing !
 */
 template <>
 void NSWithBody<host_memory>::calculateForce()
@@ -53,7 +51,7 @@ void NSWithBody<host_memory>::calculateForce()
 }
 
 /**
-* \brief To be documented
+* \brief Calculate drag and lift for each immersed body on the device
 */
 template <>
 void NSWithBody<device_memory>::calculateForce()
@@ -120,7 +118,7 @@ void NSWithBody<device_memory>::calculateForce()
 }
 
 /**
-* \brief To be documented
+* \brief Write flow variables and location of body points into files
 */
 template <typename memoryType>
 void NSWithBody<memoryType>::writeCommon()
@@ -142,7 +140,7 @@ void NSWithBody<memoryType>::writeCommon()
 }
 
 /**
-* \brief To be documented
+* \brief Close iteration file and force file
 */
 template <typename memoryType>
 void NSWithBody<memoryType>::shutDown()

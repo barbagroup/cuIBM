@@ -44,7 +44,7 @@ void NavierStokesSolver<device_memory>::generateBC1()
 	
 	int  numU  = (nx-1)*ny;
 	
-	// zero the bc1 vector
+	// initialize vector bc1 with zeros
 	cusp::blas::fill(bc1, 0.0);
 	
 	dim3 dimGridx( int((nx - 0.5)/blocksize) + 1, 1),
