@@ -20,7 +20,7 @@ namespace io
 using std::string;
 
 /**
-* \brief Set up onformation about the immersed bodies
+* \brief Set up information about the immersed bodies
 *
 * \param node the parsed file
 * \param instance of the class \c body to be filled

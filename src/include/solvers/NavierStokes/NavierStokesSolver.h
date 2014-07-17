@@ -14,7 +14,7 @@
 #include <preconditioner.h>
 
 /**
-* \class NavierStrokesSolver
+* \class NavierStokesSolver
 * \brief Solve the Navier-Stokes equations in a rectangular domain
 */
 template <typename memoryType>
