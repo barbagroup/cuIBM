@@ -1,13 +1,18 @@
 /***************************************************************************//**
 * \file generateQT.cu
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the kernels required to generate matrix QT
+* \brief Definition of the kernels required to generate the matrix \c QT
 */
 
 #include <solvers/NavierStokes/kernels/generateQT.h>
 
 /**
-* \brief To be documented
+* \brief Calculate the discrete Delta function from Rome et al. (1999)
+*
+* \param x x- or y- component of the vector defined between two points
+* \param h grid-spacing
+*
+* \return the value of the discrete delta function 
 */
 __device__ \
 real dhRomaDeviceQT(real x, real h)
@@ -23,7 +28,13 @@ real dhRomaDeviceQT(real x, real h)
 }
 
 /**
-* \brief To be documented
+* \brief Calculate the discrete delta function in 2D
+*
+* \param x x-component of the vector defined between two points
+* \param y y-component of the vector defined between two points
+* \param h grid-spacing
+*
+* \return the value of the discrete Delta function in 2D
 */
 __device__ \
 real deltaDeviceQT(real x, real y, real h)
@@ -31,7 +42,7 @@ real deltaDeviceQT(real x, real y, real h)
 	return dhRomaDeviceQT(x, h) * dhRomaDeviceQT(y, h);
 }
 
-/*******************//**
+/**
 * \namespace kernels
 * \brief Contain all custom-written CUDA kernels
 */
@@ -65,7 +76,15 @@ void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tagsX, int *ta
 }
 
 /**
-* \brief To be documented
+* \brief Generate the matrix \c QT.
+*
+* It actually generates the GT part (discrete divergence operator).
+*
+* \param QTRows row index of elements of the COO-format divergence matrix \c QT
+* \param QTCols column index of elements of the COO-format divergence matrix \c QT
+* \param QTVals value of elements of the COO-format divergence matrix \c QT
+* \param nx number of cells in the x-direction
+* \param ny number of cells in the y-direction
 */
 void generateQT(int *QTRows, int *QTCols, real *QTVals, int nx, int ny)
 {
@@ -119,7 +138,26 @@ void generateQT(int *QTRows, int *QTCols, real *QTVals, int nx, int ny)
 }
 
 /**
-* \brief To be documented
+* \brief Kernel to update element of the matrix \c QT on the device.
+*
+* It also updates element of the interpolation matrix \c E.
+*
+* \param QTRows row index of elements of the COO-format matrix \c QT
+* \param QTCols column index of elements of the COO-format matrix \c QT
+* \param QTVals value of elements of the COO-format matrix \c QT
+* \param ERows row index of elements of the COO-format interpolation matrix \c E
+* \param ECols column index of elements of the COO-format interpolation matrix \c E
+* \param EVals value of elements of the COO-format interpolation matrix \c E
+* \param nx number of cells in the x-direction
+* \param ny number of cells in the y-direction
+* \param x x-component of grid points
+* \param y y-component of grid points
+* \param dx cell widths in the x-direction
+* \param totalPoints number of body points (all bodies included)
+* \param xB x-component of body points (all bodies included)
+* \param yB y-component of body points (all bodies included)
+* \param I x-index of grid cells in which body points are located
+* \param J y-index of grid cells in which body points are located
 */
 __global__ \
 void updateQT(int *QTRows, int *QTCols, real *QTVals,
@@ -180,7 +218,26 @@ void updateQT(int *QTRows, int *QTCols, real *QTVals,
 }
 
 /**
-* \brief To be documented
+* \brief Update the matrix \c QT on the host.
+*
+* It also updates the interpolation matrix \c E.
+*
+* \param QTRows row index of elements of the COO-format matrix \c QT
+* \param QTCols column index of elements of the COO-format matrix \c QT
+* \param QTVals value of elements of the COO-format matrix \c QT
+* \param ERows row index of elements of the COO-format interpolation matrix \c E
+* \param ECols column index of elements of the COO-format interpolation matrix \c E
+* \param EVals value of elements of the COO-format interpolation matrix \c E
+* \param nx number of cells in the x-direction
+* \param ny number of cells in the y-direction
+* \param x x-component of grid points
+* \param y y-component of grid points
+* \param dx cell widths in the x-direction
+* \param totalPoints number of body points (all bodies included)
+* \param xB x-component of body points (all bodies included)
+* \param yB y-component of body points (all bodies included)
+* \param I x-index of grid cells in which body points are located
+* \param J y-index of grid cells in which body points are located
 */
 void updateQTHost(int *QTRows, int *QTCols, real *QTVals,
               int *ERows,  int *ECols,  real *EVals,

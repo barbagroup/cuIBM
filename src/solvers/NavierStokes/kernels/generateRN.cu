@@ -1,14 +1,14 @@
 /***************************************************************************//**
 * \file generateRN.cu
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the kernels required to generate vector rn
+* \brief Definition of the kernels required to generate vector \c rn
 */
 
 #include <solvers/NavierStokes/kernels/generateRN.h>
 
 #define BSZ 16
 
-/********************//**
+/**
 * \namespace kernels
 * \brief Contain all custom-written CUDA kernels
 */
@@ -16,9 +16,22 @@ namespace kernels
 {
 
 /**
-\brief To be documented
+* \brief CUDA kernel to compute element of the vector \c rn and \c H,
+*		that corresponds to a x-velocity value
+*
+* \param rn vector that contains explicit terms of the discretized momentum equation
+* \param H explicit convective term in the discretized momentum equation 
+* \param q flux vector
+* \param nx number of cells in the x-direction
+* \param ny number of cells in the y-direction
+* \param dx cell widths in the x-direction
+* \param dy cell widths in the y-direction
+* \param dt time increment
+* \param gamma coefficient of the convection term in the current time step
+* \param zeta coefficient of the convection term in the previous time step
+* \param alpha coefficient of the explicit diffusion term
+* \param nu viscosity
 */
-// CUDA kernel to generate Hx and rn
 __global__ void convectionTermU(real *rn, real *H, real *q,
                                   int nx, int ny, real *dx, real *dy, 
                                   real dt, real gamma, real zeta, real alpha, real nu)
@@ -29,8 +42,6 @@ __global__ void convectionTermU(real *rn, real *H, real *q,
 		j	= threadIdx.y;
 	
 	// work out global index of first point in block
-	//int I = (BSZ-2)*bx + i,
-	//	J = (BSZ-2)*by + j;
 	int I = (BSZ-2)*bx + i,
 	    J = (BSZ-2)*by + j;
 	
@@ -87,9 +98,22 @@ __global__ void convectionTermU(real *rn, real *H, real *q,
 }
 
 /**
-* \brief To be documented
+* \brief CUDA kernel to compute element of the vector \c rn and \c H,
+*		that corresponds to a y-velocity value
+*
+* \param rn vector that contains explicit terms of the discretized momentum equation
+* \param H explicit convective term in the discretized momentum equation
+* \param q flux vector
+* \param nx number of cells in the x-direction
+* \param ny number of cells in the y-direction
+* \param dx cell widths in the x-direction
+* \param dy cell widths in the y-direction
+* \param dt time increment
+* \param gamma coefficient of the convection term in the current time step
+* \param zeta coefficient of the convection term in the previous time step
+* \param alpha coefficient of the explicit diffusion term
+* \param nu viscosity
 */
-// CUDA kernel to generate Hy and rn
 __global__ void convectionTermV(real *rn, real *H, real *q,
                                   int nx, int ny, real *dx, real *dy,
                                   real dt, real gamma, real zeta, real alpha, real nu)
@@ -158,7 +182,24 @@ __global__ void convectionTermV(real *rn, real *H, real *q,
 }
 
 /**
-* \brief To be documented
+* \brief CUDA kernel to compute element of the vector \c rn and \c H,
+*		that corresponds to a y-velocity value
+*		on the bottom or top boundaries
+*
+* \param rn vector that contains explicit terms of the discretized momentum equation
+* \param H explicit convective term in the discretized momentum equation
+* \param q flux vector
+* \param nx number of cells in the x-direction
+* \param ny number of cells in the y-direction
+* \param dx cell widths in the x-direction
+* \param dy cell widths in the y-direction
+* \param dt time increment
+* \param gamma coefficient of the convection term in the current time step
+* \param zeta coefficient of the convection term in the previous time step
+* \param alpha coefficient of the explicit diffusion term
+* \param nu viscosity
+* \param bcBottom bottom-boundary velocity
+* \param bcTop top-boundary velocity
 */
 __global__
 void convectionTermVBottomTop(real *rn, real *H, real *q, \
@@ -218,7 +259,26 @@ void convectionTermVBottomTop(real *rn, real *H, real *q, \
 }
 
 /**
-* \brief To be documented
+* \brief CUDA kernel to compute element of the vector \c rn and \c H,
+*		that corresponds to a x-velocity value
+*		on the bottom or top boundaries
+*
+* \param rn vector that contains explicit terms of the discretized momentum equation
+* \param H explicit convective term in the discretized momentum equation
+* \param q flux vector
+* \param nx number of cells in the x-direction
+* \param ny number of cells in the y-direction
+* \param dx cell widths in the x-direction
+* \param dy cell widths in the y-direction
+* \param dt time increment
+* \param gamma coefficient of the convection term in the current time step
+* \param zeta coefficient of the convection term in the previous time step
+* \param alpha coefficient of the explicit diffusion term
+* \param nu viscosity
+* \param bcBottom bottom-boundary velocity
+* \param bcTop top-boundary velocity
+* \param bcLeft left-boundary velocity
+* \param bcRight right-boundary velocity
 */
 __global__
 void convectionTermUBottomTop(real *rn, real *H, real *q, \
@@ -309,7 +369,24 @@ void convectionTermUBottomTop(real *rn, real *H, real *q, \
 }
 
 /**
-* \brief To be documented
+* \brief CUDA kernel to compute element of the vector \c rn and \c H,
+*		that corresponds to a x-velocity value
+*		on the left or right boundaries
+*
+* \param rn vector that contains explicit terms of the discretized momentum equation
+* \param H explicit convective term in the discretized momentum equation
+* \param q flux vector
+* \param nx number of cells in the x-direction
+* \param ny number of cells in the y-direction
+* \param dx cell widths in the x-direction
+* \param dy cell widths in the y-direction
+* \param dt time increment
+* \param gamma coefficient of the convection term in the current time step
+* \param zeta coefficient of the convection term in the previous time step
+* \param alpha coefficient of the explicit diffusion term
+* \param nu viscosity
+* \param bcLeft left-boundary velocity
+* \param bcRight right-boundary velocity
 */
 __global__
 void convectionTermULeftRight(real *rn, real *H, real *q, \
@@ -369,7 +446,26 @@ void convectionTermULeftRight(real *rn, real *H, real *q, \
 }
 
 /**
-* \brief To be documented
+* \brief CUDA kernel to compute element of the vector \c rn and \c H,
+*		that corresponds to a y-velocity value
+*		on the left or right boundaries
+*
+* \param rn vector that contains explicit terms of the discretized momentum equation
+* \param H explicit convective term in the discretized momentum equation
+* \param q flux vector
+* \param nx number of cells in the x-direction
+* \param ny number of cells in the y-direction
+* \param dx cell widths in the x-direction
+* \param dy cell widths in the y-direction
+* \param dt time increment
+* \param gamma coefficient of the convection term in the current time step
+* \param zeta coefficient of the convection term in the previous time step
+* \param alpha coefficient of the explicit diffusion term
+* \param nu viscosity
+* \param bcBottom bottom-boundary velocity
+* \param bcTop top-boundary velocity
+* \param bcLeft left-boundary velocity
+* \param bcRight right-boundary velocity
 */
 __global__
 void convectionTermVLeftRight(real *rn, real *H, real *q, \

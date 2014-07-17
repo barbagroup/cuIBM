@@ -1,16 +1,16 @@
 /***************************************************************************//**
 * \file updateRHS1.cu
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the kernels required to update vector rhs1
+* \brief Definition of the CUDA kernels required to update vector \c rhs1
 */
 
 #include <solvers/NavierStokes/kernels/updateRHS1.h>
 
 #define BSZ 16
 
-/********************//**
+/**
 * \namespace kernels
-* \brief COntain all custom-written CUDA kernels
+* \brief Contain all custom-written CUDA kernels
 */
 namespace kernels
 {

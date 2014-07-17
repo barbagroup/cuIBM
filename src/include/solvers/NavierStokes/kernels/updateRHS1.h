@@ -1,14 +1,14 @@
 /***************************************************************************//**
 * \file updateRHS1.h
 * \author Krishnan, A. (anush@bu.edu)
-* \brief Declaration of the kernels required to update vector rhs1
+* \brief Declaration of the CUDA kernels required to update vector \c rhs1
 */
 
 #pragma once
 
 #include <types.h>
 
-/********************//**
+/**
 * \namespace kernels
 * \brief Contain all custom-written CUDA kernels
 */

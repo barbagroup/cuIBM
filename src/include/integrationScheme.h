@@ -18,7 +18,7 @@ public:
 	int  subSteps;      ///< number of substeps inside each time step
 	
 	vecH gamma,         ///< coefficient of the convection term in the current time step
-	     zeta,          ///< coefficient of the convection  term in the previous time step 
+	     zeta,          ///< coefficient of the convection term in the previous time step 
 	     alphaImplicit, ///< coefficient of the implicit diffusion term
 	     alphaExplicit; ///< coefficient of the explicit diffusion term
 	

@@ -17,14 +17,14 @@ namespace kernels
 {
 
 /**
-* \brief Compute elements of the interpolation matrix on the host
+* \brief Generate the interpolation matrix \c E on the host
 */
 void generateEHost(int *ERows,  int *ECols,  real *EVals,
                    int nx, int ny, real *x, real *y, real *dx,
                    int totalPoints, real *xB, real *yB, int *I, int *J);
 
 /**
-* \brief Kernel to compute an element of the interpolation matrix on the device
+* \brief Kernel to compute an element of the interpolation matrix \c E on the device
 */
 __global__ \
 void generateE(int *ERows,  int *ECols,  real *EVals,

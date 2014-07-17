@@ -1,12 +1,12 @@
 /***************************************************************************//**
 * \file generateM.cu
 * \author Krishnan, A. (anush@bu.edu)
-* \biref Definition of the kernels required to generate matrix M
+* \biref Definition of the kernels required to generate the mass matrix \c M and its inverse
 */
 
 #include <solvers/NavierStokes/kernels/generateM.h>
 
-/********************//**
+/**
 * \namespace kernels
 * \brief Contain all custom-written CUDA kernels
 */
@@ -14,18 +14,20 @@ namespace kernels
 {
 
 /**
-* \brief Assemble the part of M that corresponds to the x-velocity values
+* \brief Kernel to compute element of the mass matrix \c M, and its inverse,
+*		that corresponds to a x-velocity value
+*		on the device
 *
-* \param MRows raw pointer to the array storing the row indices of the elements of M
-* \param MCols raw pointer to the array storing the column indices of the elements of M
-* \param MVals raw pointer to the array storing the values of the elements of M
-* \param MinvRows raw pointer to the array storing the row indices of the elements of M-inverse
-* \param MinvCols raw pointer to the array storing the column indices of the elements of M-inverse
-* \param MinvVals raw pointer to the array storing the values of the elements of M
+* \param MRows row index of elements of the COO-format mass matrix \c M
+* \param MCols column index of elements of the COO-format mass matrix \c M
+* \param MVals value of elements of the COO-format mass matrix \c M
+* \param MinvRows row index of elements of the COO-format mass matrix inverse \c Minv
+* \param MinvCols column index of elements of the COO-format mass matrix inverse \c Minv
+* \param MinvVals value of elements of the COO-format mass matrix inverse \c Minv
 * \param nx number of cells in the x-direction
 * \param ny number of cells in the y-direction
-* \param dx raw pointer to the array storing the cell widths in the x-direction
-* \param dy raw pointer to the array storing the cell widths in the y-direction
+* \param dx cell widths in the x-direction
+* \param dy cell widths in the y-direction
 * \param dt time increment
 */
 __global__
@@ -49,18 +51,20 @@ void fillM_u(int *MRows, int *MCols, real *MVals, int *MinvRows, int *MinvCols, 
 }
 
 /**
-* \brief Assemble the part of M that corresponds to the y-velocity values
+* \brief Kernel to compute element of the mass matrix \c M, and its inverse,
+*		that corresponds to a y-velocity value
+*		on the device
 *
-* \param MRows raw pointer to the array storing the row indices of the elements of M
-* \param MCols raw pointer to the array storing the column indices of the elements of M
-* \param MVals raw pointer to the array storing the values of the elements of M
-* \param MinvRows raw pointer to the array storing the row indices of the elements of M-inverse
-* \param MinvCols raw pointer to the array storing the column indices of the elements of M-inverse
-* \param MinvVals raw pointer to the array storing the values of the elements of M
+* \param MRows row index of elemtents of the COO-format mass matrix \c M
+* \param MCols column index of elements of the COO-format mass matrix \c M
+* \param MVals value of elements of the COO-format mass matrix \c M
+* \param MinvRows row index of elements of the COO-format mass matrix inverse \c Minv
+* \param MinvCols column index of elements of the COO-format mass matrix inverse \c Minv
+* \param MinvVals value of elements of the COO-format mass matrix inverse \c Minv
 * \param nx number of cells in the x-direction
 * \param ny number of cells in the y-direction
-* \param dx raw pointer to the array storing the cell widths in the x-direction
-* \param dy raw pointer to the array storing the cell widths in the y-direction
+* \param dx cell widths in the x-direction
+* \param dy cell widths in the y-direction
 * \param dt time increment
 */
 __global__

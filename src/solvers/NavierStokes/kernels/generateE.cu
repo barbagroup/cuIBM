@@ -9,8 +9,8 @@
 /**
 * \brief Discrete delta function defined by Roma et al. (1999)
 *
-* \param x x- or y- component of the vector defined between a body point and a grid point
-* \param h grid-spacing near the body point
+* \param x x- or y- component of the vector defined between two points
+* \param h grid-spacing
 *
 * \return the value of the discrete Delta function
 */
@@ -31,9 +31,9 @@ real dhRomaDeviceE(real x, real h)
 * \brief Compute the discrete Delta function in 2D 
 *		using the definition by Roma et al. (1999)
 *
-* \param x x-component of the vector defined between a body point and a grid point
-* \param y y-component of the vector defined between a body point and a grid point
-* \param h grid-spacing near the body point
+* \param x x-component of the vector defined between two points
+* \param y y-component of the vector defined between two points
+* \param h grid-spacing
 *
 * \return the discrete Delta function in 2D
 */
@@ -51,21 +51,21 @@ namespace kernels
 {
 	
 /**
-* \brief Compute elements of the interpolation matrix on the host
+* \brief Generate the interpolation matrix \c E on the host
 *
-* \param ERows rows of the COO matrix \c E
-* \param ECols columns of the COO matrix \c E
-* \param EVals values of the COO matrix \c E
+* \param ERows row index of elements of the COO-format interpolation matrix \c E
+* \param ECols column index of elements of the COO-format interpolation matrix \c E
+* \param EVals value of elements of the COO-format interpolation matrix \c E
 * \param nx number of cells in the x-direction
 * \param ny number of cells in the y-direction
-* \param x x-component of the Eulerian grid points
-* \param y y-component of the Eulerian grid points
-* \param dx cell-widths in the x-direction
-* \param totalPoints total number of body points (all bodies included)
-* \param xB x-coordinate of the body points
-* \param yB y-coordinate of the body points
-* \param I x-index of the cell in which the body point is located
-* \param J y-index of the cell in which the body point is located
+* \param x x-component of grid points
+* \param y y-component of grid points
+* \param dx cell widths in the x-direction
+* \param totalPoints number of body points (all bodies included)
+* \param xB x-coordinate of body points (all bodies included)
+* \param yB y-coordinate of body points (all bodies included)
+* \param I x-index of the cells in which body points are located
+* \param J y-index of the cells in which body points are located
 */
 void generateEHost(int *ERows,  int *ECols,  real *EVals,
                    int nx, int ny, real *x, real *y, real *dx,
@@ -110,19 +110,19 @@ void generateEHost(int *ERows,  int *ECols,  real *EVals,
 }
 
 /**
-* \brief Kernel to compute an element of the interpolation matrix on the device
+* \brief Kernel to compute an element of the interpolation matrix \c E on the device
 *
-* \param ERows rows of the COO matrix \c E
-* \param ECols columns of the COO matrix \c E
-* \param EVals values of the COO matrix \c E
+* \param ERows row index of elements of the COO-format interpolation matrix \c E
+* \param ECols column index of elements of the COO-format interpolation matrix \c E
+* \param EVals value of elements of the COO-format interpolation matrix \c E
 * \param nx number of cells in the x-direction
 * \param ny number of cells in the y-direction
-* \param x x-component of the Eulerian grid points
-* \param y y-component of the Eulerian grid points
-* \param dx cell-widths in the x-direction
-* \param totalPoints total number of body points (all bodies included)
-* \param xB x-coordinate of the body points
-* \param yB y-coordinate of the body points
+* \param x x-component of grid points
+* \param y y-component of grid points
+* \param dx cell widths in the x-direction
+* \param totalPoints number of body points (all bodies included)
+* \param xB x-coordinate of body points (all bodies included)
+* \param yB y-coordinate of body points (all bodies included)
 * \param I x-index of the cell in which the body point is located
 * \param J y-index of the cell in which the body point is located
 */
