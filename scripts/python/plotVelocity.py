@@ -1,67 +1,100 @@
 #!/usr/bin/env python
-import os
-import sys
+
+# file: $CUIBM_DIR/scripts/python/plotVelocity.py
+# author: Krishnan, A. (anush@bu.edu)
+# description: plot the contour of velocity
+
+
 import argparse
+
 import numpy as np
-import readData as rd
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 
-# Generate optionsfile as per command line options
-parser = argparse.ArgumentParser(description="Plots the vorticity field at all save points for a specified simulation", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("--folder", dest="folder", help="Case folder", default=".")
-parser.add_argument("--blx", type=float, dest="bl_x", help="x-coordinate of the bottom left of the plot region", default=-2)
-parser.add_argument("--bly", type=float, dest="bl_y", help="y-coordinate of the bottom left of the plot region", default=-3)
-parser.add_argument("--trx", type=float, dest="tr_x", help="x-coordinate of the top right of the plot region", default=4)
-parser.add_argument("--try", type=float, dest="tr_y", help="y-coordinate of the top right of the plot region", default=3)
-parser.add_argument("--vortlim", type=float, dest="vortlim", help="cutoff vorticity on the plot", default=15)
-parser.add_argument("--plot-only", dest="plot_only", help="only generate the vorticity plots and do no recalculate the data", action='store_true')
-parser.set_defaults(plot_only=False)
-args = parser.parse_args()
+from readData import readSimulationParameters, readGridData, readVelocityData
 
-folder = args.folder
-nt, startStep, nsave, _ = rd.readSimulationParameters(folder)
 
-if not args.plot_only:
-	nx, ny, dx, dy, xu, yu, xv, yv = rd.readGridData(folder)
-
-	Xu, Yu = np.meshgrid(xu, yu)
-	Xv, Yv = np.meshgrid(xv, yv)
+def read_inputs():
+	"""Parses the command-line."""
+	# create the parser
+	parser = argparse.ArgumentParser(description='Plots the velocity field at '
+						'all save points for a given simulation',
+						formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+	# fill the parser with arguments
+	parser.add_argument('--folder', dest='folder', type=str, default='.',
+						help='folder of the simulation')
+	parser.add_argument('--blx', dest='bl_x', type=float, default=-2.0,
+						help='x-coordinate of the bottom-left corner'
+							 'of the plot region')
+	parser.add_argument('--bly', dest='bl_y', type=float, default=-3.0,
+						help='y-coordinate of the bottom-left corner'
+							 'of the plot region')
+	parser.add_argument('--trx', dest='tr_x', type=float, default=4.0,
+						help='x-coordinate of the top-right corner'
+							 'of the plot region')
+	parser.add_argument('--try', dest='tr_y', type=float, default=3.0,
+						help='y-coordinate of the top-right corner'
+							 'of the plot region')
+	parser.add_argument('--vortlim', dest='vort_lim', type=float, default=15.0,
+						help='vorticity cutoff on the plot')
+	parser.add_argument('--plot-only', dest='plot_only', action='store_true',
+						help='only generate the vorticity plots '
+							 'and do not recalculate the data')
 	
+	return parser.parse_args()
 
-	Istart = 0
-	while args.bl_x > xv[Istart]:
-		Istart = Istart+1
-	Iend = nx-1
-	while args.tr_x < xv[Iend]:
-		Iend = Iend-1
 
-	Jstart = 0
-	while args.bl_y > yu[Jstart]:
-		Jstart = Jstart+1
-	Jend = ny-1
-	while args.tr_y < yu[Jend]:
-		Jend = Jend-1
+def main():
+	"""Plots the contour of velocity (u and v) at every time saved."""
+	# parse the command-line
+	args = read_inputs()
 
-	k = startStep + nsave
-	while k < (nt+1):
-		u, v = rd.readVelocityData(folder, k, nx, ny, dx, dy)
-		if u==None or v==None:
-			break
+	folder = args.folder	# name of the folder
 
-		u = np.reshape(u, (ny, nx-1))
-		plt.contour(Xu, Yu, u, levels=np.arange(-1., 1., 0.1))
-		plt.axis('equal')
-		plt.axis([args.bl_x, args.tr_x, args.bl_y, args.tr_y])
-		plt.colorbar()
-		plt.savefig("%s/u%07d.png" % (folder,k))
-		plt.clf()
+	# read the parameters of the simulation
+	nt, start_step, nsave, _ = readSimulationParameters(folder)
 
-		v = np.reshape(v, (ny-1, nx))
-		plt.contour(Xv, Yv, v, levels=np.arange(-1., 1., 0.1))
-		plt.axis('equal')
-		plt.axis([args.bl_x, args.tr_x, args.bl_y, args.tr_y])
-		plt.colorbar()
-		plt.savefig("%s/v%07d.png" % (folder,k))
-		plt.clf()
+	if not args.plot_only:
+		# calculate the mesh characteristics
+		nx, ny, dx, dy, xu, yu, xv, yv = readGridData(folder)
 
-		k = k + nsave
+		# generate a mesh grid for u- and v- velocities
+		Xu, Yu = np.meshgrid(xu, yu)
+		Xv, Yv = np.meshgrid(xv, yv)
+
+		# WARNING: useless in this code
+		i_start = np.where(xv >= args.bl_x)[0][0]
+		i_end = np.where(xv <= args.tr_x)[0][0]
+		j_start = np.where(yu >= args.bl_y)[0][0]
+		j_end = np.where(yu <= args.tr_y)[0][0]
+
+		ite = start_step + nsave
+		while ite < nt+1:
+			print 'iteration %d' % ite
+			# read the velocity data at the given time-step
+			u, v = readVelocityData(folder, ite, nx, ny, dx, dy)
+			if u == None or v == None:
+				break
+
+			# plot u-velocity contour
+			plt.contour(Xu, Yu, u.reshape((ny, nx-1)),
+						levels=np.arange(-1.0, 1.0, 0.1))
+			plt.axis('equal')
+			plt.axis([args.bl_x, args.tr_x, args.bl_y, args.tr_y])
+			plt.colorbar()
+			plt.savefig('%s/u%07d.png' % (folder, ite))
+			plt.clf()
+		
+			# plot v-velocity contour
+			plt.contour(Xv, Yv, v.reshape((ny-1, nx)), 
+						levels=np.arange(-1.0, 1.0, 0.1))
+			plt.axis('equal')
+			plt.axis([args.bl_x, args.tr_x, args.bl_y, args.tr_y])
+			plt.colorbar()
+			plt.savefig('%s/v%07d.png' % (folder, ite))
+			plt.clf()
+
+			ite += nsave
+
+
+if __name__ == '__main__':
+	main()
