@@ -1,40 +1,73 @@
 #!/usr/bin/env python
 
+# file: $CUIBM_DIR/scripts/python/readData.py
+# author: Krishnan, A. (anush@bu.edu)
+# description: definitions of functions to read numerical data
+
+
 import os
 import sys
 import argparse
+
 import numpy as np
-import numpy.linalg as la
-import matplotlib.pyplot as plt
+from numpy import linalg as la
+from matplotlib import pyplt as plt
+
 
 def readSimulationParameters(folder):
-	infoFile = folder + '/run.info'
-	# create options list
-	f = open(infoFile, 'r')
-	optionsList = f.read().split()
-	f.close()
+	"""Reads the parameters of the simulation.
 	
-	# Command line options used in simulation
+	Arguments
+	---------
+	folder -- path of the simulation case.
+
+	Returns
+	-------
+	nt -- total number of time-steps.
+	start_step -- initial time-step.
+	nsave -- saving interval.
+	dt -- time-increment.
+	"""
+	# open and read the info file
+	with open(folder+'/run.info', 'r') as infile:
+		option_list = infile.read().split()
+	
+	# create the parser
 	parser = argparse.ArgumentParser()
-	# create list of options
-	parser.add_argument("--nx", type=int,dest="nx", help="number of cells in the x-direction")
-	parser.add_argument("--ny", type=int,dest="ny", help="number of cells in the y-direction")
-	parser.add_argument("--nt", type=int,dest="nt", help="total number of time steps")
-	parser.add_argument("--nsave", type=int, dest="nsave", help="save interval")
-	parser.add_argument("--startStep", type=int, dest="startStep", help="start time step")
-	parser.add_argument("--dt", type=float, dest="dt", help="time step")
-	parser.add_argument("--vortlim", type=float,dest="vortlim", help="vorticity limit")
-	parser.add_argument("--folder", dest="foldername", help="name of folder in which data is saved")
-	parser.add_argument("--nu", type=float, dest="nu", help="kinematic viscosity")
-	parser.add_argument("--input", dest="input", help="Body input file")
-	parser.add_argument("--flowFile", dest="flowFile", help="Flow description file")
-	parser.add_argument("--domainFile", dest="domainFile", help="Mesh description file")
-	parser.add_argument("--simulationFile", dest="simulationFile", help="Simulation parameters file")
-	parser.add_argument("--bodyFile", dest="bodyFile", help="body file")
-	# parse options list
-	args = parser.parse_args(optionsList)
-	
-	return args.nt, args.startStep, args.nsave, args.dt
+	# fill the parser with arguments
+	parser.add_argument('--nx', dest='nx', type=int,
+						help='number of cells in the x-direction')
+	parser.add_argument('--ny', dest='ny', type=int,
+						help='number of cells in the y-direction')
+	parser.add_argument('--nt', dest='nt', type=int,
+						help='total number of time-steps')
+	parser.add_argument('--nsave', dest='nsave', type=int,
+						help='saving interval')
+	parser.add_argument('--startStep', dest='start_step', type=int,
+						help='starting time-step')
+	parser.add_argument('--dt', dest='dt', type=float,
+						help='time-increment')
+	parser.add_argument('--vortlim', dest='vort_lim', type=float,
+						help='vorticity limit')
+	parser.add_argument('--folder', dest='folder_name', type=str,
+						help='name of the folder in which data is saved')
+	parser.add_argument('--nu', dest='nu', type=float,
+						help='kinematic viscosity')
+	parser.add_argument('--input', dest='body_file', type=str,
+						help='body input file')
+	parser.add_argument('--flowFile', dest='flow_file', type=str,
+						help='flow description file')
+	parser.add_argument('--domainFile', dest='domain_file', type=str,
+						help='mesh description file')
+	parser.add_argument('--simulation_file', dest='simulation_file', type=str,
+						help='simulation parameters file')
+	parser.add_argument('--bodyFile', dest='body_file', type=str,
+						help='body file')
+	# parse the list
+	args = parser.parse_args(option_list)
+
+	return args.nt, args.start_step, args.nsave, args.dt
+
 
 def readGridData(folder):
 	# open the file with the grid data
@@ -92,6 +125,14 @@ def readGridData(folder):
 	f.close()
 	
 	return nx, ny, dx, dy, xu, yu, xv, yv
+
+def read_velocity_data(folder, time_step, nx, ny, dx, dy):
+	u = np.empty((nx-1)*ny, dtype=float)
+	v = np.empty(nx*(ny-1), dtype=float)
+
+	flux_file = '%s/%07d/q' % (folder, time_step)
+	with open(flux_file, 'r') as infile:
+		
 
 def readVelocityData(folder, timeStep, nx, ny, dx, dy):
 	u = np.zeros((nx-1)*ny)  # vector to store U
