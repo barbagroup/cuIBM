@@ -66,60 +66,37 @@ def readSimulationParameters(folder):
 
 
 def readGridData(folder):
-	# open the file with the grid data
-	gridFile = folder + '/grid'
-	f = open(gridFile, 'r')
-
-	# read the number of cells in the x-direction
-	a = f.readline().strip().split()
-	nx = int(a[0])
+	"""Generates the computational mesh reading the coordinates file.
 	
-	# arrays to store grid information
-	x = np.zeros(nx+1)
-	dx = np.zeros(nx)
-	xu = np.zeros(nx-1)
-	xv = np.zeros(nx)
+	Arguments
+	---------
+	folder -- path the of simulation case.
 
-	# read the x-coordinates of the grid nodes
-	a = f.readline().strip().split()
-	x[0] = float(a[0])
-	for i in range(nx):
-		a = f.readline().strip().split()
-		if a==[]:
-			break
-		x[i+1] = float(a[0])
-		dx[i] = x[i+1] - x[i]
-		xv[i] = 0.5*(x[i+1] + x[i]);
-		if i < nx-1:
-			xu[i] = x[i+1]
+	Returns
+	-------
+	nx, ny -- number of cells in the x- and y- directions.
+	dx, dy -- cell widths in the x- and y- directions.
+	xu, yu -- location of u-velocity points.
+	xv, yv -- location of v-velocity points.
+	"""
+	# read the grid file
+	with open(folder+'/grid', 'r') as infile:
+		data = infile.readlines()
 
-	a = f.readline() # skip the empty lines
-
-	# read the number of cells in the y-direction
-	a = f.readline().strip().split()
-	ny = int(a[0])
+	# x-direction
+	nx = int(data[0])
+	x = np.array(data[1:nx+2], dtype=float)
+	dx = x[1:] - x[:-1]
+	xu = x[1:-1]
+	xv = 0.5*(x[1:]+x[:-1])
 	
-	# arrays to store y-grid information
-	y = np.zeros(ny+1)
-	dy = np.zeros(ny)
-	yu = np.zeros(ny)
-	yv = np.zeros(ny-1)
+	# y-direction
+	ny = int(data[nx+3])
+	y = np.array(data[nx+4:], dtype=float)
+	dy = y[1:] - y[:-1]
+	yu = 0.5*(y[1:]+y[:-1])
+	yv = y[1:-1]
 
-	# read the y-coordinates of the grid nodes
-	a = f.readline().strip().split()
-	y[0] = float(a[0])
-	for j in range(ny):
-		a = f.readline().strip().split()
-		if a==[]:
-			break
-		y[j+1] = float(a[0])
-		dy[j] = y[j+1] - y[j]
-		yu[j] = 0.5*(y[j+1] + y[j])
-		if j < ny-1:
-			yv[j] = y[j+1]
-	
-	f.close()
-	
 	return nx, ny, dx, dy, xu, yu, xv, yv
 
 
