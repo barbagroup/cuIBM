@@ -5,13 +5,9 @@
 # description: definitions of functions to read numerical data
 
 
-import os
-import sys
 import argparse
 
 import numpy as np
-from numpy import linalg as la
-from matplotlib import pyplt as plt
 
 
 def readSimulationParameters(folder):
@@ -126,39 +122,33 @@ def readGridData(folder):
 	
 	return nx, ny, dx, dy, xu, yu, xv, yv
 
-def read_velocity_data(folder, time_step, nx, ny, dx, dy):
-	u = np.empty((nx-1)*ny, dtype=float)
-	v = np.empty(nx*(ny-1), dtype=float)
 
+def readVelocityData(folder, time_step, nx, ny, dx, dy):
+	"""Reads the velocity data at a given time-step.
+	
+	Arguments
+	---------
+	folder -- path of the simulation case.
+	time-step -- current time-step.
+	nx, ny -- number of cells on the x- and y- directions.
+	dx, dy -- cell widths in the x- and y- directions.
+	"""
 	flux_file = '%s/%07d/q' % (folder, time_step)
 	with open(flux_file, 'r') as infile:
-		
-
-def readVelocityData(folder, timeStep, nx, ny, dx, dy):
-	u = np.zeros((nx-1)*ny)  # vector to store U
-	v = np.zeros(nx*(ny-1))  # vector to store V
+		nq = int(infile.readline())			# length of flux vector q
+		q = np.loadtxt(infile, dtype=float)	# store flux vector q
 	
-	fluxFile = folder + '/' + ("%07d" % timeStep) + "/q"
-	try:
-		f = open(fluxFile, 'r')
-	except IOError:
-		print "File %s missing!" % fluxFile
-		return None, None
+	# store u-velocities
+	n_u = (nx-1) * ny				# number of u-velocity points
+	u = np.empty(n_u, dtype=float)
+	for j in xrange(ny):
+		for i in xrange(nx-1):
+			u[j*(nx-1)+i] = q[j*(nx-1)+i]/dy[j]
 
-	# length of vector q
-	a = f.readline().strip().split()
-	nq = int(a[0])
-
-	# read the u velocities
-	for j in range(ny):
-		for i in range(nx-1):
-			a = f.readline().strip().split()
-			u[j*(nx-1)+i] = float(a[0])/dy[j]
-	
-	# read the u velocities
-	for j in range(ny-1):
-		for i in range(nx):
-			a = f.readline().strip().split()
-			v[j*nx+i] = float(a[0])/dx[i]
+	# store v-velocities
+	v = np.empty(nx*(ny-1), dtype=float)
+	for j in xrange(ny-1):
+		for i in xrange(nx):
+			v[j*nx+i] = q[n_u+j*nx+i]/dx[i]
 	
 	return u, v
