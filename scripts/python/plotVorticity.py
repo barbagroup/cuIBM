@@ -1,41 +1,81 @@
 #!/usr/bin/env python
+
+# file: $CUIBM_DIR/scripts/python/plotVorticity.py
+# author: Krishnan, A. (anush@bu.edu)
+# description: plot the contour of vorticity at every time saved
+
+
 import os
-import sys
 import argparse
+
 import numpy as np
-import readData as rd
 
-# Generate optionsfile as per command line options
-parser = argparse.ArgumentParser(description="Plots the vorticity field at all save points for a specified simulation", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("--folder", dest="folder", help="Case folder", default=".")
-parser.add_argument("--blx", type=float, dest="bl_x", help="x-coordinate of the bottom left of the plot region", default=-2)
-parser.add_argument("--bly", type=float, dest="bl_y", help="y-coordinate of the bottom left of the plot region", default=-3)
-parser.add_argument("--trx", type=float, dest="tr_x", help="x-coordinate of the top right of the plot region", default=4)
-parser.add_argument("--try", type=float, dest="tr_y", help="y-coordinate of the top right of the plot region", default=3)
-parser.add_argument("--vortlim", type=float, dest="vortlim", help="cutoff vorticity on the plot", default=15)
-parser.add_argument("--plot-only", dest="plot_only", help="only generate the vorticity plots and do no recalculate the data", action='store_true')
-parser.set_defaults(plot_only=False)
-args = parser.parse_args()
+from readData import readSimulationParameters, readGridData
 
-folder = args.folder
-nt, startStep, nsave, _ = rd.readSimulationParameters(folder)
 
-if not args.plot_only:
-	nx, ny, dx, dy, _, yu, xv, _ = rd.readGridData(folder)
+def read_inputs():
+	"""Parses the command-line."""
+	# create the parser
+	parser = argparse.ArgumentParser(description='plots the vorticity field '
+						'at every save points for a given simulation',
+						formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+	# fill the parser with arguments
+	parser.add_argument('--folder', dest='folder', type=str, default='.',
+						help='folder of the simulation')
+	parser.add_argument('--blx', dest='bl_x', type=float, default=-2.0,
+						help='x-coordinate of the bottom-left corner'
+							 'of the plot region')
+	parser.add_argument('--bly', dest='bl_y', type=float, default=-3.0,
+						help='y-coordinate of the bottom-left corner'
+							 'of the plot region')
+	parser.add_argument('--trx', dest='tr_x', type=float, default=4.0,
+						help='x-coordinate of the top-right corner'
+							 'of the plot region')
+	parser.add_argument('--try', dest='tr_y', type=float, default=3.0,
+						help='y-coordinate of the top-right corner'
+							 'of the plot region')
+	parser.add_argument('--vortlim', dest='vort_lim', type=float, default=15.0,
+						help='vorticity cutoff on the plot')
+	parser.add_argument('--plot-only', dest='plot_only', action='store_true',
+						help='only generate the vorticity plots '
+						'and do not recalculate the data')
+	return parser.parse_args()
 
-	Istart = 0
-	while args.bl_x > xv[Istart]:
-		Istart = Istart+1
-	Iend = nx-1
-	while args.tr_x < xv[Iend]:
-		Iend = Iend-1
 
-	Jstart = 0
-	while args.bl_y > yu[Jstart]:
-		Jstart = Jstart+1
-	Jend = ny-1
-	while args.tr_y < yu[Jend]:
-		Jend = Jend-1
+def main():
+	"""Plots the contour of vorticity at every time saved."""
+	args = read_inputs()
+
+	folder = args.folder	# name of the folder
+
+	# read the parameters of the simulation
+	nt, start_step, nsave, _ = readSimulationParameters(folder)
+
+	if not args.plot_only:
+		# calculate the mesh characteristics
+		nx, ny, dx, dy, _, yu, xv, _ = readGridData(folder)
+
+		# calculate appropriate array boundaries
+		i_start = np.where(xv >= args.bl_x)[0][0]
+		i_end = np.where(xv <= args.tr_x)[0][0]
+		j_start = np.where(yu >= args.bl_y)[0][0]
+		j_end = np.where(yu <= args.tr_y)[0][0]
+
+		ite = start_step + nsave
+		while ite < nt+1:
+			# read the velocity data at the given time-step
+			u, v = readVelocityData(folder, ite, nx, ny, dx, dy)
+			if u == None or v == None:
+				break
+
+			
+
+			vort_file = '%s/%07d/vorticity' % (folder, ite)
+			print vort_file
+			
+
+if __name__ == '__main__':
+	main()
 
 	k = startStep + nsave
 	while k < (nt+1):
