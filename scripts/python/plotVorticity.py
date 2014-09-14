@@ -10,7 +10,7 @@ import argparse
 
 import numpy as np
 
-from readData import readSimulationParameters, readGridData
+from readData import readSimulationParameters, readGridData, readVelocityData
 
 
 def read_inputs():
@@ -44,6 +44,7 @@ def read_inputs():
 
 def main():
 	"""Plots the contour of vorticity at every time saved."""
+	# parse the command-line
 	args = read_inputs()
 
 	folder = args.folder	# name of the folder
@@ -57,10 +58,17 @@ def main():
 
 		# calculate appropriate array boundaries
 		i_start = np.where(xv >= args.bl_x)[0][0]
-		i_end = np.where(xv <= args.tr_x)[0][0]
+		i_end = np.where(xv > args.tr_x)[0][0]-1
 		j_start = np.where(yu >= args.bl_y)[0][0]
-		j_end = np.where(yu <= args.tr_y)[0][0]
+		j_end = np.where(yu > args.tr_y)[0][0]-1
 
+		# compute locations and cell-widths where vorticity is caculated
+		#x = 0.5*(xv[i_start:i_end] + xv[i_start+1:i_end+1])
+		#Dx = 0.5*(dx[i_start:i_end] + dx[i_start+1:i_end+1])
+		#y = 0.5*(yu[j_start:j_end] + yu[j_start+1:j_end+1])
+		#Dy = 0.5*(dy[j_start:j_end] + dy[j_start+1:j_end+1])
+
+		# time-loop
 		ite = start_step + nsave
 		while ite < nt+1:
 			# read the velocity data at the given time-step
@@ -68,68 +76,68 @@ def main():
 			if u == None or v == None:
 				break
 
-			
-
+			# calculate and write the vorticity
 			vort_file = '%s/%07d/vorticity' % (folder, ite)
 			print vort_file
-			
+			with open(vort_file, 'w') as outfile:
+				for j in xrange(j_start, j_end):
+					y = 0.5 * (yu[j] + yu[j+1])
+					Dy = 0.5 * (dy[j] + dy[j+1])
+					for i in xrange(i_start, i_end):
+						x = 0.5 * (xv[i] + xv[i+1])
+						Dx = 0.5 * (dx[i] + dx[i+1])
+						vort = (v[j*nx+i+1] - v[j*nx+i]) / Dx \
+							 - (u[(j+1)*(nx-1)+i] - u[j*(nx-1)+i]) / Dy
+						outfile.write('%f\t%f\t%f\n' % (x, y, vort))
+					outfile.write('\n')
+
+			ite += nsave
+
+	# create the gnuplot file
+	print 'Creating gnuplot file...'
+	gnuplot_file = '%s/vorticity.plt' % folder
+	with open(gnuplot_file, 'w') as outfile:
+		outfile.write('reset;\n')
+		outfile.write('set terminal pngcairo enhanced '
+					  'font "Times, 15" size 900,600;\n')
+		ite = start_step + nsave
+		while ite < nt+1:
+			# image file name
+			outfile.write('\nset output "%s/plot%07d.png"\n' % (folder, ite))
+			outfile.write('set multiplot;\n')
+			# vorticity
+			outfile.write('reset;\n')
+			outfile.write('set view map; set size ratio -1; unset key;\n')
+			outfile.write('set pm3d map;\n')
+			outfile.write('set palette defined (-2 "dark-blue", '
+											   '-1 "light-blue", '
+											   '0 "white", '
+											   '1 "light-red", '
+											   '2 "dark-red");\n')
+			outfile.write('set cbrange [%f:%f];\n' 
+						  % (-args.vort_lim, args.vort_lim))
+			outfile.write('splot [%f:%f] [%f:%f] "%s/%07d/vorticity";\n'
+						  % (args.bl_x, args.tr_x, args.bl_y, args.tr_y, 
+						  	 folder, ite))
+			# bodies
+			#outfile.write('reset;\n')
+			#outfile.write('set view map; set size ratio -1; unset key;\n')
+			#outfile.write('splot [%f:%f] [%f:%f] "%s/%07d/bodies" '
+			#			  'u 1:2:(0) wl lw 2 lc "black";\n'
+			#			  % (args.bl_x, args.tr_x, args.bl_y, args.tr_y, 
+			#			  	 folder, ite))
+			outfile.write('unset multiplot;\n')
+
+			ite += nsave
+	
+	print 'DONE!'
+
+	# run the plotting script
+	print 'Generating PNGs...'
+	os.system('gnuplot %s' % gnuplot_file)
+	
+	print 'DONE!'
+
 
 if __name__ == '__main__':
 	main()
-
-	k = startStep + nsave
-	while k < (nt+1):
-		u, v = rd.readVelocityData(folder, k, nx, ny, dx, dy)
-		if u==None or v==None:
-			break
-		vortFile = args.folder + ("/%07d" % k) + "/vorticity"
-		print vortFile
-		f = open(vortFile, 'w')
-		for j in range(Jstart, Jend):
-			y  = (yu[j] + yu[j+1])/2.
-			Dy = (dy[j] + dy[j+1])/2.
-			for i in range(Istart, Iend):
-				# calculate the vorticity
-				# w = dv/dx-du/dy
-				x  = (xv[i] + xv[i+1])/2.
-				Dx = (dx[i] + dx[i+1])/2.
-				vort = (v[j*nx+i+1] - v[j*nx+i])/Dx - (u[(j+1)*(nx-1)+i] - u[j*(nx-1)+i])/Dy
-				f.write("%f\t%f\t%f\n" % (x, y, vort))
-			f.write("\n")
-		f.close()
-		k = k + nsave
-
-vortFile = "%s/vorticity.plt" % folder
-f = open( vortFile, 'w')
-
-print 'Creating gnuplot file... ';
-
-f.write("reset;\n")
-f.write("""set terminal pngcairo enhanced font "Times, 15" size 900,600;\n""")
-
-k = startStep+nsave
-while k < (nt+1):
-	# image file name
-	f.write("\nset output '%s/plot%07d.png'\n" % (folder, k))
-	f.write("set multiplot;\n")
-	# vorticity
-	f.write("reset;\n")
-	f.write("set view map; set size ratio -1; unset key;\n")
-	f.write("set pm3d map;\n")
-	f.write("set palette defined (-2 'dark-blue', -1 'light-blue', 0 'white', 1 'light-red', 2 'dark-red');\n")
-	f.write("set cbrange [%f:%f];\n" % (-args.vortlim, args.vortlim))
-	f.write("splot [%f:%f] [%f:%f] '%s/%07d/vorticity';\n" % (args.bl_x, args.tr_x, args.bl_y, args.tr_y, folder, k) )
-	# bodies
-	#f.write("reset;\n")
-	#f.write("set view map; set size ratio -1; unset key;\n")
-	#f.write("splot [%f:%f] [%f:%f] '%s/%07d/bodies' u 1:2:(0) w l lw 2 lc 'black';\n" % (args.bl_x, args.tr_x, args.bl_y, args.tr_y, folder, i) )
-	f.write("unset multiplot;\n")
-	k = k + nsave
-f.close()
-
-print 'DONE!'
-
-# Run the plotting script
-print 'Generating PNGs... '
-os.system("gnuplot %s" % vortFile)
-print 'DONE!'
