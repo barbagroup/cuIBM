@@ -39,14 +39,11 @@ def main():
 	# read and generate the computational mesh
 	nx, ny, dx, dy, _, yu, xv, _ = readGridData(folder)
 	
-	save_points = 0
-	ite = start_step + nsave
-	while ite < nt+1:
-		save_points += 1
-		ite += nsave
+	# number of saved points
+	save_points = int( (nt-start_step)/nsave )
 
-	T = 10.0
-	h = dx[0]
+	T = 10.0	# total time of the simulation
+	h = dx[0]	# uniform cell-width
 
 	# initialization
 	total_vorticity = np.empty(save_points, dtype=float)
@@ -58,17 +55,14 @@ def main():
 	idx = 0
 	while ite < nt+1:
 		time[idx] = ite*dt
-
 		# read the vorticity
 		vort_file = '%s/%07d/vorticity' % (folder, ite)
 		with open(vort_file, 'r') as infile:
 			vorticity = np.loadtxt(infile, dtype=float, usecols=(2,))
-
 		# calculate the total vorticity
 		total_vorticity[idx] = h**2*vorticity.sum()
 		# calculate the theoretical circulation
 		circulation[idx] = -math.sin(math.pi*time[idx]/T)
-
 		idx += 1
 		ite += nsave
 
