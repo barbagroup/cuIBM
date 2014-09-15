@@ -1,61 +1,95 @@
 #!/usr/bin/env python
-import os
-import sys
+
+# file: $CUIBM_DIR/scripts/python/analyseVorticity.py
+# author: Krishnan, A. (anush@bu.edu)
+# description: script to analyse the vorticity
+
+
 import argparse
+import math
+
 import numpy as np
-import readData as rd
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 
-# Generate optionsfile as per command line options
-parser = argparse.ArgumentParser()
-parser.add_argument("--folder", dest="folder", help="Case folder", default=".")
-args = parser.parse_args()
+from readData import readSimulationParameters, readGridData
 
-folder = args.folder
-nt, startStep, nsave, dt = rd.readSimulationParameters(folder)
-nx, ny, dx, dy, _, yu, xv, _ = rd.readGridData(folder)
 
-savePoints = 0
-k = startStep+nsave
-while k < (nt+1):
-	savePoints+=1
-	k+=nsave
+def read_inputs():
+	"""Parse the command-line"""
+	# create the parser
+	parser = argparse.ArgumentParser()
+	# fill the parser
+	parser.add_argument('--folder', dest='folder', type=str, default='.',
+						help='path of the simualtion case')
+	parser.add_argument('--show', dest='show', action='store_true',
+						help='boolean to plot the results in a figure')
+	return parser.parse_args()
 
-T = 10.
-h = dx[0]
-totalVorticity = np.zeros(savePoints)
-circulation = np.zeros(savePoints)
-time = np.zeros(savePoints)
 
-k = startStep+nsave
-idx = 0
-while k < (nt+1):
-	totalVorticity[idx] = 0.
-	time[idx] = k*dt
+def main():
+	"""Analyses the vorticity given a case."""
+	# parse the command-line
+	args = read_inputs()
+
+	folder = args.folder	# path of the case
+
+	# read parameters of the simulation
+	nt, start_step, nsave, dt = readSimulationParameters(folder)
+
+	# read and generate the computational mesh
+	nx, ny, dx, dy, _, yu, xv, _ = readGridData(folder)
 	
-	vortFile = args.folder + ("/%07d" % k) + "/vorticity"
-	
-	f = open(vortFile, 'r')
-	i = 0
-	
-	for line in f:
-		try:
-			totalVorticity[idx] += float(line.split()[2])
-		except IndexError:
-			pass
-	
-	totalVorticity[idx] *= h*h
-	circulation[idx] = -np.sin(np.pi*time[idx]/T)
-	
-	k +=nsave
-	idx += 1
+	save_points = 0
+	ite = start_step + nsave
+	while ite < nt+1:
+		save_points += 1
+		ite += nsave
 
-plt.ioff()
-tV, = plt.plot(time, totalVorticity, 'D')
-tC, = plt.plot(time, circulation)
-plt.title("Comparison of Total Vorticity and Theoretical Circulation at Re=10,000")
-plt.legend([tV, tC], ['Total Vorticity', 'Theoretical circulation'])
-plt.xlabel('Time')
-plt.ylabel('Total circulation')
-plt.axis([0, 80, -1.5, 1.5])
-plt.savefig("out.png")
+	T = 10.0
+	h = dx[0]
+
+	# initialization
+	total_vorticity = np.empty(save_points, dtype=float)
+	circulation = np.empty(save_points, dtype=float)
+	time = np.empty(save_points, dtype=float)
+
+	# time-loop
+	ite = start_step + nsave
+	idx = 0
+	while ite < nt+1:
+		time[idx] = ite*dt
+
+		# read the vorticity
+		vort_file = '%s/%07d/vorticity' % (folder, ite)
+		with open(vort_file, 'r') as infile:
+			vorticity = np.loadtxt(infile, dtype=float, usecols=(2,))
+
+		# calculate the total vorticity
+		total_vorticity[idx] = h**2*vorticity.sum()
+		# calculate the theoretical circulation
+		circulation[idx] = -math.sin(math.pi*time[idx]/T)
+
+		idx += 1
+		ite += nsave
+
+	# plot the total vorticity and theretical circulation
+	plt.figure()
+	plt.grid(True)
+	plt.xlabel('Time', fontsize=16)
+	plt.ylabel('Total circulation', fontsize=16)
+	plt.plot(time, total_vorticity, label='Total vorticity',
+			 color='r', ls='.', marker='o', markersize=10)
+	plt.plot(time, circulation, label='Theoretical circulation',
+			 color='b', ls='-', lw=2)
+	plt.xlim(0, 80)
+	plt.ylim(-1.5, 1.5)
+	plt.title('Comparison of Total Vorticity and Theoretical Circulation '
+			  'at Re=10,000')
+	plt.legend(loc='best', prop={'size': 16})
+	plt.savefig('%s/total_vorticity.png' % folder)
+	if args.show:
+		plt.show()
+
+
+if __name__ == '__main__':
+	main()
