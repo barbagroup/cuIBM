@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-# file: $CUIBM_DIR/scripts/python/analyseVorticity.py
-# author: Krishnan, A. (anush@bu.edu)
+# file: $CUIBM_DIR/scripts/python/analyzeVorticity.py
+# author: Anush Krishnan (anush@bu.edu), Olivier Mesnard (mesnardo@gwu.edu)
 # description: script to analyse the vorticity
 
 
