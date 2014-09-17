@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # file: $CUIBM_DIR/scripts/python/readData.py
-# author: Krishnan, A. (anush@bu.edu)
+# author: Anush Krishnan (anush@bu.edu), Olivier Mesnard (mesnardo@gwu.edu)
 # description: definitions of functions to read numerical data
 
 

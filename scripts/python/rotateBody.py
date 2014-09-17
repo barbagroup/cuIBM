@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # file: $CUIBM_DIR/scripts/python/rotateBody.py
-# author: Krishnan, A. (anush@bu.edu)
+# author: Anush Krishnan (anush@bu.edu), Olivier Mesnard (mesnardo@gwu.edu)
 # description: script to rotate a body
 
 
@@ -25,7 +25,7 @@ def read_inputs():
 	parser.add_argument('--yc', dest='yc', type=float, default=0.0,
 						help='y-center of the center of rotation')
 	parser.add_argument('--infile', dest='infile', type=str, 
-						default='naca0008_0.008.bdy',
+						default='naca0012_0.004.bdy',
 						help='input file name')
 	parser.add_argument('--show', dest='show', action='store_true',
 						help='plots the geometry in both configurations')

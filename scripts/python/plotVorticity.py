@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # file: $CUIBM_DIR/scripts/python/plotVorticity.py
-# author: Krishnan, A. (anush@bu.edu)
+# author: Anush Krishnan (anush@bu.edu), Olivier Mesnard (mesnardo@gwu.edu)
 # description: plot the contour of vorticity at every time saved
 
 
@@ -62,15 +62,8 @@ def main():
 		j_start = np.where(yu >= args.bl_y)[0][0]
 		j_end = np.where(yu > args.tr_y)[0][0]-1
 
-		# compute locations and cell-widths where vorticity is caculated
-		#x = 0.5*(xv[i_start:i_end] + xv[i_start+1:i_end+1])
-		#Dx = 0.5*(dx[i_start:i_end] + dx[i_start+1:i_end+1])
-		#y = 0.5*(yu[j_start:j_end] + yu[j_start+1:j_end+1])
-		#Dy = 0.5*(dy[j_start:j_end] + dy[j_start+1:j_end+1])
-
 		# time-loop
-		ite = start_step + nsave
-		while ite < nt+1:
+		for ite in xrange(start_step+nsave, nt+1, nsave):
 			# read the velocity data at the given time-step
 			u, v = readVelocityData(folder, ite, nx, ny, dx, dy)
 			if u == None or v == None:
@@ -91,8 +84,6 @@ def main():
 						outfile.write('%f\t%f\t%f\n' % (x, y, vort))
 					outfile.write('\n')
 
-			ite += nsave
-
 	# create the gnuplot file
 	print 'Creating gnuplot file...'
 	gnuplot_file = '%s/vorticity.plt' % folder
@@ -100,10 +91,10 @@ def main():
 		outfile.write('reset;\n')
 		outfile.write('set terminal pngcairo enhanced '
 					  'font "Times, 15" size 900,600;\n')
-		ite = start_step + nsave
-		while ite < nt+1:
+
+		for ite in xrange(start_step+nsave, nt+1, nsave):
 			# image file name
-			outfile.write('\nset output "%s/plot%07d.png"\n' % (folder, ite))
+			outfile.write('\nset output "%s/vort%07d.png"\n' % (folder, ite))
 			outfile.write('set multiplot;\n')
 			# vorticity
 			outfile.write('reset;\n')
@@ -127,8 +118,6 @@ def main():
 			#			  % (args.bl_x, args.tr_x, args.bl_y, args.tr_y, 
 			#			  	 folder, ite))
 			outfile.write('unset multiplot;\n')
-
-			ite += nsave
 	
 	print 'DONE!'
 
