@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # file: $CUIBM_DIR/script/python/elements.py
-# author: Krishnan, A. (anush@bu.edu)
+# author: Anush Krishnan (anush@bu.edu), Oliver Mesnard (mesnardo@gwu.edu)
 # description: display some properties of a given body
 
 

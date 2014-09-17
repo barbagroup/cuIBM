@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # file: $CUIBM_DIR/scripts/python/ellipse.py
-# author: Krishnan, A. (anush@bu.edu)
+# author: Anush Krishnan (anush@bu.edu), Olivier Mesnard (mesnardo@gwu.edu)
 # description: script to generate an ellipse
 
 
@@ -71,7 +71,7 @@ def main():
 	# perimeter of the ellipse (Ramanujan approximation)
 	h = ((a-b)/(a+b))**2
 	p = math.pi*(a+b)*(1. + 3.*h/(10.+math.sqrt(4.-3.*h)))
-	
+
 	# number of boundary points
 	n = int(math.ceil(p/args.ds))
 
@@ -82,16 +82,16 @@ def main():
 
 	theta = numpy.linspace(theta0, thetaN, n+1)
 
-	temp, mean = 0.0, 1.0
+	previous_mean, mean = 0.0, 1.0
 	tol = 1.0E-06
-	while math.fabs(temp-mean)/mean > tol:
-		temp = mean
+	while math.fabs(previous_mean - mean)/mean > tol:
+		previous_mean = mean
 
 		ds = numpy.sqrt((a*(numpy.cos(theta[1:])-numpy.cos(theta[:-1])))**2
 					   +(b*(numpy.sin(theta[1:])-numpy.sin(theta[:-1])))**2)
 		mean = ds.sum()/n
 
-		dtheta = mean/ds*(theta[1:]-theta[:-1])
+		dtheta = mean/ds[:]*(theta[1:]-theta[:-1])
 		total = dtheta.sum()
 
 		omega = angle/total

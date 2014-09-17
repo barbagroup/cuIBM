@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 # file: $CUIBM_DIR/scripts/python/naca00xx.py
-# author: Krishnan, A. (anush@bu.edu)
-# description: generates the coordinates of a NACA00XX airfoil
+# author: Anush Krishnan (anush@bu.edu), Olivier Mesnard (mesnardo@gwu.edu)
+# description: generates the coordinates of a NACA 00XX airfoil
 
 
 import argparse
@@ -31,11 +31,12 @@ def read_inputs():
 
 
 def get_y_naca00xx(x, t, c):
-	"""Returns the y-coordinates of the upper symmetric NACA airfoil.
+	"""Returns the y-coordinate of the upper surface 
+	of a symmetric NACA airfoil.
 	
 	Arguments
 	---------
-	x -- x-coordinates of the upper symmetric NACA airfoil.
+	x -- x-coordinate
 	t -- maximum thickness as a fraction of the chord.
 	c -- chord-length of the airfoil.
 	"""
@@ -48,7 +49,7 @@ def get_y_naca00xx(x, t, c):
 
 
 def plot_airfoil(x, y, t):
-	"""Plots thhe profile in a figure.
+	"""Plots the profile in a figure.
 	
 	Arguments
 	---------
@@ -64,12 +65,12 @@ def plot_airfoil(x, y, t):
 	plt.plot(x[::-1], -y[::-1], 
 			 color='b', ls='-', lw=2, marker='o', markersize=6)
 	plt.axis('equal')
-	plt.title('NACA00%02d' % t)
+	plt.title('NACA 00%02d' % t)
 	plt.show()
 
 
 def main():
-	"""Generates the NACA00xx coordinates."""
+	"""Generates the NACA 00xx coordinates."""
 	# parse the command-line
 	args = read_inputs()
 	
@@ -105,10 +106,10 @@ def main():
 	x = np.linspace(x0, xn, n+1)
 	y = get_y_naca00xx(x, t, c)
 
-	temp, mean = 0.0, c
+	previous_mean, mean = 0.0, c
 	tol = 1.0E-06
-	while math.fabs(temp-mean)/mean > tol:
-		temp = mean
+	while math.fabs(previous_mean - mean)/mean > tol:
+		previous_mean = mean
 
 		# compute segment-lengths
 		ds = np.sqrt( (x[1:]-x[:-1])**2 + (y[1:]-y[:-1])**2 )
