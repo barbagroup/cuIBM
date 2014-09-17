@@ -2,9 +2,19 @@
 *.o
 *.a
 *.pyc
+*.png
 
 # folders
 data/*
+cases/*/0*
+cases/*/*/0*
+cases/*/*.plt
+cases/*/*/*.plt
 
 # files
 bin/cuIBM
+forces
+iterations
+run.info
+grid
+scripts/python/*.bdy
