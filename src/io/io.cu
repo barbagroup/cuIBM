@@ -4,6 +4,7 @@
 #include <boundaryCondition.h>
 
 using std::string;
+using std::ios;
 
 /// convert string to real number or integer
 template <typename T>
@@ -339,18 +340,12 @@ void writeGrid(std::string &caseFolder, domain &D)
 {
 	std::stringstream out;
 	out << caseFolder << "/grid";
-	std::ofstream f(out.str().c_str());
-
-	f << D.nx << std::endl;
-	for(int i=0; i<D.nx+1; i++)
-		f << D.x[i] << '\n';
-	f << '\n';
-	
-	f << D.ny << '\n';
-	for(int j=0; j<D.ny+1; j++)
-		f << D.y[j] << '\n';
-
-	f.close();
+	std::ofstream file(out.str().c_str(), ios::binary);
+	file.write((char*)(&D.nx), sizeof(int));
+	file.write((char*)(&D.x[0]), (D.nx+1)*sizeof(real));
+	file.write((char*)(&D.ny), sizeof(int));
+	file.write((char*)(&D.y[0]), (D.ny+1)*sizeof(real));
+	file.close();
 }
 
 template <>
@@ -358,6 +353,7 @@ void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, doma
 {
 	std::string path;
 	std::stringstream out;
+	int N;
 
 	out << caseFolder << '/' << std::setfill('0') << std::setw(7) << n;
 	path = out.str();
@@ -367,18 +363,18 @@ void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, doma
 
 	out.str("");
 	out << path << "/q";
-	std::ofstream file(out.str().c_str());
-	file << q.size() << std::endl;
-	for(int i=0; i<q.size(); i++)
-		file << q[i] << '\n';
+	std::ofstream file(out.str().c_str(), ios::binary);
+	N = q.size();
+	file.write((char*)(&N), sizeof(int));
+	file.write((char*)(&q[0]), N*sizeof(real));
 	file.close();
 
 	out.str("");
 	out << path << "/lambda";
-	file.open(out.str().c_str());
-	file << lambda.size() << '\n';
-	for(int i=0; i<lambda.size(); i++)
-		file << lambda[i] << '\n';
+	file.open(out.str().c_str(), ios::binary);
+	N = lambda.size();
+	file.write((char*)(&N), sizeof(int));
+	file.write((char*)(&lambda[0]), N*sizeof(real));
 	file.close();
 	
 	std::cout << "Data saved to folder " << path << std::endl;
