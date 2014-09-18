@@ -8,6 +8,7 @@
 import argparse
 
 import numpy as np
+import struct
 
 
 def readSimulationParameters(folder):
@@ -80,25 +81,27 @@ def readGridData(folder):
 	xv, yv -- location of v-velocity points.
 	"""
 	# read the grid file
-	with open(folder+'/grid', 'r') as infile:
-		data = infile.readlines()
+	#with open(folder+'/grid', 'rb') as infile:
+	#	data = infile.readlines()
+	fp = open(folder+'/grid', 'rb')
 
 	# x-direction
-	nx = int(data[0])
-	x = np.array(data[1:nx+2], dtype=float)
+	nx = struct.unpack('i', fp.read(4))[0]
+	x = np.array(struct.unpack('d'*(nx+1), fp.read(8*(nx+1))))
 	dx = x[1:] - x[:-1]
 	xu = x[1:-1]
 	xv = 0.5*(x[1:]+x[:-1])
 	
 	# y-direction
-	ny = int(data[nx+3])
-	y = np.array(data[nx+4:], dtype=float)
+	ny = struct.unpack('i', fp.read(4))[0]
+	y = np.array(struct.unpack('d'*(ny+1), fp.read(8*(ny+1))))
 	dy = y[1:] - y[:-1]
 	yu = 0.5*(y[1:]+y[:-1])
 	yv = y[1:-1]
 
-	return nx, ny, dx, dy, xu, yu, xv, yv
+	fp.close()
 
+	return nx, ny, dx, dy, xu, yu, xv, yv
 
 def readVelocityData(folder, time_step, nx, ny, dx, dy):
 	"""Reads the velocity data at a given time-step.
@@ -111,9 +114,10 @@ def readVelocityData(folder, time_step, nx, ny, dx, dy):
 	dx, dy -- cell widths in the x- and y- directions.
 	"""
 	flux_file = '%s/%07d/q' % (folder, time_step)
-	with open(flux_file, 'r') as infile:
-		nq = int(infile.readline())			# length of flux vector q
-		q = np.loadtxt(infile, dtype=float)	# store flux vector q
+	fp = open(flux_file, 'rb')
+	nq = struct.unpack('i', fp.read(4))[0]             # length of flux vector q
+	q = np.array(struct.unpack('d'*nq, fp.read(8*nq))) # store flux vector q
+	fp.close()
 	
 	# store u-velocities
 	n_u = (nx-1) * ny				# number of u-velocity points
@@ -129,3 +133,6 @@ def readVelocityData(folder, time_step, nx, ny, dx, dy):
 			v[j*nx+i] = q[n_u+j*nx+i]/dx[i]
 	
 	return u, v
+
+if __name__ == "__main__":
+	readGridData("../../cases/lidDrivenCavity/Re100")

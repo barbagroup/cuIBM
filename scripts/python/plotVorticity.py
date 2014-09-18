@@ -58,9 +58,9 @@ def main():
 
 		# calculate appropriate array boundaries
 		i_start = np.where(xv >= args.bl_x)[0][0]
-		i_end = np.where(xv > args.tr_x)[0][0]-1
+		i_end = np.where(xv <= args.tr_x)[0][-1]
 		j_start = np.where(yu >= args.bl_y)[0][0]
-		j_end = np.where(yu > args.tr_y)[0][0]-1
+		j_end = np.where(yu <= args.tr_y)[0][-1]
 
 		# time-loop
 		for ite in xrange(start_step+nsave, nt+1, nsave):
@@ -108,8 +108,7 @@ def main():
 			outfile.write('set cbrange [%f:%f];\n' 
 						  % (-args.vort_lim, args.vort_lim))
 			outfile.write('splot [%f:%f] [%f:%f] "%s/%07d/vorticity";\n'
-						  % (args.bl_x, args.tr_x, args.bl_y, args.tr_y, 
-						  	 folder, ite))
+						  % (xv[i_start], xv[i_end], yu[j_start], yu[j_end], folder, ite))
 			# bodies
 			#outfile.write('reset;\n')
 			#outfile.write('set view map; set size ratio -1; unset key;\n')
@@ -126,7 +125,6 @@ def main():
 	os.system('gnuplot %s' % gnuplot_file)
 	
 	print 'DONE!'
-
 
 if __name__ == '__main__':
 	main()
