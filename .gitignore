@@ -3,13 +3,12 @@
 *.a
 *.pyc
 *.png
+._*
 
 # folders
 data/*
-cases/*/0*
-cases/*/*/0*
-cases/*/*.plt
-cases/*/*/*.plt
+0*
+*.plt
 
 # files
 bin/cuIBM
