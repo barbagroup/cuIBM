@@ -66,13 +66,13 @@ const char *property::print()
 template <>
 void property::set(std::string s)
 {
-  strncpy(value,s.c_str(),64);
+  strncpy(value, s.c_str(), 256);
 }
 
 template <typename T>
 void property::set(T v)
 {
-  // assume we have enough space (64 bytes)
+  // assume we have enough space (256 bytes)
   type = &typeid(T);
   *reinterpret_cast<T*>(&value[0]) = v;
 }

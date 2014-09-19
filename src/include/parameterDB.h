@@ -24,14 +24,14 @@ class property
 	// hack to get around std::type_info not having a default constructor
 	const std::type_info *type;
 	
-	/// 64 bytes of storage for the name of the 
-	char value[64];
+	/// 256 bytes of storage for the name of the folder
+	char value[256];
 
 public:
 	/// Constructor. Intialises the memory to zero.
 	property()
 	{
-		memset(value, 0, 64);
+		memset(value, 0, 256);
 	}
 	
 	/// Get a value given a type
