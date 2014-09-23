@@ -63,7 +63,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by)
 	bool insideX, insideY, flag;
 	int  bdryFlagX, bdryFlagY, k, l, I;
 	int  bottom, top, left, right;
-	real eps = 1.e-6;
+	real eps = 1.e-8;
 	real cfX = 0.0, cfY = 0.0, x, y;
 	
 	// tag points at which u is evaluated
@@ -385,7 +385,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by)
 	bool outsideX, outsideY, flag;
 	int  bdryFlagX, bdryFlagY, k, l, I;
 	int  bottom, top, left, right;
-	real eps = 1.e-6;
+	real eps = 1.e-8;
 	real cfX = 0.0, cfY = 0.0, x, y;
 	
 	// tag points at which u is evaluated
@@ -711,10 +711,13 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 	real *xu = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->xu[0])),
 	     *yu = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->yu[0]));
 
+	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
+	std::string folder = db["inputs"]["caseFolder"].get<std::string>();
+
 	bool outsideX, outsideY, flag;
 	int  bdryFlagX, bdryFlagY, k, l, I;
 	int  bottom, top, left, right;
-	real eps = 1.e-6;
+	real eps = 1.e-8;
 	real cfX = 0.0, cfY = 0.0, x, y;
 	
 	// tag points at which u is evaluated
@@ -858,7 +861,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 		}
 	}
 	
-	std::ofstream file("tagx.txt");
+	std::ofstream file((folder+"/tagx.txt").c_str());
 	for(int j=0; j<ny; j++)
 	{
 		for(int i=0; i<nx-1; i++)
@@ -1016,7 +1019,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 		}
 	}
 	
-	file.open("tagy.txt");
+	file.open((folder+"/tagy.txt").c_str());
 	for(int j=0; j<ny-1; j++)
 	{
 		for(int i=0; i<nx; i++)
@@ -1040,7 +1043,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 	}
 	file.close();
 	
-	file.open("body.txt");
+	file.open((folder+"/body.txt").c_str());
 	for(int k=0; k<NSWithBody<memoryType>::B.totalPoints; k++)
 	{
 		file << bx[k] << '\t' << by[k] << std::endl;
