@@ -879,8 +879,8 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 				else if (tagsY[I] == I+(nx-1))
 					file << xu[i] << '\t' << yu[j+1] << std::endl;
 				file << xu[i] << '\t' << yu[j] << std::endl;
+				file << std::endl;
 			}
-			file << std::endl;
 		}
 	}
 	file.close();
@@ -1037,8 +1037,8 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 				else if (tagsY[I] == I+nx)
 					file << xv[i] << '\t' << yv[j+1] << std::endl;
 				file << xv[i] << '\t' << yv[j] << std::endl;
+				file << std::endl;
 			}
-			file << std::endl;
 		}
 	}
 	file.close();
