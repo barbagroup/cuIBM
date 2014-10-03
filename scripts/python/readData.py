@@ -9,7 +9,7 @@ import argparse
 
 import numpy as np
 import struct
-
+import sys
 
 def readSimulationParameters(folder):
 	"""Reads the parameters of the simulation.
@@ -26,8 +26,14 @@ def readSimulationParameters(folder):
 	dt -- time-increment.
 	"""
 	# open and read the info file
-	with open(folder+'/run.info', 'r') as infile:
-		option_list = infile.read().split()
+	try:
+		with open(folder+'/run.info', 'r') as infile:
+			option_list = infile.read().split()
+	except IOError:
+		print "While reading simulation parameters:"
+		print "File run.info not found!"
+		print "In folder: {}".format(folder)
+		sys.exit()
 	
 	# create the parser
 	parser = argparse.ArgumentParser()
