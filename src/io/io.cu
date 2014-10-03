@@ -213,6 +213,18 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			i++;
 			DB["simulation"]["dt"].set<real>(toNumber<real>(string(argv[i])));
 		}
+		// tolerance for the velocity solve
+		if ( strcmp(argv[i],"-velocityTol")==0 )
+		{
+			i++;
+			DB["velocitySolve"]["tolerance"].set<real>(toNumber<real>(string(argv[i])));
+		}
+		// tolerance for the Poisson solve
+		if ( strcmp(argv[i],"-poissonTol")==0 )
+		{
+			i++;
+			DB["PoissonSolve"]["tolerance"].set<real>(toNumber<real>(string(argv[i])));
+		}
 		// IBM Scheme
 		if ( strcmp(argv[i],"-ibmScheme")==0 )
 		{

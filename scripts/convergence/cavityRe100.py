@@ -15,8 +15,9 @@ import subprocess
 def main():
 	# Command line options
 	parser = argparse.ArgumentParser(description="Calculates the order of convergence.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-	parser.add_argument("--folder", dest="caseDir", help="folder in which the cases for different mesh sizes are present", default=os.path.expandvars("${CUIBM_DIR}/cases/convergence/cavityRe100/NavierStokes/20x20"))
-	parser.add_argument("--run-cases", dest="runCases", help="run the cases if this flag is used", action='store_true', default=False)
+	parser.add_argument("-folder", dest="caseDir", help="folder in which the cases for different mesh sizes are present", default=os.path.expandvars("${CUIBM_DIR}/cases/convergence/cavityRe100/NavierStokes/20x20"))
+	parser.add_argument("-tolerance", dest="tolerance", help="folder in which the cases for different mesh sizes are present", default=1.e-8)
+	parser.add_argument("-run_simulations", dest="runSimulations", help="run the cases if this flag is used", action='store_true', default=False)
 	args = parser.parse_args()
 
 	# list of folders from which velocity data is to be obtained
@@ -24,9 +25,12 @@ def main():
 	numFolders = len(folders)
 
 	# run the cases in each of the folders
-	if args.runCases:
+	if args.runSimulations:
 		for folder in folders:
-			runCommand = [os.path.expandvars("${CUIBM_DIR}/bin/cuIBM"), '-caseFolder', "{}/{}".format(args.caseDir, folder)]
+			runCommand = [os.path.expandvars("${CUIBM_DIR}/bin/cuIBM"),
+							'-caseFolder', "{}/{}".format(args.caseDir, folder),
+							'-velocityTol', "{}".format(args.tolerance),
+							'-poissonTol', "{}".format(args.tolerance)]
 			print " ".join(runCommand)
 			subprocess.call(runCommand)
 
@@ -70,7 +74,7 @@ def main():
 	orderOfConvergenceU = -np.polyfit(np.log10(meshSize), np.log10(errNormU), 1)[0]
 	orderOfConvergenceV = -np.polyfit(np.log10(meshSize), np.log10(errNormV), 1)[0]
 	
-	print "\nMeshes: {}".format(meshSize)
+	print "\nMesh sizes: {}".format(meshSize)
 	
 	print "\nU:"
 	print "errNorms: {}".format(errNormU)
@@ -83,8 +87,9 @@ def main():
 	print "Linear fit convergence rate: {:.3f}".format(orderOfConvergenceV)
 	
 	
-	plt.loglog(meshSize, errNormU, 'o-b', label="L-2 norm of difference\nOrder of convergence={:.3f}".format(orderOfConvergenceU))
-	plt.axis([1, 1e4, 1e-4, 10])
+	plt.loglog(meshSize, errNormU, 'o-b', label="L-2 norm of difference in $u$\nOrder of convergence={:.3f}".format(orderOfConvergenceU))
+	plt.loglog(meshSize, errNormV, 'o-r', label="L-2 norm of difference in $v$\nOrder of convergence={:.3f}".format(orderOfConvergenceV))
+	plt.axis([1, 1e4, 1e-4, 100])
 	x  = np.linspace(1, 1e4, 2)
 	x1 = 1/x
 	x2 = 1/x**2
