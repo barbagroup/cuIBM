@@ -719,6 +719,8 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 	int  bottom, top, left, right;
 	real eps = 1.e-10;
 	real cfX = 0.0, cfY = 0.0, x, y;
+
+	std::ofstream mask((folder+"/mask.txt").c_str());
 	
 	// tag points at which u is evaluated
 	for(int j=0; j<ny; j++)
@@ -860,6 +862,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 				tagsY[I]   = bdryFlagY;
 				coeffsY[I] = cfY;
 			}
+			mask << ((outsideX || outsideY)? 1 : 0) << std::endl;
 		}
 	}
 	
@@ -1017,9 +1020,11 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 			{
 				tagsX[I]   = bdryFlagX;
 				coeffsX[I] = cfX;
-			} 
+			}
+			mask << ((outsideX || outsideY)? 1 : 0) << std::endl;
 		}
 	}
+	mask.close();
 	
 	file.open((folder+"/tagy.txt").c_str());
 	for(int j=0; j<ny-1; j++)
