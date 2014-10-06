@@ -9,6 +9,7 @@
 data/*
 0*
 *.plt
+cases/convergence/cavityRe100/*/T*
 
 # files
 bin/cuIBM
@@ -17,3 +18,4 @@ iterations
 run.info
 grid
 scripts/python/*.bdy
+cases/convergence/cavityRe100/*/*/*/*.txt

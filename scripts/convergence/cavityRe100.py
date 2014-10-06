@@ -9,14 +9,18 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import sys
 sys.path.insert(0, os.path.expandvars("${CUIBM_DIR}/scripts/python"))
-from readData import readSimulationParameters, readGridData, readVelocityData
+from readData import readSimulationParameters, readGridData, readVelocityData, readMask
 import subprocess
+import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm
 
 def main():
 	# Command line options
 	parser = argparse.ArgumentParser(description="Calculates the order of convergence.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-	parser.add_argument("--folder", dest="caseDir", help="folder in which the cases for different mesh sizes are present", default=os.path.expandvars("${CUIBM_DIR}/cases/convergence/cavityRe100/NavierStokes/20x20"))
-	parser.add_argument("--run-cases", dest="runCases", help="run the cases if this flag is used", action='store_true', default=False)
+	parser.add_argument("-folder", dest="caseDir", help="folder in which the cases for different mesh sizes are present", default=os.path.expandvars("${CUIBM_DIR}/cases/convergence/cavityRe100/NavierStokes/20x20"))
+	parser.add_argument("-tolerance", dest="tolerance", help="folder in which the cases for different mesh sizes are present", default=1.e-8)
+	parser.add_argument("-run_simulations", dest="runSimulations", help="run the cases if this flag is used", action='store_true', default=False)
+	parser.add_argument("-use_mask", dest="useMask", help="use only the values in the fluid region", action='store_true', default=False)
 	args = parser.parse_args()
 
 	# list of folders from which velocity data is to be obtained
@@ -24,21 +28,28 @@ def main():
 	numFolders = len(folders)
 
 	# run the cases in each of the folders
-	if args.runCases:
+	if args.runSimulations:
 		for folder in folders:
-			runCommand = [os.path.expandvars("${CUIBM_DIR}/bin/cuIBM"), '-caseFolder', "%s/%s" % (args.caseDir, folder)]
+			runCommand = [os.path.expandvars("${CUIBM_DIR}/bin/cuIBM"),
+							'-caseFolder', "{}/{}".format(args.caseDir, folder),
+							'-velocityTol', "{}".format(args.tolerance),
+							'-poissonTol', "{}".format(args.tolerance)]
 			print " ".join(runCommand)
 			subprocess.call(runCommand)
 
 	# create arrays to store the required values
-	U  = []
-	errNorm  = np.zeros(numFolders-1)
-	meshSize = np.zeros(numFolders-1)
+	U = []
+	V = []
+	errNormU  = np.zeros(numFolders-1)
+	errNormV  = np.zeros(numFolders-1)
+	meshSize = np.zeros(numFolders-1, dtype=int)
+
+	print ' '
 
 	stride = 1
 	for fIdx, folder in enumerate(folders):
 		# path to folder
-		folderPath = os.path.expandvars("%s/%s" % (args.caseDir, folder));
+		folderPath = os.path.expandvars("{}/{}".format(args.caseDir, folder));
 		# read simulation information
 		nt, _, _, _ = readSimulationParameters(folderPath)
 
@@ -46,31 +57,68 @@ def main():
 		# nx and ny are the number of cells
 		# dx and dy are the cell widths
 		# xu and yu are the coordinates of the locations where U is calculated
-		nx, ny, dx, dy, xu, yu, _, _ = readGridData(folderPath)
+		nx, ny, dx, dy, xu, yu, xv, yv = readGridData(folderPath)
 		
-		if fIdx>0:
+		if fIdx==0:
+			initialMeshSpacing = dx[0]
+		else:
 			meshSize[fIdx-1] = nx
 
 		# read velocity data
-		u, _ = readVelocityData(folderPath, nt, nx, ny, dx, dy)
+		u, v = readVelocityData(folderPath, nt, nx, ny, dx, dy)
+
+		if(args.useMask):
+			# read mask
+			mask_u, mask_v = readMask(folderPath, nx, ny)
+			u[:] = u[:]*mask_u[:]
+			v[:] = v[:]*mask_v[:]
 
 		U.append(np.reshape(u, (ny, nx-1))[stride/2::stride,stride-1::stride])
-		print U[fIdx].shape
+		V.append(np.reshape(v, (ny-1, nx))[stride-1::stride,stride/2::stride])
 		
-		print 'Completed folder %s' % folder
+		print 'Completed folder {}. u:{}, v:{}'.format(folder, U[fIdx].shape, V[fIdx].shape)
 		stride = stride*3
 
 	for idx in range(numFolders-1):
-		errNorm[idx] = la.norm(U[idx+1]-U[idx])
+		errNormU[idx] = la.norm(U[idx+1]-U[idx])
+		errNormV[idx] = la.norm(V[idx+1]-V[idx])
+		
+		if idx==0:
+			h = initialMeshSpacing
+			x = np.arange(h/2., 1., h)
+			y = np.arange(h, 1., h)
+			X, Y = np.meshgrid(x,y)
+			plt.ioff()
+			fig = plt.figure()
+			ax = fig.add_subplot(111)
+			diffV = np.abs(V[idx+1]-V[idx] )
+			CS = ax.pcolor(X, Y, diffV, norm=LogNorm(vmin=1e-10, vmax=1))
+			fig.gca().set_aspect('equal', adjustable='box')
+			fig.colorbar(CS)
+			if args.useMask:
+				fig.savefig("{}/diff.png".format(args.caseDir))
+			else:
+				fig.savefig("{}/diff_nomask.png".format(args.caseDir))
 	
-	orderOfConvergence = -np.polyfit(np.log10(meshSize), np.log10(errNorm), 1)[0]
-	print meshSize
-	print errNorm
-	print np.log(errNorm[0]/errNorm[1])/np.log(3), np.log(errNorm[1]/errNorm[2])/np.log(3)
-	print orderOfConvergence
+	orderOfConvergenceU = -np.polyfit(np.log10(meshSize), np.log10(errNormU), 1)[0]
+	orderOfConvergenceV = -np.polyfit(np.log10(meshSize), np.log10(errNormV), 1)[0]
 	
-	plt.loglog(meshSize, errNorm, 'o-b', label="L-2 norm of difference\nOrder of convergence=%1.3f" % orderOfConvergence)
-	plt.axis([1, 1e4, 1e-4, 10])
+	print "\nMesh sizes: {}".format(meshSize)
+	
+	print "\nU:"
+	print "errNorms: {}".format(errNormU)
+	print "Convergence rates: {:.3f}, {:.3f}".format(np.log(errNormU[0]/errNormU[1])/np.log(3), np.log(errNormU[1]/errNormU[2])/np.log(3))
+	print "Linear fit convergence rate: {:.3f}".format(orderOfConvergenceU)
+
+	print "\nV:"
+	print "errNorms: {}".format(errNormV)
+	print "Convergence rates: {:.3f}, {:.3f}".format(np.log(errNormV[0]/errNormV[1])/np.log(3), np.log(errNormV[1]/errNormV[2])/np.log(3))
+	print "Linear fit convergence rate: {:.3f}\n".format(orderOfConvergenceV)
+	
+	plt.clf()
+	plt.loglog(meshSize, errNormU, 'o-b', label="L-2 norm of difference in $u$\nOrder of convergence={:.3f}".format(orderOfConvergenceU))
+	plt.loglog(meshSize, errNormV, 'o-r', label="L-2 norm of difference in $v$\nOrder of convergence={:.3f}".format(orderOfConvergenceV))
+	plt.axis([1, 1e4, 1e-4, 100])
 	x  = np.linspace(1, 1e4, 2)
 	x1 = 1/x
 	x2 = 1/x**2
@@ -80,7 +128,7 @@ def main():
 	ax = plt.axes()
 	ax.set_xlabel("Mesh size")
 	ax.set_ylabel("L-2 Norm of difference between solutions on consecutive grids")
-	plt.savefig("%s/convergence.png" % args.caseDir)
+	plt.savefig("{}/convergence.png".format(args.caseDir))
 
 if __name__ == "__main__":
 	main()

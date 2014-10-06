@@ -48,6 +48,10 @@ void DirectForcingSolver<device_memory>::generateL()
 	* (NOT IMPLEMENTED YET)
 	* Also remember to take alpha into account in BC1 for moving bodies
 	*/
+
+	// 1-D interpolation is performed
+	// along the x-direction for the u-velocities
+	// along the y-direction for the v-velocities
 	
 	///x-component
 	for (int j=0; j < ny; j++)
@@ -92,8 +96,8 @@ void DirectForcingSolver<device_memory>::generateL()
 				
 				if(notBdryNode)	// if the interpolation is definitely not taking place
 					LHost.values[num_elements] = Cy1 * scale / dy[j-1];
-				else if(tagsY[I] == I-(nx-1))
-					LHost.values[num_elements] = (1.0-coeffsX[I])*coeffsY[I] /dt * scale / dy[j-1];
+				else if(tagsY[I] == I-(nx-1) && tagsX[I]==-1)
+					LHost.values[num_elements] = coeffsY[I] /dt * scale / dy[j-1];
 				else
 					LHost.values[num_elements] = 0.0;
 					
@@ -108,7 +112,7 @@ void DirectForcingSolver<device_memory>::generateL()
 				if(notBdryNode)
 					LHost.values[num_elements] = Cx1 * scale / dy[j];
 				else if(tagsX[I] == I-1)
-					LHost.values[num_elements] = coeffsY[I]*coeffsX[I] /dt * scale / dy[j];
+					LHost.values[num_elements] = coeffsX[I] /dt * scale / dy[j];
 				else
 					LHost.values[num_elements] = 0.0;
 					
@@ -130,7 +134,7 @@ void DirectForcingSolver<device_memory>::generateL()
 				if(notBdryNode)
 					LHost.values[num_elements] = Cx0 * scale / dy[j];
 				else if(tagsX[I] == I+1)
-					LHost.values[num_elements] = coeffsY[I]*coeffsX[I] /dt * scale / dy[j];
+					LHost.values[num_elements] = coeffsX[I] /dt * scale / dy[j];
 				else
 					LHost.values[num_elements] = 0.0;
 				num_elements++;
@@ -142,8 +146,8 @@ void DirectForcingSolver<device_memory>::generateL()
 				LHost.column_indices[num_elements] = I + (nx-1);
 				if(notBdryNode)	
 					LHost.values[num_elements] = Cy0 * scale / dy[j+1];
-				else if(tagsY[I] == I+(nx-1))
-					LHost.values[num_elements] = (1.0-coeffsX[I])*coeffsY[I] /dt * scale / dy[j+1];
+				else if(tagsY[I] == I+(nx-1) && tagsX[I]==-1)
+					LHost.values[num_elements] = coeffsY[I] /dt * scale / dy[j+1];
 				else
 					LHost.values[num_elements] = 0.0;
 				num_elements++;
@@ -190,7 +194,7 @@ void DirectForcingSolver<device_memory>::generateL()
 				if(notBdryNode)
 					LHost.values[num_elements] = Cy1 * scale / dx[i];
 				else if(tagsY[I] == I-nx)
-					LHost.values[num_elements] = (1.0-coeffsX[I])*coeffsY[I] /dt * scale / dx[i];
+					LHost.values[num_elements] = coeffsY[I] /dt * scale / dx[i];
 				else
 					LHost.values[num_elements] = 0.0;
 				num_elements++;
@@ -202,8 +206,8 @@ void DirectForcingSolver<device_memory>::generateL()
 				LHost.column_indices[num_elements] = I - 1;
 				if(notBdryNode)
 					LHost.values[num_elements] = Cx1 * scale / dx[i-1];
-				else if(tagsX[I] == I-1)
-					LHost.values[num_elements] = coeffsY[I]*coeffsX[I] /dt * scale / dx[i-1];
+				else if(tagsX[I] == I-1 && tagsY[I]==-1)
+					LHost.values[num_elements] = coeffsX[I] /dt * scale / dx[i-1];
 				else
 					LHost.values[num_elements] = 0.0;
 				num_elements++;
@@ -223,8 +227,8 @@ void DirectForcingSolver<device_memory>::generateL()
 				LHost.column_indices[num_elements] = I + 1;
 				if(notBdryNode)
 					LHost.values[num_elements] = Cx0 * scale / dx[i+1];
-				else if(tagsX[I] == I+1)
-					LHost.values[num_elements] = coeffsY[I]*coeffsX[I] /dt * scale / dx[i+1];
+				else if(tagsX[I] == I+1 && tagsY[I]==-1)
+					LHost.values[num_elements] = coeffsX[I] /dt * scale / dx[i+1];
 				else
 					LHost.values[num_elements] = 0.0;
 				num_elements++;
@@ -237,7 +241,7 @@ void DirectForcingSolver<device_memory>::generateL()
 				if(notBdryNode)
 					LHost.values[num_elements] = Cy0 * scale / dx[i];
 				else if(tagsY[I] == I+nx)
-					LHost.values[num_elements] = (1.0-coeffsX[I])*coeffsY[I] /dt * scale / dx[i];
+					LHost.values[num_elements] = coeffsY[I] /dt * scale / dx[i];
 				else
 					LHost.values[num_elements] = 0.0;
 				num_elements++;

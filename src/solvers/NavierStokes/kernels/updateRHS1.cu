@@ -37,7 +37,11 @@ void updateRHS1X(real *rhs1, int nx, int ny, real dt, real *dx, int *tagsX, int 
 	
 	if( I < (nx-1)*ny )
 	{
-		rhs1[I] = (tagsX[I]==-1 && tagsY[I]==-1)*rhs1[I] + ( (tagsX[I]!=-1)*(1.0-coeffsX[I])*(1.0-coeffsY[I])*uvX[I] + (tagsY[I]!=-1)*coeffsX[I]*(1.0-coeffsY[I])*uvY[I] ) * 0.5*(dx[i+1]+dx[i]) / dt;
+		rhs1[I] = (tagsX[I]==-1 && tagsY[I]==-1)*rhs1[I] 
+		          + (
+		          	    (tagsX[I]!=-1)*((1.0-coeffsX[I])*uvX[I])
+		          	  + (tagsY[I]!=-1 && tagsX[I]==-1)*((1.0-coeffsY[I])*uvY[I])
+		          	) * 0.5*(dx[i+1]+dx[i]) / dt;
 	}
 }
 
@@ -50,7 +54,11 @@ void updateRHS1Y(real *rhs1, int nx, int ny, real dt, real *dy, int *tagsX, int 
 	
 	if( I < numU + nx*(ny-1) )
 	{
-		rhs1[I] = (tagsX[I]==-1 && tagsY[I]==-1)*rhs1[I] + ( (tagsX[I]!=-1)*(1.0-coeffsX[I])*(1.0-coeffsY[I])*uvX[I] + (tagsY[I]!=-1)*coeffsX[I]*(1.0-coeffsY[I])*uvY[I] ) * 0.5*(dy[j+1]+dy[j]) / dt;
+		rhs1[I] = (tagsX[I]==-1 && tagsY[I]==-1)*rhs1[I] 
+		          + (
+		          	    (tagsX[I]!=-1 && tagsY[I]==-1)*((1.0-coeffsX[I])*uvX[I])
+		          	  + (tagsY[I]!=-1)*((1.0-coeffsY[I])*uvY[I])
+		          	) * 0.5*(dy[j+1]+dy[j]) / dt;
 	}
 }
 

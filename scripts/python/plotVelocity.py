@@ -57,6 +57,17 @@ def main():
 	# calculate the mesh characteristics
 	nx, ny, dx, dy, xu, yu, xv, yv = readGridData(folder)
 
+	# calculate appropriate array boundaries
+	i_start = np.where(xu >= args.bl_x)[0][0]
+	i_end = np.where(xu <= args.tr_x)[0][-1]
+	j_start = np.where(yu >= args.bl_y)[0][0]
+	j_end = np.where(yu <= args.tr_y)[0][-1]
+
+	x_start = xu[i_start] - dx[i_start]
+	x_end   = xu[i_end] + dx[i_end+1]
+	y_start = yu[j_start] - dy[j_start]/2.
+	y_end   = yu[j_end] + dy[j_end]/2.
+
 	# generate a mesh grid for u- and v- velocities
 	Xu, Yu = np.meshgrid(xu, yu)
 	Xv, Yv = np.meshgrid(xv, yv)
@@ -72,7 +83,7 @@ def main():
 		plt.contour(Xu, Yu, u.reshape((ny, nx-1)),
 					levels=np.linspace(-args.u_lim, args.u_lim, 21))
 		plt.axis('equal')
-		plt.axis([args.bl_x, args.tr_x, args.bl_y, args.tr_y])
+		plt.axis([x_start, x_end, y_start, y_end])
 		plt.colorbar()
 		plt.savefig('%s/u%07d.png' % (folder, ite))
 		plt.clf()
@@ -81,7 +92,7 @@ def main():
 		plt.contour(Xv, Yv, v.reshape((ny-1, nx)), 
 					levels=np.linspace(-args.v_lim, args.v_lim, 21))
 		plt.axis('equal')
-		plt.axis([args.bl_x, args.tr_x, args.bl_y, args.tr_y])
+		plt.axis([x_start, x_end, y_start, y_end])
 		plt.colorbar()
 		plt.savefig('%s/v%07d.png' % (folder, ite))
 		plt.clf()

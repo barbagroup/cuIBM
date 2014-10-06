@@ -59,7 +59,11 @@ void DirectForcingSolver<host_memory>::updateRHS1()
 			//if(tagsX[I]!=-1 || tagsY[I]!=-1)
 			//	rhs1[I] = 0.0;
 
-			rhs1[I] = (tagsX[I]==-1 && tagsY[I]==-1)*rhs1[I] + ( (tagsX[I]!=-1)*(1.0-coeffsX[I])*(1.0-coeffsY[I])*uvX[I] + (tagsY[I]!=-1)*coeffsX[I]*(1.0-coeffsY[I])*uvY[I] ) * 0.5*(domInfo->dx[i+1]+domInfo->dx[i]) / dt;
+			rhs1[I] = (tagsX[I]==-1 && tagsY[I]==-1)*rhs1[I]
+			          + ( 
+			          	    (tagsX[I]!=-1)*(1.0-coeffsX[I])*uvX[I]
+			          	  + (tagsY[I]!=-1 && tagsX[I]==-1)*(1.0-coeffsY[I])*uvY[I]
+			          	) * 0.5*(domInfo->dx[i+1]+domInfo->dx[i]) / dt;
 		}
 	}
 	
@@ -75,7 +79,11 @@ void DirectForcingSolver<host_memory>::updateRHS1()
 			//if(tagsX[i]!=-1 || tagsY[i]!=-1)
 			//	rhs1[i] = 0.0;
 		
-			rhs1[I] = (tagsX[I]==-1 && tagsY[I]==-1)*rhs1[I] + ( (tagsX[I]!=-1)*(1.0-coeffsX[I])*(1.0-coeffsY[I])*uvX[I] + (tagsY[I]!=-1)*coeffsX[I]*(1.0-coeffsY[I])*uvY[I] ) * 0.5*(domInfo->dy[j+1]+domInfo->dy[j]) / dt;
+			rhs1[I] = (tagsX[I]==-1 && tagsY[I]==-1)*rhs1[I]
+			          + ( 
+			          	    (tagsX[I]!=-1 && tagsY[I]==-1)*((1.0-coeffsX[I])*uvX[I])
+			          	  + (tagsY[I]!=-1)*((1.0-coeffsY[I])*uvY[I])
+			          	) * 0.5*(domInfo->dy[j+1]+domInfo->dy[j]) / dt;
 		}
 	}
 }

@@ -9,7 +9,7 @@ import argparse
 
 import numpy as np
 import struct
-
+import sys
 
 def readSimulationParameters(folder):
 	"""Reads the parameters of the simulation.
@@ -26,8 +26,14 @@ def readSimulationParameters(folder):
 	dt -- time-increment.
 	"""
 	# open and read the info file
-	with open(folder+'/run.info', 'r') as infile:
-		option_list = infile.read().split()
+	try:
+		with open(folder+'/run.info', 'r') as infile:
+			option_list = infile.read().split()
+	except IOError:
+		print "While reading simulation parameters:"
+		print "File run.info not found!"
+		print "In folder: {}".format(folder)
+		sys.exit()
 	
 	# create the parser
 	parser = argparse.ArgumentParser()
@@ -134,5 +140,19 @@ def readVelocityData(folder, time_step, nx, ny, dx, dy):
 	
 	return u, v
 
+def readMask(folder, nx, ny):
+	"""Reads the mask.
+	
+	Arguments
+	---------
+	folder -- path of the simulation case.
+	nx, ny -- number of cells on the x- and y- directions.
+	"""
+	mask_file = '{}/mask.txt'.format(folder)
+	mask = np.loadtxt(mask_file)
+	n_u = (nx-1)*ny
+	return mask[:n_u], mask[n_u:]
+
 if __name__ == "__main__":
-	readGridData("../../cases/lidDrivenCavity/Re100")
+	#readGridData("../../cases/lidDrivenCavity/Re100")
+	readMask("cases/convergence/cavityRe100/DirectForcing/quad_T00.25_20_0.00050/20", 20, 20)

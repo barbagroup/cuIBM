@@ -717,8 +717,10 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 	bool outsideX, outsideY, flag;
 	int  bdryFlagX, bdryFlagY, k, l, I;
 	int  bottom, top, left, right;
-	real eps = 1.e-8;
+	real eps = 1.e-10;
 	real cfX = 0.0, cfY = 0.0, x, y;
+
+	std::ofstream mask((folder+"/mask.txt").c_str());
 	
 	// tag points at which u is evaluated
 	for(int j=0; j<ny; j++)
@@ -771,9 +773,9 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 				
 				// consider rays along the x-direction
 				// if the ray intersects the boundary segment (top endpoint must be strictly above the ray; bottom can be on or below the ray)
-				if (by[bottom]-eps < yu[j] && by[top]-eps > yu[j])
+				if (by[bottom]-eps < yu[j] && by[top]-eps > yu[j] && !flag)
 				{
-					// if the segments is not parallel to the x-direction
+					// if the segment is not parallel to the x-direction
 					if (fabs(by[l]-by[k]) > eps)
 					{
 						// calculate the point of intersection of the double ray with the boundary
@@ -812,6 +814,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 				// if the ray intersects the boundary segment (right endpoint must be strictly to the right of ray; left can be on or to the left of the ray)
 				if ( ( bx[left]-eps < xu[i] ) && ( bx[right]-eps > xu[i] ) && ( !flag ) ) // no need to do this part if flag is false
 				{
+					// if the segment is not parallel to the y-direction
 					if (fabs(bx[l]-bx[k]) > eps)
 					{
 						// calculate the point of intersection of the double ray with the boundary
@@ -823,13 +826,14 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 						// if the point of intersection coincides with the grid point
 						if (fabs(y-yu[j]) < eps)
 						{
-							outsideY   = true;
-							bdryFlagY = I;
-							cfY       = 0.0;
+							outsideY  = true; // then the point is considered to be outside the grid
+							bdryFlagY = I;    // the point is considered to be a forcing point, with index I
+							cfY       = 0.0;  // the coefficient for the linear interpolation during forcing
+							flag      = true; // flag is true when the point of intersection coincides with the grid point
 						}
 						// if the point of intersection lies to the top of the grid point
 				 		else if (y > yu[j]+eps)
-							outsideY = !outsideY;
+							outsideY = !outsideY; // then flip if inside or outside (start with true, i.e. outside)
 							
 						// if point of intersection is just below the concerned grid point
 						if (y>yu[j-1]+eps && y<yu[j]-eps)
@@ -858,6 +862,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 				tagsY[I]   = bdryFlagY;
 				coeffsY[I] = cfY;
 			}
+			mask << ((outsideX || outsideY)? 1 : 0) << std::endl;
 		}
 	}
 	
@@ -934,7 +939,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 				* top endpoint must be strictly above the ray
 				* bottom can be on or below the ray
 				*/
-				if (by[bottom]-eps < yv[j] && by[top]-eps > yv[j])
+				if (by[bottom]-eps < yv[j] && by[top]-eps > yv[j] && !flag)
 				{
 					// if the segment is not parallel to the ray
 					if (fabs(by[l]-by[k]) > eps)
@@ -1015,9 +1020,11 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 			{
 				tagsX[I]   = bdryFlagX;
 				coeffsX[I] = cfX;
-			} 
+			}
+			mask << ((outsideX || outsideY)? 1 : 0) << std::endl;
 		}
 	}
+	mask.close();
 	
 	file.open((folder+"/tagy.txt").c_str());
 	for(int j=0; j<ny-1; j++)
