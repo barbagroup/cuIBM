@@ -18,4 +18,5 @@ iterations
 run.info
 grid
 scripts/python/*.bdy
-cases/convergence/cavityRe100/*/*/*/*.txt
+*.txt
+!validation-data/*.txt

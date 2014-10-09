@@ -19,8 +19,9 @@ def main():
 	parser = argparse.ArgumentParser(description="Calculates the order of convergence.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument("-folder", dest="caseDir", help="folder in which the cases for different mesh sizes are present", default=os.path.expandvars("${CUIBM_DIR}/cases/convergence/cavityRe100/NavierStokes/20x20"))
 	parser.add_argument("-tolerance", dest="tolerance", help="folder in which the cases for different mesh sizes are present", default=1.e-8)
+	parser.add_argument("-interpolation_type", dest="interpolation_type", help="the type of interpolation used in the direct forcing method", default="linear")
 	parser.add_argument("-run_simulations", dest="runSimulations", help="run the cases if this flag is used", action='store_true', default=False)
-	parser.add_argument("-use_mask", dest="useMask", help="use only the values in the fluid region", action='store_true', default=False)
+	parser.add_argument("-remove_mask", dest="removeMask", help="use values from the entire domain", action='store_true', default=False)
 	args = parser.parse_args()
 
 	# list of folders from which velocity data is to be obtained
@@ -33,7 +34,8 @@ def main():
 			runCommand = [os.path.expandvars("${CUIBM_DIR}/bin/cuIBM"),
 							'-caseFolder', "{}/{}".format(args.caseDir, folder),
 							'-velocityTol', "{}".format(args.tolerance),
-							'-poissonTol', "{}".format(args.tolerance)]
+							'-poissonTol', "{}".format(args.tolerance),
+							'-interpolationType', "{}".format(args.interpolation_type)]
 			print " ".join(runCommand)
 			subprocess.call(runCommand)
 
@@ -67,7 +69,7 @@ def main():
 		# read velocity data
 		u, v = readVelocityData(folderPath, nt, nx, ny, dx, dy)
 
-		if(args.useMask):
+		if not args.removeMask:
 			# read mask
 			mask_u, mask_v = readMask(folderPath, nx, ny)
 			u[:] = u[:]*mask_u[:]
@@ -95,10 +97,10 @@ def main():
 			CS = ax.pcolor(X, Y, diffV, norm=LogNorm(vmin=1e-10, vmax=1))
 			fig.gca().set_aspect('equal', adjustable='box')
 			fig.colorbar(CS)
-			if args.useMask:
-				fig.savefig("{}/diff.png".format(args.caseDir))
-			else:
+			if args.removeMask:
 				fig.savefig("{}/diff_nomask.png".format(args.caseDir))
+			else:
+				fig.savefig("{}/diff.png".format(args.caseDir))
 	
 	orderOfConvergenceU = -np.polyfit(np.log10(meshSize), np.log10(errNormU), 1)[0]
 	orderOfConvergenceV = -np.polyfit(np.log10(meshSize), np.log10(errNormV), 1)[0]

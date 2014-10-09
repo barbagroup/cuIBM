@@ -124,6 +124,7 @@ void initialiseDefaultDB(parameterDB &DB)
 	DB[sim]["convTimeScheme"].set<timeScheme>(EULER_EXPLICIT);
 	DB[sim]["diffTimeScheme"].set<timeScheme>(EULER_IMPLICIT);
 	DB[sim]["ibmScheme"].set<ibmScheme>(TAIRA_COLONIUS);
+	DB[sim]["interpolationType"].set<interpolationType>(LINEAR);
 
 	// velocity solver
 	string solver = "velocitySolve";
@@ -249,6 +250,16 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			else 
 			if ( strcmp(argv[i],"SLL2")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(SLL2);
+		}
+		// interpolation type for Eulerian direct forcing methods
+		if ( strcmp(argv[i],"-interpolationType")==0 )
+		{
+			i++;
+			if ( strcmp(argv[i],"constant")==0 )
+				DB["simulation"]["interpolationType"].set<interpolationType>(CONSTANT);
+			else
+			if ( strcmp(argv[i],"linear")==0 )
+				DB["simulation"]["interpolationType"].set<interpolationType>(LINEAR);
 		}
 	}
 }

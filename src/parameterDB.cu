@@ -45,6 +45,7 @@ template bool property::get<bool>();
 template preconditionerType property::get<preconditionerType>();
 template timeScheme property::get<timeScheme>();
 template ibmScheme property::get<ibmScheme>();
+template interpolationType property::get<interpolationType>();
 template std::vector<body> *property::get<std::vector<body>*>();
 template boundaryCondition **property::get<boundaryCondition **>();
 
@@ -83,6 +84,7 @@ template void property::set(double v);
 template void property::set(bool v);
 template void property::set(timeScheme v);
 template void property::set(ibmScheme v);
+template void property::set(interpolationType v);
 template void property::set(preconditionerType v);
 template void property::set(boundaryCondition **v);
 template void property::set(std::vector<body> *v);

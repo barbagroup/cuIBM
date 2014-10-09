@@ -713,6 +713,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 
 	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
 	std::string folder = db["inputs"]["caseFolder"].get<std::string>();
+	interpolationType interpType = db["simualtion"]["interpolationType"].get<interpolationType>();
 
 	bool outsideX, outsideY, flag;
 	int  bdryFlagX, bdryFlagY, k, l, I;
@@ -734,7 +735,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 			tagsX[I] = -1;
 			tagsY[I] = -1;
 			coeffsX[I] = 0.0;
-			coeffsY[I] = 1.0;
+			coeffsY[I] = 0.0;
 			
 			// initial indices of the points on the body that define the segment under consideration
 			k = NSWithBody<memoryType>::B.totalPoints - 1;
@@ -855,12 +856,12 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 			if (outsideX && bdryFlagX>=0)
 			{
 				tagsX[I]   = bdryFlagX;
-				coeffsX[I] = cfX;
+				coeffsX[I] = (interpType==LINEAR)? cfX : 0.0;
 			}
 			if (outsideY && bdryFlagY>=0)
 			{					
 				tagsY[I]   = bdryFlagY;
-				coeffsY[I] = cfY;
+				coeffsY[I] = (interpType==LINEAR)? cfY : 0.0;
 			}
 			mask << ((outsideX || outsideY)? 1 : 0) << std::endl;
 		}
@@ -902,7 +903,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 			tagsX[I] = -1;
 			tagsY[I] = -1;
 			coeffsX[I] = 0.0;
-			coeffsY[I] = 1.0;
+			coeffsY[I] = 0.0;
 			outsideX = true;
 			outsideY = true;
 			k = NSWithBody<memoryType>::B.totalPoints - 1;
@@ -1014,12 +1015,12 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 			if (outsideY && bdryFlagY>=0)
 			{					
 				tagsY[I]   = bdryFlagY;
-				coeffsY[I] = cfY;
+				coeffsY[I] = (interpType==LINEAR)? cfY : 0.0;
 			}
 			if (outsideX && bdryFlagX>=0)
 			{
 				tagsX[I]   = bdryFlagX;
-				coeffsX[I] = cfX;
+				coeffsX[I] = (interpType==LINEAR)? cfX : 0.0;
 			}
 			mask << ((outsideX || outsideY)? 1 : 0) << std::endl;
 		}

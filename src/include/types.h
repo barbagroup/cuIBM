@@ -81,6 +81,12 @@ enum ibmScheme
 	SLL2            ///< SLL2
 };
 
+enum interpolationType
+{
+	CONSTANT,
+	LINEAR
+};
+
 /**
 * @enum  preconditionerType
 * @brief Specify the type of preconditioner
