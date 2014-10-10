@@ -10,12 +10,12 @@ class SLL0Solver : public SuLaiLinSolver<memoryType>
 {
 protected:
 	
-	void assembleRHS1();
-	void solveIntermediateVelocity();
+	virtual void assembleRHS1();
+	virtual void solveIntermediateVelocity();
 	
 public:
 	SLL0Solver(parameterDB *pDB=NULL, domain *dInfo=NULL);
-	std::string name()
+	virtual std::string name()
 	{
 		return "SLL0";
 	}

@@ -31,17 +31,17 @@ protected:
 	void generateE();
 	void generateF();
 	
-	void updateSolverState();
+	virtual void updateSolverState();
 	
 	void generateVelB();
 	void assembleRHS3();
 	
-	void calculateForce();
+	virtual void calculateForce();
 	
 public:
-	void initialise();
-	void writeData();
-	std::string name()
+	virtual void initialise();
+	virtual void writeData();
+	virtual std::string name()
 	{
 		return "Su, Lai & Lin";
 	}

@@ -26,6 +26,6 @@ protected:
 	void updateBodies();
 
 public:
-	void writeCommon();
-	void shutDown();
+	virtual void writeCommon();
+	virtual void shutDown();
 };

@@ -20,11 +20,11 @@ template <typename memoryType>
 class SLL1Solver : public SuLaiLinSolver<memoryType>
 {
 protected:
-	void solveIntermediateVelocity();
+	virtual void solveIntermediateVelocity();
 	
 public:
 	SLL1Solver(parameterDB *pDB=NULL, domain *dInfo=NULL);
-	std::string name()
+	virtual std::string name()
 	{
 		return "SLL1";
 	}

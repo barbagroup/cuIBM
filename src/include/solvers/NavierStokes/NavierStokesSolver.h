@@ -121,15 +121,6 @@ public:
 	*/
 	virtual void shutDown();
 	
-	// Factory methods are static (not entirely sure why)
-	/**
-	* @brief  Factory method to select the required IBM solver
-	* @return Pointer to an instance of the required dervied class.
-	* @param  paramDB Description
-	* @param  domInfo
-	*/
-	//	static NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domInfo);
-	
 	/**
 	* @brief Give the name of the current solver 
 	* @return String that describes the type of solver

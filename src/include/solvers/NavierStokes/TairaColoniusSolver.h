@@ -22,20 +22,20 @@ class TairaColoniusSolver : public NSWithBody<memoryType>
 private:
 	cusp::coo_matrix<int, real, memoryType> E, ET;
 	
-	void generateQT();
+	virtual void generateQT();
 	void updateQT();
-	void generateBC2();
+	virtual void generateBC2();
 	
-	void updateSolverState();
+	virtual void updateSolverState();
 	
-	void calculateForce();
+	virtual void calculateForce();
 	void generateE();
 	
 public:
 	TairaColoniusSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
-	void initialise();
-	void writeData();
-	std::string name()
+	virtual void initialise();
+	virtual void writeData();
+	virtual std::string name()
 	{
 		return "Taira & Colonius";
 	}

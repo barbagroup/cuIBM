@@ -32,24 +32,23 @@ protected:
 	//void tagPoints(real *bx, real *by);
 	void tagPoints(real *bx, real *by, real *uB, real *vB);
 
-	void generateA(real alpha);
-//	void updateA();
+	virtual void generateA(real alpha);
 
-	void generateL();
+	virtual void generateL();
 	void generateQT(int *QTRows, int *QTCols, real *QTVals){} // check this!
-	void generateQT();
+	virtual void generateQT();
 	void updateQ();
 	
-	void assembleRHS1();
+	virtual void assembleRHS1();
 	void updateRHS1();
 
-	void updateSolverState();
+	virtual void updateSolverState();
 	
 public:
 	DirectForcingSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
-	void initialise();
-	void writeData();
-	std::string name()
+	virtual void initialise();
+	virtual void writeData();
+	virtual std::string name()
 	{
 		return "Direct Forcing";
 	}

@@ -14,11 +14,11 @@ template <typename memoryType>
 class FadlunEtAlSolver : public DirectForcingSolver<memoryType>
 {
 private:
-	void generateQT();
+	virtual void generateQT();
 	
 public:
 	FadlunEtAlSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
-	std::string name()
+	virtual std::string name()
 	{
 		return "Fadlun et al.";
 	}
