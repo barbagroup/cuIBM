@@ -43,6 +43,8 @@ protected:
 	void updateRHS1();
 
 	virtual void updateSolverState();
+
+	void writeMassFluxInfo();
 	
 public:
 	DirectForcingSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);

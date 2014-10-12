@@ -4,6 +4,7 @@
 *.pyc
 *.png
 ._*
+massFlux
 
 # folders
 data/*
