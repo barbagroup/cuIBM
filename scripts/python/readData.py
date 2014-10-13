@@ -140,6 +140,23 @@ def readVelocityData(folder, time_step, nx, ny, dx, dy):
 	
 	return u, v
 
+def readPressureData(folder, time_step, nx, ny):
+	"""Reads the velocity data at a given time-step.
+
+	Arguments
+	---------
+	folder -- path of the simulation case.
+	time-step -- current time-step.
+	nx, ny -- number of cells on the x- and y- directions.
+	"""
+	lambda_file = '%s/%07d/lambda' % (folder, time_step)
+	fp = open(lambda_file, 'rb')
+	nlmbda = struct.unpack('i', fp.read(4))[0]             # length of vector lambda
+	lmbda = np.array(struct.unpack('d'*nlmbda, fp.read(8*nlmbda))) # store lambda
+	fp.close()
+
+	return lmbda[0:nx*ny]
+
 def readMask(folder, nx, ny):
 	"""Reads the mask.
 	

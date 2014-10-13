@@ -80,7 +80,6 @@ void DirectForcingSolver<memoryType>::writeMassFluxInfo()
 
 	cusp::array1d<real, memoryType> fluxes(nx*ny);
 	cusp::multiply(NavierStokesSolver<memoryType>::QT, NavierStokesSolver<memoryType>::q, fluxes);
-	real *fluxes_r = thrust::raw_pointer_cast(&(fluxes[0]));
 	int minPosition = thrust::min_element(fluxes.begin(), fluxes.end()) - fluxes.begin(),
 	    maxPosition = thrust::max_element(fluxes.begin(), fluxes.end()) - fluxes.begin();
 	real minFlux = fluxes[minPosition],

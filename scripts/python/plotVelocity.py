@@ -2,7 +2,7 @@
 
 # file: $CUIBM_DIR/scripts/python/plotVelocity.py
 # author: Anush Krishnan (anush@bu.edu), Olivier Mesnard (mesnardo@gwu.edu)
-# description: plot the contour of velocity
+# description: plot the contours of velocity
 
 
 import argparse
@@ -22,23 +22,15 @@ def read_inputs():
 						'all save points for a given simulation',
 						formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	# fill the parser with arguments
-	parser.add_argument('--folder', dest='folder', type=str, default='.',
+	parser.add_argument('-folder', dest='folder', type=str, default='.',
 						help='folder of the simulation')
-	parser.add_argument('--blx', dest='bl_x', type=float, default=-2.0,
-						help='x-coordinate of the bottom-left corner'
-							 'of the plot region')
-	parser.add_argument('--bly', dest='bl_y', type=float, default=-3.0,
-						help='y-coordinate of the bottom-left corner'
-							 'of the plot region')
-	parser.add_argument('--trx', dest='tr_x', type=float, default=4.0,
-						help='x-coordinate of the top-right corner'
-							 'of the plot region')
-	parser.add_argument('--try', dest='tr_y', type=float, default=3.0,
-						help='y-coordinate of the top-right corner'
-							 'of the plot region')
-	parser.add_argument('--ulim', dest='u_lim', type=float, default=1.0,
+	parser.add_argument("-xmin", type=float, dest="xmin", help="lower x-limit of the plotting region", default=-2.0)
+	parser.add_argument("-xmax", type=float, dest="xmax", help="upper x-limit of the plotting region", default=4.0)
+	parser.add_argument("-ymin", type=float, dest="ymin", help="lower y-limit of the plotting region", default=-3.0)
+	parser.add_argument("-ymax", type=float, dest="ymax", help="upper y-limit of the plotting region", default=3.0)
+	parser.add_argument('-ulim', dest='u_lim', type=float, default=1.0,
 						help='x-velocity cutoff on the plot')
-	parser.add_argument('--vlim', dest='v_lim', type=float, default=1.0,
+	parser.add_argument('-vlim', dest='v_lim', type=float, default=1.0,
 						help='y-velocity cutoff on the plot')
 	
 	return parser.parse_args()
@@ -58,10 +50,10 @@ def main():
 	nx, ny, dx, dy, xu, yu, xv, yv = readGridData(folder)
 
 	# calculate appropriate array boundaries
-	i_start = np.where(xu >= args.bl_x)[0][0]
-	i_end = np.where(xu <= args.tr_x)[0][-1]
-	j_start = np.where(yu >= args.bl_y)[0][0]
-	j_end = np.where(yu <= args.tr_y)[0][-1]
+	i_start = np.where(xu >= args.xmin)[0][0]
+	i_end = np.where(xu <= args.xmax)[0][-1]
+	j_start = np.where(yu >= args.ymin)[0][0]
+	j_end = np.where(yu <= args.ymax)[0][-1]
 
 	x_start = xu[i_start] - dx[i_start]
 	x_end   = xu[i_end] + dx[i_end+1]
