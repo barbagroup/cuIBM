@@ -167,7 +167,7 @@ void liftUnsteady(real *FyU, real *q, real *qOld, real *dx, real *dy, real dt,
 }
 
 __global__
-void forceX(real *f, real *q, real *rn, int *tagsX, int *tagsY,
+void forceX(real *f, real *q, real *rn, int *tags,
             int nx, int ny, real *dx, real *dy,
             real dt, real alpha, real nu)
 {
@@ -213,7 +213,7 @@ void forceX(real *f, real *q, real *rn, int *tagsX, int *tagsY,
 							/( (Dy[j][i]+Dy[j-1][i]) * (Dy[j-1][i] + 2.0*Dy[j][i] + Dy[j+1][i]) * (Dy[j][i]+Dy[j+1][i]) ) \
 					     );
 		
-		f[Gidx_x] = ( u[j][i]/dt - dTerm - rn[Gidx_x]/(0.5*(Dx[j][i]+Dx[j][i+1])) ) * (!(tagsX[Gidx_x]==-1 && tagsY[Gidx_x]==-1));
+		f[Gidx_x] = ( u[j][i]/dt - dTerm - rn[Gidx_x]/(0.5*(Dx[j][i]+Dx[j][i+1])) ) * (!(tags[Gidx_x]==-1));
 	}
 }
 

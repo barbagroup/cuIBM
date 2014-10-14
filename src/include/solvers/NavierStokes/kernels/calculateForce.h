@@ -88,7 +88,7 @@ void liftUnsteady(real *FyU, real *q, real *qOld, real *dx, real *dy, real dt,
                   int nx, int ny, int I, int J, int ncx, int ncy);
 
 __global__
-void forceX(real *f, real *q, real *rn, int *tagsX, int *tagsY,
+void forceX(real *f, real *q, real *rn, int *tags,
             int nx, int ny, real *dx, real *dy, 
             real dt, real alpha, real nu);
 

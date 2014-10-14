@@ -18,24 +18,13 @@ void DirectForcingSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP);
 	
 	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");
-/*	
+
 	tags.resize(numUV);
 	tagsD.resize(numUV);
 	coeffs.resize(numUV);
 	coeffsD.resize(numUV);
-*/
-	tagsX.resize(numUV);
-	tagsXD.resize(numUV);
-	tagsY.resize(numUV);
-	tagsYD.resize(numUV);
-	coeffsX.resize(numUV);
-	coeffsXD.resize(numUV);
-	coeffsY.resize(numUV);
-	coeffsYD.resize(numUV);
-	uvX.resize(numUV);
-	uvY.resize(numUV);
-	uvXD.resize(numUV);
-	uvYD.resize(numUV);
+	uv.resize(numUV);
+	uvD.resize(numUV);
 	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");
 	
 	tagPoints();

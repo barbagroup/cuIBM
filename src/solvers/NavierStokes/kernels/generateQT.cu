@@ -32,16 +32,6 @@ void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tags)
 	QVals[I] *= ( tags[QRows[I]] == -1 );
 }
 
-__global__ \
-void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tagsX, int *tagsY)
-{
-	int I = threadIdx.x + blockIdx.x*blockDim.x;
-	
-	if(I >= QSize) return;
-	
-	QVals[I] *= ( tagsX[QRows[I]] == -1 && tagsY[QRows[I]] == -1 );
-}
-
 void generateQT(int *QTRows, int *QTCols, real *QTVals, int nx, int ny)
 {
 	int  numU = (nx-1)*ny;

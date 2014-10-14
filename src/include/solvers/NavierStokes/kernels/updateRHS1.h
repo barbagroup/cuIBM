@@ -8,12 +8,9 @@ __global__
 void updateRHS1(real *rhs1, int numUV, int *tags);
 
 __global__
-void updateRHS1(real *rhs1, int numUV, int *tagsX, int *tagsY);
+void updateRHS1X(real *rhs1, int nx, int ny, real dt, real *dx, int *tags, real *cf, real *uv);
 
 __global__
-void updateRHS1X(real *rhs1, int nx, int ny, real dt, real *dx, int *tagsX, int *tagsY, real *cfX, real *cfY, real *uvX, real *uvY);
-
-__global__
-void updateRHS1Y(real *rhs1, int nx, int ny, real dt, real *dy, int *tagsX, int *tagsY, real *cfX, real *cfY, real *uvX, real *uvY);
+void updateRHS1Y(real *rhs1, int nx, int ny, real dt, real *dy, int *tags, real *cf, real *uv);
 
 } // end of namespace kernels
