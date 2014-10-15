@@ -1,4 +1,4 @@
-#include <solvers/NavierStokes/createSolver.h>
+#include "createSolver.h"
 
 template <typename memoryType>
 NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domInfo)

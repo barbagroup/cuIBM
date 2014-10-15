@@ -1,4 +1,4 @@
-#include <bodies.h>
+#include "bodies.h"
 
 template <typename memoryType>
 void bodies<memoryType>::initialise(parameterDB &db, domain &D)

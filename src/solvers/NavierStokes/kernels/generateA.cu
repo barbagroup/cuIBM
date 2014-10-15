@@ -1,4 +1,4 @@
-#include <solvers/NavierStokes/kernels/generateA.h>
+#include "generateA.h"
 
 namespace kernels
 {

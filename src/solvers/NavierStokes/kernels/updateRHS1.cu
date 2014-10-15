@@ -1,4 +1,4 @@
-#include <solvers/NavierStokes/kernels/updateRHS1.h>
+#include "updateRHS1.h"
 
 #define BSZ 16
 

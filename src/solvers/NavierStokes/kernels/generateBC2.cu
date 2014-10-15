@@ -1,4 +1,4 @@
-#include <solvers/NavierStokes/kernels/generateBC2.h>
+#include "generateBC2.h"
 namespace kernels
 {
 

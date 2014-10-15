@@ -28,9 +28,9 @@ protected:
 	cusp::coo_matrix<int, real, memoryType>
 	     M,
 	     Minv, 
-	     L,    ///< Discrete Laplacian 
+	     L,
 	     A, 
-	     QT,   ///< 
+	     QT,
 	     Q, 
 	     BN, 
 	     C;

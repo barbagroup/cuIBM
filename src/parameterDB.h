@@ -11,7 +11,7 @@
 #include <map>
 #include <sstream>
 #include <iostream>
-#include <boundaryCondition.h>
+#include "boundaryCondition.h"
 
 // generic property storage
 /**

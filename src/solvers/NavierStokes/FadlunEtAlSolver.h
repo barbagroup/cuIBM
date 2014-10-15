@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <solvers/NavierStokes/DirectForcingSolver.h>
+#include "DirectForcingSolver.h"
 /**
 * The direct forcing method proposed by Fadlun et al (2000)
 * with modifications by Kim et al (2001)

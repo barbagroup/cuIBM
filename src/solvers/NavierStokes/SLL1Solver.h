@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include <solvers/NavierStokes/SuLaiLinSolver.h>
+#include "SuLaiLinSolver.h"
 
 /**
 * @brief Immersed boundary method described by Taira and Colonius (2007)

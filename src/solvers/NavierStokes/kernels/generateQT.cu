@@ -1,4 +1,4 @@
-#include <solvers/NavierStokes/kernels/generateQT.h>
+#include "generateQT.h"
 
 __device__ \
 real dhRomaDeviceQT(real x, real h)

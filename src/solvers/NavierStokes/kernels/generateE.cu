@@ -1,4 +1,4 @@
-#include <solvers/NavierStokes/kernels/generateE.h>
+#include "generateE.h"
 
 __device__ \
 real dhRomaDeviceE(real x, real h)

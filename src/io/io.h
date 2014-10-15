@@ -5,11 +5,11 @@
 
 #pragma once
 
+#include <vector>
 #include <types.h>
 #include <domain.h>
 #include <parameterDB.h>
 #include <bodies.h>
-#include <vector>
 
 /**
 * @namespace io

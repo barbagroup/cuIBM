@@ -1,4 +1,4 @@
-#include <solvers/NavierStokes/kernels/generateRN.h>
+#include "generateRN.h"
 
 #define BSZ 16
 

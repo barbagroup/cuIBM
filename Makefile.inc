@@ -22,9 +22,9 @@ OPTS = -arch=compute_20 -O3
 PROJ_ROOT=$(dir $(lastword $(MAKEFILE_LIST)))
 
 # include the programs in these folders while compiling
-# src/include contains all the header files
 # external/yaml-cpp/include contains all the headers for the YAML parser
-INC = -I $(PROJ_ROOT)src/include -I $(PROJ_ROOT)external/yaml-cpp/include -I $(CUSP_DIR)
+# src/ contains some common header files
+INC = -I $(PROJ_ROOT)src -I $(PROJ_ROOT)external/yaml-cpp/include -I $(CUSP_DIR)
 
 # external libraries used
 LIBS = -L $(PROJ_ROOT)external/lib/ -lyaml-cpp

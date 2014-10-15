@@ -1,9 +1,9 @@
 #pragma once
 
-#include <types.h>
 #include <string>
 #include <sstream>
-#include <parameterDB.h>
+#include "types.h"
+#include "parameterDB.h"
 
 /**
 * @class boundaryCondition
@@ -17,7 +17,6 @@ public:
 
   boundaryCondition() : type(DIRICHLET), value(0) {}; 
   boundaryCondition(bcType _type, real _value) : type(_type), value(_value) {}; 
-
 
   /*const char *print()
   {

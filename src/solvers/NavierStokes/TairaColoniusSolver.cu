@@ -1,4 +1,4 @@
-#include <solvers/NavierStokes/TairaColoniusSolver.h>
+#include "TairaColoniusSolver.h"
 #include <sys/stat.h>
 
 template <typename memoryType>

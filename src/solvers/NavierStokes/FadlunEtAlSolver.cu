@@ -1,4 +1,4 @@
-#include <solvers/NavierStokes/FadlunEtAlSolver.h>
+#include "FadlunEtAlSolver.h"
 #include <sys/stat.h>
 
 template <typename memoryType>

@@ -9,7 +9,7 @@
 * 2007
 */
 
-#include <solvers/NavierStokes/SuLaiLinSolver.h>
+#include "SuLaiLinSolver.h"
 #include <sys/stat.h>
 
 template <typename memoryType>

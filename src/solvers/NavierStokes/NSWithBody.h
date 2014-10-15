@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <solvers/NavierStokes/NavierStokesSolver.h>
+#include "NavierStokesSolver.h"
 #include <bodies.h>
 
 /**

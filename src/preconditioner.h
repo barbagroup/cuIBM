@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <types.h>
+#include "types.h"
 #include <cusp/linear_operator.h>
 #include <cusp/csr_matrix.h>
 #include <cusp/precond/diagonal.h>

@@ -1,4 +1,4 @@
-#include <solvers/NavierStokes/kernels/calculateForce.h>
+#include "calculateForce.h"
 
 #define BSZ 16
 

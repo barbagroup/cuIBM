@@ -1,4 +1,4 @@
-#include <solvers/NavierStokes/DirectForcingSolver.h>
+#include "DirectForcingSolver.h"
 #include <sys/stat.h>
 #include <thrust/extrema.h>
 

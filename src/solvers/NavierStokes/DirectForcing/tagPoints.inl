@@ -738,12 +738,5 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 		}
 	}
 	file.close();
-	
-	file.open((folder+"/body.txt").c_str());
-	for(int k=0; k<totalPoints; k++)
-	{
-		file << bx[k] << '\t' << by[k] << std::endl;
-	}
-	file.close();
 }
 #endif

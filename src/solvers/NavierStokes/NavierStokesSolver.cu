@@ -1,4 +1,4 @@
-#include <solvers/NavierStokes/NavierStokesSolver.h>
+#include "NavierStokesSolver.h"
 #include <sys/stat.h>
 
 #include <io/io.h>

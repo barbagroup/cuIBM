@@ -1,5 +1,5 @@
-#include <solvers/NavierStokes/NSWithBody.h>
-#include <solvers/NavierStokes/kernels/calculateForce.h>
+#include "NSWithBody.h"
+#include "kernels/calculateForce.h"
 
 /// Initialise the bodies
 template <typename memoryType>

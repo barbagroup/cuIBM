@@ -25,7 +25,7 @@
 
 #include <thrust/device_ptr.h>
 
-#include <logger.h>
+#include "logger.h"
 
 /**
 * @enum  bcType

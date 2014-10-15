@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <solvers/NavierStokes/NSWithBody.h>
+#include "NSWithBody.h"
 /**
 * A fully discrete formulation of the direct forcing method
 * first proposed by Fadlun et al (2000) 
