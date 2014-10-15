@@ -64,4 +64,23 @@ class body
 			angVel = omega + pitchOscillation[0]*pitchOscillation[1]*cos(pitchOscillation[1]*Time + pitchOscillation[2]);
 		}
 	}
+
+	void reset()
+	{
+		X0[0]  = X0[1]  = 0.0;
+		Xc0[0] = Xc0[1] = 0.0;
+		Theta0 = 0.0;
+		Xc[0]  = Xc[1]  = 0.0;
+		Theta  = 0.0;
+		vel[0] = vel[1] = 0.0;
+		angVel = 0.0;
+		moving[0] = false;
+		moving[1] = false;
+		velocity[0] = 0.0;
+		velocity[1] = 0.0;
+		omega = 0.0;
+		xOscillation[0] = xOscillation[1] = xOscillation[2] = 0.0;
+		yOscillation[0] = yOscillation[1] = yOscillation[2] = 0.0;
+		pitchOscillation[0] = pitchOscillation[1] = pitchOscillation[2] = 0.0;
+	}
 };

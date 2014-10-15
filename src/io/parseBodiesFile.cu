@@ -11,48 +11,94 @@ using std::string;
 
 void operator >> (const YAML::Node &node, body &Body)
 {
-	// read in center of rotation
-	for (int i=0; i<2; i++)
-		node["centerRotation"][i] >> Body.X0[i];
-	
-	// initial configuration
-	for(int i=0; i<2; i++)
+	try
 	{
-		node["initialOffset"][i] >> Body.Xc0[i];
-		Body.Xc[i] = Body.Xc0[i];
+		// read in center of rotation
+		for (int i=0; i<2; i++)
+			node["centerRotation"][i] >> Body.X0[i];
 	}
-	
-	// initial angle of attack
-	node["angleOfAttack"] >> Body.Theta0;
-	Body.Theta0 *= M_PI/180.0;
-	Body.Theta = Body.Theta0;
-	
-	// moving flags
-	for (int i=0; i<2; i++)
-		node["moving"][i] >> Body.moving[i];
-	
-	// velocity
-	for (int i=0; i<2; i++)
-		node["velocity"][i] >> Body.velocity[i];
-
-	// omega
-	node["omega"] >> Body.omega;
-	
-	// oscillation in X
-	for (int i=0; i<3; i++)
-		node["xOscillation"][i] >> Body.xOscillation[i];
-	Body.xOscillation[1] *= 2*M_PI;
-	
-	// oscillation in Y
-	for (int i=0; i<3; i++)
-		node["yOscillation"][i] >> Body.yOscillation[i];
-	Body.yOscillation[1] *= 2*M_PI;
-	
-	// pitch oscillation
-	for (int i=0; i<3; i++)
-		node["pitchOscillation"][i] >> Body.pitchOscillation[i];
-	Body.pitchOscillation[0] *= M_PI/180.0;
-	Body.pitchOscillation[1] *= 2*M_PI;
+	catch(...)
+	{
+	}
+	try
+	{	
+		// initial configuration
+		for(int i=0; i<2; i++)
+		{
+			node["initialOffset"][i] >> Body.Xc0[i];
+			Body.Xc[i] = Body.Xc0[i];
+		}
+	}
+	catch(...)
+	{
+	}
+	try
+	{
+		// initial angle of attack
+		node["angleOfAttack"] >> Body.Theta0;
+		Body.Theta0 *= M_PI/180.0;
+		Body.Theta = Body.Theta0;
+	}
+	catch(...)
+	{
+	}
+	try
+	{
+		// moving flags
+		for (int i=0; i<2; i++)
+			node["moving"][i] >> Body.moving[i];
+	}
+	catch(...)
+	{
+	}
+	try
+	{
+		// velocity
+		for (int i=0; i<2; i++)
+			node["velocity"][i] >> Body.velocity[i];
+	}
+	catch(...)
+	{
+	}
+	try
+	{
+		// omega
+		node["omega"] >> Body.omega;
+	}
+	catch(...)
+	{
+	}
+	try
+	{
+		// oscillation in X
+		for (int i=0; i<3; i++)
+			node["xOscillation"][i] >> Body.xOscillation[i];
+		Body.xOscillation[1] *= 2*M_PI;
+	}
+	catch(...)
+	{
+	}
+	try
+	{
+		// oscillation in Y
+		for (int i=0; i<3; i++)
+			node["yOscillation"][i] >> Body.yOscillation[i];
+		Body.yOscillation[1] *= 2*M_PI;
+	}
+	catch(...)
+	{
+	}
+	try
+	{
+		// pitch oscillation
+		for (int i=0; i<3; i++)
+			node["pitchOscillation"][i] >> Body.pitchOscillation[i];
+		Body.pitchOscillation[0] *= M_PI/180.0;
+		Body.pitchOscillation[1] *= 2*M_PI;
+	}
+	catch(...)
+	{
+	}
 
 	// get the type of Body and read in appropriate details
 	string type;
@@ -119,7 +165,8 @@ void parseBodiesFile(std::string &bodiesFile, parameterDB &DB)
 	std::vector<body> *B = DB["flow"]["bodies"].get<std::vector<body> *>();
 	
 	for (int i=0; i<doc.size(); i++)
-	{  
+	{
+		Body.reset();
 		doc[i] >> Body;
 		B->push_back(Body);
 	}

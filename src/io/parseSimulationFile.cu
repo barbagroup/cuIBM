@@ -52,23 +52,71 @@ ibmScheme ibmSchemeFromString(string &s)
     return NAVIER_STOKES;
 }
 
+interpolationType interpolationTypeFromString(string &s)
+{
+  if (s == "CONSTANT")
+    return CONSTANT;
+  else if (s == "LINEAR")
+    return LINEAR;
+  else
+    return LINEAR;
+}
+
 void parseSimulation(const YAML::Node &node, parameterDB &DB)
 {
-	real dt = 0.02, scaleCV = 5.0;
-	int nt = 100, nsave = 100, startStep = 0;
-	string convSch = "EULER_EXPLICIT", diffSch = "EULER_IMPLICIT", ibmSch = "NAVIER_STOKES";
-	bool restart = false;
+	real   dt = 0.02,
+	       scaleCV = 2.0;
+	int    nt = 100,
+	       nsave = 100,
+	       startStep = 0;
+	string ibmSch = "NAVIER_STOKES",
+	       convSch = "EULER_EXPLICIT",
+	       diffSch = "EULER_IMPLICIT",
+	       interpType = "LINEAR";
+	bool   restart = false;
 
+
+	// read simulation parameters
 	node["dt"] >> dt;
-	node["scaleCV"] >> scaleCV;
 	node["nsave"] >> nsave;
 	node["nt"] >> nt;
-	node["restart"] >> restart;
-	node["startStep"] >> startStep;
 	node["ibmScheme"] >> ibmSch;
-	node["timeScheme"][0] >> convSch;
-	node["timeScheme"][1] >> diffSch;
-	node["ibmScheme"] >> ibmSch;
+	try
+	{
+		node["restart"] >> restart;
+	}
+	catch(...)
+	{
+	}
+	try
+	{
+		node["startStep"] >> startStep;
+	}
+	catch(...)
+	{
+	}
+	try
+	{
+		node["timeScheme"][0] >> convSch;
+		node["timeScheme"][1] >> diffSch;
+	}
+	catch(...)
+	{		
+	}
+	try
+	{
+		node["scaleCV"] >> scaleCV;
+	}
+	catch(...)
+	{
+	}
+	try
+	{
+		node["interpolationType"] >> interpType;
+	}
+	catch(...)
+	{
+	}
 
 	// write to DB
 	string dbKey = "simulation";
@@ -77,38 +125,47 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 	DB[dbKey]["nsave"].set<int>(nsave);
 	DB[dbKey]["nt"].set<int>(nt);
 	DB[dbKey]["restart"].set<bool>(restart);
-
+	DB[dbKey]["ibmScheme"].set<ibmScheme>(ibmSchemeFromString(ibmSch));
 	DB[dbKey]["convTimeScheme"].set<timeScheme>(timeSchemeFromString(convSch));
 	DB[dbKey]["diffTimeScheme"].set<timeScheme>(timeSchemeFromString(diffSch));
+	DB[dbKey]["interpolationType"].set<interpolationType>(interpolationTypeFromString(interpType));
 
-	DB[dbKey]["ibmScheme"].set<ibmScheme>(ibmSchemeFromString(ibmSch));
+	string system = "velocity", linearSolver = "CG", preconditioner = "DIAGONAL";
+	real tol = 1e-5;
+	int maxIter = 10000;
 
 	const YAML::Node &solvers = node["linearSolvers"];
 	for (unsigned int i=0; i<solvers.size(); i++)
 	{
-		string system = "velocity", solver = "CG", PC = "DIAGONAL";
-		real tol = 1e-5;
-		int maxIter = 10000;
+		// read linear solver options
 		solvers[i]["system"] >> system;
-		solvers[i]["solver"] >> solver;
-		solvers[i]["preconditioner"] >> PC;
-		solvers[i]["tolerance"] >> tol;
-		solvers[i]["maxIterations"] >> maxIter;
-
-		string dbKey;
-		if (system == "velocity")
-			dbKey = "velocitySolve";
-		else if (system == "Poisson")
-			dbKey = "PoissonSolve";
-		else
+		solvers[i]["solver"] >> linearSolver;
+		try
 		{
-			printf("[E]: Unknown solver system found in io::parseSimulation\n");
-			exit(0);
+			solvers[i]["preconditioner"] >> preconditioner;
+		}
+		catch(...)
+		{
+		}
+		try
+		{
+			solvers[i]["tolerance"] >> tol;
+		}
+		catch(...)
+		{
+		}
+		try
+		{
+			solvers[i]["maxIterations"] >> maxIter;
+		}
+		catch(...)
+		{
 		}
 
 		// write to DB
-		DB[dbKey]["solver"].set<string>(solver);
-		DB[dbKey]["preconditioner"].set<preconditionerType>(preconditionerTypeFromString(PC));
+		string dbKey = system + "Solve";
+		DB[dbKey]["solver"].set<string>(linearSolver);
+		DB[dbKey]["preconditioner"].set<preconditionerType>(preconditionerTypeFromString(preconditioner));
 		DB[dbKey]["tolerance"].set<real>(tol);
 		DB[dbKey]["maxIterations"].set<int>(maxIter);
 	}

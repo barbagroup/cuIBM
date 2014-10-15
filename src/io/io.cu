@@ -280,6 +280,20 @@ string stringFromPreconditionerType(preconditionerType s)
     return "Unrecognised preconditioner";
 }
 
+string stringFromTimeScheme(timeScheme s)
+{
+	if (s == EULER_EXPLICIT)
+		return "Explicit Euler Method";
+	else if (s == EULER_IMPLICIT)
+		return "Implicit Euler Method";
+	else if (s == ADAMS_BASHFORTH_2)
+		return "2nd Order Adams-Bashforth";
+	else if (s == CRANK_NICOLSON)
+		return "Crank-Nicolson";
+	else
+		return "Unknown";
+}
+
 // output
 void printSimulationInfo(parameterDB &DB, domain &D)
 {
@@ -288,6 +302,9 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	int  nt = DB["simulation"]["nt"].get<int>(),
 	     nsave = DB["simulation"]["nsave"].get<int>(),
 	     startStep = DB["simulation"]["startStep"].get<int>();
+	interpolationType interpType = DB["simulation"]["interpolationType"].get<interpolationType>();
+	ibmScheme ibmSchm = DB["simulation"]["ibmScheme"].get<ibmScheme>();
+
 
     std::cout << '\n';
 	
@@ -306,6 +323,18 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "startStep = " << startStep << '\n';
 	std::cout << "nt = "    << nt << '\n';
 	std::cout << "nsave = " << nsave << '\n';
+	std::cout << "Convection time scheme = " << stringFromTimeScheme(DB["simulation"]["convTimeScheme"].get<timeScheme>()) << '\n';
+	std::cout << "Diffusion time scheme  = " << stringFromTimeScheme(DB["simulation"]["diffTimeScheme"].get<timeScheme>()) << '\n';
+	if(ibmSchm==FADLUN_ET_AL || ibmSchm==DIRECT_FORCING)
+	{
+		std::cout << "Interpolation type: ";
+		switch(interpType)
+		{
+			case CONSTANT: std::cout << "Constant\n"; break;
+			case LINEAR  : std::cout << "Linear\n"; break;
+			default : std::cout << "Unknown\n"; break;
+		}
+	}
 	
 	std::cout << "\nVelocity Solve" << '\n';
 	std::cout << "--------------" << '\n';
@@ -338,7 +367,6 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 
 void printTimingInfo(Logger &logger)
 {
-	//logger.writeLegend();
 	logger.printAllTime();
 	std::cout << std::endl;
 }
@@ -381,7 +409,6 @@ void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, doma
 	out << caseFolder << '/' << std::setfill('0') << std::setw(7) << n;
 	path = out.str();
 
-	//createDirectory(path.c_str(), S_IRWXO);
 	mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
 	out.str("");
