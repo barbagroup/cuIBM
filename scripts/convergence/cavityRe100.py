@@ -18,11 +18,17 @@ def main():
 	# Command line options
 	parser = argparse.ArgumentParser(description="Calculates the order of convergence.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument("-folder", dest="caseDir", help="folder in which the cases for different mesh sizes are present", default=os.path.expandvars("${CUIBM_DIR}/cases/convergence/cavityRe100/NavierStokes/20x20"))
-	parser.add_argument("-tolerance", dest="tolerance", help="folder in which the cases for different mesh sizes are present", default=1.e-8)
-	parser.add_argument("-interpolation_type", dest="interpolation_type", help="the type of interpolation used in the direct forcing method", default="linear")
+	parser.add_argument("-tolerance", dest="tolerance", help="folder in which the cases for different mesh sizes are present", default="")
+	parser.add_argument("-interpolation_type", dest="interpolation_type", help="the type of interpolation used in the direct forcing method", default="")
 	parser.add_argument("-run_simulations", dest="runSimulations", help="run the cases if this flag is used", action='store_true', default=False)
 	parser.add_argument("-remove_mask", dest="removeMask", help="use values from the entire domain", action='store_true', default=False)
 	args = parser.parse_args()
+
+	commandOptions = []
+	if args.tolerance:
+		commandOptions.extend(["-velocityTol", "{}".format(args.tolerance), "-poissonTol", "{}".format(args.tolerance)])
+	if args.interpolation_type:
+		commandOptions.extend(["-interpolationType", "{}".format(args.interpolation_type)])
 
 	# list of folders from which velocity data is to be obtained
 	folders = sorted(os.walk(args.caseDir).next()[1], key=int)
@@ -32,10 +38,8 @@ def main():
 	if args.runSimulations:
 		for folder in folders:
 			runCommand = [os.path.expandvars("${CUIBM_DIR}/bin/cuIBM"),
-							'-caseFolder', "{}/{}".format(args.caseDir, folder),
-							'-velocityTol', "{}".format(args.tolerance),
-							'-poissonTol', "{}".format(args.tolerance),
-							'-interpolationType', "{}".format(args.interpolation_type)]
+							'-caseFolder', "{}/{}".format(args.caseDir, folder)]
+			runCommand.extend(commandOptions)
 			print " ".join(runCommand)
 			subprocess.call(runCommand)
 
