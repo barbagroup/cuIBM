@@ -14,6 +14,9 @@ import subprocess
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 
+def line():
+	print '-'*80
+
 def main():
 	# Command line options
 	parser = argparse.ArgumentParser(description="Calculates the order of convergence.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -46,11 +49,13 @@ def main():
 	# create arrays to store the required values
 	U = []
 	V = []
-	errNormU  = np.zeros(numFolders-1)
-	errNormV  = np.zeros(numFolders-1)
+	errL2NormU  = np.zeros(numFolders-1)
+	errL2NormV  = np.zeros(numFolders-1)
+	errLInfNormU  = np.zeros(numFolders-1)
+	errLInfNormV  = np.zeros(numFolders-1)
 	meshSize = np.zeros(numFolders-1, dtype=int)
 
-	print ' '
+	line()
 
 	stride = 1
 	for fIdx, folder in enumerate(folders):
@@ -86,8 +91,11 @@ def main():
 		stride = stride*3
 
 	for idx in range(numFolders-1):
-		errNormU[idx] = la.norm(U[idx+1]-U[idx])
-		errNormV[idx] = la.norm(V[idx+1]-V[idx])
+		errL2NormU[idx] = la.norm(U[idx+1]-U[idx])
+		errL2NormV[idx] = la.norm(V[idx+1]-V[idx])
+
+		errLInfNormU[idx] = la.norm(U[idx+1]-U[idx], np.inf)
+		errLInfNormV[idx] = la.norm(V[idx+1]-V[idx], np.inf)
 		
 		if idx==0:
 			h = initialMeshSpacing
@@ -106,24 +114,28 @@ def main():
 			else:
 				fig.savefig("{}/diff.png".format(args.caseDir))
 	
-	orderOfConvergenceU = -np.polyfit(np.log10(meshSize), np.log10(errNormU), 1)[0]
-	orderOfConvergenceV = -np.polyfit(np.log10(meshSize), np.log10(errNormV), 1)[0]
+	L2OrderOfConvergenceU = -np.polyfit(np.log10(meshSize), np.log10(errL2NormU), 1)[0]
+	L2OrderOfConvergenceV = -np.polyfit(np.log10(meshSize), np.log10(errL2NormV), 1)[0]
+
+	LInfOrderOfConvergenceU = -np.polyfit(np.log10(meshSize), np.log10(errLInfNormU), 1)[0]
+	LInfOrderOfConvergenceV = -np.polyfit(np.log10(meshSize), np.log10(errLInfNormV), 1)[0]
 	
-	print "\nMesh sizes: {}".format(meshSize)
-	
-	print "\nU:"
-	print "errNorms: {}".format(errNormU)
-	print "Convergence rates: {:.3f}, {:.3f}".format(np.log(errNormU[0]/errNormU[1])/np.log(3), np.log(errNormU[1]/errNormU[2])/np.log(3))
-	print "Linear fit convergence rate: {:.3f}".format(orderOfConvergenceU)
+	line()
+	print "Mesh sizes: {}".format(meshSize)
+	line()
+	print "U:"
+	print "errL2Norms: {}".format(errL2NormU)
+	print "Convergence rates: {:.3f}, {:.3f}".format(np.log(errL2NormU[0]/errL2NormU[1])/np.log(3), np.log(errL2NormU[1]/errL2NormU[2])/np.log(3))
+	print "Linear fit convergence rate: {:.3f}".format(L2OrderOfConvergenceU)
 
 	print "\nV:"
-	print "errNorms: {}".format(errNormV)
-	print "Convergence rates: {:.3f}, {:.3f}".format(np.log(errNormV[0]/errNormV[1])/np.log(3), np.log(errNormV[1]/errNormV[2])/np.log(3))
-	print "Linear fit convergence rate: {:.3f}\n".format(orderOfConvergenceV)
+	print "errL2Norms: {}".format(errL2NormV)
+	print "Convergence rates: {:.3f}, {:.3f}".format(np.log(errL2NormV[0]/errL2NormV[1])/np.log(3), np.log(errL2NormV[1]/errL2NormV[2])/np.log(3))
+	print "Linear fit convergence rate: {:.3f}".format(L2OrderOfConvergenceV)
 	
 	plt.clf()
-	plt.loglog(meshSize, errNormU, 'o-b', label="L-2 norm of difference in $u$\nOrder of convergence={:.3f}".format(orderOfConvergenceU))
-	plt.loglog(meshSize, errNormV, 'o-r', label="L-2 norm of difference in $v$\nOrder of convergence={:.3f}".format(orderOfConvergenceV))
+	plt.loglog(meshSize, errL2NormU, 'o-b', label="L-2 norm of difference in $u$\nOrder of convergence={:.3f}".format(L2OrderOfConvergenceU))
+	plt.loglog(meshSize, errL2NormV, 'o-r', label="L-2 norm of difference in $v$\nOrder of convergence={:.3f}".format(L2OrderOfConvergenceV))
 	plt.axis([1, 1e4, 1e-4, 100])
 	x  = np.linspace(1, 1e4, 2)
 	x1 = 1/x
@@ -134,7 +146,34 @@ def main():
 	ax = plt.axes()
 	ax.set_xlabel("Mesh size")
 	ax.set_ylabel("L-2 Norm of difference between solutions on consecutive grids")
-	plt.savefig("{}/convergence.png".format(args.caseDir))
+	plt.savefig("{}/L2Convergence.png".format(args.caseDir))
+
+	line()
+	print "U:"
+	print "errLInfNorms: {}".format(errLInfNormU)
+	print "Convergence rates: {:.3f}, {:.3f}".format(np.log(errLInfNormU[0]/errLInfNormU[1])/np.log(3), np.log(errLInfNormU[1]/errLInfNormU[2])/np.log(3))
+	print "Linear fit convergence rate: {:.3f}".format(LInfOrderOfConvergenceU)
+
+	print "\nV:"
+	print "errLInfNorms: {}".format(errLInfNormV)
+	print "Convergence rates: {:.3f}, {:.3f}".format(np.log(errLInfNormV[0]/errLInfNormV[1])/np.log(3), np.log(errLInfNormV[1]/errLInfNormV[2])/np.log(3))
+	print "Linear fit convergence rate: {:.3f}".format(LInfOrderOfConvergenceV)
+	line()
+
+	plt.clf()
+	plt.loglog(meshSize, errLInfNormU, 'o-b', label="L-Inf norm of difference in $u$\nOrder of convergence={:.3f}".format(LInfOrderOfConvergenceU))
+	plt.loglog(meshSize, errLInfNormV, 'o-r', label="L-Inf norm of difference in $v$\nOrder of convergence={:.3f}".format(LInfOrderOfConvergenceV))
+	plt.axis([1, 1e4, 1e-4, 100])
+	x  = np.linspace(1, 1e4, 2)
+	x1 = 1/x
+	x2 = 1/x**2
+	plt.loglog(x, x1, '--k', label="First-order convergence")
+	plt.loglog(x, x2, ':k', label="Second-order convergence")
+	plt.legend()
+	ax = plt.axes()
+	ax.set_xlabel("Mesh size")
+	ax.set_ylabel("L-Inf Norm of difference between solutions on consecutive grids")
+	plt.savefig("{}/LInfConvergence.png".format(args.caseDir))
 
 if __name__ == "__main__":
 	main()
