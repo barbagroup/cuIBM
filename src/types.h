@@ -84,7 +84,8 @@ enum ibmScheme
 enum interpolationType
 {
 	CONSTANT,
-	LINEAR
+	LINEAR,
+	QUADRATIC
 };
 
 /**

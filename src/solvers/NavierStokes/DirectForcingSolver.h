@@ -16,10 +16,12 @@ class DirectForcingSolver : public NSWithBody<memoryType>
 {
 protected:
 	// For the 1D interpolations
-	cusp::array1d<int, host_memory>    tags;
-	cusp::array1d<int, device_memory>  tagsD;
-	vecH coeffs, uv;
-	vecD coeffsD, uvD;
+	cusp::array1d<int, host_memory>    tags,  tags2;
+	cusp::array1d<int, device_memory>  tagsD, tags2D;
+	vecH coeffs, coeffs2;
+	vecD coeffsD, coeffs2D;
+	vecH uv;
+	vecD uvD;
 	
 	void tagPoints();
 	//void tagPoints(real *bx, real *by);

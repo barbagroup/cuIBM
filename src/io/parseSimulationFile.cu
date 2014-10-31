@@ -54,12 +54,14 @@ ibmScheme ibmSchemeFromString(string &s)
 
 interpolationType interpolationTypeFromString(string &s)
 {
-  if (s == "CONSTANT")
-    return CONSTANT;
-  else if (s == "LINEAR")
-    return LINEAR;
-  else
-    return LINEAR;
+	if (s == "CONSTANT")
+		return CONSTANT;
+	else if (s == "LINEAR")
+		return LINEAR;
+	else if (s == "QUADRATIC")
+		return QUADRATIC;
+	else
+		return LINEAR;
 }
 
 void parseSimulation(const YAML::Node &node, parameterDB &DB)

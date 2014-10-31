@@ -260,6 +260,9 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			else
 			if ( strcmp(argv[i],"linear")==0 )
 				DB["simulation"]["interpolationType"].set<interpolationType>(LINEAR);
+			else
+			if ( strcmp(argv[i],"quadratic")==0 )
+				DB["simulation"]["interpolationType"].set<interpolationType>(QUADRATIC);
 		}
 	}
 }
@@ -330,8 +333,9 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 		std::cout << "Interpolation type: ";
 		switch(interpType)
 		{
-			case CONSTANT: std::cout << "Constant\n"; break;
-			case LINEAR  : std::cout << "Linear\n"; break;
+			case CONSTANT : std::cout << "Constant\n"; break;
+			case LINEAR   : std::cout << "Linear\n"; break;
+			case QUADRATIC: std::cout << "Quadratic\n"; break;
 			default : std::cout << "Unknown\n"; break;
 		}
 	}

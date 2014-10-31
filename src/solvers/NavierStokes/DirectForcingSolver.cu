@@ -21,8 +21,12 @@ void DirectForcingSolver<memoryType>::initialise()
 
 	tags.resize(numUV);
 	tagsD.resize(numUV);
+	tags2.resize(numUV);
+	tags2D.resize(numUV);
 	coeffs.resize(numUV);
 	coeffsD.resize(numUV);
+	coeffs2.resize(numUV);
+	coeffs2D.resize(numUV);
 	uv.resize(numUV);
 	uvD.resize(numUV);
 	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");
