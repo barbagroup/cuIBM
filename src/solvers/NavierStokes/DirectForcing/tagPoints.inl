@@ -703,13 +703,13 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 			{					
 				tags[I]   = bdryFlagY;
 				coeffs[I] = (interpType==LINEAR)? cfY : 0.0;
-				uv[I]     = uvX;
+				uv[I]     = uvY;
 			}
 			else if (outsideX && bdryFlagX>=0)
 			{
 				tags[I]   = bdryFlagX;
 				coeffs[I] = (interpType==LINEAR)? cfX : 0.0;
-				uv[I]     = uvY;
+				uv[I]     = uvX;
 			}
 			mask << ((outsideX || outsideY)? 1 : 0) << std::endl;
 		}
