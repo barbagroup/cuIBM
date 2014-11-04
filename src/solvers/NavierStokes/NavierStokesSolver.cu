@@ -1,8 +1,8 @@
 /***************************************************************************//**
-* \file NavierStokesSolver.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the methods of the class \c NavierStokesSolver 
-*/
+ * \file NavierStokesSolver.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c NavierStokesSolver.
+ */
 
 
 #include "NavierStokesSolver.h"
@@ -15,8 +15,8 @@
 //##############################################################################
 
 /**
-* \brief Initialize stuff required for the simulation
-*/
+ * \brief Initializes stuff required for the simulation.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialise()
 {
@@ -34,8 +34,8 @@ void NavierStokesSolver<memoryType>::initialise()
 }
 
 /**
-* \bried Initialize stuff common to all Immersed Boundary Method solvers
-*/
+ * \bried Initializes stuff common to all Immersed Boundary Method solvers.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialiseCommon()
 {
@@ -69,11 +69,11 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 }
 
 /**
-* \brief Initialize all required arrays
-*
-* \param numQ total number velocity (or flux) variables
-* \param numLambda number of pressure variables + twice the number of body force variables
-*/
+ * \brief Initializes all required arrays.
+ *
+ * \param numQ total number velocity (or flux) variables
+ * \param numLambda number of pressure variables + twice the number of body force variables
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 {	
@@ -115,8 +115,8 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 }
 
 /**
-* \brief Set the initial value of all the fluxes in the flow field on the host
-*/
+ * \brief Sets the initial value of all the fluxes in the flow field on the host.
+ */
 template <>
 void NavierStokesSolver<host_memory>::initialiseFluxes()
 {
@@ -126,8 +126,8 @@ void NavierStokesSolver<host_memory>::initialiseFluxes()
 }
 
 /**
-* \brief Set the initial value of all the fluxes in the flow field on the device
-*/
+ * \brief Sets the initial value of all the fluxes in the flow field on the device.
+ */
 template<>
 void NavierStokesSolver <device_memory>::initialiseFluxes()
 {
@@ -143,10 +143,10 @@ void NavierStokesSolver <device_memory>::initialiseFluxes()
 }
 
 /**
-* \brief Set the initial value of all the fluxes in the flow field
-*
-* \param q array that contains the fluxes
-*/
+ * \brief Sets the initial value of all the fluxes in the flow field.
+ *
+ * \param q array that contains the fluxes
+ */
 template <typename memoryType>
 void NavierStokesSolver <memoryType>::initialiseFluxes(real *q)
 {
@@ -181,8 +181,8 @@ void NavierStokesSolver <memoryType>::initialiseFluxes(real *q)
 }
 
 /**
-* \brief Set the initial values of the boundary velocities
-*/
+ * \brief Sets the initial values of the boundary velocities.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 {
@@ -227,8 +227,8 @@ void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 //##############################################################################
 
 /**
-* \brief Calculate all the variables at the next time step
-*/
+ * \brief Calculates all the variables at the next time step.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::stepTime()
 {
@@ -256,8 +256,8 @@ void NavierStokesSolver<memoryType>::stepTime()
 }
 
 /**
-* \brief Doing nothing !
-*/
+ * \brief Doing nothing !
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::updateSolverState()
 {
@@ -267,8 +267,8 @@ void NavierStokesSolver<memoryType>::updateSolverState()
 }
 
 /**
-* \brief Doing nothing !
-*/
+ * \brief Doing nothing !
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::updateQ(real gamma)
 {
@@ -277,18 +277,18 @@ void NavierStokesSolver<memoryType>::updateQ(real gamma)
 }
 
 /**
-* \brief Doing nothing !
-*/
+ * \brief Doing nothing !
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::updateBoundaryConditions()
 {
 }
 
 /**
-* \brief Condition required to bring the simulation to a halt
-*
-* \return a Boolean to continue or stop the simulation
-*/
+ * \brief Evaluates the condition required to bring the simulation to a halt.
+ *
+ * \return a Boolean to continue or stop the simulation
+ */
 template <typename memoryType>
 bool NavierStokesSolver<memoryType>::finished()
 {
@@ -301,8 +301,8 @@ bool NavierStokesSolver<memoryType>::finished()
 //##############################################################################
 
 /**
-* \brief Assemble all the required matrices
-*/
+ * \brief Assembles all the required matrices.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::assembleMatrices()
 {
@@ -327,8 +327,8 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 }
 
 /**
-* \brief Computes the Nth-order Taylor expansion of the matrix \c A
-*/
+ * \brief Computes the Nth-order Taylor expansion of the matrix \c A.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::generateBN()
 {
@@ -349,8 +349,8 @@ void NavierStokesSolver<memoryType>::generateBN<3>()
 }*/
 
 /**
-* \brief Compute the matrix product \f$ C = Q^T B^N Q \f$ on the device
-*/
+ * \brief Computes the matrix product \f$ C = Q^T B^N Q \f$ on the device.
+ */
 template <>
 void NavierStokesSolver<device_memory>::generateC()
 {
@@ -365,8 +365,8 @@ void NavierStokesSolver<device_memory>::generateC()
 }
 
 /**
-* \brief Compute the matrix product \f$ C = Q^T B^N Q \f$ on the host
-*/
+ * \brief Computes the matrix product \f$ C = Q^T B^N Q \f$ on the host.
+ */
 template <>
 void NavierStokesSolver<host_memory>::generateC()
 {
@@ -386,8 +386,8 @@ void NavierStokesSolver<host_memory>::generateC()
 //##############################################################################
 
 /**
-* \brief Assemble the right hand-side of the system for the intermediate flux variables
-*/
+ * \brief Assembles the right hand-side of the system for the intermediate flux variables.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::assembleRHS1()
 {
@@ -399,8 +399,8 @@ void NavierStokesSolver<memoryType>::assembleRHS1()
 }
 
 /**
-* \brief Assemble the right hand-side of the system for the pressure variables and body forces
-*/
+ * \brief Assembles the right hand-side of the system for the pressure variables and body forces.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::assembleRHS2()
 {
@@ -417,8 +417,8 @@ void NavierStokesSolver<memoryType>::assembleRHS2()
 //##############################################################################
 
 /**
-* \brief Solve for the intermediate flux variables
-*/
+ * \brief Solves for the intermediate flux variables.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 {
@@ -446,8 +446,8 @@ void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 }
 
 /**
-* \brief Solve for the pressure variables and body forces
-*/
+ * \brief Solves for the pressure variables and body forces.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::solvePoisson()
 {
@@ -474,8 +474,8 @@ void NavierStokesSolver<memoryType>::solvePoisson()
 }
 
 /**
-* \brief Projection of the intermediate fluxes onto the divergence-free field
-*/
+ * \brief Projection of the intermediate fluxes onto the divergence-free field.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::projectionStep()
 {
@@ -493,8 +493,8 @@ void NavierStokesSolver<memoryType>::projectionStep()
 //##############################################################################
 
 /**
-* \brief Write common data to files
-*/
+ * \brief Writes common data to files.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::writeCommon()
 {
@@ -512,8 +512,8 @@ void NavierStokesSolver<memoryType>::writeCommon()
 }
 
 /**
-* \brief Write data to files
-*/
+ * \brief Writes data to files.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::writeData()
 {
@@ -525,8 +525,8 @@ void NavierStokesSolver<memoryType>::writeData()
 }
 
 /**
-* \brief Perform necessary tasks to end the simulation
-*/
+ * \brief Performs necessary tasks to end the simulation.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::shutDown()
 {
@@ -535,11 +535,11 @@ void NavierStokesSolver<memoryType>::shutDown()
 }
 
 /**
-* \brief Constructor of the class \c NavierStokesSolver
-*
-* \param pDB database that contains all the simulation parameters
-* \param dInfo information related to the computational grid
-*/
+ * \brief Constructor of the class \c NavierStokesSolver.
+ *
+ * \param pDB database that contains all the simulation parameters
+ * \param dInfo information related to the computational grid
+ */
 template <typename memoryType>
 NavierStokesSolver<memoryType>::NavierStokesSolver(parameterDB *pDB, domain *dInfo)
 {

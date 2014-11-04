@@ -1,16 +1,18 @@
 /***************************************************************************//**
-* \file generateA.inl
-* \author Krishnan, A. (anus@bu.edu)
-* \brief Add the mass matrix to the discrete Laplacian matrix
-*/
+ * \file generateA.inl
+ * \author Anush Krishnan (anus@bu.edu)
+ * \brief Adds the mass matrix to the discrete Laplacian matrix.
+ */
+
 
 #include <solvers/NavierStokes/kernels/generateA.h>
 
+
 /**
-* \brief Add the mass matrix to the discrete Laplacian matrix on the device
-*
-* \param alpha implicit coefficient of the diffusive scheme
-*/
+ * \brief Adds the mass matrix to the discrete Laplacian matrix on the device.
+ *
+ * \param alpha implicit coefficient of the diffusive scheme
+ */
 template <>
 void NavierStokesSolver<device_memory>::generateA(real alpha)
 {
@@ -41,10 +43,10 @@ void NavierStokesSolver<device_memory>::generateA(real alpha)
 }
 
 /**
-* \brief Add the mass matrix to the discrete Laplacian matrix on the host
-*
-* \param alpha implicit coefficient of the diffusive scheme
-*/
+ * \brief Adds the mass matrix to the discrete Laplacian matrix on the host.
+ *
+ * \param alpha implicit coefficient of the diffusive scheme
+ */
 template <>
 void NavierStokesSolver<host_memory>::generateA(real alpha)
 {

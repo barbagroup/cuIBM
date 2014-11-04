@@ -1,15 +1,15 @@
 /***************************************************************************//**
-* \file generateL.inl
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Generate the discrete Laplacian matrix
-*/
+ * \file generateL.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Generates the discrete Laplacian matrix.
+ */
 
 /**
-* \brief Generate the discrete Laplacian matrix on the host.
-*
-* The viscosity is included in the matrix.
-*
-*/
+ * \brief Generates the discrete Laplacian matrix on the host.
+ *
+ * The viscosity is included in the matrix.
+ *
+ */
 template <>
 void NavierStokesSolver<host_memory>::generateL()
 {
@@ -174,11 +174,11 @@ void NavierStokesSolver<host_memory>::generateL()
 }
 
 /**
-* \brief Generate the discrete Laplacian matrix on the device.
-*
-* The viscosity is included in the matrix.
-*
-*/
+ * \brief Generates the discrete Laplacian matrix on the device.
+ *
+ * The viscosity is included in the matrix.
+ *
+ */
 template <>
 void NavierStokesSolver<device_memory>::generateL()
 {

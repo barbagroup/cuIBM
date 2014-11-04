@@ -1,8 +1,9 @@
 /***************************************************************************//**
-* \file NavierStokesSolver.h
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Declaration of the class \c NavierStokesSolver
-*/
+ * \file NavierStokesSolver.h
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Declaration of the class \c NavierStokesSolver.
+ */
+
 
 #pragma once
 
@@ -13,10 +14,11 @@
 #include <parameterDB.h>
 #include <preconditioner.h>
 
+
 /**
-* \class NavierStokesSolver
-* \brief Solve the Navier-Stokes equations in a rectangular domain
-*/
+ * \class NavierStokesSolver
+ * \brief Solves the Navier-Stokes equations in a rectangular domain.
+ */
 template <typename memoryType>
 class NavierStokesSolver
 {
@@ -68,169 +70,169 @@ protected:
 	// Methods are defined as virtual when they are redefined in a derived class with the same name.
 	
 	/**
-	* \brief Initialize stuff common to all Immersed Boundary Method solvers
-	*/
+	 * \brief Initializes stuff common to all Immersed Boundary Method solvers.
+	 */
 	void initialiseCommon();
 	
 	/**
-	* \brief Initialize all required arrays
-	*/
+	 * \brief Initializes all required arrays.
+	 */
 	void initialiseArrays(int numQ, int numLambda);
 	
 	/**
-	* \brief Set the initial value of all the fluxes in the flow field
-	*/
+	 * \brief Sets the initial value of all the fluxes in the flow field.
+	 */
 	virtual void initialiseFluxes();
 	
 	/**
-	* \brief Set the initial value of all the fluxes in the flow field
-	*/
+	 * \brief Sets the initial value of all the fluxes in the flow field.
+	 */
 	virtual void initialiseFluxes(real *q);
 	
 	/**
-	* \brief Set the initial values of the boundary velocities
-	*/
+	 * \brief Sets the initial values of the boundary velocities.
+	 */
 	void initialiseBoundaryArrays();
 	
 	/**
-	* \brief Assemble all the required matrices
-	*/
+	 * \brief Assembles all the required matrices.
+	 */
 	void assembleMatrices();
 
 	/**
-	* \brief Generate the mass matrix and its inverse
-	*/
+	 * \brief Generates the mass matrix and its inverse.
+	 */
 	void generateM();
 
 	/**
-	* \brief Generate the discrete Laplacian matrix
-	*/
+	 * \brief Generates the discrete Laplacian matrix.
+	 */
 	virtual void generateL();
 
 	/**
-	* \brief Add the mass matrix to the discrete Laplacian matrix
-	*/
+	 * \brief Adds the mass matrix to the discrete Laplacian matrix.
+	 */
 	virtual void generateA(real alpha);
 
 	/**
-	* \brief Compute the Nth-order Taylor expansion of the matrix \c A
-	*/
+	 * \brief Computes the Nth-order Taylor expansion of the matrix \c A.
+	 */
 	void generateBN();	
 
 	/**
-	* \brief Generate the matrix containing the discrete divergence operator
-	*/
+	 * \brief Generates the matrix containing the discrete divergence operator.
+	 */
 	virtual void generateQT();
 
 	/**
-	* \brief Doing nothing !
-	*/
+	 * \brief Doing nothing !
+	 */
 	void updateQ(real gamma);
 	
 	/**
-	* \brief Compute the matrix product \f$ C = Q^T B^N Q \f$
-	*/
+	 * \brief Computes the matrix product \f$ C = Q^T B^N Q \f$.
+	 */
 	void generateC();
 
 	/**
-	* \brief Generate explicit terms in the momentum equation
-	*/
+	 * \brief Generates explicit terms in the momentum equation.
+	 */
 	void generateRN();
 
 	/**
-	* \brief Calculate explicit flux terms
-	*/
+ 	 * \brief Calculates explicit flux terms.
+	 */
 	void calculateExplicitQTerms();
 
 	/**
-	* \brief Calculate explicit lambda terms
-	*/
+	 * \brief Calculates explicit lambda terms.
+	 */
 	void calculateExplicitLambdaTerms();
 	
 	/**
-	* \brief Generate the inhomogenous boundary conditions from the discrete Laplacian operator
-	*/
+	 * \brief Generates the inhomogenous boundary conditions from the discrete Laplacian operator.
+	 */
 	virtual void generateBC1();
 
 	/**
-	* \brief Generate the inhomogeneous boundary conditions from the discrete continuity equation
-	*/
+	 * \brief Generates the inhomogeneous boundary conditions from the discrete continuity equation.
+	 */
 	virtual void generateBC2();
 
 	/**
-	* \brief Assemble the right hand-side of the system for the intermediate flux variables
-	*/
+	 * \brief Assembles the right hand-side of the system for the intermediate flux variables.
+	 */
 	virtual void assembleRHS1();
 
 	/**
-	* \brief Assemble the right hand-side of the system for the pressure variables and body forces
-	*/
+	 * \brief Assembles the right hand-side of the system for the pressure variables and body forces.
+	 */
 	void assembleRHS2();
 
 	/**
-	* \brief Solve for the intermediate flux variables
-	*/
+	 * \brief Solves for the intermediate flux variables.
+	 */
 	virtual void solveIntermediateVelocity();
 
 	/**
-	* \brief Solve for the pressure varaibles and body forces
-	*/
+	 * \brief Solves for the pressure varaibles and body forces.
+	 */
 	void solvePoisson();
 
 	/**
-	* \brief Projection of the intermediate fluxes onto the divergence-free field
-	*/
+	 * \brief Projection of the intermediate fluxes onto the divergence-free field.
+	 */
 	virtual void projectionStep();
 
 	/**
-	* \brief Doing nothing !
-	*/
+	 * \brief Doing nothing !
+	 */
 	void updateBoundaryConditions();
 
 	/**
-	* \brief Doing nothing !
-	*/
+	 * \brief Doing nothing !
+	 */
 	virtual void updateSolverState();
 
 public:
 	/**
-	* \brief Constructor of the class \c NavierStokesSolver
-	*/
+	 * \brief Constructor of the class \c NavierStokesSolver.
+	 */
 	NavierStokesSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
 
 	/**
-	* \brief Initialize stuff required for the simulation
-	*/
+	 * \brief Initializes stuff required for the simulation.
+	 */
 	virtual void initialise();
 	
 	/**
-	* \brief Calculate all the variables at the next time step
-	*/
+	 * \brief Calculates all the variables at the next time step.
+	 */
 	void stepTime();
 	
 	/**
-	* \brief Write common data to files
-	*/
+	 * \brief Writes common data to files.
+	 */
 	virtual void writeCommon();
 	
 	/**
-	* \brief Write data to files
-	*/
+	 * \brief Writes data to files.
+	 */
 	virtual void writeData();
 	
 	/**
-	* \brief Condition required to bring the simulation to a halt.
-	*/
+	 * \brief Evaluates the condition required to bring the simulation to a halt.
+	 */
 	bool finished();
 	
 	/**
-	* \brief Perform necessary tasks to end the simulation
-	*/
+	 * \brief Performs necessary tasks to end the simulation.
+	 */
 	virtual void shutDown();
 	
 	/**
-	* \brief Give the name of the current solver 
-	*/
+	 * \brief Returns the name of the current solver.
+	 */
 	virtual std::string name()
 	{
 		return "Navier-Stokes";
