@@ -1,8 +1,8 @@
 /***************************************************************************//**
-* \file domain.h
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the class \c domain
-*/
+ * \file domain.h
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Definition of the class \c domain.
+ */
 
 
 #pragma once
@@ -11,9 +11,9 @@
 
 
 /**
-* \class domain
-* \brief Store the mesh grid information
-*/
+ * \class domain
+ * \brief Stores information about the computational grid.
+ */
 class domain
 {
 public:
