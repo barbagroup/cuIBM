@@ -1,25 +1,19 @@
 /***************************************************************************//**
-* \file bodies.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the class \c bodies
-*/
+ * \file bodies.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c bodies.
+ */
 
 
 #include "bodies.h"
 
 
 /**
-* \brief Initialize the arrays in the class with information from \c body instances.
-*
-* Information regarding the coordinates of the body points and motion of the bodies
-* is stored on the host as an array of instances of the class \c body.
-* This function transfers that information to arrays on the device,
-* where they are stored as a structure of arrays.
-* This makes computation more efficient.
-*
-* \param db database that contains all the simulation parameters
-* \param D information about the computational grid
-*/
+ * \brief Stores initial position and velocity of each body in the flow.
+ *
+ * \param db database that contains all the simulation parameters
+ * \param D information about the computational grid
+ */
 template <typename memoryType>
 void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 {
@@ -103,15 +97,15 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 }
 
 /**
-* \brief Calculate the indices of the cells in which the boundary points are located.
-*
-* It calculates the index of the x-coordinate and the index of the y-coordinate
-* of the bottom-left node of the containing cell.
-* This information is useful when transferring data between the boundary points
-* and the computational grid.
-*
-* \param D information about the computational grid
-*/
+ * \brief Stores index of each cell that contains a boundary point.
+ *
+ * It calculates the index of the x-coordinate and the index of the y-coordinate
+ * of the bottom-left node of each cell that contains a boundary point.
+ * This information is useful when transferring data between the boundary points
+ * and the computational grid.
+ *
+ * \param D information about the computational grid
+ */
 template <typename memoryType>
 void bodies<memoryType>::calculateCellIndices(domain &D)
 {
@@ -157,11 +151,16 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 }
 
 /**
-* \brief Calculate the bounding box of each body
-*
-* \param db database that contains all the simulation parameters
-* \param D information about the computational grid
-*/
+ * \brief Calculates indices of the bounding box of each body in the flow.
+ *
+ * First the bounding box is scaled by a coefficient stored in the database.
+ * Then, indices of the x-coordinate and y-coordinate of the bottom left cell
+ * of the bounding box are stored. Finally, the number of cells in the x- and y-
+ * directions are calculated.
+ *
+ * \param db database that contains all the simulation parameters
+ * \param D information about the computational grid
+ */
 template <typename memoryType>
 void bodies<memoryType>::calculateBoundingBoxes(parameterDB &db, domain &D)
 {
@@ -206,20 +205,20 @@ void bodies<memoryType>::calculateBoundingBoxes(parameterDB &db, domain &D)
 }
 
 /**
-* \brief Update the location of the body points.
-*
-* This is done using the formulae:
-*
-* \f$ x_{i,m} = X^c_m + (X_{i,m} - X^0_m) \cos\theta - (Y_{i,m} - Y^0_m) \sin\theta \f$
-*
-* and
-*
-* \f$ y_{i,m} = Y^c_m + (X_{i,m} - X^0_m) \sin\theta + (Y_{i,m} - Y^0_m) \cos\theta \f$
-*
-* \param db database that contains all the simulation parameters
-* \param D information about the computational grid
-* \param Time the time
-*/
+ * \brief Updates position and velocity of each body point and its neighbor.
+ *
+ * This is done using the formulae:
+ *
+ * \f$ x_{i,m} = X^c_m + (X_{i,m} - X^0_m) \cos\theta - (Y_{i,m} - Y^0_m) \sin\theta \f$
+ *
+ * and
+ *
+ * \f$ y_{i,m} = Y^c_m + (X_{i,m} - X^0_m) \sin\theta + (Y_{i,m} - Y^0_m) \cos\theta \f$
+ *
+ * \param db database that contains all the simulation parameters
+ * \param D information about the computational grid
+ * \param Time the time
+ */
 template <typename memoryType>
 void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 {
@@ -280,11 +279,11 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 }
 
 /**
-* \brief Write the body coordinates into a file (on the host)
-*
-* \param caseFolder folder of the simulation
-* \param timeStep time-step of the simulation
-*/
+ * \brief Writes body coordinates into a file (on the host).
+ *
+ * \param caseFolder directory of the simulation
+ * \param timeStep time-step of the simulation
+ */
 template <>
 void bodies<host_memory>::writeToFile(std::string &caseFolder, int timeStep)
 {
@@ -294,11 +293,11 @@ void bodies<host_memory>::writeToFile(std::string &caseFolder, int timeStep)
 }
 
 /**
-* \brief Write the body coordinates into a file (on the device)
-*
-* \param caseFolder folder of the simulation
-* \param timeStep time-step of the simulation
-*/
+ * \brief Writes body coordinates into a file (on the device).
+ *
+ * \param caseFolder directory of the simulation
+ * \param timeStep time-step of the simulation
+ */
 template <>
 void bodies<device_memory>::writeToFile(std::string &caseFolder, int timeStep)
 {
@@ -310,13 +309,13 @@ void bodies<device_memory>::writeToFile(std::string &caseFolder, int timeStep)
 }
 
 /**
-* \brief Write the body coordinates into a file called \a bodies
-*
-* \param bx x-coordinates of the bodies
-* \param by y-coordinates of the bodies
-* \param caseFolder folder of the simulation
-* \param timeStep time-step of the simulation
-*/
+ * \brief Writes body coordinates into a file called \a bodies.
+ *
+ * \param bx x-coordinate of all points of all bodies
+ * \param by y-coordinate of all points of all bodies
+ * \param caseFolder directory of the simulation
+ * \param timeStep time-step of the simulation
+ */
 template <typename memoryType>
 void bodies<memoryType>::writeToFile(real *bx, real *by, std::string &caseFolder, int timeStep)
 {
