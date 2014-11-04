@@ -1,8 +1,8 @@
 /***************************************************************************//**
-* \file io.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of functions of the namespace \c io
-*/
+ * \file io.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the functions of the namespace \c io.
+ */
 
 
 #include "io.h"
@@ -15,12 +15,12 @@ using std::ios;
 
 
 /**
-* \brief Convert a string to a number
-*
-* \param str a string
-*
-* \return a number (\c real or \c integer)
-*/
+ * \brief Converts a string to a number.
+ *
+ * \param str a string
+ *
+ * \return a number (\c real or \c integer)
+ */
 template <typename T>
 T toNumber(string str)
 {
@@ -31,20 +31,20 @@ T toNumber(string str)
 }
 
 /**
-* \namespace io
-* \brief Contain functions related to I/O tasks
-*/
+ * \namespace io
+ * \brief Contains functions related to I/O tasks.
+ */
 namespace io
 {
 
 /**
-* \brief Split a string given a delimiter
-*
-* \param s the string to split
-* \param delim the delimiter
-*
-* \return a vector that contains the different elements of the string
-*/
+ * \brief Splits a string given a delimiter.
+ *
+ * \param s the string to split
+ * \param delim the delimiter
+ *
+ * \return a vector that contains the different elements of the string
+ */
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss(s);
     std::string item;
@@ -55,13 +55,13 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
 }
 
 /**
-* \brief Split a string given a delimiter
-*
-* \param s the string to split
-* \param delim the delimiter
-*
-* \return a vector that contains the different elements of the string
-*/
+ * \brief Splits a string given a delimiter.
+ *
+ * \param s the string to split
+ * \param delim the delimiter
+ *
+ * \return a vector that contains the different elements of the string
+ */
 std::vector<std::string> split(const std::string &s, char delim) {
     std::vector<std::string> elems;
     split(s, delim, elems);
@@ -69,12 +69,12 @@ std::vector<std::string> split(const std::string &s, char delim) {
 }
 
 /**
-* \brief Make a directory.
-*
-* If the parent directory does not exist, it will be created.
-*
-* \param folderPath the path of the directory
-*/
+ * \brief Creates a directory.
+ *
+ * If the parent directory does not exist, it will be created.
+ *
+ * \param folderPath the path of the directory
+ */
 void makeDirectory(const std::string folderPath)
 {
 	std::vector<std::string> x = split(folderPath, '/');
@@ -96,11 +96,11 @@ void makeDirectory(const std::string folderPath)
 //##############################################################################
 
 /**
-* \brief Read inputs by parsing the command-line and simulation files
-*
-* \param DB database that contains all the simulation parameters
-* \param D contains information about the computational grid
-*/
+ * \brief Reads data inputs by parsing the command-line and simulation files.
+ *
+ * \param DB database that contains all the simulation parameters
+ * \param D contains information about the computational grid
+ */
 void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 {
 	// get a default database
@@ -133,10 +133,10 @@ void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 }
 
 /**
-* \brief Initialize the database with default values
-*
-* \param DB the database that contains all the simulation parameters
-*/
+ * \brief Initializes the database with default values.
+ *
+ * \param DB database that contains all the simulation parameters
+ */
 void initialiseDefaultDB(parameterDB &DB)
 {
 	DB["inputs"] = componentParameter();
@@ -193,12 +193,13 @@ void initialiseDefaultDB(parameterDB &DB)
 }
 
 /**
-* \brief Parse the command-line to get the case folder name and the device number
-*
-* \param argc number of arguments in the command-line
-* \param argv pointer on the arguments of the command-line
-* \param DB database that contains all the simulation parameters
-*/
+ * \brief Parses the command-line to get the case folder name 
+ *        and the device number.
+ *
+ * \param argc number of arguments in the command-line
+ * \param argv pointer on the arguments of the command-line
+ * \param DB database that contains all the simulation parameters
+ */
 void commandLineParse1(int argc, char **argv, parameterDB &DB)
 {
 	for (int i=1; i<argc; i++)
@@ -220,12 +221,13 @@ void commandLineParse1(int argc, char **argv, parameterDB &DB)
 }
 
 /**
-* \brief Overwrite values in the database with additional arguments of the command-line
-*
-* \param argc number of arguments in the command-line
-* \param argv pointer on the arguments of the command-line
-* \param DB database that contains all the simulation parameters
-*/
+ * \brief Overwrites values in the database 
+ *        with additional arguments of the command-line.
+ *
+ * \param argc number of arguments in the command-line
+ * \param argv pointer on the arguments of the command-line
+ * \param DB database that contains all the simulation parameters
+ */
 void commandLineParse2(int argc, char **argv, parameterDB &DB)
 {
 	for (int i=1; i<argc; i++)
@@ -333,12 +335,12 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 //##############################################################################
 
 /**
-* \brief Convert a \c preconditionerType to a \c std::string
-*
-* \param s the preconditioner
-*
-* \return a string
-*/
+ * \brief Converts a \c preconditionerType to a \c std::string.
+ *
+ * \param s a preconditioner
+ *
+ * \return a string
+ */
 string stringFromPreconditionerType(preconditionerType s)
 {
   if (s == NONE)
@@ -351,6 +353,13 @@ string stringFromPreconditionerType(preconditionerType s)
     return "Unrecognised preconditioner";
 }
 
+/**
+ * \brief Converts a \c timeScheme to a \c std::string.
+ *
+ * \param s a time-integration scheme
+ *
+ * \return a string
+ */
 string stringFromTimeScheme(timeScheme s)
 {
 	if (s == EULER_EXPLICIT)
@@ -366,11 +375,11 @@ string stringFromTimeScheme(timeScheme s)
 }
 
 /**
-* \brief Print the parameters of the simulation
-*
-* \param DB database that contains all the simulation parameters
-* \param D information related to the computational grid
-*/
+ * \brief Prints the parameters of the simulation.
+ *
+ * \param DB database that contains all the simulation parameters
+ * \param D information related to the computational grid
+ */
 void printSimulationInfo(parameterDB &DB, domain &D)
 {
 	real dt = DB["simulation"]["dt"].get<real>(),
@@ -442,10 +451,10 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 }
 
 /**
-* \brief Print the time spent on certain tasks
-*
-* \param logger object that contains the name and time spent related to tasks
-*/
+ * \brief Prints the time spent on certain tasks.
+ *
+ * \param logger object that contains the name and time spent related to tasks
+ */
 void printTimingInfo(Logger &logger)
 {
 	logger.printAllTime();
@@ -453,11 +462,11 @@ void printTimingInfo(Logger &logger)
 }
 
 /**
-* \brief Write information about the run into a file
-*
-* \param DB database that contains all the simulation parameters
-* \param D information about the computational grid
-*/
+ * \brief Writes information about the run into a file.
+ *
+ * \param DB database that contains all the simulation parameters
+ * \param D information about the computational grid
+ */
 void writeInfoFile(parameterDB &DB, domain &D)
 {
 	std::string   folder = DB["inputs"]["caseFolder"].get<string>();
@@ -475,11 +484,11 @@ void writeInfoFile(parameterDB &DB, domain &D)
 }
 
 /**
-* \brief Write the mesh points into a file named \a grid
-*
-* \param caseFolder the path of the case folder
-* \param D information about the computational grid
-*/
+ * \brief Writes the mesh points into a file named \a grid.
+ *
+ * \param caseFolder the path of the case folder
+ * \param D information about the computational grid
+ */
 void writeGrid(std::string &caseFolder, domain &D)
 {
 	std::stringstream out;
@@ -493,18 +502,18 @@ void writeGrid(std::string &caseFolder, domain &D)
 }
 
 /**
-* \brief Write numerical data at a given iteration number.
-*
-* It creates a directory whose name is the iteration number
-* and stores the fluxes, the pressures (and potentially the body forces)
-* into the files \a q, \a lambda, respectively.
-*
-* \param caseFolder the path of the folder case
-* \param n the iteration number
-* \param q Cusp array that contains the fluxes
-* \param lambda Cusp array that contains the pressures (and potentially the body forces)
-* \param D information about the computational grid
-*/
+ * \brief Writes numerical data at a given iteration number.
+ *
+ * It creates a directory whose name is the iteration number
+ * and writes the flux, the pressure (and potentially the body forces)
+ * into the files \a q, \a lambda, respectively.
+ *
+ * \param caseFolder directory of the simulation
+ * \param n the iteration number
+ * \param q Cusp array that contains the fluxes
+ * \param lambda Cusp array that contains the pressures (and potentially the body forces)
+ * \param D information about the computational grid
+ */
 template <>
 void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, domain &D)//, bodies &B)
 {
@@ -537,18 +546,18 @@ void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, doma
 }
 
 /**
-* \brief Write numerical data at a given iteration number.
-*
-* It creates a directory whose name is the iteration number
-* and stores the fluxes, the pressures (and potentially the body forces)
-* into the files \a q, \a lambda, respectively.
-*
-* \param caseFolder the path of the folder case
-* \param n the iteration number
-* \param q Cusp array that contains the fluxes
-* \param lambda Cusp array that contains the pressures (and potentially the body forces)
-* \param D information about the computational grid
-*/
+ * \brief Writes numerical data at a given iteration number.
+ *
+ * It creates a directory whose name is the iteration number
+ * and writes the flux, the pressure (and potentially the body forces)
+ * into the files \a q, \a lambda, respectively.
+ *
+ * \param caseFolder directory of the simulation
+ * \param n the iteration number
+ * \param q Cusp array that contains the fluxes
+ * \param lambda Cusp array that contains the pressures (and potentially the body forces)
+ * \param D information about the computational grid
+ */
 template <>
 void writeData<vecD>(std::string &caseFolder, int n, vecD &q, vecD &lambda, domain &D)//, bodies &B)
 {
@@ -559,10 +568,10 @@ void writeData<vecD>(std::string &caseFolder, int n, vecD &q, vecD &lambda, doma
 }
 
 /**
-* \brief Print the memory usage on the device
-*
-* \param label the label of the device
-*/
+ * \brief Prints the memory usage on the device.
+ *
+ * \param label the label of the device
+ */
 void printDeviceMemoryUsage(char *label)
 {
 	size_t _free, _total;
