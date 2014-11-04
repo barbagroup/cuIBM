@@ -1,8 +1,9 @@
 /***************************************************************************//**
-* \file logger.h
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the class \c Logger
-*/
+ * \file logger.h
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Definition of the class \c Logger.
+ */
+
 
 #pragma once
 
@@ -11,22 +12,23 @@
 #include <string>
 #include <iostream>
 
+
 /**
-* \typedef
-* \brief Map from a \c std::string to a \c double
-*/
+ * \typedef
+ * \brief Map from a \c std::string to a \c double.
+ */
 typedef std::map<std::string, double>            Event;
 
 /**
-* \typedef
-* \brief Iterator over a STL map
-*/
+ * \typedef
+ * \brief Iterator over a STL map.
+ */
 typedef std::map<std::string, double>::iterator  E_iter;
 
 /**
-* \class Logger
-* \brief Track the time spent to achieve a certain task
-*/
+ * \class Logger
+ * \brief Tracks the time spent to achieve a certain task.
+ */
 class Logger
 {
 private:
@@ -39,10 +41,10 @@ private:
 	Event         memory;		///< contain info about the memomry allocated for events
 
 	/**
-	* \brief Timer function
-	*
-	* \return the time of the day
-	*/
+	 * \brief Timer function.
+	 *
+	 * \return the time of the day
+	 */
 	double get_time()
 	{
 		struct timeval tv;                        // time value
@@ -51,18 +53,18 @@ private:
 	}
 
 public:
-	bool printNow;	///< do you want to profile timing on the go?
+	bool printNow;	///< boolean to print or not the time in the terminal
 
 	/**
-	* \brief Constructor of the class \c Logger
-	*/
+	 * \brief Constructor of the class \c Logger.
+	 */
 	Logger(){}
 	
 	/**
-	* \brief Overloaded constructor of the class \c Logger
-	*
-	* \param folder the case folder
-	*/
+	 * \brief Other constructor of the class \c Logger.
+	 *
+	 * \param folder directory of the simulation
+	 */
 	Logger(std::string folder)
 	{
 		file.open((folder + "/time").c_str());
@@ -72,8 +74,8 @@ public:
 	}
 
 	/**
-	* \brief Destructor of the class \c Logger
-	*/
+	 * \brief Destructor of the class \c Logger.
+	 */
 	~Logger()
 	{
 		writeLegend();
@@ -82,21 +84,21 @@ public:
 	}
 
 	/**
-	* \brief Start the timer
-	*
-	* \param event a string to describe the event
-	*/
+	 * \brief Starts the timer.
+	 *
+	 * \param event a string that describes the event
+	 */
 	void startTimer(std::string event)
 	{
 		tic[event] = get_time();
 	}
 
 	/**
-	* \brief Stop the timer
-	*
-	* \param event a string that describes the event
-	* \param print do you want to print the time?
-	*/
+	 * \brief Stops the timer.
+	 *
+	 * \param event a string that describes the event
+	 * \param print boolean to print the time or not
+	 */
 	void stopTimer(std::string event, bool print=false)
 	{
 		double toc = get_time();
@@ -107,18 +109,18 @@ public:
 	}
 
 	/**
-	* \brief Erase the timer
-	*
-	* \param event a string that describes the event
-	*/
+	 * \brief Erases the timer.
+	 *
+	 * \param event a string that describes the event
+	 */
 	void eraseTimer(std::string event)
 	{
 		timer.erase(event);
 	}
 
 	/**
-	* \brief Reset the timer
-	*/
+	 * \brief Resets the timer.
+	 */
 	void resetTimer()
 	{
 		for( E_iter E=timer.begin(); E!=timer.end(); ++E )
@@ -126,8 +128,8 @@ public:
 	}
 
 	/**
-	* \brief Reset the time-step timer
-	*/
+	 * \brief Resets the time-step timer.
+	 */
 	void resetTimeStep()
 	{
 		for (E_iter E=timeStep.begin(); E!=timeStep.end(); ++E )
@@ -135,50 +137,50 @@ public:
 	}
 
 	/**
-	* \brief Allocate memory
-	*
-	* \param event a string that describes the event
-	* \param bytes the number of bytes
-	*/
+	 * \brief Allocates memory.
+	 *
+	 * \param event a string that describes the event
+	 * \param bytes the number of bytes for allocation
+	 */
 	void allocMemory(std::string event, double bytes)
 	{
 		memory[event] += bytes;
 	}
 
 	/**
-	* \brief Free memory
-	*
-	* \param event a string that describes the event
-	* \param bytes the number of bytes
-	*/
+	 * \brief Frees memory.
+	 *
+	 * \param event a string that describes the event
+	 * \param bytes the number of bytes
+	 */
 	void freeMemory(std::string event, double bytes)
 	{
 		memory[event] -= bytes;
 	}
 
 	/**
-	* \brief Print the time spent to achieve a task
-	*
-	* \param event a string that describes the event
-	*/
+	 * \brief Prints the time spent to achieve a task.
+	 *
+	 * \param event a string that describes the event
+	 */
 	void printTime(std::string event)
 	{
 		std::cout << event << " : " << timer[event] << std::endl;
 	}
 
 	/**
-	* \brief Print the memory allocated for given event
-	*
-	* \param event a string that describes the event
-	*/
+	 * \brief Prints the memory allocated for given event.
+	 *
+	 * \param event a string that describes the event
+	 */
 	void printMemory(std::string event)
 	{
 		std::cout << event << " : " << memory[event] << std::endl;
 	}
 
 	/**
-	* \brief Print time spent of every event and the total time
-	*/
+	 * \brief Prints time spent of every event and the total time.
+	 */
 	void printAllTime()
 	{
 		double totalTime = 0.0;
@@ -195,8 +197,8 @@ public:
 	}
 
 	/**
-	* \brief Write the events into a file
-	*/
+	 * \brief Writes the events into a file.
+	 */
 	void writeLegend()
 	{
 		for( E_iter E=timer.begin(); E!=timer.end(); ++E )
@@ -206,8 +208,8 @@ public:
 	}
 
 	/**
-	* \brief Write time spent into a file
-	*/
+	 * \brief Writes time spent into a file.
+	 */
 	void writeTime()
 	{
 		for( E_iter E=timer.begin(); E!=timer.end(); ++E )
@@ -215,10 +217,10 @@ public:
 	}
   
 	/**
-	* \brief Write time spent for an iteration into a file
-	*
-	* \param n the iteration number
-	*/
+	 * \brief Writes time spent for an iteration into a file.
+	 *
+	 * \param n the iteration number
+	 */
 	void writeTimeStep(int n)
 	{
 		stepFile << n << "\t";
