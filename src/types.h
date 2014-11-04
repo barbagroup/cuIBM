@@ -1,8 +1,9 @@
 /***************************************************************************//**
-* \file types.h
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Custom types required by the code
-*/
+ * \file types.h
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Definition of custom types required by the code.
+ */
+
 
 #pragma once
 
@@ -26,10 +27,11 @@
 
 #include "logger.h"
 
+
 /**
-* \enum  bcType
-* \brief Specify the type of boundary condition
-*/
+ * \enum  bcType
+ * \brief Specifies the type of boundary condition.
+ */
 enum bcType
 {
 	DIRICHLET,  ///< Dirichlet boundary condition
@@ -40,9 +42,9 @@ enum bcType
 };
 
 /**
-* \enum  boundary
-* \brief Specify the boundary of concern
-*/
+ * \enum  boundary
+ * \brief Specifies the location of the boundary.
+ */
 enum boundary
 {
 	XMINUS, ///< left boundary
@@ -52,9 +54,9 @@ enum boundary
 };
 
 /**
-* \enum  timeScheme
-* \brief Numerical scheme used to discretise the time derivative
-*/
+ * \enum  timeScheme
+ * \brief Numerical scheme used for time-integration.
+ */
 enum timeScheme
 {
 	EULER_EXPLICIT,    ///< explicit Euler method (first order)
@@ -65,9 +67,9 @@ enum timeScheme
 };
 
 /**
-* \enum  ibmScheme
-* \brief Specify the immersed boundary method used to solve the flow
-*/
+ * \enum  ibmScheme
+ * \brief Specifies the immersed boundary method used to solve the flow.
+ */
 enum ibmScheme
 {
 	NAVIER_STOKES,  ///< no immersed bodies - Perot (1993)
@@ -80,6 +82,10 @@ enum ibmScheme
 	SLL2            ///< SLL2
 };
 
+/**
+ * \enum interpolationType
+ * \brief Specifies the type of interpolation.
+ */
 enum interpolationType
 {
 	CONSTANT,
@@ -87,9 +93,9 @@ enum interpolationType
 };
 
 /**
-* \enum  preconditionerType
-* \brief Specify the type of preconditioner
-*/
+ * \enum  preconditionerType
+ * \brief Specifies the type of preconditioner.
+ */
 enum preconditionerType
 {
 	NONE,                ///< no preconditioner
@@ -98,46 +104,46 @@ enum preconditionerType
 };
 
 /**
-* \typedef real
-* \brief Can be \c float or \c double depending on the machine precision
-*/
+ * \typedef real
+ * \brief Can be \c float or \c double depending on the machine precision.
+ */
 typedef double real;
 
 using cusp::device_memory;
 using cusp::host_memory;
 
 /**
-* \typedef cooH
-* \brief COO matrix stored on the host
-*/
+ * \typedef cooH
+ * \brief COO matrix stored on the host.
+ */
 typedef cusp::coo_matrix<int, real, host_memory>   cooH;
 
 /**
-* \typedef cooD
-* \brief COO matrix stored on the device
-*/
+ * \typedef cooD
+ * \brief COO matrix stored on the device.
+ */
 typedef cusp::coo_matrix<int, real, device_memory> cooD;
 
 /**
-* \typedef csrH
-* \brief CSR matrix stored on the host
-*/
+ * \typedef csrH
+ * \brief CSR matrix stored on the host.
+ */
 typedef cusp::csr_matrix<int, real, host_memory>   csrH;
 
 /**
-* \typedef csrD
-* \brief CSR matrix stored on the device
-*/
+ * \typedef csrD
+ * \brief CSR matrix stored on the device.
+ */
 typedef cusp::csr_matrix<int, real, device_memory> csrD;
 
 /**
-* \typedef vecH
-* \brief Cusp 1D array stored in the host
-*/
+ * \typedef vecH
+ * \brief Cusp 1D array stored in the host.
+ */
 typedef cusp::array1d<real, host_memory>   vecH;
 
 /**
-* \typedef vecD
-* \brief Cusp 1D array stored in the device
-*/
+ * \typedef vecD
+ * \brief Cusp 1D array stored in the device.
+ */
 typedef cusp::array1d<real, device_memory> vecD;
