@@ -1,16 +1,16 @@
 /***************************************************************************//**
-* \mainpage cuIBM
-*
-*		A GPU-based Immersed Boundary Method
-*
-* \author Krishnan, A. (anush@bu.edu)
-*/
+ * \mainpage cuIBM
+ *
+ *		A GPU-based Immersed Boundary Method
+ *
+ * \author Anush Krishnan (anush@bu.edu)
+ */
 
 /***************************************************************************//**
-* \file cuIBM.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Main source-file of <B>cuIBM</B>
-*/
+ * \file cuIBM.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Main source-file of <B>cuIBM</B>.
+ */
 
 
 #include "types.h"
