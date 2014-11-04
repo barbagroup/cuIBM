@@ -1,7 +1,7 @@
 /***************************************************************************//**
  * \file helpers.cu
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Definition of the discrete Delta function.
+ * \brief Implementation of the discrete Delta function.
  */
 
 
