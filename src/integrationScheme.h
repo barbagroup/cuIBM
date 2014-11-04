@@ -1,17 +1,19 @@
 /***************************************************************************//**
-* \file integrationScheme.h
-* \auhor Krishnan, A. (anush@bu.edu)
-* \brief Definition of the class \c integrationScheme
-*/
+ * \file integrationScheme.h
+ * \auhor Anush Krishnan (anush@bu.edu)
+ * \brief Definition of the class \c integrationScheme.
+ */
+
 
 #pragma once
 
 #include "types.h"
 
+
 /**
-* \class integrationScheme
-* \brief Specify the time integration scheme used
-*/
+ * \class integrationScheme
+ * \brief Specifies the time-integration scheme used.
+ */
 class integrationScheme
 {
 public:
@@ -23,11 +25,11 @@ public:
 	     alphaExplicit; ///< coefficient of the explicit diffusion term
 	
 	/**
-	* \brief Initialize the coefficients for the time-stepping schemes
-	*
-	* \param convScheme time-stepping scheme used for the convection term
-	* \param diffScheme time-stepping scheme used for the diffusion term
-	*/
+	 * \brief Initializes the coefficients of the time-integration scheme.
+	 *
+	 * \param convScheme time-stepping scheme used for the convection term
+	 * \param diffScheme time-stepping scheme used for the diffusion term
+	 */
 	void initialise(timeScheme convScheme, timeScheme diffScheme)
 	{
 		std::cout << "Initialising integration scheme... ";
