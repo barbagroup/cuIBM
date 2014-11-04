@@ -1,26 +1,26 @@
 /***************************************************************************//**
-* \file helpers.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the discrete Delta function
-*/
+ * \file helpers.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Definition of the discrete Delta function.
+ */
 
 
 #include "helpers.h"
 
 
 /**
-* \fn real dhRoma(real x, real h)
-* \brief Discrete Delta function from Roma et al. (1999).
-*
-* A.M. Roma, C.S. Peskin, M.J. Berger.
-* An adaptative versionof the immersed boundary method.
-* J. Comput. Phys. 153 (1999) 509-534.
-*
-* \param x coordinate of the grid point
-* \param h grid-spacing in the uniform region
-*
-* \return the value of the discrete delta function
-*/
+ * \fn real dhRoma(real x, real h)
+ * \brief Discrete Delta function from Roma et al. (1999).
+ *
+ * A.M. Roma, C.S. Peskin, M.J. Berger.
+ * An adaptative versionof the immersed boundary method.
+ * J. Comput. Phys. 153 (1999), 509-534.
+ *
+ * \param x coordinate of the grid point
+ * \param h grid-spacing in the uniform region
+ *
+ * \return the value of the discrete delta function
+ */
 real dhRoma(real x, real h)
 {
 	real r = fabs(x)/h;
@@ -34,15 +34,15 @@ real dhRoma(real x, real h)
 }
 
 /**
-* \fn real delta(real x, real y, real h)
-* \brief Discrete Delta function in 2D
-*
-* \param x x-coodinate of the grid point
-* \param y y-coordinate of the grid point
-* \param h grid-spacing in the uniform region
-*
-* \return the value of the discrete Delta function in 2D
-*/
+ * \fn real delta(real x, real y, real h)
+ * \brief Two-dimensional discrete Delta function.
+ *
+ * \param x x-coodinate of the grid point
+ * \param y y-coordinate of the grid point
+ * \param h grid-spacing in the uniform region
+ *
+ * \return the value of the discrete Delta function in 2D
+ */
 real delta(real x, real y, real h)
 {
 	return dhRoma(x, h) * dhRoma(y, h);
