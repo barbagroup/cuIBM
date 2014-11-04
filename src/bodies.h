@@ -1,8 +1,9 @@
 /***************************************************************************//**
-* \file bodies.h
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Declaration of the class \c bodies
-*/
+ * \file bodies.h
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Declaration of the class \c bodies.
+ */
+
 
 #pragma once
 
@@ -10,10 +11,11 @@
 #include "parameterDB.h"
 #include "body.h"
 
+
 /**
-* \class bodies
-* \brief Store information about the body points in arrays
-*/
+ * \class bodies
+ * \brief Contains information about bodies in the flow.
+ */
 template <typename memoryType>
 class bodies
 {
@@ -56,32 +58,32 @@ public:
 		vB;    ///< y-velocity of the boundary points
 
 	/**
-	* \brief Initialize the arrays in the class with information from \c body instances
-	*/
+	 * \brief Stores initial position and velocity of each body in the flow.
+	 */
 	void initialise(parameterDB &db, domain &D);
 	
 	/**
-	* \brief Calculate the indices of the cells in which the boundary points are located
-	*/
+	 * \brief Stores index of each vell that contains a boundary point.
+	 */
 	void calculateCellIndices(domain &D);
 	
 	/**
-	* \brief Calculate the bounding box of each body
-	*/
+	 * \brief Calculates indices of the bounding box of each body in the flow.
+	 */
 	void calculateBoundingBoxes(parameterDB &db, domain &D);
 	
 	/**
-	* \brief Update the location of the body points
-	*/
+	 * \brief Updates position and velocity of each body point and its neighbor.
+	 */
 	void update(parameterDB &db, domain &D, real Time);
 
 	/**
-	* \brief Write the body coordinates into a file
-	*/
+	 * \brief Writes body coordinates into a file.
+	 */
 	void writeToFile(std::string &caseFolder, int timeStep);
 
 	/**
-	* \brief Write the body coordinates into a file called \a bodies 
-	*/
+	 * \brief Writes body coordinates into a file called \a bodies.
+	 */
 	void writeToFile(real *bx, real *by, std::string &caseFolder, int timeStep);
 };
