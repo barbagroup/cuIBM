@@ -1,27 +1,28 @@
 /***************************************************************************//**
-* \file createSolver.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the function to create the Navier-Stokes solver
-*/
+ * \file createSolver.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the function that creates the Navier-Stokes solver.
+ */
 
 
 #include "createSolver.h"
 
 
 /**
-* \fn
-* \brief Create a Navier-Stokes solver, depending on the type of IBM used.
-*
-* The kind of solver depends on the IBM chosen.
-* If there is no immersed body in the flow, an instance of the class \c NavierStokesSolver is created.
-* If \c TAIRA_COLONIUS is the IBM chosen, an instance of the class \c TairaColoniusSolver is created, 
-* that inherits from the class \c NavierStokesSolver.
-*
-* \param paramDB database that contains all the simulation parameters
-* \param domInfo information about the computational grid
-*
-* \return a pointer on an instance of the appropriate class
-*/
+ * \brief Creates the appropriate Navier-Stokes solver.
+ *
+ * The type of solver depends on the IBM chosen.
+ * If there is no immersed body in the flow, 
+ * an instance of the class \c NavierStokesSolver is created.
+ * If \c TAIRA_COLONIUS is the IBM chosen, 
+ * an instance of the class \c TairaColoniusSolver is created, 
+ * that inherits from the class \c NavierStokesSolver.
+ *
+ * \param paramDB database that contains all the simulation parameters
+ * \param domInfo information about the computational grid
+ *
+ * \return a pointer on an instance of the appropriate class
+ */
 template <typename memoryType>
 NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domInfo)
 {
