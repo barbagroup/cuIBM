@@ -1,16 +1,18 @@
 /***************************************************************************//**
-* \file generateQT.inl
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the methods of the class \c TairaColoniusSolver related to matrix QT
-*/
+ * \file generateQT.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c TairaColoniusSolver related to matrix QT.
+ */
+
 
 #include <solvers/NavierStokes/kernels/generateQT.h>
 
 #define BLOCKSIZE 256
 
+
 /**
-* \brief Update the interpolation matrix with current location of body points on the host
-*/
+ * \brief Updates the interpolation matrix with current location of body points on the host.
+ */
 template <>
 void TairaColoniusSolver<host_memory>::updateQT()
 {
@@ -54,8 +56,8 @@ void TairaColoniusSolver<host_memory>::updateQT()
 }
 
 /**
-* \brief Update the interpolation matrix with current location of body points on the device
-*/
+ * \brief Updates the interpolation matrix with current location of body points on the device.
+ */
 template <>
 void TairaColoniusSolver<device_memory>::updateQT()
 {
@@ -103,8 +105,8 @@ void TairaColoniusSolver<device_memory>::updateQT()
 }
 
 /**
-* \brief Generate matrix containing discrete divergence operator and interpolation matrix on the host
-*/
+ * \brief Generates matrix containing discrete divergence operator and interpolation matrix on the host.
+ */
 template <>
 void TairaColoniusSolver<host_memory>::generateQT()
 {
@@ -132,8 +134,8 @@ void TairaColoniusSolver<host_memory>::generateQT()
 }
 
 /**
-* \brief Generate matrix containing discrete divergence operator and interpolation matrix on the device
-*/
+ * \brief Generates matrix containing discrete divergence operator and interpolation matrix on the device.
+ */
 template <>
 void TairaColoniusSolver<device_memory>::generateQT()
 {
