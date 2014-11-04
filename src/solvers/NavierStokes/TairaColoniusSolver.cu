@@ -1,19 +1,20 @@
 /***************************************************************************//**
-* \file TairaColoniusSolver.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the methods of the class \c TairaColoniusSolver
-*/
+ * \file TairaColoniusSolver.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c TairaColoniusSolver.
+ */
 
 
 #include "TairaColoniusSolver.h"
 #include <sys/stat.h>
 
+
 /**
-* \brief Initialize the solver.
-*
-* It initializes the bodies, the arrays and assemble the matrices of the system.
-*
-*/
+ * \brief Initializes the solver.
+ *
+ * It initializes the bodies, the arrays and assemble the matrices of the system.
+ *
+ */
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::initialise()
 {	
@@ -40,8 +41,8 @@ void TairaColoniusSolver<memoryType>::initialise()
 }
 
 /**
-* \brief Calculate forces and write time and forces for each body in a file
-*/
+ * \brief Calculates forces and write time and forces for each body in a file.
+ */
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::writeData()
 {	
@@ -72,8 +73,8 @@ void TairaColoniusSolver<memoryType>::writeData()
 }
 
 /**
-* \brief Update the location of the bodies and re-compute matrices
-*/
+ * \brief Updates the location of the bodies and re-compute matrices.
+ */
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::updateSolverState()
 {
@@ -91,8 +92,8 @@ void TairaColoniusSolver<memoryType>::updateSolverState()
 }
 
 /**
-* \brief Constructor of the class \c TairaColoniusSolver
-*/
+ * \brief Constructor of the class \c TairaColoniusSolver.
+ */
 template <typename memoryType>
 TairaColoniusSolver<memoryType>::TairaColoniusSolver(parameterDB *pDB, domain *dInfo)
 {
