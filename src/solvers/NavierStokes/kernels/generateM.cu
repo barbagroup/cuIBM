@@ -4,7 +4,9 @@
 * \biref Definition of the kernels required to generate the mass matrix \c M and its inverse
 */
 
-#include <solvers/NavierStokes/kernels/generateM.h>
+
+#include "generateM.h"
+
 
 /**
 * \namespace kernels

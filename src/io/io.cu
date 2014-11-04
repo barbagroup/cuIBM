@@ -4,12 +4,15 @@
 * \brief Definition of functions of the namespace \c io
 */
 
-#include <io/io.h>
+
+#include "io.h"
 #include <types.h>
 #include <sys/stat.h>
 #include <boundaryCondition.h>
 
 using std::string;
+using std::ios;
+
 
 /**
 * \brief Convert a string to a number
@@ -172,6 +175,7 @@ void initialiseDefaultDB(parameterDB &DB)
 	DB[sim]["convTimeScheme"].set<timeScheme>(EULER_EXPLICIT);
 	DB[sim]["diffTimeScheme"].set<timeScheme>(EULER_IMPLICIT);
 	DB[sim]["ibmScheme"].set<ibmScheme>(TAIRA_COLONIUS);
+	DB[sim]["interpolationType"].set<interpolationType>(LINEAR);
 
 	// velocity solver
 	string solver = "velocitySolve";
@@ -274,6 +278,18 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			i++;
 			DB["simulation"]["dt"].set<real>(toNumber<real>(string(argv[i])));
 		}
+		// tolerance for the velocity solve
+		if ( strcmp(argv[i],"-velocityTol")==0 )
+		{
+			i++;
+			DB["velocitySolve"]["tolerance"].set<real>(toNumber<real>(string(argv[i])));
+		}
+		// tolerance for the Poisson solve
+		if ( strcmp(argv[i],"-poissonTol")==0 )
+		{
+			i++;
+			DB["PoissonSolve"]["tolerance"].set<real>(toNumber<real>(string(argv[i])));
+		}
 		// IBM Scheme
 		if ( strcmp(argv[i],"-ibmScheme")==0 )
 		{
@@ -298,6 +314,16 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			else 
 			if ( strcmp(argv[i],"SLL2")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(SLL2);
+		}
+		// interpolation type for Eulerian direct forcing methods
+		if ( strcmp(argv[i],"-interpolationType")==0 )
+		{
+			i++;
+			if ( strcmp(argv[i],"constant")==0 )
+				DB["simulation"]["interpolationType"].set<interpolationType>(CONSTANT);
+			else
+			if ( strcmp(argv[i],"linear")==0 )
+				DB["simulation"]["interpolationType"].set<interpolationType>(LINEAR);
 		}
 	}
 }
@@ -325,6 +351,20 @@ string stringFromPreconditionerType(preconditionerType s)
     return "Unrecognised preconditioner";
 }
 
+string stringFromTimeScheme(timeScheme s)
+{
+	if (s == EULER_EXPLICIT)
+		return "Explicit Euler Method";
+	else if (s == EULER_IMPLICIT)
+		return "Implicit Euler Method";
+	else if (s == ADAMS_BASHFORTH_2)
+		return "2nd Order Adams-Bashforth";
+	else if (s == CRANK_NICOLSON)
+		return "Crank-Nicolson";
+	else
+		return "Unknown";
+}
+
 /**
 * \brief Print the parameters of the simulation
 *
@@ -338,6 +378,9 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	int  nt = DB["simulation"]["nt"].get<int>(),
 	     nsave = DB["simulation"]["nsave"].get<int>(),
 	     startStep = DB["simulation"]["startStep"].get<int>();
+	interpolationType interpType = DB["simulation"]["interpolationType"].get<interpolationType>();
+	ibmScheme ibmSchm = DB["simulation"]["ibmScheme"].get<ibmScheme>();
+
 
     std::cout << '\n';
 	
@@ -356,6 +399,18 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "startStep = " << startStep << '\n';
 	std::cout << "nt = "    << nt << '\n';
 	std::cout << "nsave = " << nsave << '\n';
+	std::cout << "Convection time scheme = " << stringFromTimeScheme(DB["simulation"]["convTimeScheme"].get<timeScheme>()) << '\n';
+	std::cout << "Diffusion time scheme  = " << stringFromTimeScheme(DB["simulation"]["diffTimeScheme"].get<timeScheme>()) << '\n';
+	if(ibmSchm==FADLUN_ET_AL || ibmSchm==DIRECT_FORCING)
+	{
+		std::cout << "Interpolation type: ";
+		switch(interpType)
+		{
+			case CONSTANT: std::cout << "Constant\n"; break;
+			case LINEAR  : std::cout << "Linear\n"; break;
+			default : std::cout << "Unknown\n"; break;
+		}
+	}
 	
 	std::cout << "\nVelocity Solve" << '\n';
 	std::cout << "--------------" << '\n';
@@ -393,7 +448,6 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 */
 void printTimingInfo(Logger &logger)
 {
-	//logger.writeLegend();
 	logger.printAllTime();
 	std::cout << std::endl;
 }
@@ -430,18 +484,12 @@ void writeGrid(std::string &caseFolder, domain &D)
 {
 	std::stringstream out;
 	out << caseFolder << "/grid";
-	std::ofstream f(out.str().c_str());
-
-	f << D.nx << std::endl;
-	for(int i=0; i<D.nx+1; i++)
-		f << D.x[i] << '\n';
-	f << '\n';
-	
-	f << D.ny << '\n';
-	for(int j=0; j<D.ny+1; j++)
-		f << D.y[j] << '\n';
-
-	f.close();
+	std::ofstream file(out.str().c_str(), ios::binary);
+	file.write((char*)(&D.nx), sizeof(int));
+	file.write((char*)(&D.x[0]), (D.nx+1)*sizeof(real));
+	file.write((char*)(&D.ny), sizeof(int));
+	file.write((char*)(&D.y[0]), (D.ny+1)*sizeof(real));
+	file.close();
 }
 
 /**
@@ -462,27 +510,27 @@ void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, doma
 {
 	std::string path;
 	std::stringstream out;
+	int N;
 
 	out << caseFolder << '/' << std::setfill('0') << std::setw(7) << n;
 	path = out.str();
 
-	//createDirectory(path.c_str(), S_IRWXO);
 	mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
 	out.str("");
 	out << path << "/q";
-	std::ofstream file(out.str().c_str());
-	file << q.size() << std::endl;
-	for(int i=0; i<q.size(); i++)
-		file << q[i] << '\n';
+	std::ofstream file(out.str().c_str(), ios::binary);
+	N = q.size();
+	file.write((char*)(&N), sizeof(int));
+	file.write((char*)(&q[0]), N*sizeof(real));
 	file.close();
 
 	out.str("");
 	out << path << "/lambda";
-	file.open(out.str().c_str());
-	file << lambda.size() << '\n';
-	for(int i=0; i<lambda.size(); i++)
-		file << lambda[i] << '\n';
+	file.open(out.str().c_str(), ios::binary);
+	N = lambda.size();
+	file.write((char*)(&N), sizeof(int));
+	file.write((char*)(&lambda[0]), N*sizeof(real));
 	file.close();
 	
 	std::cout << "Data saved to folder " << path << std::endl;

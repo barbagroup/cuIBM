@@ -4,9 +4,12 @@
 * \brief Definition of the kernels required to generate vector \c rn
 */
 
-#include <solvers/NavierStokes/kernels/generateRN.h>
+
+#include "generateRN.h"
+
 
 #define BSZ 16
+
 
 /**
 * \namespace kernels

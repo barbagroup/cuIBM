@@ -4,7 +4,9 @@
 * \brief Definition of the discrete Delta function
 */
 
-#include <helpers.h>
+
+#include "helpers.h"
+
 
 /**
 * \fn real dhRoma(real x, real h)

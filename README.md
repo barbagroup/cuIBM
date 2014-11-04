@@ -1,8 +1,6 @@
 cuIBM - A GPU-based Immersed Boundary Method code
 =================================================
 
-*Updated: July 19th, 2014*
-
 **ATTENTION: The primary respository for cuIBM shall henceforth be hosted on 
 [GitHub](https://github.com/barbagroup/cuIBM). However, we will continue to 
 push changes to both Github and the 

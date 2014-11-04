@@ -4,7 +4,9 @@
 * \brief Contain definition of the kernels required to generate the matrix A
 */
 
-#include <solvers/NavierStokes/kernels/generateA.h>
+
+#include "generateA.h"
+
 
 /**
 * namespace kernels
@@ -53,14 +55,14 @@ void generateA(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int
 * \param tagsY
 */
 __global__
-void generateADirectForcing(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int *LCols, real *LVals, int ASize, real alpha, int *tagsX, int *tagsY)
+void generateADirectForcing(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int *LCols, real *LVals, int ASize, real alpha, int *tags)
 {
 	for(int I=threadIdx.x + blockIdx.x*blockDim.x; I<ASize; I += blockDim.x*gridDim.x)
 	{
 		ARows[I] = LRows[I];
 		ACols[I] = LCols[I];
-		AVals[I] =   (tagsX[LRows[I]] == -1 && tagsY[LRows[I]] == -1)*(-alpha*LVals[I]) // if the current location is untagged, add -alpha*L
-		           + (tagsX[LRows[I]] != -1 || tagsY[LRows[I]] != -1)*(-LVals[I]) // if the current location is tagged, add -L
+		AVals[I] =   (tags[LRows[I]] == -1)*(-alpha*LVals[I]) // if the current location is untagged, add -alpha*L
+		           + (tags[LRows[I]] != -1)*(-LVals[I]) // if the current location is tagged, add -L
 		           + (LRows[I]==LCols[I])*MVals[LRows[I]]; // if it is a diagonal, add M
 	}
 }

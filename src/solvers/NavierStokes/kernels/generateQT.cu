@@ -4,7 +4,9 @@
 * \brief Definition of the kernels required to generate the matrix \c QT
 */
 
-#include <solvers/NavierStokes/kernels/generateQT.h>
+
+#include "generateQT.h"
+
 
 /**
 * \brief Calculate the discrete Delta function from Rome et al. (1999)
@@ -60,19 +62,6 @@ void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tags)
 	if(I >= QSize) return;
 	
 	QVals[I] *= ( tags[QRows[I]] == -1 );
-}
-
-/**
-* \brief To be documented
-*/
-__global__ \
-void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tagsX, int *tagsY)
-{
-	int I = threadIdx.x + blockIdx.x*blockDim.x;
-	
-	if(I >= QSize) return;
-	
-	QVals[I] *= ( tagsX[QRows[I]] == -1 && tagsY[QRows[I]] == -1 );
 }
 
 /**

@@ -4,8 +4,10 @@
 * \brief Definition of the methods of the class \c FadlunEtAlSolver
 */
 
-#include <solvers/NavierStokes/FadlunEtAlSolver.h>
+
+#include "FadlunEtAlSolver.h"
 #include <sys/stat.h>
+
 
 /**
 * \brief To be documented

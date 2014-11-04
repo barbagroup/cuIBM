@@ -4,7 +4,8 @@
 * \brief Calculate forces acting on the body using a control-volume approach
 */
 
-#include <solvers/NavierStokes/kernels/calculateForce.h>
+#include "calculateForce.h"
+
 
 #define BSZ 16
 
@@ -292,7 +293,7 @@ void liftUnsteady(real *FyU, real *q, real *qOld, real *dx, real *dy, real dt,
 * \brief To be documented
 */
 __global__
-void forceX(real *f, real *q, real *rn, int *tagsX, int *tagsY,
+void forceX(real *f, real *q, real *rn, int *tags,
             int nx, int ny, real *dx, real *dy,
             real dt, real alpha, real nu)
 {
@@ -338,7 +339,7 @@ void forceX(real *f, real *q, real *rn, int *tagsX, int *tagsY,
 							/( (Dy[j][i]+Dy[j-1][i]) * (Dy[j-1][i] + 2.0*Dy[j][i] + Dy[j+1][i]) * (Dy[j][i]+Dy[j+1][i]) ) \
 					     );
 		
-		f[Gidx_x] = ( u[j][i]/dt - dTerm - rn[Gidx_x]/(0.5*(Dx[j][i]+Dx[j][i+1])) ) * (!(tagsX[Gidx_x]==-1 && tagsY[Gidx_x]==-1));
+		f[Gidx_x] = ( u[j][i]/dt - dTerm - rn[Gidx_x]/(0.5*(Dx[j][i]+Dx[j][i+1])) ) * (!(tags[Gidx_x]==-1));
 	}
 }
 

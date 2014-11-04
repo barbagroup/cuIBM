@@ -1,4 +1,4 @@
-#include <solvers/NavierStokes/SLL0Solver.h>
+#include "SLL0Solver.h"
 #include <sys/stat.h>
 #include <cusp/io/matrix_market.h>
 

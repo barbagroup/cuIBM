@@ -4,9 +4,12 @@
 * \brief Definition of the CUDA kernels required to update vector \c rhs1
 */
 
-#include <solvers/NavierStokes/kernels/updateRHS1.h>
+
+#include "updateRHS1.h"
+
 
 #define BSZ 16
+
 
 /**
 * \namespace kernels
@@ -16,7 +19,7 @@ namespace kernels
 {
 
 // 1-d interpolation
-/*__global__
+__global__
 void updateRHS1(real *rhs1, int numUV, int *tags)
 {
 	int	I = blockIdx.x*blockDim.x + threadIdx.x;
@@ -25,35 +28,21 @@ void updateRHS1(real *rhs1, int numUV, int *tags)
 		return;
 	
 	rhs1[I] = rhs1[I]*(tags[I]==-1);
-}*/
-
-/**
-* \brief To be documented
-*/
-// 2-d interpolation
-__global__
-void updateRHS1(real *rhs1, int numUV, int *tagsX, int *tagsY)
-{
-	int	I = blockIdx.x*blockDim.x + threadIdx.x;
-	
-	if(I>=numUV)
-		return;
-	
-	rhs1[I] = rhs1[I]*(tagsX[I]==-1 && tagsY[I]==-1);
 }
 
 /**
 * \brief To be documented
 */
 __global__
-void updateRHS1X(real *rhs1, int nx, int ny, real dt, real *dx, int *tagsX, int *tagsY, real *coeffsX, real *coeffsY, real *uvX, real *uvY)
+void updateRHS1X(real *rhs1, int nx, int ny, real dt, real *dx, int *tags, real *coeffs, real *uv)
 {
 	int	I = blockIdx.x*blockDim.x + threadIdx.x;
 	int i = I % (nx-1);
 	
 	if( I < (nx-1)*ny )
 	{
-		rhs1[I] = (tagsX[I]==-1 && tagsY[I]==-1)*rhs1[I] + ( (tagsX[I]!=-1)*(1.0-coeffsX[I])*(1.0-coeffsY[I])*uvX[I] + (tagsY[I]!=-1)*coeffsX[I]*(1.0-coeffsY[I])*uvY[I] ) * 0.5*(dx[i+1]+dx[i]) / dt;
+		rhs1[I] = (tags[I]==-1)*rhs1[I] 
+		          + ((tags[I]!=-1)*((1.0-coeffs[I])*uv[I])) * 0.5*(dx[i+1]+dx[i])/dt;
 	}
 }
 
@@ -61,7 +50,7 @@ void updateRHS1X(real *rhs1, int nx, int ny, real dt, real *dx, int *tagsX, int 
 * \brief To be documented
 */
 __global__
-void updateRHS1Y(real *rhs1, int nx, int ny, real dt, real *dy, int *tagsX, int *tagsY, real *coeffsX, real *coeffsY, real *uvX, real *uvY)
+void updateRHS1Y(real *rhs1, int nx, int ny, real dt, real *dy, int *tags, real *coeffs, real *uv)
 {
 	int numU = (nx-1)*ny;
 	int	I = blockIdx.x*blockDim.x + threadIdx.x + numU;
@@ -69,7 +58,8 @@ void updateRHS1Y(real *rhs1, int nx, int ny, real dt, real *dy, int *tagsX, int 
 	
 	if( I < numU + nx*(ny-1) )
 	{
-		rhs1[I] = (tagsX[I]==-1 && tagsY[I]==-1)*rhs1[I] + ( (tagsX[I]!=-1)*(1.0-coeffsX[I])*(1.0-coeffsY[I])*uvX[I] + (tagsY[I]!=-1)*coeffsX[I]*(1.0-coeffsY[I])*uvY[I] ) * 0.5*(dy[j+1]+dy[j]) / dt;
+		rhs1[I] = (tags[I]==-1)*rhs1[I] 
+		          + ((tags[I]!=-1)*((1.0-coeffs[I])*uv[I])) * 0.5*(dy[j+1]+dy[j])/dt;
 	}
 }
 

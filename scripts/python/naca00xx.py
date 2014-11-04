@@ -1,84 +1,144 @@
 #!/usr/bin/env python
+
+# file: $CUIBM_DIR/scripts/python/naca00xx.py
+# author: Anush Krishnan (anush@bu.edu), Olivier Mesnard (mesnardo@gwu.edu)
+# description: generates the coordinates of a NACA 00XX airfoil
+
+
 import argparse
-from numpy import *
+import math
 
-def yNACA00xx(x, t=0.12, c=1.):
-	return t*c/0.2*( 0.2969*sqrt(x/c) - 0.1260*(x/c) - 0.3516*(x/c)**2 + 0.2843*(x/c)**3 - 0.1036*(x/c)**4 )
+import numpy as np
+from matplotlib import pyplot as plt
 
-# Read command line options
-parser = argparse.ArgumentParser(description="Generates a NACA 00xx airfoil with uniform segments using the specified options.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("--t", type=int, dest="t", help="thickness of symmetric NACA airfoil", default=8)
-parser.add_argument("--c", type=float, dest="c", help="length of the chord", default=1.)
-parser.add_argument("--ds", dest="ds", help="segment length", default='0.004')
-args = parser.parse_args()
 
-t = args.t/100.
-c = args.c
+def read_inputs():
+	"""Parses the command-line."""
+	# create the parser
+	parser = argparse.ArgumentParser(description='Generates a NACA00xx airfoil '
+						'with uniform segments given the specified arguments',
+						formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+	# fill the parser with arguments
+	parser.add_argument('--t', dest='t', type=int, default=12,
+						help='maximum thickness of the NACA airfoil (percent)')
+	parser.add_argument('--c', dest='c', type=float, default=1.0,
+						help='chord-length of the symmetric NACA airfoil')
+	parser.add_argument('--ds', dest='ds', type=float, default=0.004,
+						help='segment-length')
+	parser.add_argument('--show', dest='show', action='store_true',
+						help='plots the NACA00xx profile')
+	return parser.parse_args()
 
-# calculate the semi-circumference of the airfoil
-nCirc = int(2*c/float(args.ds))+1
-h = c/nCirc
-C = 0.
-x1 = 0.
-y1 = -yNACA00xx(x1, t, c)
-for i in range(1, nCirc+1):
-	x2 = i*h
-	y2 = -yNACA00xx(x2, t, c)
-	dC = sqrt((x2-x1)**2 + (y2-y1)**2)
-	C = C + dC
-	x1 = x2
-	y1 = y2
 
-print "Type of airfoil: NACA 00%02d" % args.t
-print "Chord Length   :", args.c
-print "circumference  :", C
-print "Segment Length :", args.ds
-
-# number of boundary segments
-n = int(C/float(args.ds))+1
-
-# end points
-x0 = 0
-xN = args.c
-
-width = xN-x0
-temp = 0.
-mean = args.c
-
-x = linspace(x0, xN, n+1)
-dx = zeros(n)
-ds = zeros(n)
-
-while fabs(temp-mean)/mean > 1e-6:
-	temp = mean
-	mean = 0.
-	x1 = x[0]
-	y1 = -yNACA00xx(x1, t, c)
-	for i in range(n):
-		x2 = x[i+1]
-		y2 = -yNACA00xx(x2, t, c)
-		ds[i] = sqrt((x2-x1)**2 + (y2-y1)**2)
-		mean += ds[i]
-		x1 = x2
-		y1 = y2
-	mean = mean/n
-		
-	total = 0.
-	for i in range(n):
-		dx[i] = mean/ds[i]*(x[i+1]-x[i])
-		total += dx[i]
-		
-	omega = width/total
+def get_y_naca00xx(x, t, c):
+	"""Returns the y-coordinate of the upper surface 
+	of a symmetric NACA airfoil.
 	
-	for i in range(n-1):
-		x[i+1] = x[i] + omega*dx[i]
+	Arguments
+	---------
+	x -- x-coordinate
+	t -- maximum thickness as a fraction of the chord.
+	c -- chord-length of the airfoil.
+	"""
+	t /= 100.
+	return t/0.2*c*(  0.2969*np.sqrt(x/c)
+					- 0.1260*(x/c)
+					- 0.3516*(x/c)**2
+					+ 0.2843*(x/c)**3
+					- 0.1036*(x/c)**4 )
 
 
-filename = "naca%04d_%s.bdy" % (args.t, args.ds)
-f = open(filename, 'w')
-f.write("%d\n" % (2*n))
-for i in range(n):
-	f.write("%f\t%f\n" % ( x[i]-0.5*c, -yNACA00xx(x[i], t, c) ) )
-for i in range(n):
-	f.write("%f\t%f\n" % ( x[n-i]-0.5*c, yNACA00xx(x[n-i], t, c) ) )
-f.close()
+def plot_airfoil(x, y, t):
+	"""Plots the profile in a figure.
+	
+	Arguments
+	---------
+	x, y -- coordinates of the profile.
+	t -- maximum thickness of the arfoil as a percent of the chord-length.
+	"""
+	plt.figure()
+	plt.grid(True)
+	plt.xlabel(r'$x$', fontsize=18)
+	plt.ylabel(r'$y$', fontsize=18)
+	plt.plot(x, y, 
+			 color='b', ls='-', lw=2, marker='o', markersize=6)
+	plt.plot(x[::-1], -y[::-1], 
+			 color='b', ls='-', lw=2, marker='o', markersize=6)
+	plt.axis('equal')
+	plt.title('NACA 00%02d' % t)
+	plt.show()
+
+
+def main():
+	"""Generates the NACA 00xx coordinates."""
+	# parse the command-line
+	args = read_inputs()
+	
+	# NACA parameters
+	t = args.t
+	c = args.c
+	ds = args.ds
+
+	# compute the coordinates of the airfoil
+	factor = 2						# refinement factor
+	n = factor*int(c/ds)			# number of segments
+	x = np.linspace(0.0, c, n+1)	# x-coordinates
+	y = get_y_naca00xx(x, t, c)		# y-coordinates
+
+	# length of the upper semi-airfoil
+	length = np.sum(np.sqrt((x[1:]-x[:-1])**2 + (y[1:]-y[:-1])**2))
+
+	# print parameters
+	print 'Type of airfoil: NACA 00%02d' % t
+	print 'Chord-length: %g' % c
+	print 'Segment-length: %g' % ds
+	print 'Length of semi-airfoil: %g' % length
+
+	# number of boundary segments
+	n = int(length/ds)+1
+
+	# x-coordinate of end-points
+	x0, xn = 0.0, c
+
+	width = xn - x0
+
+	# compute the coordinates of upper side of arfoil
+	x = np.linspace(x0, xn, n+1)
+	y = get_y_naca00xx(x, t, c)
+
+	previous_mean, mean = 0.0, c
+	tol = 1.0E-06
+	while math.fabs(previous_mean - mean)/mean > tol:
+		previous_mean = mean
+
+		# compute segment-lengths
+		ds = np.sqrt( (x[1:]-x[:-1])**2 + (y[1:]-y[:-1])**2 )
+
+		mean = ds.sum()/n
+
+		dx = mean/ds*(x[1:]-x[:-1])
+		total = dx.sum()
+
+		omega = width/total
+		
+		# update x-coordinates
+		for i in xrange(n-1):
+			x[i+1] = x[i] + omega*dx[i]
+		y = get_y_naca00xx(x, t, c)
+
+	# write coordinates into a file
+	file_name = 'naca00%02d_%g.bdy' % (t, args.ds)
+	with open(file_name, 'w') as outfile:
+		outfile.write('%d\n' % (2*n))
+		np.savetxt(outfile, np.c_[x-0.5*c, y], 
+				   fmt='%.6f', delimiter='\t')
+		np.savetxt(outfile, np.c_[x[-2:0:-1]-0.5*c, -y[-2:0:-1]], 
+				   fmt='%.6f', delimiter='\t')
+
+	# plot airfoil
+	if args.show:
+		plot_airfoil(x, y, t)
+
+
+if __name__ == '__main__':
+	main()

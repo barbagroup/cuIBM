@@ -4,7 +4,8 @@
 * \brief Definition of the methods of the class \c TairaColoniusSolver
 */
 
-#include <solvers/NavierStokes/TairaColoniusSolver.h>
+
+#include "TairaColoniusSolver.h"
 #include <sys/stat.h>
 
 /**

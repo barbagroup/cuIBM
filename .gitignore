@@ -2,11 +2,24 @@
 *.o
 *.a
 *.pyc
+*.png
+._*
+massFlux
 
 # folders
 data/*
 html/*
 latex/*
+0*
+*.plt
+cases/convergence/cavityRe100/*/T*
 
 # files
 bin/cuIBM
+forces
+iterations
+run.info
+grid
+scripts/python/*.bdy
+*.txt
+!validation-data/*.txt

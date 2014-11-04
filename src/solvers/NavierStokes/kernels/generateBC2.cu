@@ -4,7 +4,9 @@
 * \brief Definition of the kernels required to generate elements of vector \c bc2
 */
 
-#include <solvers/NavierStokes/kernels/generateBC2.h>
+
+#include "generateBC2.h"
+
 
 /**
 * \namespace kernels

@@ -1,4 +1,4 @@
-#include <solvers/NavierStokes/SLL2Solver.h>
+#include "SLL2Solver.h"
 #include <sys/stat.h>
 
 //##############################################################################

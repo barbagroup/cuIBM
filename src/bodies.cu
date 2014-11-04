@@ -4,7 +4,9 @@
 * \brief Definition of the class \c bodies
 */
 
-#include <bodies.h>
+
+#include "bodies.h"
+
 
 /**
 * \brief Initialize the arrays in the class with information from \c body instances.

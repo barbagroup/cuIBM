@@ -4,9 +4,11 @@
 * \brief Parse the \a flow file to get boundary and initial conditions
 */
 
-#include <io/io.h>
+
+#include "io.h"
 #include <fstream>
 #include <yaml-cpp/yaml.h>
+
 
 /**
 * \namespace io
@@ -76,13 +78,19 @@ bcType bcTypeFromString(string &s)
 void parseFlow(const YAML::Node &node, parameterDB &DB)
 {
 	string dbKey = "flow";
-	real nu = 0.01, initialU = 1, initialV = 0;
-	real uPerturb = 0, vPerturb = 0;
+	real nu = 0.01, initialU = 1.0, initialV = 0.0;
+	real uPerturb = 0.0, vPerturb = 0.0;
 	node["nu"] >> nu;
 	node["initialVelocity"][0] >> initialU;
 	node["initialVelocity"][1] >> initialV;
-	node["initialPerturbation"][0] >> uPerturb;
-	node["initialPerturbation"][1] >> vPerturb;
+	try
+	{
+		node["initialPerturbation"][0] >> uPerturb;
+		node["initialPerturbation"][1] >> vPerturb;
+	}
+	catch(...)
+	{
+	}
 
 	DB[dbKey]["nu"].set<real>(nu);
 	DB[dbKey]["uInitial"].set<real>(initialU);

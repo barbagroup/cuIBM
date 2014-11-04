@@ -4,8 +4,10 @@
 * \brief Definition of the methods of the class \c NSWithBody
 */
 
-#include <solvers/NavierStokes/NSWithBody.h>
-#include <solvers/NavierStokes/kernels/calculateForce.h>
+
+#include "NSWithBody.h"
+#include "kernels/calculateForce.h"
+
 
 /**
 * \brief Initialize immersed bodies

@@ -4,7 +4,9 @@
 * \brief Definition of the CUDA kernels required to generate vector \c velB
 */
 
-#include <solvers/NavierStokes/kernels/generateVelB.h>
+
+#include "generateVelB.h"
+
 
 /**
 * \namespace kernels

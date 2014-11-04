@@ -41,6 +41,12 @@ unitTests/convectionTerm: $(TESTLIBS) $(EXT_LIBS) src/helpers.o src/parameterDB.
 unitTests/diffusionTerm: $(TESTLIBS) $(EXT_LIBS) src/helpers.o src/parameterDB.o src/unitTests/diffusionTerm.o
 	${CC} $^ -o bin/unitTests/diffusionTerm
 
+vars:
+	@echo ${TEST0}
+	@echo ${TEST1}
+	@echo ${TEST2}
+	@echo ${TEST3}
+
 #src/preconditioner.o
 
 #lib/libcuIBM.a: $(LIBS) $(EXT_LIBS)

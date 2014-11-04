@@ -4,8 +4,11 @@
 * \brief Definition of the methods of the class \c DirectForcingSolver
 */
 
-#include <solvers/NavierStokes/DirectForcingSolver.h>
+
+#include "DirectForcingSolver.h"
 #include <sys/stat.h>
+#include <thrust/extrema.h>
+
 
 /**
 * \brief To be documented
@@ -26,24 +29,13 @@ void DirectForcingSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP);
 	
 	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");
-/*	
+
 	tags.resize(numUV);
 	tagsD.resize(numUV);
 	coeffs.resize(numUV);
 	coeffsD.resize(numUV);
-*/
-	tagsX.resize(numUV);
-	tagsXD.resize(numUV);
-	tagsY.resize(numUV);
-	tagsYD.resize(numUV);
-	coeffsX.resize(numUV);
-	coeffsXD.resize(numUV);
-	coeffsY.resize(numUV);
-	coeffsYD.resize(numUV);
-	uvX.resize(numUV);
-	uvY.resize(numUV);
-	uvXD.resize(numUV);
-	uvYD.resize(numUV);
+	uv.resize(numUV);
+	uvD.resize(numUV);
 	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");
 	
 	tagPoints();
@@ -68,22 +60,6 @@ void DirectForcingSolver<memoryType>::updateSolverState()
 		
 		// assemble the matrices generated using new tags
 		NavierStokesSolver<memoryType>::assembleMatrices();
-		
-/*		logger.startTimer("assembleMatrices");
-		
-		generateL();
-		generateA(intgSchm.alphaImplicit[subStep]);
-		PC1 = new preconditioner< cusp::coo_matrix<int, real, memoryType> >(A, (*paramDB)["velocitySolve"]["preconditioner"].get<preconditionerType>());
-		generateBN();	
-	
-		logger.stopTimer("assembleMatrices");
-
-		generateQT();
-		generateC(); // QT*BN*Q
-	
-		logger.startTimer("preconditioner2");
-		PC2 = new preconditioner< cusp::coo_matrix<int, real, memoryType> >(C, (*paramDB)["PoissonSolve"]["preconditioner"].get<preconditionerType>());
-		logger.stopTimer("preconditioner2");*/
 	}
 }
 
@@ -104,6 +80,36 @@ void DirectForcingSolver<memoryType>::assembleRHS1()
 * \brief To be documented
 */
 template <typename memoryType>
+void DirectForcingSolver<memoryType>::writeMassFluxInfo()
+{
+	parameterDB  &db = *NavierStokesSolver<memoryType>::paramDB;
+	int     nx = NavierStokesSolver<memoryType>::domInfo->nx,
+	        ny = NavierStokesSolver<memoryType>::domInfo->ny,
+	        timeStep = NavierStokesSolver<memoryType>::timeStep;
+
+	cusp::array1d<real, memoryType> fluxes(nx*ny);
+	cusp::multiply(NavierStokesSolver<memoryType>::QT, NavierStokesSolver<memoryType>::q, fluxes);
+	int minPosition = thrust::min_element(fluxes.begin(), fluxes.end()) - fluxes.begin(),
+	    maxPosition = thrust::max_element(fluxes.begin(), fluxes.end()) - fluxes.begin();
+	real minFlux = fluxes[minPosition],
+	     maxFlux = fluxes[maxPosition],
+	     globalSum = thrust::reduce(fluxes.begin(), fluxes.end());
+
+	std::ofstream fluxInfoFile;
+	std::string folder = db["inputs"]["caseFolder"].get<std::string>();
+	std::stringstream out;
+	out << folder << "/massFlux";
+	
+	if(timeStep==1)
+		fluxInfoFile.open(out.str().c_str());
+	else
+		fluxInfoFile.open(out.str().c_str(), std::ios::out | std::ios::app);
+		
+	fluxInfoFile << timeStep << '\t' << minFlux << '\t' << maxFlux << '\t' << globalSum << std::endl;
+	fluxInfoFile.close();
+}
+
+template <typename memoryType>
 void DirectForcingSolver<memoryType>::writeData()
 {	
 	NavierStokesSolver<memoryType>::logger.startTimer("output");
@@ -117,6 +123,8 @@ void DirectForcingSolver<memoryType>::writeData()
 	// Print forces calculated using the CV approach
 	NSWithBody<memoryType>::calculateForce();
 	NSWithBody<memoryType>::forceFile << timeStep*dt << '\t' << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << std::endl;
+
+	writeMassFluxInfo();
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }

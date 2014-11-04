@@ -1,62 +1,78 @@
 #!/usr/bin/env python
-import sys
+
+# file: $CUIBM_DIR/script/python/elements.py
+# author: Anush Krishnan (anush@bu.edu), Oliver Mesnard (mesnardo@gwu.edu)
+# description: display some properties of a given body
+
+
+import os
 import argparse
+import math
+
 import numpy as np
+from matplotlib import pyplot as plt
 
-# Parse command line options
-parser = argparse.ArgumentParser(description="Displays the properties of elements in a specified body file.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("--filename", dest="filename", help="name of file containing body data")
-args = parser.parse_args()
 
-filename = args.filename
-x=[]
-y=[]
-nb = 0
-try:
-	f = open(filename, 'r')
-except TypeError:
-	print "File name missing! Specify with flag --filename."
-	sys.exit()
-except IOError:
-	print "File name invalid! This file does not exist."
-	sys.exit()
+def read_inputs():
+	"""Parses the command-line."""
+	# create the parser
+	parser = argparse.ArgumentParser(description='Display the properties '
+						'of elements of a specified body file',
+						formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+	# fill the parser with arguments
+	parser.add_argument('--path', dest='path', type=str,
+						help='path of the body file')
+	parser.add_argument('--show', dest='show', action='store_true',
+						help='plots the body')
+	return parser.parse_args()
 
-a = f.readline().strip().split()
-numElements = int(a[0])
-a = f.readline().strip().split()
-x0 = float(a[0])
-y0 = float(a[1])
-xmin = x0
-xmax = x0
-a = f.readline().strip().split()
-x1 = float(a[0])
-y1 = float(a[1])
-if x1 < xmin:
-	xmin = x1
-if x1 > xmax:
-	xmax = x1
-dsmin = np.sqrt( (x0-x1)**2 + (y0-y1)**2 )
-dsmax = dsmin
-while True:
-	x0 = x1
-	y0 = y1
-	a = f.readline().strip().split()
-	if a==[]:
-		break
-	x1 = float(a[0])
-	y1 = float(a[1])
-	if x1 < xmin:
-		xmin = x1
-	if x1 > xmax:
-		xmax = x1
-	temp = np.sqrt( (x0-x1)**2 + (y0-y1)**2 )
-	if temp < dsmin:
-			dsmin = temp;
-	if temp > dsmax:
-			dsmax = temp;
-print "Number of elements:", numElements
-print "Size of largest element :", dsmin
-print "Size of smallest element:", dsmax
-print "X-width of the body:", xmax-xmin
-f.close()
+
+def plot_body(x, y, file_name):
+	"""Plots the body.
 	
+	Arguments
+	---------
+	x, y -- coordinates of the body.
+	file_name -- name of the body file.
+	"""
+	plt.figure()
+	plt.grid(True)
+	plt.xlabel(r'$x$', fontsize=18)
+	plt.ylabel(r'$y$', fontsize=18)
+	plt.plot(x, y, color='b', ls='-', lw=2, marker='o', markersize=4)
+	plt.axis('equal')
+	plt.title(file_name, fontsize=16)
+	plt.show()
+
+
+def main():
+	"""Displays the properties of elements of a body."""
+	# parse the command-line
+	args = read_inputs()
+
+	# read the body file
+	with open(args.path, 'r') as infile:
+		n = int(infile.readline())
+		x, y = np.loadtxt(infile, dtype=float, delimiter='\t', unpack=True)
+
+	# compute segment-lengths
+	ds = np.append( np.sqrt((x[1:]-x[:-1])**2 + (y[1:]-y[:-1])**2),
+					math.sqrt((x[-1]-x[0])**2 + (y[-1]-y[0])**2) )
+	
+	file_name = os.path.basename(args.path)	# basename of the path of the file
+
+	# print properties of the body
+	print '\tFile name: %s' % file_name
+	print '\tFile path: %s' % args.path
+	print '\tNumber of elements: %d' % n
+	print '\tSize of largest element: %g' % ds.max()
+	print '\tSize of smallest element: %g' % ds.min()
+	print '\tx-width of the body: %g' % (x.max() - x.min())
+
+	# plot the body
+	if args.show:
+		plot_body(x, y, file_name)
+
+
+if __name__ == '__main__':
+	main()

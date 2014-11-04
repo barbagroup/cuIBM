@@ -12,11 +12,13 @@
 * \brief Main source-file of <B>cuIBM</B>
 */
 
-#include <types.h>
-#include <helpers.h>
-#include <domain.h>
-#include <io/io.h>
-#include <solvers/NavierStokes/createSolver.h>
+
+#include "types.h"
+#include "helpers.h"
+#include "domain.h"
+#include "io/io.h"
+#include "solvers/NavierStokes/createSolver.h"
+
 
 int main(int argc, char **argv)
 {

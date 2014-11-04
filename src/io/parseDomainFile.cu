@@ -4,9 +4,11 @@
 * \brief Parse the \a domain file to get information about the computational grid
 */
 
-#include <io/io.h>
+
+#include "io.h"
 #include <yaml-cpp/yaml.h>
 #include <fstream>
+
 
 /**
 * \namespace io

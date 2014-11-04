@@ -4,7 +4,9 @@
 * \brief Definition of the function to create the Navier-Stokes solver
 */
 
-#include <solvers/NavierStokes/createSolver.h>
+
+#include "createSolver.h"
+
 
 /**
 * \fn

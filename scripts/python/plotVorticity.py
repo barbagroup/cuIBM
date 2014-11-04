@@ -1,95 +1,91 @@
 #!/usr/bin/env python
+
+# file: $CUIBM_DIR/scripts/python/plotVorticity.py
+# author: Anush Krishnan (anush@bu.edu), Olivier Mesnard (mesnardo@gwu.edu)
+# description: plot the contours of vorticity at every saved timestep
+
 import os
-import sys
 import argparse
+
 import numpy as np
-import readData as rd
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt
 
-# Generate optionsfile as per command line options
-parser = argparse.ArgumentParser(description="Plots the vorticity field at all save points for a specified simulation", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("--folder", dest="folder", help="Case folder", default=".")
-parser.add_argument("--blx", type=float, dest="bl_x", help="x-coordinate of the bottom left of the plot region", default=-2)
-parser.add_argument("--bly", type=float, dest="bl_y", help="y-coordinate of the bottom left of the plot region", default=-3)
-parser.add_argument("--trx", type=float, dest="tr_x", help="x-coordinate of the top right of the plot region", default=4)
-parser.add_argument("--try", type=float, dest="tr_y", help="y-coordinate of the top right of the plot region", default=3)
-parser.add_argument("--vortlim", type=float, dest="vortlim", help="cutoff vorticity on the plot", default=15)
-parser.add_argument("--plot-only", dest="plot_only", help="only generate the vorticity plots and do no recalculate the data", action='store_true')
-parser.set_defaults(plot_only=False)
-args = parser.parse_args()
+from readData import readSimulationParameters, readGridData, readVelocityData
 
-folder = args.folder
-nt, startStep, nsave, _ = rd.readSimulationParameters(folder)
+def read_inputs():
+	"""Parses the command-line."""
+	# create the parser
+	parser = argparse.ArgumentParser(description='plots the vorticity field '
+						'at every save point for a given simulation',
+						formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+	# fill the parser with arguments
+	parser.add_argument('-folder', dest='folder', type=str, default='.',
+						help='folder of the simulation')
+	parser.add_argument("-xmin", type=float, dest="xmin", help="lower x-limit of the plotting region", default=-2.0)
+	parser.add_argument("-xmax", type=float, dest="xmax", help="upper x-limit of the plotting region", default=4.0)
+	parser.add_argument("-ymin", type=float, dest="ymin", help="lower y-limit of the plotting region", default=-3.0)
+	parser.add_argument("-ymax", type=float, dest="ymax", help="upper y-limit of the plotting region", default=3.0)
+	parser.add_argument('-vortlim', dest='vortlim', type=float, default=3.0,
+						help='vorticity cutoff on the plot')
+	parser.add_argument('-numlevels', dest='numlevels', type=int, default=16,
+						help='number of vortex contour line levels (choose an even number)')
+	return parser.parse_args()
 
-if not args.plot_only:
-	nx, ny, dx, dy, _, yu, xv, _ = rd.readGridData(folder)
 
-	Istart = 0
-	while args.bl_x > xv[Istart]:
-		Istart = Istart+1
-	Iend = nx-1
-	while args.tr_x < xv[Iend]:
-		Iend = Iend-1
+def main():
+	"""Plots the contour of vorticity at every time saved."""
+	# parse the command-line
+	args = read_inputs()
 
-	Jstart = 0
-	while args.bl_y > yu[Jstart]:
-		Jstart = Jstart+1
-	Jend = ny-1
-	while args.tr_y < yu[Jend]:
-		Jend = Jend-1
+	folder = args.folder	# name of the folder
 
-	k = startStep + nsave
-	while k < (nt+1):
-		u, v = rd.readVelocityData(folder, k, nx, ny, dx, dy)
-		if u==None or v==None:
+	# read the parameters of the simulation
+	nt, start_step, nsave, _ = readSimulationParameters(folder)
+
+	# calculate the mesh characteristics
+	nx, ny, dx, dy, _, yu, xv, _ = readGridData(folder)
+
+	# calculate appropriate array boundaries
+	i_start = np.where(xv >= args.xmin)[0][0]
+	i_end = np.where(xv <= args.xmax)[0][-1]
+	j_start = np.where(yu >= args.ymin)[0][0]
+	j_end = np.where(yu <= args.ymax)[0][-1]
+
+	y = np.zeros(j_end-j_start)
+	x = np.zeros(i_end-i_start)
+	x[:] = 0.5*(xv[i_start:i_end] + xv[i_start+1:i_end+1])
+	y[:] = 0.5*(yu[j_start:j_end] + yu[j_start+1:j_end+1])
+	X, Y = np.meshgrid(x, y)
+
+	Omg = np.zeros((j_end-j_start, i_end-i_start))
+
+	# time-loop
+	for ite in xrange(start_step+nsave, nt+1, nsave):
+		# read the velocity data at the given time-step
+		u, v = readVelocityData(folder, ite, nx, ny, dx, dy)
+		if u == None or v == None:
 			break
-		vortFile = args.folder + ("/%07d" % k) + "/vorticity"
-		print vortFile
-		f = open(vortFile, 'w')
-		for j in range(Jstart, Jend):
-			y  = (yu[j] + yu[j+1])/2.
-			Dy = (dy[j] + dy[j+1])/2.
-			for i in range(Istart, Iend):
-				# calculate the vorticity
-				# w = dv/dx-du/dy
-				x  = (xv[i] + xv[i+1])/2.
-				Dx = (dx[i] + dx[i+1])/2.
-				vort = (v[j*nx+i+1] - v[j*nx+i])/Dx - (u[(j+1)*(nx-1)+i] - u[j*(nx-1)+i])/Dy
-				f.write("%f\t%f\t%f\n" % (x, y, vort))
-			f.write("\n")
-		f.close()
-		k = k + nsave
 
-vortFile = "%s/vorticity.plt" % folder
-f = open( vortFile, 'w')
+		# calculate the vorticity
+		for j in xrange(j_start, j_end):
+			Dy = 0.5 * (dy[j] + dy[j+1])
+			for i in xrange(i_start, i_end):
+				Dx = 0.5 * (dx[i] + dx[i+1])
+				Omg[j-j_start, i-i_start] = (v[j*nx+i+1] - v[j*nx+i]) / Dx \
+					  - (u[(j+1)*(nx-1)+i] - u[j*(nx-1)+i]) / Dy
 
-print 'Creating gnuplot file... ';
+		CS = plt.contour(X, Y, Omg, levels=np.linspace(-args.vortlim, args.vortlim, args.numlevels))
+		plt.title("Vorticity")
+		plt.colorbar(CS)
+		plt.axis([xv[i_start], xv[i_end], yu[j_start], yu[j_end]])
+		plt.gca().set_aspect('equal', adjustable='box')
+		plt.savefig('{}/o{:0>7}.png'.format(folder,ite))
+		plt.clf()
+		print "Saved figure {}/O{:0>7}.png".format(folder,ite)
+	
+	print 'DONE!'
 
-f.write("reset;\n")
-f.write("""set terminal pngcairo enhanced font "Times, 15" size 900,600;\n""")
-
-k = startStep+nsave
-while k < (nt+1):
-	# image file name
-	f.write("\nset output '%s/plot%07d.png'\n" % (folder, k))
-	f.write("set multiplot;\n")
-	# vorticity
-	f.write("reset;\n")
-	f.write("set view map; set size ratio -1; unset key;\n")
-	f.write("set pm3d map;\n")
-	f.write("set palette defined (-2 'dark-blue', -1 'light-blue', 0 'white', 1 'light-red', 2 'dark-red');\n")
-	f.write("set cbrange [%f:%f];\n" % (-args.vortlim, args.vortlim))
-	f.write("splot [%f:%f] [%f:%f] '%s/%07d/vorticity';\n" % (args.bl_x, args.tr_x, args.bl_y, args.tr_y, folder, k) )
-	# bodies
-	#f.write("reset;\n")
-	#f.write("set view map; set size ratio -1; unset key;\n")
-	#f.write("splot [%f:%f] [%f:%f] '%s/%07d/bodies' u 1:2:(0) w l lw 2 lc 'black';\n" % (args.bl_x, args.tr_x, args.bl_y, args.tr_y, folder, i) )
-	f.write("unset multiplot;\n")
-	k = k + nsave
-f.close()
-
-print 'DONE!'
-
-# Run the plotting script
-print 'Generating PNGs... '
-os.system("gnuplot %s" % vortFile)
-print 'DONE!'
+if __name__ == '__main__':
+	main()

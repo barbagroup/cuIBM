@@ -4,7 +4,9 @@
 * \brief Definition of the kernels required to generate elements of the interpolation matrix
 */
 
-#include <solvers/NavierStokes/kernels/generateE.h>
+
+#include "generateE.h"
+
 
 /**
 * \brief Discrete delta function defined by Roma et al. (1999)

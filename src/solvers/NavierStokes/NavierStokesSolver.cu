@@ -4,9 +4,11 @@
 * \brief Definition of the methods of the class \c NavierStokesSolver 
 */
 
+
+#include "NavierStokesSolver.h"
 #include <sys/stat.h>
 #include <io/io.h>
-#include <solvers/NavierStokes/NavierStokesSolver.h>
+
 
 //##############################################################################
 //                              INITIALISE
