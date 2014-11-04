@@ -1,8 +1,8 @@
 /***************************************************************************//**
-* \file parseDomainFile.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Parse the \a domain file to get information about the computational grid
-*/
+ * \file parseDomainFile.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Parses the \a domain file to get information about the computational grid.
+ */
 
 
 #include "io.h"
@@ -11,20 +11,20 @@
 
 
 /**
-* \namespace io
-* \brief Contain functions related to I/O tasks
-*/
+ * \namespace io
+ * \brief Contains functions related to I/O tasks.
+ */
 namespace io
 {
 
 using std::string;
 
 /**
-* \brief Overload the operator >>
-*
-* \param node the parsed file
-* \param D instance of the class \c domain to be filled
-*/
+ * \brief Overloads the operator >>.
+ *
+ * \param node the parsed file
+ * \param D instance of the class \c domain to be filled
+ */
 void operator >> (const YAML::Node &node, domain &D)
 {
 	string dir;
@@ -128,11 +128,11 @@ void operator >> (const YAML::Node &node, domain &D)
 }
 
 /**
-* \brief Parse the \a domain file using YAML
-*
-* \param domFile the file that contains information about the computational grid
-* \param D object of the class \c domain that will be filled with information about the computational grid
-*/
+ * \brief Parses the \a domain file using YAML.
+ *
+ * \param domFile the file that contains information about the computational grid
+ * \param D object of the class \c domain that will be filled with information about the computational grid
+ */
 void parseDomainFile(std::string &domFile, domain &D)
 {
 	std::ifstream fin(domFile.c_str());

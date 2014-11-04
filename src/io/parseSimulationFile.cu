@@ -1,8 +1,8 @@
 /***************************************************************************//**
-* \file parseSimulationFile.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Parse the \a simulation file to fill the databse
-*/
+ * \file parseSimulationFile.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Parses the \a simulation file to fill the database.
+ */
 
 
 #include "io.h"
@@ -12,21 +12,21 @@
 
 
 /**
-* \namespace io
-* \brief Contain functions related to I/O tasks
-*/
+ * \namespace io
+ * \brief Contains functions related to I/O tasks.
+ */
 namespace io
 {
 
 using std::string;
 
 /**
-* \brief Convert a string to a time-scheme type
-*
-* \param s the string that describes the time-scheme
-*
-* \return a time-scheme type
-*/
+ * \brief Converts a string to a time-scheme type.
+ *
+ * \param s the string that describes the time-scheme
+ *
+ * \return a time-scheme type
+ */
 timeScheme timeSchemeFromString(string &s)
 {
   if (s == "EULER_EXPLICIT")
@@ -44,12 +44,12 @@ timeScheme timeSchemeFromString(string &s)
 }
 
 /**
-* \brief Convert a string to a prconditioner type
-*
-* \param s the string that describes the preconditioner
-*
-* \return a preconditioner type
-*/
+ * \brief Converts a string to a prconditioner type.
+ *
+ * \param s the string that describes the preconditioner
+ *
+ * \return a preconditioner type
+ */
 preconditionerType preconditionerTypeFromString(string &s)
 {
   if (s == "NONE")
@@ -63,12 +63,12 @@ preconditionerType preconditionerTypeFromString(string &s)
 }
 
 /**
-* \brief Convert a string to an IBM scheme
-*
-* \param s the string that describes the IBM scheme
-*
-* \return an IBM-scheme type
-*/
+ * \brief Converts a string to an IBM scheme.
+ *
+ * \param s the string that describes the IBM scheme
+ *
+ * \return an IBM-scheme type
+ */
 ibmScheme ibmSchemeFromString(string &s)
 {
   if (s == "NAVIER_STOKES")
@@ -85,6 +85,13 @@ ibmScheme ibmSchemeFromString(string &s)
     return NAVIER_STOKES;
 }
 
+/**
+ * \brief Converts a string to a interpolation type.
+ *
+ * \param s the string that describes the type of interpolation
+ *
+ * \return an interpolation type
+ */
 interpolationType interpolationTypeFromString(string &s)
 {
   if (s == "CONSTANT")
@@ -96,11 +103,11 @@ interpolationType interpolationTypeFromString(string &s)
 }
 
 /**
-* \brief Fill the database with the simulation parameters
-*
-* \param node the parsed file
-* \param DB database that contains the simulation parameters
-*/
+ * \brief Fills the database with the simulation parameters.
+ *
+ * \param node the parsed file
+ * \param DB database that contains the simulation parameters
+ */
 void parseSimulation(const YAML::Node &node, parameterDB &DB)
 {
 	real   dt = 0.02,
@@ -211,11 +218,11 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 }
 
 /**
-* \brief Parse the \a simulation file using YAML
-*
-* \param simFile the file that contains the simulation parameters
-* \param DB the database that will be filled with the simulation parameters
-*/
+ * \brief Parses the \a simulation file using YAML.
+ *
+ * \param simFile the file that contains the simulation parameters
+ * \param DB the database that will be filled with the simulation parameters
+ */
 void parseSimulationFile(std::string &simFile, parameterDB &DB)
 {
 	std::ifstream fin(simFile.c_str());

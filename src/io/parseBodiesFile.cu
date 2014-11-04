@@ -1,8 +1,8 @@
 /***************************************************************************//**
-* \file parseBodiesFile.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Parse the \a bodies file to get information about immersed bodies
-*/
+ * \file parseBodiesFile.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Parses the \a bodies file to get information about immersed bodies.
+ */
 
 
 #include "io.h"
@@ -13,20 +13,20 @@
 
 
 /**
-* \namespace io
-* \brief Contain functions related to I/O tasks
-*/
+ * \namespace io
+ * \brief Contains functions related to I/O tasks.
+ */
 namespace io
 {
 
 using std::string;
 
 /**
-* \brief Set up information about the immersed bodies
-*
-* \param node the parsed file
-* \param instance of the class \c body to be filled
-*/
+ * \brief Sets up information about the immersed bodies.
+ *
+ * \param node the parsed file
+ * \param instance of the class \c body to be filled
+ */
 void operator >> (const YAML::Node &node, body &Body)
 {
 	try
@@ -174,11 +174,11 @@ void operator >> (const YAML::Node &node, body &Body)
 }
 
 /**
-* \brief Parse the \a bodies file using YAML
-*
-* \param bodiesFile the file that contains information about the immersed bodies
-* \param DB the database that will be filled with information about the immersed bodies
-*/
+ * \brief Parses the \a bodies file using YAML.
+ *
+ * \param bodiesFile the file that contains information about the immersed bodies
+ * \param DB the database that will be filled with information about the immersed bodies
+ */
 void parseBodiesFile(std::string &bodiesFile, parameterDB &DB)
 {
 	std::ifstream fin(bodiesFile.c_str());
@@ -197,4 +197,3 @@ void parseBodiesFile(std::string &bodiesFile, parameterDB &DB)
 }
 
 } // end namespace io
-
