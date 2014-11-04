@@ -1,21 +1,23 @@
 /***************************************************************************//**
-* \file NSWithBody.h
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Declaration of the class \c NSWithBody
-*/
+ * \file NSWithBody.h
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Declaration of the class \c NSWithBody.
+ */
+
 
 #pragma once
 
 #include "NavierStokesSolver.h"
 #include <bodies.h>
 
+
 /**
-* \class NSWithBody
-* \brief Generic Navier-Stokes solver in the presence of immersed boundaries.
-*
-* The class inherits from the class \c NavierStokesSolver.
-*
-*/
+ * \class NSWithBody
+ * \brief Generic Navier-Stokes solver in the presence of immersed boundaries.
+ *
+ * The class inherits from the class \c NavierStokesSolver.
+ *
+ */
 template <typename memoryType>
 class NSWithBody : public NavierStokesSolver<memoryType>
 {
@@ -28,28 +30,28 @@ protected:
 	std::ofstream forceFile;	///< file to write the forces
 
 	/**
-	* \brief Calculate drag and lift for each immersed body
-	*/
+	 * \brief Calculates drag and lift for each immersed body.
+	 */
 	virtual void calculateForce();
 	
 	/**
-	* \brief Initialize immersed bodies
-	*/
+	 * \brief Initializes immersed bodies.
+	 */
 	void initialiseBodies();
 	
 	/**
-	* \brief Update location and velocity of immersed bodies at current time
-	*/
+	 * \brief Updates location and velocity of immersed bodies at current time.
+	 */
 	void updateBodies();
 
 public:
 	/**
-	* \brief Write flow variables and location of body points into files
-	*/
+	 * \brief Writes flow variables and location of body points into files.
+	 */
 	virtual void writeCommon();
 	
 	/**
-	* \brief Close iteration file and force file
-	*/
+	 * \brief Closes iteration file and force file.
+	 */
 	virtual void shutDown();
 };

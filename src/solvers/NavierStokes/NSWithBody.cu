@@ -1,8 +1,8 @@
 /***************************************************************************//**
-* \file NSWithBody.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the methods of the class \c NSWithBody
-*/
+ * \file NSWithBody.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c NSWithBody.
+ */
 
 
 #include "NSWithBody.h"
@@ -10,8 +10,8 @@
 
 
 /**
-* \brief Initialize immersed bodies
-*/
+ * \brief Initializes immersed bodies.
+ */
 template <typename memoryType>
 void NSWithBody<memoryType>::initialiseBodies()
 {
@@ -29,8 +29,8 @@ void NSWithBody<memoryType>::initialiseBodies()
 }
 	
 /**
-* \brief Update location and velocity of immersed bodies at current time
-*/
+ * \brief Updates location and velocity of immersed bodies at current time.
+ */
 template <typename memoryType>
 void NSWithBody<memoryType>::updateBodies()
 {
@@ -45,16 +45,16 @@ void NSWithBody<memoryType>::updateBodies()
 };
 
 /**
-* \brief Doing nothing !
-*/
+ * \brief Doing nothing !
+ */
 template <>
 void NSWithBody<host_memory>::calculateForce()
 {
 }
 
 /**
-* \brief Calculate drag and lift for each immersed body on the device
-*/
+ * \brief Calculates drag and lift for each immersed body on the device.
+ */
 template <>
 void NSWithBody<device_memory>::calculateForce()
 {
@@ -120,8 +120,8 @@ void NSWithBody<device_memory>::calculateForce()
 }
 
 /**
-* \brief Write flow variables and location of body points into files
-*/
+ * \brief Writes flow variables and location of body points into files.
+ */
 template <typename memoryType>
 void NSWithBody<memoryType>::writeCommon()
 {	
@@ -142,8 +142,8 @@ void NSWithBody<memoryType>::writeCommon()
 }
 
 /**
-* \brief Close iteration file and force file
-*/
+ * \brief Closes iteration file and force file.
+ */
 template <typename memoryType>
 void NSWithBody<memoryType>::shutDown()
 {
