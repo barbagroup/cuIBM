@@ -1,21 +1,23 @@
 /***************************************************************************//**
-* \file body.h
-* \author Krishnan, A. (anus@bu.edu)
-* \brief Definition of the class \c body
-*/
+ * \file body.h
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Definition of the class \c body.
+ */
+
 
 #pragma once
 
+
 /**
-* \class body
-* \brief Information about an immersed body in the flow.
-*
-* The number of boundary points and the reference x- and y-coordinates of the
-* boundary points are provided. The motion of the body is also described.
-* For uniform motion, the translational velocity needs to be specified, and for
-* uniform rotation, the angular velocity has to be specified.
-*
-*/
+ * \class body
+ * \brief Contains information about an immersed boundary in the flow.
+ *
+ * The number of boundary points and the reference x- and y-coordinates of the
+ * boundary points are provided. The motion of the body is also described.
+ * For uniform motion, the translational velocity needs to be specified, and for
+ * uniform rotation, the angular velocity has to be specified.
+ *
+ */
 class body
 {
   public:
@@ -44,9 +46,12 @@ class body
          pitchOscillation[3]; ///< amplitude, angular frequency and phase difference of pitch oscillation
     
 	/**
-	* \brief Update the position of the center of rotation of the body and
-	*        the translational and rotational velocities of the boundary points.
-	*/
+	 * \brief Updates the position of the center of rotation of the body and
+	 *        the translational and rotational velocities of the boundary points.
+	 *
+	 * \param Time the time
+	 *
+	 */
 	void update(real Time)
 	{
 		// if the body is translating
@@ -65,6 +70,11 @@ class body
 		}
 	}
 
+	/**
+	 * \brief Resest the position and motion of the body.
+	 *
+	 * The body center is now at (0,0) and is not moving anymore.
+	 */
 	void reset()
 	{
 		X0[0]  = X0[1]  = 0.0;
