@@ -6,10 +6,11 @@
  * \author Anush Krishnan (anush@bu.edu)
  */
 
+
 /***************************************************************************//**
  * \file cuIBM.cu
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Main source-file of <B>cuIBM</B>.
+ * \brief Main source-file of \c cuIBM.
  */
 
 
