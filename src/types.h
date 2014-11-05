@@ -55,7 +55,7 @@ enum boundary
 
 /**
  * \enum  timeScheme
- * \brief Numerical scheme used for time-integration.
+ * \brief Specifies the numerical scheme used for time-integration.
  */
 enum timeScheme
 {
@@ -105,7 +105,7 @@ enum preconditionerType
 
 /**
  * \typedef real
- * \brief Can be \c float or \c double depending on the machine precision.
+ * \brief Is a \c float or a \c double depending on the machine precision.
  */
 typedef double real;
 
