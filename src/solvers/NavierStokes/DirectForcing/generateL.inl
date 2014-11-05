@@ -1,14 +1,27 @@
+/***************************************************************************//**
+ * \file generateL.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Generates the matrix L.
+ */
+
+
 /*template <typename memoryType>
 void DirectForcingSolver<memoryType>::generateL()
 {
 	
 }*/
 
+/**
+ * \brief To be documented.
+ */
 template <>
 void DirectForcingSolver<host_memory>::generateL() 
 {
 }
 
+/**
+ * \brief To be documented.
+ */
 template <>
 void DirectForcingSolver<device_memory>::generateL() 
 {

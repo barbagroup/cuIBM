@@ -1,5 +1,18 @@
+/***************************************************************************//**
+ * \file generateA.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods \c generateA 
+ *        of the class \c DirectForcingSolver.
+ */
+
+
 #include <solvers/NavierStokes/kernels/generateA.h>
 
+/**
+ * \brief Generates the matrix A on the device.
+ *
+ * \param alpha to be documented
+ */
 template <>
 void DirectForcingSolver  <device_memory>::generateA(real alpha)
 {
@@ -29,6 +42,11 @@ void DirectForcingSolver  <device_memory>::generateA(real alpha)
 	kernels::generateADirectForcing <<<dimGrid, dimBlock>>> (ARows, ACols, AVals, MVals, LRows, LCols, LVals, ASize, alpha, tags_r);
 }
 
+/**
+ * \brief Generates the matrix A on the host.
+ *
+ * \param alpha to be documented
+ */
 template <>
 void DirectForcingSolver<host_memory>::generateA(real alpha)
 {

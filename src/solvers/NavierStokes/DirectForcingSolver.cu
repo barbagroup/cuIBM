@@ -1,8 +1,8 @@
 /***************************************************************************//**
-* \file DirectForcingSolver.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the methods of the class \c DirectForcingSolver
-*/
+ * \file DirectForcingSolver.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c DirectForcingSolver.
+ */
 
 
 #include "DirectForcingSolver.h"
@@ -11,8 +11,8 @@
 
 
 /**
-* \brief To be documented
-*/
+ * \brief To be documented.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::initialise()
 {
@@ -45,8 +45,8 @@ void DirectForcingSolver<memoryType>::initialise()
 }
 
 /**
-* \brief To be documented
-*/
+ * \brief To be documented.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::updateSolverState()
 {
@@ -64,8 +64,8 @@ void DirectForcingSolver<memoryType>::updateSolverState()
 }
 
 /**
-* \brief To be documented
-*/
+ * \brief To be documented.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::assembleRHS1()
 {
@@ -77,8 +77,8 @@ void DirectForcingSolver<memoryType>::assembleRHS1()
 }
 
 /**
-* \brief To be documented
-*/
+ * \brief To be documented.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::writeMassFluxInfo()
 {
@@ -109,6 +109,9 @@ void DirectForcingSolver<memoryType>::writeMassFluxInfo()
 	fluxInfoFile.close();
 }
 
+/**
+ * \brief To be documented.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::writeData()
 {	
@@ -130,8 +133,8 @@ void DirectForcingSolver<memoryType>::writeData()
 }
 
 /**
-* \brief To be documented
-*/
+ * \brief To be documented.
+ */
 template <typename memoryType>
 DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *dInfo)
 {
@@ -139,6 +142,7 @@ DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *d
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
 }
 
+// inline files in the folder "DirectForcing"
 #include "DirectForcing/tagPoints.inl"
 #include "DirectForcing/generateL.inl"
 #include "DirectForcing/generateA.inl"

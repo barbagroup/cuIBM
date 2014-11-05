@@ -1,8 +1,8 @@
 /***************************************************************************//**
-* \file  DirectForcingSolver.h
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Modified direct forcing immersed boundary method.
-*/
+ * \file  DirectForcingSolver.h
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Modified direct forcing immersed boundary method.
+ */
 
 
 #pragma once
@@ -10,14 +10,14 @@
 #include "NSWithBody.h"
 
 
-/********************//**
-* \class DirectForcingSolver
-* \brief A fully discrete formulation of the direct forcing method
-*
-* first proposed by Fadlun et al (2000) \n
-* with modifications by Kim et al (2001)
-*
-*/
+/**
+ * \class DirectForcingSolver
+ * \brief A fully discrete formulation of the direct forcing method.
+ *
+ * First proposed by Fadlun et al (2000) \n
+ * with modifications by Kim et al (2001).
+ *
+ */
 template <typename memoryType>
 class DirectForcingSolver : public NSWithBody<memoryType>
 {
@@ -29,15 +29,15 @@ protected:
 	vecD coeffsD, uvD;
 	
 	/**
-	* \brief
-	*/
+	 * \brief To be documented.
+	 */
 	void tagPoints();
 	
 	//void tagPoints(real *bx, real *by);
 	
 	/**
-	* \brief
-	*/
+	 * \brief To be documented.
+	 */
 	void tagPoints(real *bx, real *by, real *uB, real *vB);
 
 	virtual void generateA(real alpha);
@@ -56,8 +56,8 @@ protected:
 	
 public:
 	/**
-	* \brief Constructor of the class DirectForcingSolver
-	*/
+	 * \brief Constructor of the class \c DirectForcingSolver.
+	 */
 	DirectForcingSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
 	virtual void initialise();
 	virtual void writeData();

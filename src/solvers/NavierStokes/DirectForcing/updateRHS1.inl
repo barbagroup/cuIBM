@@ -1,5 +1,15 @@
+/***************************************************************************//**
+ * \file updateRHS1.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Updates the RHS.
+ */
+
+
 #include <solvers/NavierStokes/kernels/updateRHS1.h>
 
+/**
+ * \brief To be documented.
+ */
 template <>
 void DirectForcingSolver<device_memory>::updateRHS1()
 {
@@ -28,6 +38,9 @@ void DirectForcingSolver<device_memory>::updateRHS1()
 	kernels::updateRHS1Y <<<dimGrid, dimBlock>>>(rhs1_r, nx, ny, dt, dy_r, tags_r, coeffs_r, uv_r);
 }
 
+/**
+ * \brief To be documented.
+ */
 template <>
 void DirectForcingSolver<host_memory>::updateRHS1()
 {

@@ -1,8 +1,13 @@
-/**
-* @file tagPoints.inl
-* @brief Tag points near the immsersed boundary using a ray-tracing algorithm
-*/
+/***************************************************************************//**
+ * \file tagPoints.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Tag points near the immsersed boundary using a ray-tracing algorithm.
+ */
 
+
+/**
+ * \brief To be documented.
+ */
 template <>
 void DirectForcingSolver<host_memory>::tagPoints()
 {
@@ -18,6 +23,9 @@ void DirectForcingSolver<host_memory>::tagPoints()
 	logger.stopTimer("tagPoints");
 }
 
+/**
+ * \brief To be documented.
+ */
 template <>
 void DirectForcingSolver<device_memory>::tagPoints()
 {

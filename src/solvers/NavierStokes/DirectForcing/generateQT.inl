@@ -1,5 +1,16 @@
+/***************************************************************************//**
+ * \file generateQT.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Generates the matrix QT.
+ */
+
+
 #include <solvers/NavierStokes/kernels/generateQT.h>
 
+
+/**
+ * \brief To be documented.
+ */
 template <>
 void DirectForcingSolver<host_memory>::updateQ()
 {
@@ -27,6 +38,9 @@ void DirectForcingSolver<device_memory>::updateQ()
 	kernels::updateQ <<<dimGrid, dimBlock>>> (QRows, QCols, QVals, QSize, tags_r);
 }
 
+/**
+ * \brief To be documented.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::generateQT()
 {
