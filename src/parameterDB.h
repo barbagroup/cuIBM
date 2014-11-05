@@ -13,12 +13,13 @@
 #include <map>
 #include <sstream>
 #include <iostream>
+
 #include "boundaryCondition.h"
 
 
 /**
  * \class property
- * \brief Contains information about a property stored in a generic way.
+ * \brief Stores information about a property in a generic way.
  */
 class property
 {
@@ -32,35 +33,26 @@ class property
 
 public:
 	/**
-	 * \brief Constructor of the class \c property.
-	 *
-	 * It initializes the memory to zero.
-	 *
+	 * \brief Constructor. Initializes the memory to zero.
 	 */
 	property()
 	{
 		memset(value, 0, 256);
 	}
 	
-	/**
-	 * \brief Gets the value of the property as a given type.
-	 */
+	// get the value of the property as a given type
 	template <typename T> T get();
 	
-	/**
-	 * \brief Sets the value of the property given a type.
-	 */
+	// set the value of the property given a type
 	template <typename T> void set(T v);
 
-	/**
-	 * \brief Returns a string describing the value of property as appropriate.
-	 */
+	// return a string describing the value
 	const char *print();
 };
 
 /**
  * \typedef componentParameter
- * \brief Map from a string to a \c property.
+ * \brief Map from a string to a \c property object.
  */
 typedef std::map<std::string, property> componentParameter;
 

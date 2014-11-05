@@ -28,7 +28,7 @@ std::string toString(T num)
 /**
  * \brief Converts a type of boundary condition to a string.
  *
- * \param b a type of boundary condition
+ * \param b a type of boundary condition (\c bcType)
  *
  * \return a string
  */
