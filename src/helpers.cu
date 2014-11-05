@@ -1,7 +1,7 @@
 /***************************************************************************//**
  * \file helpers.cu
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Implementation of the discrete Delta function.
+ * \brief Implementation of the discrete delta function.
  */
 
 
@@ -9,12 +9,11 @@
 
 
 /**
- * \fn real dhRoma(real x, real h)
- * \brief Discrete Delta function from Roma et al. (1999).
+ * \brief Discrete delta function from Roma et al. (1999).
  *
  * A.M. Roma, C.S. Peskin, M.J. Berger.
- * An adaptative versionof the immersed boundary method.
- * J. Comput. Phys. 153 (1999), 509-534.
+ * An adaptative version of the immersed boundary method.
+ * J. Comput. Phys. 153, 509-534 (1999).
  *
  * \param x coordinate of the grid point
  * \param h grid-spacing in the uniform region
@@ -34,10 +33,9 @@ real dhRoma(real x, real h)
 }
 
 /**
- * \fn real delta(real x, real y, real h)
- * \brief Two-dimensional discrete Delta function.
+ * \brief Two-dimensional discrete elta function.
  *
- * \param x x-coodinate of the grid point
+ * \param x x-coordinate of the grid point
  * \param y y-coordinate of the grid point
  * \param h grid-spacing in the uniform region
  *
