@@ -57,33 +57,21 @@ public:
 		uB,    ///< x-velocity of the boundary points
 		vB;    ///< y-velocity of the boundary points
 
-	/**
-	 * \brief Stores initial position and velocity of each body in the flow.
-	 */
+	// set initial position and velocity of each body
 	void initialise(parameterDB &db, domain &D);
 	
-	/**
-	 * \brief Stores index of each vell that contains a boundary point.
-	 */
+	// store index of each cell that contains a boundary point
 	void calculateCellIndices(domain &D);
 	
-	/**
-	 * \brief Calculates indices of the bounding box of each body in the flow.
-	 */
+	// store indices of the bounding box of each body
 	void calculateBoundingBoxes(parameterDB &db, domain &D);
 	
-	/**
-	 * \brief Updates position and velocity of each body point and its neighbor.
-	 */
+	// update position, velocity and neighbors of each body
 	void update(parameterDB &db, domain &D, real Time);
 
-	/**
-	 * \brief Writes body coordinates into a file.
-	 */
+	// write body coordinates into a file
 	void writeToFile(std::string &caseFolder, int timeStep);
 
-	/**
-	 * \brief Writes body coordinates into a file called \a bodies.
-	 */
+	// write body coordinates into a file called \a bodies
 	void writeToFile(real *bx, real *by, std::string &caseFolder, int timeStep);
 };

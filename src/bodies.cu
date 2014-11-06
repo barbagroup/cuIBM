@@ -9,7 +9,7 @@
 
 
 /**
- * \brief Stores initial position and velocity of each body in the flow.
+ * \brief Sets initial position and velocity of each body.
  *
  * \param db database that contains all the simulation parameters
  * \param D information about the computational grid
@@ -205,7 +205,7 @@ void bodies<memoryType>::calculateBoundingBoxes(parameterDB &db, domain &D)
 }
 
 /**
- * \brief Updates position and velocity of each body point and its neighbor.
+ * \brief Updates position, velocity and neighbors of each body.
  *
  * This is done using the formulae:
  *
@@ -226,7 +226,7 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 	typedef typename Array::iterator                 Iterator;
 	typedef cusp::array1d_view<Iterator>             View;
 
-	// Views of the vectors that store the coordinates and velocities of all the body points
+	// views of the vectors that store the coordinates and velocities of all the body points
 	View    XView, YView, xView, yView, onesView, uBView, vBView;
 	
 	// body data
@@ -234,7 +234,7 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 	
 	for(int l=0; l<numBodies; l++)
 	{
-		// Update the location and velocity of the body
+		// update the location and velocity of the body
 		(*B)[l].update(Time);
 		
 		// create the views for the current body
@@ -259,7 +259,7 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 			vBView   = View(vB.begin()+offsets[l], vB.end());
 		}
 		
-		// Update postitions	
+		// update postitions	
 		// x-coordinates
 		cusp::blas::axpbypcz( onesView, XView, onesView, xView, (*B)[l].Xc[0],  cos((*B)[l].Theta), -(*B)[l].X0[0]*cos((*B)[l].Theta) );
 		cusp::blas::axpbypcz( xView,    YView, onesView, xView,           1.0, -sin((*B)[l].Theta),  (*B)[l].X0[1]*sin((*B)[l].Theta) );
@@ -267,7 +267,7 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 		cusp::blas::axpbypcz( onesView, XView, onesView, yView, (*B)[l].Xc[1],  sin((*B)[l].Theta), -(*B)[l].X0[0]*sin((*B)[l].Theta) );
 		cusp::blas::axpbypcz( yView,    YView, onesView, yView,           1.0,  cos((*B)[l].Theta), -(*B)[l].X0[1]*cos((*B)[l].Theta) );
 	
-		// Update velocities
+		// update velocities
 		// x-velocities
 		cusp::blas::axpbypcz(onesView, yView, onesView, uBView, (*B)[l].vel[0], -(*B)[l].angVel,  (*B)[l].angVel*(*B)[l].Xc[1]);
 		// y-velocities
