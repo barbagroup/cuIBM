@@ -15,7 +15,7 @@
 
 /**
  * \class boundaryCondition
- * \brief Stores the boundary conditions for a given system.
+ * \brief Stores the type of boundary condition and its value.
  */
 class boundaryCondition
 {
@@ -24,19 +24,16 @@ public:
 	real  value; ///< numerical value associated with the boundary condition
 	
 	/**
-	 * \brief Constructor of the class \c boundaryCondition.
-	 *
-	 * Boundary condition initialized with a Dirichlet-type with
-	 * with a value sets to zero.
-	 *
+	 * \brief Constructor. Sets Dirichlet boundary condition with value.
 	 */
 	boundaryCondition() : type(DIRICHLET), value(0) {};
 
 	/**
-	 * \brief Other constructor of the class \c boundaryCondition.
+	 * \brief Constructor overloading. Sets boundary condition to a given type
+	 *        with a given value.
 	 *
-	 * Boundary condition initialized with a given type and a given value.
-	 *
+	 * \param _type the type of boundary condition
+	 * \param _value the value at the boundary
 	 */
 	boundaryCondition(bcType _type, real _value) : type(_type), value(_value) {}; 
 
