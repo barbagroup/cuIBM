@@ -56,7 +56,7 @@ public:
 		alphaExplicit.resize(subSteps);
 		alphaImplicit.resize(subSteps);
 		
-		// set the coefficients of the convectiont terms
+		// set the coefficients of the convection terms
 		switch(convScheme)
 		{
 			case EULER_EXPLICIT:
@@ -79,8 +79,8 @@ public:
 				break;
 		}
 		
-		real aI, aE;
 		// set the coefficients of the diffusion terms
+		real aI, aE;
 		switch(diffScheme)
 		{
 			case EULER_EXPLICIT:
