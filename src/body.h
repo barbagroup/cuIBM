@@ -12,10 +12,10 @@
  * \class body
  * \brief Contains information about an immersed boundary in the flow.
  *
- * The number of boundary points and the reference x- and y-coordinates of the
+ * The number of boundary points and the reference x- and y- coordinates of the
  * boundary points are provided. The motion of the body is also described.
- * For uniform motion, the translational velocity needs to be specified, and for
- * uniform rotation, the angular velocity has to be specified.
+ * For uniform motion, the translational velocity needs to be specified.
+ * For uniform rotation, the angular velocity has to be specified.
  *
  */
 class body
@@ -46,11 +46,10 @@ class body
          pitchOscillation[3]; ///< amplitude, angular frequency and phase difference of pitch oscillation
     
 	/**
-	 * \brief Updates the position of the center of rotation of the body and
-	 *        the translational and rotational velocities of the boundary points.
+	 * \brief Updates the position of the center of rotation of the body,
+	 *        as well as its the translational and rotational velocities.
 	 *
 	 * \param Time the time
-	 *
 	 */
 	void update(real Time)
 	{
@@ -71,9 +70,10 @@ class body
 	}
 
 	/**
-	 * \brief Resest the position and motion of the body.
+	 * \brief Resets the position and motion of the body.
 	 *
 	 * The body center is now at (0,0) and is not moving anymore.
+	 *
 	 */
 	void reset()
 	{
