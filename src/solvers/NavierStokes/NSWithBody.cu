@@ -10,7 +10,8 @@
 
 
 /**
- * \brief Initializes immersed bodies.
+ * \brief Stores the parameters of the simulation and initializes the location
+ *        and motion of each immersed bodies.
  */
 template <typename memoryType>
 void NSWithBody<memoryType>::initialiseBodies()
@@ -29,7 +30,7 @@ void NSWithBody<memoryType>::initialiseBodies()
 }
 	
 /**
- * \brief Updates location and velocity of immersed bodies at current time.
+ * \brief Updates location and motion of each immersed body at current time.
  */
 template <typename memoryType>
 void NSWithBody<memoryType>::updateBodies()
@@ -45,7 +46,7 @@ void NSWithBody<memoryType>::updateBodies()
 };
 
 /**
- * \brief Doing nothing !
+ * \brief Doing nothing (on the host).
  */
 template <>
 void NSWithBody<host_memory>::calculateForce()
@@ -53,7 +54,7 @@ void NSWithBody<host_memory>::calculateForce()
 }
 
 /**
- * \brief Calculates drag and lift for each immersed body on the device.
+ * \brief Calculates forces acting on an immersed body (on the device).
  */
 template <>
 void NSWithBody<device_memory>::calculateForce()
@@ -120,7 +121,7 @@ void NSWithBody<device_memory>::calculateForce()
 }
 
 /**
- * \brief Writes flow variables and location of body points into files.
+ * \brief Writes flow variables and position of body points into files.
  */
 template <typename memoryType>
 void NSWithBody<memoryType>::writeCommon()

@@ -29,29 +29,19 @@ protected:
 	
 	std::ofstream forceFile;	///< file to write the forces
 
-	/**
-	 * \brief Calculates drag and lift for each immersed body.
-	 */
+	// calculate forces acting on an immersed body
 	virtual void calculateForce();
 	
-	/**
-	 * \brief Initializes immersed bodies.
-	 */
+	// store parameters of simulation and initialize immersed bodies
 	void initialiseBodies();
 	
-	/**
-	 * \brief Updates location and velocity of immersed bodies at current time.
-	 */
+	// update location and motion of each immersed body at current time
 	void updateBodies();
 
 public:
-	/**
-	 * \brief Writes flow variables and location of body points into files.
-	 */
+	// write flow variables and position of body points into files
 	virtual void writeCommon();
 	
-	/**
-	 * \brief Closes iteration file and force file.
-	 */
+	// close iteration file and force file
 	virtual void shutDown();
 };
