@@ -1,37 +1,37 @@
 /***************************************************************************//**
-* \file generateBC1.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the kernels required to generate elements of vector \c bc1
-*/
+ * \file generateBC1.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the kernels to generate right hand-side terms of the
+ *        intermediate velocity flux solver.
+ */
 
 
 #include "generateBC1.h"
 
 
 /**
-* \namespace kernels
-* \brief Contain all custom-written CUDA kernels
-*/
+ * \namespace kernels
+ * \brief Contains all custom-written CUDA kernels.
+ */
 namespace kernels
 {
 
 /**
-* \brief Kernel to generate Dirichlet boundary condition term
-*		coming from the discrete Laplacian operator
-* 		applied to the u-velocity at a given boundary.
-*
-* Each element is also normalized with the corresponding 
-* diagonal element of the matrix \f$ \hat{M} \f$.
-*
-* \param bc1 array that contains the boundary conditions
-* \param N number of u-velocity points on the boundary
-* \param nx number of cells in the x-direction
-* \param offset index in vector \c bc1 of the first element u-velocity point on the boundary
-* \param stride index increment
-* \param dx cell-widths in the x-direction
-* \param C coefficient from the Laplacian discretization at the boundary
-* \param bc boundary velocity
-*/
+ * \brief Computes inhomogeneous term from the discrete Laplacian operator 
+ *        for the u-velocity at a given boundary with a Dirichlet-type condition.
+ *
+ * Each element is also normalized with the corresponding 
+ * diagonal element of the matrix \f$ \hat{M} \f$.
+ *
+ * \param bc1 array that contains the boundary conditions
+ * \param N number of u-velocity points on the boundary
+ * \param nx number of cells in the x-direction
+ * \param offset index in vector \c bc1 of the first element u-velocity point on the boundary
+ * \param stride index increment
+ * \param dx cell-widths in the x-direction
+ * \param C coefficient from the Laplacian discretization at the boundary
+ * \param bc boundary velocity
+ */
 __global__
 void bc1DirichletU(real *bc1, int N, int nx, int offset, int stride, real *dx, real C, real *bc)
 {
@@ -45,26 +45,25 @@ void bc1DirichletU(real *bc1, int N, int nx, int offset, int stride, real *dx, r
 }
 
 /**
-* \brief Kernel to generate Dirichlet boundary condition term
-*		coming from the discrete Laplacian operator
-* 		applied to the v-velocity at a given boundary.
-*
-* Each element is also normalized with the corresponding
-* diagonal element of the matrix \f$ \hat{M} \f$.
-*
-* \param bc1 array that contains the boundary conditions
-* \param N number of v-velocity points on the boundary
-* \param nx number of cells in the x-direction
-* \param offset index in vector \c bc1 of the first v-velocity point on the boundary
-* \param stride index increment
-* \param dy cell-widths in the y-direction
-* \param C coefficient from the Laplacian discretization at the boundary
-* \param bc boundary velocity
-* \param numUbc number of u-velocity points on the boundary
-*/
+ * \brief Computes inhomogeneous term from the discrete Laplacian operator 
+ *        for the v-velocity at a given boundary with a Dirichlet-type condition.
+ *
+ * Each element is also normalized with the corresponding 
+ * diagonal element of the matrix \f$ \hat{M} \f$.
+ *
+ * \param bc1 array that contains the boundary conditions
+ * \param N number of v-velocity points on the boundary
+ * \param nx number of cells in the x-direction
+ * \param numU number of u-velocity points in the domain
+ * \param offset index in vector \c bc1 of the first element v-velocity point on the boundary
+ * \param stride index increment
+ * \param dy cell-widths in the y-direction
+ * \param C coefficient from the Laplacian discretization at the boundary
+ * \param bc boundary velocity
+ * \param numUbc number of u-velocity points on the boundary
+ */
 __global__
 void bc1DirichletV(real *bc1, int N, int nx, int numU, int offset, int stride, real *dy, real C, real *bc, int numUbc)
-{
 	int idx	= threadIdx.x + blockIdx.x*blockDim.x;
 		
 	if ( idx >= N ) return;	/// check if idx too high
@@ -75,25 +74,24 @@ void bc1DirichletV(real *bc1, int N, int nx, int numU, int offset, int stride, r
 }
 
 /**
-* \brief Kernel to generate convective boundary condition term
-*		coming from the discrete Laplacian operator
-*		applied to the u-velocity at a given boundary.
-*
-* Each element is also normalized with the corresponding
-* diagonal element of the matrix \f$ \hat{M} \f$.
-*
-* \param bc1 array that contains the boundary conditions
-* \param N number of u-velocity points on the boundary
-* \param nx number of cells in the x-direction
-* \param offset index in vector \c bc1 of the first u-velocity point on the boundary
-* \param stride index increment
-* \param dx cell-widths in the x-direction
-* \param dy cell-widths in the y-direction
-* \param C coefficient from the Laplacian discretization at the boundary
-* \param bc boundary velocity
-* \param q flux vector
-* \param beta linear interpolation coefficient (U*dt/dx)
-*/
+ * \brief Computes inhomogeneous term from the discrete Laplacian operator 
+ *        for the u-velocity at a given boundary with a convective-type condition.
+ *
+ * Each element is also normalized with the corresponding 
+ * diagonal element of the matrix \f$ \hat{M} \f$.
+ *
+ * \param bc1 array that contains the boundary conditions
+ * \param N number of u-velocity points on the boundary
+ * \param nx number of cells in the x-direction
+ * \param offset index in vector \c bc1 of the first element u-velocity point on the boundary
+ * \param stride index increment
+ * \param dx cell-widths in the x-direction
+ * \param dy cell-widths in the y-direction
+ * \param C coefficient from the Laplacian discretization at the boundary
+ * \param bc boundary velocity
+ * \param q flux vector
+ * \param beta linear interpolation coefficient (U*dt/dx)
+ */
 __global__
 void bc1ConvectiveU(real *bc1, int N, int nx, int offset, int stride, real *dx, real *dy, real C, real *bc, real *q, real beta)
 {
@@ -111,27 +109,26 @@ void bc1ConvectiveU(real *bc1, int N, int nx, int offset, int stride, real *dx, 
 }
 
 /**
-* \brief Kernel to generate convective boundary condition term
-*		coming from the discrete Laplacian operator
-*		applied to the v-velocity at a given boundary.
-*
-* Each element is also normalized with the corresponding
-* diagonal element of the matrix \f$ \hat{M} \f$.
-*
-* \param bc1 array that contains the boundary conditions
-* \param N number of v-velocity points in the mesh
-* \param nx number of cells in the x-direction
-* \param numU number of u-velocity points on the boundary
-* \param offset index in vector \c bc1 of the first v-velocity point on the boundary
-* \param stride index increment
-* \param dx cell-widths in the x-direction
-* \param dy cell-widths in the y-direction
-* \param C coefficient from the Laplacian discretization at the boundary
-* \param bc boundary velocity
-* \param numUbc number of u-velocity points on the boundary
-* \param q flux vector
-* \param beta linear interpolation coefficient (U*dt/dx)
-*/
+ * \brief Computes inhomogeneous term from the discrete Laplacian operator 
+ *        for the v-velocity at a given boundary with a convective-type condition.
+ *
+ * Each element is also normalized with the corresponding 
+ * diagonal element of the matrix \f$ \hat{M} \f$.
+ *
+ * \param bc1 array that contains the boundary conditions
+ * \param N number of v-velocity points on the boundary
+ * \param nx number of cells in the x-direction
+ * \param numU number of u-velocity points in the domain
+ * \param offset index in vector \c bc1 of the first element v-velocity point on the boundary
+ * \param stride index increment
+ * \param dx cell-widths in the x-direction
+ * \param dy cell-widths in the y-direction
+ * \param C coefficient from the Laplacian discretization at the boundary
+ * \param bc boundary velocity
+ * \param numUbc number of u-velocity points on the boundary
+ * \param q flux vector
+ * \param beta linear interpolation coefficient (U*dt/dx)
+ */
 __global__
 void bc1ConvectiveV(real *bc1, int N, int nx, int numU, int offset, int stride, real *dx, real *dy, real C, real *bc, int numUbc, real *q, real beta)
 {
@@ -149,24 +146,23 @@ void bc1ConvectiveV(real *bc1, int N, int nx, int numU, int offset, int stride, 
 }
 
 /**
-* \brief Kernel to generate "special" boundary condition term
-*		coming from the discrete Laplacian operator
-*		applied to the u-velocity at a given boundary.
-*
-* It computes a sinusoidal displacement of the boundary in the x-direction.
-* Each element is also normalized with the corresponding
-* diagonal element of the matrix \f$ \hat{M} \f$.
-*
-* \param bc1 array that contains the boundary conditions
-* \param N number of u-velocity points in the mesh
-* \param nx number of cells in the x-direction
-* \param offset index in vector \c bc1 of the first v-velocity point on the boundary
-* \param stride index increment
-* \param dx cell-widths in the x-direction
-* \param C coefficient from the Laplacian discretization at the boundary
-* \param bc boundary velocity
-* \param time the simulation time
-*/
+ * \brief Computes inhomogeneous term from the discrete Laplacian operator 
+ *        for the u-velocity at a given boundary with a special-type condition.
+ *
+ * It computes a sinusoidal displacement of the boundary in the x-direction.
+ * Each element is also normalized with the corresponding 
+ * diagonal element of the matrix \f$ \hat{M} \f$.
+ *
+ * \param bc1 array that contains the boundary conditions
+ * \param N number of v-velocity points on the boundary
+ * \param nx number of cells in the x-direction
+ * \param offset index in vector \c bc1 of the first element v-velocity point on the boundary
+ * \param stride index increment
+ * \param dx cell-widths in the x-direction
+ * \param C coefficient from the Laplacian discretization at the boundary
+ * \param bc boundary velocity
+ * \param time the current time
+ */
 __global__
 void bc1SpecialU(real *bc1, int N, int nx, int offset, int stride, real *dx, real C, real *bc, real time)
 {
