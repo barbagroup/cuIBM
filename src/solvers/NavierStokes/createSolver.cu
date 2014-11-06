@@ -11,17 +11,17 @@
 /**
  * \brief Creates the appropriate Navier-Stokes solver.
  *
- * The type of solver depends on the IBM chosen.
+ * The type of solver depends on the IBM used.
  * If there is no immersed body in the flow, 
  * an instance of the class \c NavierStokesSolver is created.
- * If \c TAIRA_COLONIUS is the IBM chosen, 
+ * If \c TAIRA_COLONIUS is the IBM used, 
  * an instance of the class \c TairaColoniusSolver is created, 
  * that inherits from the class \c NavierStokesSolver.
  *
  * \param paramDB database that contains all the simulation parameters
  * \param domInfo information about the computational grid
  *
- * \return a pointer on an instance of the appropriate class
+ * \return an instance of the appropriate class
  */
 template <typename memoryType>
 NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domInfo)

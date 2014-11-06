@@ -15,8 +15,7 @@
 #include "SLL1Solver.h"
 #include "SLL2Solver.h"
 
-/**
- * \brief Create the appropriate Navier-Stokes solver.
- */
+
+// create the appropriate Navier-Stokes solver
 template <typename memoryType>
 NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domInfo);
