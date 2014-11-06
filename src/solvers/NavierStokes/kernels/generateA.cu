@@ -1,33 +1,37 @@
 /***************************************************************************//**
-* \file generateA.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Contain definition of the kernels required to generate the matrix A
-*/
+ * \file generateA.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the kernels required to generate the matrix
+ *        resulting from the implicit terms in the momentum equation.
+ */
 
 
 #include "generateA.h"
 
 
 /**
-* namespace kernels
-* \brief Contain all the custom-written CUDA kernels
-*/
+ * namespace kernels
+ * \brief Contains all the custom-written CUDA kernels.
+ */
 namespace kernels
 {
 
 /**
-* \brief Generate the matrix A
-*
-* \param ARows rows of the COO matrix A
-* \param ACols columns of the COO matrix A
-* \param AVals values of the COO matrix A
-* \param MVals values of the COO matrix M
-* \param LRows rows of the COO matrix L
-* \param LCols columns of the COO matrix L
-* \param LVals values of the COO matrix A
-* \param ASize number of entries of the COO matrix A
-* \param alpha implicit coefficient of the diffusive scheme
-*/
+ * \brief Generates a block of the matrix resulting from implicit terms in the momentum equation.
+ *
+ * It assembles the matrix \c A as a combination 
+ * of the Laplacian matrix \c L and the mass matrix \c M.
+ *
+ * \param ARows rows of the COO matrix \c A
+ * \param ACols columns of the COO matrix \c A
+ * \param AVals values of the COO matrix \c A
+ * \param MVals values of the COO matrix \c M
+ * \param LRows rows of the COO matrix \c L
+ * \param LCols columns of the COO matrix \c L
+ * \param LVals values of the COO matrix \c A
+ * \param ASize number of entries of the COO matrix \c A
+ * \param alpha implicit coefficient of the diffusive scheme
+ */
 __global__
 void generateA(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int *LCols, real *LVals, int ASize, real alpha)
 {
@@ -40,20 +44,24 @@ void generateA(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int
 }
 
 /**
-* \brief Generate the matrix A for the direct forcing method
-*
-* \param ARows rows of the COO matrix A
-* \param ACols columns of the COO matrix A
-* \param AVals values of the COO matrix A
-* \param MVals values of the COO matrix M
-* \param LRows rows of the COO matrix L
-* \param LCols columns of the COO matrix L
-* \param LVals values of the COO matrix A
-* \param ASize number of entries of the COO matrix A
-* \param alpha implicit coefficient of the diffusive scheme
-* \param tagsX
-* \param tagsY
-*/
+ * \brief Generates a block of the matrix resulting from implicit terms in the momentum equation
+ *        for the direct forcing method.
+ *
+ * It assembles the matrix \c A as a combination 
+ * of the Laplacian matrix \c L and the mass matrix \c M.
+ *
+ * \param ARows rows of the COO matrix \c A
+ * \param ACols columns of the COO matrix \c A
+ * \param AVals values of the COO matrix \c A
+ * \param MVals values of the COO matrix \c M
+ * \param LRows rows of the COO matrix \c L
+ * \param LCols columns of the COO matrix \c L
+ * \param LVals values of the COO matrix \c A
+ * \param ASize number of entries of the COO matrix \c A
+ * \param alpha implicit coefficient of the diffusive scheme
+ * \param tagsX tag to check if the node is next to an immersed boundary
+ * \param tagsY tag to check if the node is next to an immersed boundary
+ */
 __global__
 void generateADirectForcing(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int *LCols, real *LVals, int ASize, real alpha, int *tags)
 {
