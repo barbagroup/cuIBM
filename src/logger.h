@@ -27,7 +27,7 @@ typedef std::map<std::string, double>::iterator  E_iter;
 
 /**
  * \class Logger
- * \brief Tracks the time spent to achieve a certain task.
+ * \brief Monitors the time spent to achieve a certain task.
  */
 class Logger
 {
@@ -41,27 +41,27 @@ private:
 	Event         memory;		///< contain info about the memomry allocated for events
 
 	/**
-	 * \brief Timer function.
+	 * \brief Gets the time of the day.
 	 *
-	 * \return the time of the day
+	 * \return the time of the day (micro-second precision)
 	 */
 	double get_time()
 	{
-		struct timeval tv;                        // time value
-		gettimeofday(&tv, NULL);                  // get time of day in seconds and microseconds
-		return double(tv.tv_sec+tv.tv_usec*1e-6); // combine seconds and microseconds and return
+		struct timeval tv;
+		gettimeofday(&tv, NULL);
+		return double(tv.tv_sec+tv.tv_usec*1e-6);
 	}
 
 public:
 	bool printNow;	///< boolean to print or not the time in the terminal
 
 	/**
-	 * \brief Constructor of the class \c Logger.
+	 * \brief Constructor.
 	 */
 	Logger(){}
 	
 	/**
-	 * \brief Other constructor of the class \c Logger.
+	 * \brief Constructor overloading. Opens files given the case directory.
 	 *
 	 * \param folder directory of the simulation
 	 */
@@ -74,7 +74,7 @@ public:
 	}
 
 	/**
-	 * \brief Destructor of the class \c Logger.
+	 * \brief Destructor.
 	 */
 	~Logger()
 	{
@@ -86,7 +86,7 @@ public:
 	/**
 	 * \brief Starts the timer.
 	 *
-	 * \param event a string that describes the event
+	 * \param event a string that describes the event to monitor
 	 */
 	void startTimer(std::string event)
 	{
@@ -96,8 +96,8 @@ public:
 	/**
 	 * \brief Stops the timer.
 	 *
-	 * \param event a string that describes the event
-	 * \param print boolean to print the time or not
+	 * \param event a string that describes the event monitored
+	 * \param print boolean to print the time or not in the terminal
 	 */
 	void stopTimer(std::string event, bool print=false)
 	{
@@ -109,7 +109,7 @@ public:
 	}
 
 	/**
-	 * \brief Erases the timer.
+	 * \brief Erases the timer of a given event.
 	 *
 	 * \param event a string that describes the event
 	 */
@@ -137,7 +137,7 @@ public:
 	}
 
 	/**
-	 * \brief Allocates memory.
+	 * \brief Allocates memory for an event given a size.
 	 *
 	 * \param event a string that describes the event
 	 * \param bytes the number of bytes for allocation
@@ -148,7 +148,7 @@ public:
 	}
 
 	/**
-	 * \brief Frees memory.
+	 * \brief Frees memory allocated for a given event.
 	 *
 	 * \param event a string that describes the event
 	 * \param bytes the number of bytes
@@ -159,7 +159,7 @@ public:
 	}
 
 	/**
-	 * \brief Prints the time spent to achieve a task.
+	 * \brief Prints the time spent to achieve a event.
 	 *
 	 * \param event a string that describes the event
 	 */
@@ -169,7 +169,7 @@ public:
 	}
 
 	/**
-	 * \brief Prints the memory allocated for given event.
+	 * \brief Prints the memory allocated for a given event.
 	 *
 	 * \param event a string that describes the event
 	 */
@@ -179,7 +179,7 @@ public:
 	}
 
 	/**
-	 * \brief Prints time spent of every event and the total time.
+	 * \brief Prints time spent for each event as well as the total time.
 	 */
 	void printAllTime()
 	{
@@ -197,8 +197,8 @@ public:
 	}
 
 	/**
-	 * \brief Writes the events into a file.
-	 */
+	  * \brief Writes the events into a file.
+	  */
 	void writeLegend()
 	{
 		for( E_iter E=timer.begin(); E!=timer.end(); ++E )
@@ -208,7 +208,7 @@ public:
 	}
 
 	/**
-	 * \brief Writes time spent into a file.
+	 * \brief Writes time spent for each event into a file.
 	 */
 	void writeTime()
 	{
