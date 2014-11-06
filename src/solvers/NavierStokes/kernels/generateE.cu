@@ -1,21 +1,21 @@
 /***************************************************************************//**
-* \file generateE.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the kernels required to generate elements of the interpolation matrix
-*/
+ * \file generateE.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the kernels to generate elements of the interpolation matrix.
+ */
 
 
 #include "generateE.h"
 
 
 /**
-* \brief Discrete delta function defined by Roma et al. (1999)
-*
-* \param x x- or y- component of the vector defined between two points
-* \param h grid-spacing
-*
-* \return the value of the discrete Delta function
-*/
+ * \brief Discrete delta function defined by Roma et al. (1999)
+ *
+ * \param x x- or y- component of the vector defined between two points
+ * \param h the grid-spacing
+ *
+ * \return the value of the discrete delta function
+ */
 __device__ \
 real dhRomaDeviceE(real x, real h)
 {
@@ -30,15 +30,14 @@ real dhRomaDeviceE(real x, real h)
 }
 
 /**
-* \brief Compute the discrete Delta function in 2D 
-*		using the definition by Roma et al. (1999)
-*
-* \param x x-component of the vector defined between two points
-* \param y y-component of the vector defined between two points
-* \param h grid-spacing
-*
-* \return the discrete Delta function in 2D
-*/
+ * \brief Two-dimension discrete delta function.
+ *
+ * \param x x-component of the vector defined between two points
+ * \param y y-component of the vector defined between two points
+ * \param h the grid-spacing
+ *
+ * \return the value of the discrete delta function in 2D
+ */
 __device__ \
 real deltaDeviceE(real x, real y, real h)
 {
@@ -46,29 +45,29 @@ real deltaDeviceE(real x, real y, real h)
 }
 
 /**
-* \namespace kernels
-* \brief Contain all custom-written CUDA kernels
-*/
+ * \namespace kernels
+ * \brief Contains all custom-written CUDA kernels.
+ */
 namespace kernels
 {
 	
 /**
-* \brief Generate the interpolation matrix \c E on the host
-*
-* \param ERows row index of elements of the COO-format interpolation matrix \c E
-* \param ECols column index of elements of the COO-format interpolation matrix \c E
-* \param EVals value of elements of the COO-format interpolation matrix \c E
-* \param nx number of cells in the x-direction
-* \param ny number of cells in the y-direction
-* \param x x-component of grid points
-* \param y y-component of grid points
-* \param dx cell widths in the x-direction
-* \param totalPoints number of body points (all bodies included)
-* \param xB x-coordinate of body points (all bodies included)
-* \param yB y-coordinate of body points (all bodies included)
-* \param I x-index of the cells in which body points are located
-* \param J y-index of the cells in which body points are located
-*/
+ * \brief Generates the interpolation matrix (on the host).
+ *
+ * \param ERows row index of elements of the interpolation matrix
+ * \param ECols column index of elements of the interpolation matrix
+ * \param EVals value of elements of the interpolation matrix
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direction
+ * \param x x-component of grid points
+ * \param y y-component of grid points
+ * \param dx cell-widths in the x-direction
+ * \param totalPoints number of body points (all bodies included)
+ * \param xB x-coordinate of body points (all bodies included)
+ * \param yB y-coordinate of body points (all bodies included)
+ * \param I x-index of the cells in which body points are located
+ * \param J y-index of the cells in which body points are located
+ */
 void generateEHost(int *ERows,  int *ECols,  real *EVals,
                    int nx, int ny, real *x, real *y, real *dx,
                    int totalPoints, real *xB, real *yB, int *I, int *J)
@@ -112,22 +111,22 @@ void generateEHost(int *ERows,  int *ECols,  real *EVals,
 }
 
 /**
-* \brief Kernel to compute an element of the interpolation matrix \c E on the device
-*
-* \param ERows row index of elements of the COO-format interpolation matrix \c E
-* \param ECols column index of elements of the COO-format interpolation matrix \c E
-* \param EVals value of elements of the COO-format interpolation matrix \c E
-* \param nx number of cells in the x-direction
-* \param ny number of cells in the y-direction
-* \param x x-component of grid points
-* \param y y-component of grid points
-* \param dx cell widths in the x-direction
-* \param totalPoints number of body points (all bodies included)
-* \param xB x-coordinate of body points (all bodies included)
-* \param yB y-coordinate of body points (all bodies included)
-* \param I x-index of the cell in which the body point is located
-* \param J y-index of the cell in which the body point is located
-*/
+ * \brief Computes elements of the interpolation matrix.
+ *
+ * \param ERows row index of elements of the interpolation matrix
+ * \param ECols column index of elements of the interpolation matrix
+ * \param EVals value of elements of the interpolation matrix
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direction
+ * \param x x-component of grid points
+ * \param y y-component of grid points
+ * \param dx cell-widths in the x-direction
+ * \param totalPoints number of body points (all bodies included)
+ * \param xB x-coordinate of body points (all bodies included)
+ * \param yB y-coordinate of body points (all bodies included)
+ * \param I x-index of the cell in which the body point is located
+ * \param J y-index of the cell in which the body point is located
+ */
 __global__ \
 void generateE(int *ERows,  int *ECols,  real *EVals,
                int nx, int ny, real *x, real *y, real *dx,
