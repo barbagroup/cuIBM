@@ -1,7 +1,7 @@
 /***************************************************************************//**
  * \file generateA.h
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Declaration of the kernels required to generate the matrix 
+ * \brief Declaration of the kernels to generate the matrix 
  *        resulting from the implicit terms in the momentum equation.
  */
 

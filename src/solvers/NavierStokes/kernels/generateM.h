@@ -1,33 +1,27 @@
 /***************************************************************************//**
-* \file generateM.h
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Declaration of the kernels required to generate the mass matrix \c M and its inverse
-*/
+ * \file generateM.h
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Declaration of the kernels to generate the mass matrix and its inverse.
+ */
+
 
 #pragma once
 
 #include <types.h>
 
+
 /**
-* \namespace kernels
-* \brief Contain all custom-written CUDA kernels
-*/
+ * \namespace kernels
+ * \brief Contains all custom-written CUDA kernels.
+ */
 namespace kernels
 {
 
-/**
-* \brief Kernel to compute element of the mass matrix \c M, and its inverse,
-*		that corresponds to a x-velocity value
-*		on the device
-*/
+// compute element of the mass matrix and its inverse for a x-velocity node
 __global__
 void fillM_u(int *MRows, int *MCols, real *MVals, int *MinvRows, int *MinvCols, real *MinvVals, int nx, int ny, real *dx, real *dy, real dt);
 
-/**
-* \brief Kernel to compute element of the mass matrix \c M, and its inverse,
-*		that corresponds to a y-velocity value
-*		on the device
-*/
+// compute element of the mass matrix and its inverse for a y-velocity node
 __global__
 void fillM_v(int *MRows, int *MCols, real *MVals, int *MinvRows, int *MinvCols, real *MinvVals, int nx, int ny, real *dx, real *dy, real dt);
 
