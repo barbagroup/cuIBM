@@ -1,7 +1,7 @@
 /***************************************************************************//**
  * \file parseFlowFile.cu
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Parses the \a flow file to get boundary and initial conditions.
+ * \brief Implementation of the functions to get boundary and initial conditions.
  */
 
 
@@ -126,10 +126,10 @@ void parseFlow(const YAML::Node &node, parameterDB &DB)
 }
 
 /**
- * \brief Parses the \a flow file using YAML.
+ * \brief Parses the \a flow file and stores the parameters in the database.
  *
  * \param flowFile the file that contains information about the flow
- * \param DB the database that will be filled with information about the flow
+ * \param DB the database that will be filled
  */
 void parseFlowFile(std::string &flowFile, parameterDB &DB)
 {

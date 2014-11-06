@@ -5,11 +5,11 @@
  */
 
 
-#include "io.h"
-#include <yaml-cpp/yaml.h>
-#include <body.h>
-#include <vector>
 #include <fstream>
+#include <vector>
+#include <yaml-cpp/yaml.h>
+#include "io.h"
+#include <body.h>
 
 
 /**
@@ -22,7 +22,7 @@ namespace io
 using std::string;
 
 /**
- * \brief Sets up information about the immersed bodies.
+ * \brief Overloads the operator >>. Stores information about an immersed body.
  *
  * \param node the parsed file
  * \param instance of the class \c body to be filled
@@ -174,10 +174,10 @@ void operator >> (const YAML::Node &node, body &Body)
 }
 
 /**
- * \brief Parses the \a bodies file using YAML.
+ * \brief Parses the \a bodies file and stores information about the immersed bodies.
  *
  * \param bodiesFile the file that contains information about the immersed bodies
- * \param DB the database that will be filled with information about the immersed bodies
+ * \param DB the database that contains the simulation parameters 
  */
 void parseBodiesFile(std::string &bodiesFile, parameterDB &DB)
 {

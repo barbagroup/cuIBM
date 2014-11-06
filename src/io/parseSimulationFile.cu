@@ -1,14 +1,14 @@
 /***************************************************************************//**
  * \file parseSimulationFile.cu
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Parses the \a simulation file to fill the database.
+ * \brief Implementation of the functions to read and store simulation parameters.
  */
 
 
+#include <fstream>
+#include <yaml-cpp/yaml.h>
 #include "io.h"
 #include <parameterDB.h>
-#include <yaml-cpp/yaml.h>
-#include <fstream>
 
 
 /**
@@ -21,11 +21,11 @@ namespace io
 using std::string;
 
 /**
- * \brief Converts a string to a time-scheme type.
+ * \brief Converts a string to a time-integration scheme type.
  *
- * \param s the string that describes the time-scheme
+ * \param s the string that describes the time-integration scheme
  *
- * \return a time-scheme type
+ * \return a time-integration scheme type
  */
 timeScheme timeSchemeFromString(string &s)
 {
@@ -218,10 +218,10 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 }
 
 /**
- * \brief Parses the \a simulation file using YAML.
+ * \brief Parses the \a simulation file and stores the simulation parameters.
  *
  * \param simFile the file that contains the simulation parameters
- * \param DB the database that will be filled with the simulation parameters
+ * \param DB the database that will be filled
  */
 void parseSimulationFile(std::string &simFile, parameterDB &DB)
 {

@@ -1,13 +1,13 @@
 /***************************************************************************//**
  * \file parseDomainFile.cu
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Parses the \a domain file to get information about the computational grid.
+ * \brief Implementation of the functions to generate the computational grid.
  */
 
 
-#include "io.h"
-#include <yaml-cpp/yaml.h>
 #include <fstream>
+#include <yaml-cpp/yaml.h>
+#include "io.h"
 
 
 /**
@@ -20,7 +20,7 @@ namespace io
 using std::string;
 
 /**
- * \brief Overloads the operator >>.
+ * \brief Overloads the operator >>. Gets information from the parsed domain file.
  *
  * \param node the parsed file
  * \param D instance of the class \c domain to be filled
@@ -128,10 +128,10 @@ void operator >> (const YAML::Node &node, domain &D)
 }
 
 /**
- * \brief Parses the \a domain file using YAML.
+ * \brief Parses the \a domain file and generates the computational grid.
  *
  * \param domFile the file that contains information about the computational grid
- * \param D object of the class \c domain that will be filled with information about the computational grid
+ * \param D instance of the class \c domain that will be filled with information about the computational grid
  */
 void parseDomainFile(std::string &domFile, domain &D)
 {

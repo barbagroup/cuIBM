@@ -20,91 +20,55 @@
  */
 namespace io
 {
-	/**
-	 * \brief Splits a string given a delimiter.
-	 */
+	// split a string given a delimiter
 	std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
 	
-	/**
-	 * \brief Splits a string given a delimiter.
-	 */
+	// split a string given a delimiter
 	std::vector<std::string> split(const std::string &s, char delim);
 
-	/**
-	 * \brief Creates a directory.
-	 */
+	// create a directory
 	void makeDirectory(const std::string s);
 	
-	/**
-	 * \brief Reads data inputs by parsing the command-line and simulation files.
-	 */
+	// read data inputs from the command-line and the simulation files
 	void readInputs(int argc, char **argv, parameterDB &DB, domain &D); 
 
-	/**
-	 * \brief Parses the \a domain file using YAML.
-.	 */
+    // parse the \a domain file and generate the computational grid
 	void parseDomainFile(std::string &domFile, domain &D);
 	
-	/**
-	 * \brief Parses the \a flow file using YAML.
-	 */
+	// parse the \a flow file and store the parameters in the database
 	void parseFlowFile(std::string &flowFile, parameterDB &DB);
 	
-	/**
-	 * \brief Parses the \a simulation file using YAML.
-	 */
+	// parse the \a simulation file and store the parameters in the database
 	void parseSimulationFile(std::string &simFile, parameterDB &DB);
 	
-	/**
-	 * \brief Parses the \a bodies file using YAML.
-	 */
+	// parse the \a bodies file and store information about the immersed bodies
 	void parseBodiesFile(std::string &bodiesFile, parameterDB &DB);
 
-	/**
-	 * \brief Initializes the database with default values.
-	 */
+	// initialize the database with default values
 	void initialiseDefaultDB(parameterDB &DB);
 
-	/**
-	 * \brief Parses the command-line to get the case folder name 
-	 *        and the device number.
-	 */
+	// parse command-line to get simulation directory and device number
 	void commandLineParse1(int argc, char **argv, parameterDB &DB);
 
-	/**
-	 * \brief Overwrites values in the database 
-	 *        with additional arguments of the command-line.
-	 */
+	// overwrite parameters with additional arguments of the command-line
 	void commandLineParse2(int argc, char **argv, parameterDB &DB);
 
-	/**
-	 * \brief Prints the parameters of the simulation.
-	 */
+	// print the parameters of the simulation
 	void printSimulationInfo(parameterDB &DB, domain &D);
 
-	/**
-	 * \brief Prints the time spent on certain tasks.
-	 */
+	// print the time spent to execute tasks
 	void printTimingInfo(Logger &logger);
 	
-	/**
-	 * \brief Writes information about the run into a file.
-	 */
+	// write information about the run into the file run.info
 	void writeInfoFile(parameterDB &DB, domain &D);
 
-	/**
-	 * \brief Writes the mesh points into a file named \a grid.
-	 */
+	// write grid-points coordinates into the file grid
 	void writeGrid(std::string &caseFolder, domain &D);
 
-	/**
-	 * \brief Writes numerical data at a given iteration number.
-	 */
+	// write numerical data at a given time-step
 	template <typename Vector>
 	void writeData(std::string &caseFolder, int n, Vector &q, Vector &lambda, domain &D);//, bodies &B);
 	
-	/**
-	 * \brief Prints the memory usage on the device.
-	 */
+	// print device memory usage
 	void printDeviceMemoryUsage(char *label);
 }

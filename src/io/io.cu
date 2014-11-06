@@ -5,9 +5,9 @@
  */
 
 
+#include <sys/stat.h>
 #include "io.h"
 #include <types.h>
-#include <sys/stat.h>
 #include <boundaryCondition.h>
 
 using std::string;
@@ -42,6 +42,7 @@ namespace io
  *
  * \param s the string to split
  * \param delim the delimiter
+ * \param elems the vector that will contain the different elements of the string
  *
  * \return a vector that contains the different elements of the string
  */
@@ -73,7 +74,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
  *
  * If the parent directory does not exist, it will be created.
  *
- * \param folderPath the path of the directory
+ * \param folderPath the path of the directory to create
  */
 void makeDirectory(const std::string folderPath)
 {
@@ -96,10 +97,12 @@ void makeDirectory(const std::string folderPath)
 //##############################################################################
 
 /**
- * \brief Reads data inputs by parsing the command-line and simulation files.
+ * \brief Reads data inputs from the command-line and the simulation files.
  *
- * \param DB database that contains all the simulation parameters
- * \param D contains information about the computational grid
+ * \param argc number of arguments in the command-line
+ * \param argv command-line arguments
+ * \param DB database that will contain all the simulation parameters
+ * \param D object of the class \c domain that will contain the computational grid
  */
 void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 {
@@ -197,7 +200,7 @@ void initialiseDefaultDB(parameterDB &DB)
  *        and the device number.
  *
  * \param argc number of arguments in the command-line
- * \param argv pointer on the arguments of the command-line
+ * \param argv arguments of the command-line
  * \param DB database that contains all the simulation parameters
  */
 void commandLineParse1(int argc, char **argv, parameterDB &DB)
@@ -221,11 +224,10 @@ void commandLineParse1(int argc, char **argv, parameterDB &DB)
 }
 
 /**
- * \brief Overwrites values in the database 
- *        with additional arguments of the command-line.
+ * \brief Overwrites parameters with additional arguments of the command-line. 
  *
  * \param argc number of arguments in the command-line
- * \param argv pointer on the arguments of the command-line
+ * \param argv arguments of the command-line
  * \param DB database that contains all the simulation parameters
  */
 void commandLineParse2(int argc, char **argv, parameterDB &DB)
@@ -378,7 +380,7 @@ string stringFromTimeScheme(timeScheme s)
  * \brief Prints the parameters of the simulation.
  *
  * \param DB database that contains all the simulation parameters
- * \param D information related to the computational grid
+ * \param D information about the computational grid
  */
 void printSimulationInfo(parameterDB &DB, domain &D)
 {
@@ -451,9 +453,9 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 }
 
 /**
- * \brief Prints the time spent on certain tasks.
+ * \brief Prints the time spent to execute tasks.
  *
- * \param logger object that contains the name and time spent related to tasks
+ * \param logger object that contains the name and time spent of tasks
  */
 void printTimingInfo(Logger &logger)
 {
@@ -462,7 +464,7 @@ void printTimingInfo(Logger &logger)
 }
 
 /**
- * \brief Writes information about the run into a file.
+ * \brief Writes information about the run into the file \a run.info.
  *
  * \param DB database that contains all the simulation parameters
  * \param D information about the computational grid
@@ -484,9 +486,9 @@ void writeInfoFile(parameterDB &DB, domain &D)
 }
 
 /**
- * \brief Writes the mesh points into a file named \a grid.
+ * \brief Writes grid-points coordinates into the file \a grid.
  *
- * \param caseFolder the path of the case folder
+ * \param caseFolder the directory of the simulation
  * \param D information about the computational grid
  */
 void writeGrid(std::string &caseFolder, domain &D)
@@ -502,16 +504,16 @@ void writeGrid(std::string &caseFolder, domain &D)
 }
 
 /**
- * \brief Writes numerical data at a given iteration number.
+ * \brief Writes numerical data at a given time-step (on the host).
  *
- * It creates a directory whose name is the iteration number
- * and writes the flux, the pressure (and potentially the body forces)
+ * It creates a directory whose name is the time-step number
+ * and writes the flux, the pressure (and eventually the body forces)
  * into the files \a q, \a lambda, respectively.
  *
  * \param caseFolder directory of the simulation
- * \param n the iteration number
- * \param q Cusp array that contains the fluxes
- * \param lambda Cusp array that contains the pressures (and potentially the body forces)
+ * \param n the time-step number
+ * \param q array that contains the fluxes
+ * \param lambda array that contains the pressures (and eventually the body forces)
  * \param D information about the computational grid
  */
 template <>
@@ -546,16 +548,16 @@ void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, doma
 }
 
 /**
- * \brief Writes numerical data at a given iteration number.
+ * \brief Writes numerical data at a given time-step (on the device).
  *
- * It creates a directory whose name is the iteration number
- * and writes the flux, the pressure (and potentially the body forces)
+ * It creates a directory whose name is the time-step number
+ * and writes the flux, the pressure (and eventually the body forces)
  * into the files \a q, \a lambda, respectively.
  *
  * \param caseFolder directory of the simulation
- * \param n the iteration number
- * \param q Cusp array that contains the fluxes
- * \param lambda Cusp array that contains the pressures (and potentially the body forces)
+ * \param n the time-step number
+ * \param q array that contains the fluxes
+ * \param lambda array that contains the pressures (and eventually the body forces)
  * \param D information about the computational grid
  */
 template <>
@@ -568,7 +570,7 @@ void writeData<vecD>(std::string &caseFolder, int n, vecD &q, vecD &lambda, doma
 }
 
 /**
- * \brief Prints the memory usage on the device.
+ * \brief Prints device memory usage.
  *
  * \param label the label of the device
  */
