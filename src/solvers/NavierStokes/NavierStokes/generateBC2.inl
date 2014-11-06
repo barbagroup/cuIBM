@@ -1,7 +1,8 @@
 /***************************************************************************//**
  * \file generateBC2.inl
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Generates the inhomogeneous boundary conditions from the discrete continuity equation.
+ * \brief Implementation of the methods to generate 
+ *        inhomogeneous boundary conditions from the discrete continuity equation.
  */
 
 
@@ -9,7 +10,8 @@
 
 
 /**
- * \brief Generates the inhomogeneous boundary conditions from the discrete continuity equation on the host.
+ * \brief Generates inhomogeneous boundary conditions 
+ *        from the discrete continuity equation (on the host).
  */
 template <>
 void NavierStokesSolver<host_memory>::generateBC2()
@@ -45,7 +47,8 @@ void NavierStokesSolver<host_memory>::generateBC2()
 }
 
 /**
- * \brief Generates the inhomogeneous boundary conditions from the discrete continuity equation on the device.
+ * \brief Generates inhomogeneous boundary conditions 
+ *        from the discrete continuity equation (on the device).
  */
 template<>
 void NavierStokesSolver<device_memory>::generateBC2()

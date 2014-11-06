@@ -1,7 +1,8 @@
 /***************************************************************************//**
  * \file generateA.inl
  * \author Anush Krishnan (anus@bu.edu)
- * \brief Adds the mass matrix to the discrete Laplacian matrix.
+ * \brief Implementation of the methods to generate the matrix 
+ *        resulting from the implcit flux terms.
  */
 
 
@@ -9,7 +10,7 @@
 
 
 /**
- * \brief Adds the mass matrix to the discrete Laplacian matrix on the device.
+ * \brief Generates the matrix resulting from the implicit flux terms (on the device).
  *
  * \param alpha implicit coefficient of the diffusive scheme
  */
@@ -43,7 +44,7 @@ void NavierStokesSolver<device_memory>::generateA(real alpha)
 }
 
 /**
- * \brief Adds the mass matrix to the discrete Laplacian matrix on the host.
+ * \brief Generates the matrix resulting from the implicit flux terms (on the host).
  *
  * \param alpha implicit coefficient of the diffusive scheme
  */

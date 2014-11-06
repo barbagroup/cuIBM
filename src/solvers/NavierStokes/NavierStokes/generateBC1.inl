@@ -1,7 +1,8 @@
 /***************************************************************************//**
  * \file generateBC1.inl
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Generates inhomogeneous boundary conditions from the discrete Laplacian operator.
+ * \brief Implementation of the methods to generate 
+ *        inhomogeneous boundary conditions from the discrete Laplacian operator.
  */
 
 
@@ -9,7 +10,8 @@
 
 
 /**
- * \brief Generates inhomogeneous boundary conditions from the discrete Laplacian operator on the device.
+ * \brief Generates inhomogeneous boundary conditions 
+ *        from the discrete Laplacian operator (on the device).
  */
 template <>
 void NavierStokesSolver<device_memory>::generateBC1()
@@ -157,7 +159,8 @@ void NavierStokesSolver<device_memory>::generateBC1()
 }
 
 /**
- * \brief Generates inhomogeneous boundary conditions from the discrete Laplacian operator on the host.
+ * \brief Generates inhomogeneous boundary conditions 
+ *        from the discrete Laplacian operator (on the host).
  */
 template <>
 void NavierStokesSolver<host_memory>::generateBC1()
