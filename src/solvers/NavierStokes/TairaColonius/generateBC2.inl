@@ -1,7 +1,8 @@
 /***************************************************************************//**
  * \file generateBC2.inl
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Definition of the methods of the class \c TairaColoniusSolver related to bc2.
+ * \brief Implementation of the methods of the class \c TairaColoniusSolver
+ *        to generate the right hand-side of the Poisson system.
  */
 
 
@@ -9,10 +10,11 @@
 
 
 /**
- * \brief Creates an array that contains
- * 	      the inhomogeneous boundary conditions from the continuity equation
- *	      and the no-slip boundary conditions
- *	      on the host.
+ * \brief Generates the right hand-side of the Poisson system (on the host).
+ *
+ * It contains the inhomogeneous boundary conditions from the discrete divergence
+ * operator, as well as the no-slip boundary condition at the body surface.
+ *
  */
 template <>
 void TairaColoniusSolver<host_memory>::generateBC2()
@@ -58,10 +60,11 @@ void TairaColoniusSolver<host_memory>::generateBC2()
 }
 
 /**
- * \brief Creates an array that contains
- *        the inhomogeneous boundary conditions from the continuity equation
- *        and the no-slip boundary conditions
- *        on the device.
+ * \brief Generates the right hand-side of the Poisson system (on the device).
+ *
+ * It contains the inhomogeneous boundary conditions from the discrete divergence
+ * operator, as well as the no-slip boundary condition at the body surface.
+ *
  */
 template<>
 void TairaColoniusSolver<device_memory>::generateBC2()

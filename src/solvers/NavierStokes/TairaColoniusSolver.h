@@ -12,7 +12,8 @@
 
 /**
  * \class TairaColoniusSolver
- * \brief Solve the flow using the Immersed boundary method described by Taira and Colonius (2007).
+ * \brief Solves the Navier-Stokes equations 
+ *        using the Immersed boundary method from Taira and Colonius (2007).
  *
  * <b>The immersed boundary method: a projection approach</b> \n
  * Taira K. and Colonius T. \n
@@ -28,52 +29,34 @@ private:
 		E,		///< Interpolation matrix from the Eulerian grid to the Lagrangian points
 		ET;		///< Regularization matrix form the Lagrangian points to the Eulerian grid
 	
-	/**
-	 * \brief Generates matrix containing discrete divergence operator and interpolation matrix.
-	 */
+	// generate the transposed gradient matrix and the interpolation matrix
 	virtual void generateQT();
 
-	/**
-	 * \brief Updates the interpolation matrix with current location of body points.
-	 */
+	// update the interpolation matrix with current location of body points
 	void updateQT();
 
-	/**
-	 * \brief Creates an array that contains 
-	 *        the inhomogeneous boundary conditions from the continuity equation
-	 *        and the no-slip boundary conditions.
-	 */
+	// generate the right hand-side of the Poisson system
 	virtual void generateBC2();
 	
-	/**
-	 * \brief Updates the location of the bodies and re-compute matrices.
-	 */
+	// update the location of the bodies and re-generate appropriate matrices
 	virtual void updateSolverState();
 	
-	/**
-	 * \brief Calculates forces acting on each immersed body.
-	 */
+	// calculate forces acting on each immersed body
 	virtual void calculateForce();
 	
 	/**
-	 * \brief Cannot find the definition of this method !
+	 * \brief Warning: the definition of this method does not exist.
 	 */
 	void generateE();
 	
 public:
-	/**
-	 * \brief Constructor of the class \c TairaColoniusSolver.
-	 */
+	// constructor -- copy the database and information about the computational grid
 	TairaColoniusSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
 	
-	/**
-	 * \brief Initializes the solvers.
-	 */
+	// initiliaze the solvers
 	virtual void initialise();
 	
-	/**
-	 * \brief Calculates forces and write time and forces for each body in a file.
-	 */
+	// calculate and write forces acting on each immersed body at current time
 	virtual void writeData();
 	
 	/**

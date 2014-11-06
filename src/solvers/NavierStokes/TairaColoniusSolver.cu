@@ -10,9 +10,10 @@
 
 
 /**
- * \brief Initializes the solver.
+ * \brief Initializes the solvers.
  *
- * It initializes the bodies, the arrays and assemble the matrices of the system.
+ * Initializes bodies, arrays and matrices of the intermediate flux solver
+ * and the Poisson solver.
  *
  */
 template <typename memoryType>
@@ -41,7 +42,7 @@ void TairaColoniusSolver<memoryType>::initialise()
 }
 
 /**
- * \brief Calculates forces and write time and forces for each body in a file.
+ * \brief Calculates and writes forces acting on each immersed body at current time.
  */
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::writeData()
@@ -73,7 +74,11 @@ void TairaColoniusSolver<memoryType>::writeData()
 }
 
 /**
- * \brief Updates the location of the bodies and re-compute matrices.
+ * \brief Updates the location of the bodies and re-generates appropriate matrices.
+ *
+ * Updates only done if the bodies are moving.
+ * It re-generates the interpolation matrix, therefore the Poisson matrix too.
+ *
  */
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::updateSolverState()
@@ -92,7 +97,7 @@ void TairaColoniusSolver<memoryType>::updateSolverState()
 }
 
 /**
- * \brief Constructor of the class \c TairaColoniusSolver.
+ * \brief Constructor. Copies the database and information about the computational grid.
  */
 template <typename memoryType>
 TairaColoniusSolver<memoryType>::TairaColoniusSolver(parameterDB *pDB, domain *dInfo)

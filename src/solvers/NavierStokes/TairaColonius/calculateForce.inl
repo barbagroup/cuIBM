@@ -1,7 +1,8 @@
 /***************************************************************************//**
  * \file calculateForce.inl
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Calculates forces acting on each immersed body.
+ * \brief Implementation of the methods of the class \c TairaColoniusSolver
+ *        to calculate forces acting on each immersed body.
  */
 
 

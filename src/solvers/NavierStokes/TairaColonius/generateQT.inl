@@ -1,7 +1,8 @@
 /***************************************************************************//**
  * \file generateQT.inl
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Implementation of the methods of the class \c TairaColoniusSolver related to matrix QT.
+ * \brief Implementation of the methods of the class \c TairaColoniusSolver
+ *        to generate the transposed gradient matrix and the interpolation matrix.
  */
 
 
@@ -11,7 +12,7 @@
 
 
 /**
- * \brief Updates the interpolation matrix with current location of body points on the host.
+ * \brief Updates the interpolation matrix with current location of body points (on the host).
  */
 template <>
 void TairaColoniusSolver<host_memory>::updateQT()
@@ -56,7 +57,7 @@ void TairaColoniusSolver<host_memory>::updateQT()
 }
 
 /**
- * \brief Updates the interpolation matrix with current location of body points on the device.
+ * \brief Updates the interpolation matrix with current location of body points (on the device).
  */
 template <>
 void TairaColoniusSolver<device_memory>::updateQT()
@@ -105,7 +106,7 @@ void TairaColoniusSolver<device_memory>::updateQT()
 }
 
 /**
- * \brief Generates matrix containing discrete divergence operator and interpolation matrix on the host.
+ * \brief Generates the transposed gradient matrix and interpolation matrix (on the host).
  */
 template <>
 void TairaColoniusSolver<host_memory>::generateQT()
@@ -134,7 +135,7 @@ void TairaColoniusSolver<host_memory>::generateQT()
 }
 
 /**
- * \brief Generates matrix containing discrete divergence operator and interpolation matrix on the device.
+ * \brief Generates the transposed gradient matrix and interpolation matrix (on the device).
  */
 template <>
 void TairaColoniusSolver<device_memory>::generateQT()
