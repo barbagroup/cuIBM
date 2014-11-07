@@ -1,12 +1,13 @@
 /***************************************************************************//**
  * \file generateA.inl
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Implementation of the methods \c generateA 
- *        of the class \c DirectForcingSolver.
+ * \brief Implementation of the methods of the class \c DirectForcingSolver to generate
+ *        the matrix resulting from implicit terms in the discretized momentum equation.
  */
 
 
 #include <solvers/NavierStokes/kernels/generateA.h>
+
 
 /**
  * \brief Generates the matrix A on the device.

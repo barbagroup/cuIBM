@@ -1,7 +1,8 @@
 /***************************************************************************//**
  * \file tagPoints.inl
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Tag points near the immsersed boundary using a ray-tracing algorithm.
+ * \brief Implementation of the methods of the class \c DirectForcingSolver to tag
+ *        points near the immersed boundary using a ray-tracing algorithm.
  */
 
 
@@ -378,6 +379,9 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by)
 /*********************** Fadlun-1c for MOVING BODY ***************************/
 #if 1
 // Bilinear Fadlun1c-type interpolation outside the body, for a moving body.
+/**
+ * \brief To be documented.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real *vB)
 {

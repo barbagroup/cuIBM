@@ -1,7 +1,8 @@
 /***************************************************************************//**
  * \file generateL.inl
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Generates the matrix L.
+ * \brief Implementation of the methods of the class \c DirectForcingSolver to generate
+ *        the Laplacian matrix.
  */
 
 

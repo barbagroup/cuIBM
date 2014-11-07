@@ -1,7 +1,8 @@
 /***************************************************************************//**
  * \file generateQT.inl
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Generates the matrix QT.
+ * \brief Implementation of the methods of the class \c DirectForcingSolver to generate
+ *        the divergence matrix and the interpolation matrix.
  */
 
 
@@ -16,6 +17,9 @@ void DirectForcingSolver<host_memory>::updateQ()
 {
 }
 
+/**
+ * \brief To be documented.
+ */
 template <>
 void DirectForcingSolver<device_memory>::updateQ()
 {

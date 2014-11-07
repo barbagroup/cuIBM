@@ -1,11 +1,13 @@
 /***************************************************************************//**
  * \file updateRHS1.inl
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Updates the RHS.
+ * \brief Implementation of the methods of the class \c DirectForcingSolver to update
+ *        the right hand-side of the system for the intermediate velocity flux vector.
  */
 
 
 #include <solvers/NavierStokes/kernels/updateRHS1.h>
+
 
 /**
  * \brief To be documented.
