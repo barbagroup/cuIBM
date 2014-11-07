@@ -64,6 +64,7 @@ void bc1DirichletU(real *bc1, int N, int nx, int offset, int stride, real *dx, r
  */
 __global__
 void bc1DirichletV(real *bc1, int N, int nx, int numU, int offset, int stride, real *dy, real C, real *bc, int numUbc)
+{
 	int idx	= threadIdx.x + blockIdx.x*blockDim.x;
 		
 	if ( idx >= N ) return;	/// check if idx too high
