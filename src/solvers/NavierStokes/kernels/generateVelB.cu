@@ -1,29 +1,28 @@
 /***************************************************************************//**
-* \file generateVelB.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the CUDA kernels required to generate vector \c velB
-*/
+ * \file generateVelB.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the kernels to generate body-velocities.
+ */
 
 
 #include "generateVelB.h"
 
 
 /**
-* \namespace kernels
-* \brief Contain all custom-written CUDA kernels
-*/
+ * \namespace kernels
+ * \brief Contains all custom-written CUDA kernels.
+ */
 namespace kernels
 {
 
 /**
-* \brief CUDA kernel to store element of x- and y- body velocity arrays
-* 		into one single array
-*
-* \param velB vector that contains both x- and y- velocity components
-* \param uB x-velocity of body points (all bodies included)
-* \param vB y-velocity of body points (all bodies included)
-* \param totalPoints number of body points (all bodies included)
-*/
+ * \brief Stores an element of the u- and v- body-velocities into one single array.
+ *
+ * \param velB vector that contains both u- and v- velocities
+ * \param uB u-velocity of body points (all bodies included)
+ * \param vB v-velocity of body points (all bodies included)
+ * \param totalPoints number of body points (all bodies included)
+ */
 __global__
 void fill_velB(real *velB, real *uB, real *vB, int totalPoints)
 {
