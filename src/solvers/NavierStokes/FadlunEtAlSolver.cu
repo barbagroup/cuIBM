@@ -1,8 +1,8 @@
 /***************************************************************************//**
-* \file FadlunEtAlSolver.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the methods of the class \c FadlunEtAlSolver
-*/
+ * \file FadlunEtAlSolver.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c FadlunEtAlSolver.
+ */
 
 
 #include "FadlunEtAlSolver.h"
@@ -10,8 +10,8 @@
 
 
 /**
-* \brief To be documented
-*/
+ * \brief To be documented.
+ */
 template <typename memoryType>
 void FadlunEtAlSolver<memoryType>::generateQT()
 {
@@ -20,8 +20,8 @@ void FadlunEtAlSolver<memoryType>::generateQT()
 }
 
 /**
-* \brief To be documented
-*/
+ * \brief Constructor. Copies the database and information about the computational grid.
+ */
 template <typename memoryType>
 FadlunEtAlSolver<memoryType>::FadlunEtAlSolver(parameterDB *pDB, domain *dInfo)
 {
