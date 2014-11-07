@@ -1,40 +1,41 @@
 /***************************************************************************//**
-* \file calculateForce.cu
-* \author Krishnan, A. (anus@bu.edu)
-* \brief Calculate forces acting on the body using a control-volume approach
-*/
+ * \file calculateForce.cu
+ * \author Anush Krishnan (anus@bu.edu)
+ * \brief Implementation of the kernels to calculate the forces acting on a body
+ *        using a control-volume approach.
+ */
 
 #include "calculateForce.h"
 
 
 #define BSZ 16
 
+
 /**
-* \namespace kernels
-* \brief Contains all the custom-written CUDA kernels
-*/
+ * \namespace kernels
+ * \brief Contains all the custom-written CUDA kernels.
+ */
 namespace kernels
 {
 
 /**
-* \fn
-* \brief Calculate drag using a control-volume approach (left-right).
-*
-* Evaluate the contribution from the left and right parts of the control surface.
-*
-* \param FxX raw pointer to the vector storing the drag in the x-direction
-* \param lambda raw pointer to the vector storing all the pressure and Lagrangian forces
-* \param q raw pointer to the vector storing all the fluxes
-* \param nu viscosity
-* \param dx raw pointer to the vector storing the cell widths in the x-direction
-* \param dy raw pointer to the vector storing the cell widths in the y-direction
-* \param nx number of cells in the x-direction
-* \param ny number of cells in the y-direction
-* \param I x-index of the bottom-left corner cell of the control surface
-* \param J y-index of the top-right corner cell of the control surface
-* \param ncx number of cells in the x-direction in the control volume
-* \param ncy number of cells in the y-direction in the control volume
-*/
+ * \brief Calculates drag using a control-volume approach (left-right).
+ *
+ * Evaluate the contribution from the left and right parts of the control surface.
+ *
+ * \param FxX raw pointer to the vector storing the drag in the x-direction
+ * \param lambda raw pointer to the vector storing all the pressure and Lagrangian forces
+ * \param q raw pointer to the vector storing all the fluxes
+ * \param nu viscosity
+ * \param dx raw pointer to the vector storing the cell widths in the x-direction
+ * \param dy raw pointer to the vector storing the cell widths in the y-direction
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direction
+ * \param I x-index of the bottom-left corner cell of the control surface
+ * \param J y-index of the top-right corner cell of the control surface
+ * \param ncx number of cells in the x-direction in the control volume
+ * \param ncy number of cells in the y-direction in the control volume
+ */
 __global__
 void dragLeftRight(real *FxX, real *q, real *lambda, real nu, real *dx, real *dy,
                    int nx, int ny, int I, int J, int ncx, int ncy)
@@ -64,23 +65,22 @@ void dragLeftRight(real *FxX, real *q, real *lambda, real nu, real *dx, real *dy
 }
 
 /**
-* \fn
-* \brief Calculate drag using a control-volume approach (bottom-top).
-*
-* Evaluate the contribution from the bottom and top parts of the control surface.
-*
-* \param FxY raw pointer to the vector storing the drag in the y-direction
-* \param q raw pointer to the vector storing all the fluxes
-* \param nu viscosity
-* \param dx raw pointer to the vector storing the cell widths in the x-direction
-* \param dy raw pointer to the vector storing the cell widths in the y-direction
-* \param nx number of cells in the x-direction
-* \param ny number of cells in the y-direction
-* \param I x-index of the bottom-left corner cell of the control surface
-* \param J y-index of the top-right corner cell of the control surface
-* \param ncx number of cells in the x-direction in the control volume
-* \param ncy number of cells in the y-direction in the control volume
-*/
+ * \brief Calculate drag using a control-volume approach (bottom-top).
+ *
+ * Evaluate the contribution from the bottom and top parts of the control surface.
+ *
+ * \param FxY raw pointer to the vector storing the drag in the y-direction
+ * \param q raw pointer to the vector storing all the fluxes
+ * \param nu viscosity
+ * \param dx raw pointer to the vector storing the cell widths in the x-direction
+ * \param dy raw pointer to the vector storing the cell widths in the y-direction
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direction
+ * \param I x-index of the bottom-left corner cell of the control surface
+ * \param J y-index of the top-right corner cell of the control surface
+ * \param ncx number of cells in the x-direction in the control volume
+ * \param ncy number of cells in the y-direction in the control volume
+ */
 __global__
 void dragBottomTop(real *FxY, real *q, real nu, real *dx, real *dy,
                    int nx, int ny, int I, int J, int ncx, int ncy)
@@ -118,24 +118,23 @@ void dragBottomTop(real *FxY, real *q, real nu, real *dx, real *dy,
 }
 
 /**
-* \fn
-* \brief Calculate drag using a control-volume approach (unsteady).
-*
-* Evaluate the unsteady contribution of the control volume.
-*
-* \param FxU raw pointer to the vector storing the unsteady drag components
-* \param q raw pointer to the vector storing all the fluxes
-* \param qOld raw pointer to the vector sotring all the fluxes at the previous time-step
-* \param dx raw pointer to the vector storing the cell widths in the x-direction
-* \param dy raw pointer to the vector storing the cell widths in the y-direction
-* \param dt time increment
-* \param nx number of cells in the x-direction
-* \param ny number of cells in the y-direcyion
-* \param I x-index of the bottom-left cell of the control surface
-* \param J y-index of the top-right cell of the control surface
-* \param ncx number of cells in the x-direction in the control volume
-* \param nyc number of cells in the y-direction in the control volume
-*/
+ * \brief Calculate drag using a control-volume approach (unsteady).
+ *
+ * Evaluate the unsteady contribution of the control volume.
+ *
+ * \param FxU raw pointer to the vector storing the unsteady drag components
+ * \param q raw pointer to the vector storing all the fluxes
+ * \param qOld raw pointer to the vector sotring all the fluxes at the previous time-step
+ * \param dx raw pointer to the vector storing the cell widths in the x-direction
+ * \param dy raw pointer to the vector storing the cell widths in the y-direction
+ * \param dt time increment
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direcyion
+ * \param I x-index of the bottom-left cell of the control surface
+ * \param J y-index of the top-right cell of the control surface
+ * \param ncx number of cells in the x-direction in the control volume
+ * \param nyc number of cells in the y-direction in the control volume
+ */
 __global__
 void dragUnsteady(real *FxU, real *q, real *qOld, real *dx, real *dy, real dt,
                    int nx, int ny, int I, int J, int ncx, int ncy)
@@ -154,23 +153,22 @@ void dragUnsteady(real *FxU, real *q, real *qOld, real *dx, real *dy, real dt,
 }
 
 /**
-* \fn
-* \brief Calculate lift using a control-volume approach (left-right).
-*
-* Evaluate the contribution from the left and right parts of the control surface.
-*
-* \param FyX raw pointer to the vector storing the lift components in the x-direction
-* \param q raw pointer to the vector storing all the fluxes
-* \param nu viscosity
-* \param dx raw pointer to the vector storing the cell widths in the x-direction
-* \param dy raw pointer to the vector storing the cell widths in the y-direction
-* \param nx number of cells in the x-direction
-* \param ny number of cells in the y-direcyion
-* \param I x-index of the bottom-left cell of the control surface
-* \param J y-index of the top-right cell of the control surface
-* \param ncx number of cells in the x-direction in the control volume
-* \param nyc number of cells in the y-direction in the control volume
-*/
+ * \brief Calculate lift using a control-volume approach (left-right).
+ *
+ * Evaluate the contribution from the left and right parts of the control surface.
+ *
+ * \param FyX raw pointer to the vector storing the lift components in the x-direction
+ * \param q raw pointer to the vector storing all the fluxes
+ * \param nu viscosity
+ * \param dx raw pointer to the vector storing the cell widths in the x-direction
+ * \param dy raw pointer to the vector storing the cell widths in the y-direction
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direcyion
+ * \param I x-index of the bottom-left cell of the control surface
+ * \param J y-index of the top-right cell of the control surface
+ * \param ncx number of cells in the x-direction in the control volume
+ * \param nyc number of cells in the y-direction in the control volume
+ */
 __global__
 void liftLeftRight(real *FyX, real *q, real nu, real *dx, real *dy,
                    int nx, int ny, int I, int J, int ncx, int ncy)
@@ -207,24 +205,23 @@ void liftLeftRight(real *FyX, real *q, real nu, real *dx, real *dy,
 }
 
 /**
-* \fn
-* \brief Calculate lift using a control-volume approach (bottom-top).
-*
-* Evaluate the contribution from the bottom and top parts of the control surface.
-*
-* \param FyY raw pointer to the vector storing the lift components in the y-direction
-* \param q raw pointer to the vector storing all the fluxes
-* \param lambda raw pointer to the vector storing the pressure and Lagrangian forces
-* \param nu viscosity
-* \param dx raw pointer to the vector storing the cell widths in the x-direction
-* \param dy raw pointer to the vector storing the cell widths in the y-direction
-* \param nx number of cells in the x-direction
-* \param ny number of cells in the y-direcyion
-* \param I x-index of the bottom-left cell of the control surface
-* \param J y-index of the top-right cell of the control surface
-* \param ncx number of cells in the x-direction in the control volume
-* \param nyc number of cells in the y-direction in the control volume
-*/
+ * \brief Calculate lift using a control-volume approach (bottom-top).
+ *
+ * Evaluate the contribution from the bottom and top parts of the control surface.
+ *
+ * \param FyY raw pointer to the vector storing the lift components in the y-direction
+ * \param q raw pointer to the vector storing all the fluxes
+ * \param lambda raw pointer to the vector storing the pressure and Lagrangian forces
+ * \param nu viscosity
+ * \param dx raw pointer to the vector storing the cell widths in the x-direction
+ * \param dy raw pointer to the vector storing the cell widths in the y-direction
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direcyion
+ * \param I x-index of the bottom-left cell of the control surface
+ * \param J y-index of the top-right cell of the control surface
+ * \param ncx number of cells in the x-direction in the control volume
+ * \param nyc number of cells in the y-direction in the control volume
+ */
 __global__
 void liftBottomTop(real *FyY, real *q, real *lambda, real nu, real *dx, real *dy,
                    int nx, int ny, int I, int J, int ncx, int ncy)
@@ -254,24 +251,23 @@ void liftBottomTop(real *FyY, real *q, real *lambda, real nu, real *dx, real *dy
 }
             
 /**
-* \fn
-* \brief Calculate lift using a control-volume approach (unsteady).
-*
-* Evaluate the unsteady contribution of the control volume.
-*
-* \param FyU raw pointer to the vector storing the unsteady lift components
-* \param q raw pointer to the vector storing all the fluxes
-* \param qOld raw pointer to the vector sotring all the fluxes at the previous time-step
-* \param dx raw pointer to the vector storing the cell widths in the x-direction
-* \param dy raw pointer to the vector storing the cell widths in the y-direction
-* \param dt time increment
-* \param nx number of cells in the x-direction
-* \param ny number of cells in the y-direcyion
-* \param I x-index of the bottom-left cell of the control surface
-* \param J y-index of the top-right cell of the control surface
-* \param ncx number of cells in the x-direction in the control volume
-* \param nyc number of cells in the y-direction in the control volume
-*/
+ * \brief Calculate lift using a control-volume approach (unsteady).
+ *
+ * Evaluate the unsteady contribution of the control volume.
+ *
+ * \param FyU raw pointer to the vector storing the unsteady lift components
+ * \param q raw pointer to the vector storing all the fluxes
+ * \param qOld raw pointer to the vector sotring all the fluxes at the previous time-step
+ * \param dx raw pointer to the vector storing the cell widths in the x-direction
+ * \param dy raw pointer to the vector storing the cell widths in the y-direction
+ * \param dt time increment
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direcyion
+ * \param I x-index of the bottom-left cell of the control surface
+ * \param J y-index of the top-right cell of the control surface
+ * \param ncx number of cells in the x-direction in the control volume
+ * \param nyc number of cells in the y-direction in the control volume
+ */
 __global__
 void liftUnsteady(real *FyU, real *q, real *qOld, real *dx, real *dy, real dt,
                   int nx, int ny, int I, int J, int ncx, int ncy)
@@ -344,8 +340,8 @@ void forceX(real *f, real *q, real *rn, int *tags,
 }
 
 /**
-* \brief Doing nothing !
-*/
+ * \brief Doing nothing.
+ */
 __global__
 void forceY(){}
 
