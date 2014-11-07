@@ -1,5 +1,16 @@
+/***************************************************************************//**
+ * \file calculateForce.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the method of the class \c SuLaiLinSolver 
+ *        to calculate forces acting on the body.
+ */
+
+
 #include <solvers/NavierStokes/kernels/calculateForce.h>
 
+/**
+ * \brief To be documented.
+ */
 template <typename memoryType>
 void SuLaiLinSolver<memoryType>::calculateForce()
 {

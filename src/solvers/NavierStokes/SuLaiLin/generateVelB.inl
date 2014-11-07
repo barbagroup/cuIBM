@@ -1,5 +1,17 @@
+/***************************************************************************//**
+ * \file generateVelB.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c SuLaiLinSolver to store
+ *        the body-points velocity-components into one single array.
+ */
+
+
 #include <solvers/NavierStokes/kernels/generateVelB.h>
 
+
+/**
+ * \brief To be documented.
+ */
 template <>
 void SuLaiLinSolver<host_memory>::generateVelB()
 {
@@ -11,6 +23,9 @@ void SuLaiLinSolver<host_memory>::generateVelB()
 	}
 }
 
+/**
+ * \brief To be documented.
+ */
 template<>
 void SuLaiLinSolver<device_memory>::generateVelB()
 {
