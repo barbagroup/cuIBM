@@ -9,7 +9,7 @@
 
 
 /**
- * \brief Discrete delta function defined by Roma et al. (1999)
+ * \brief Discrete delta function defined by Roma et al. (1999).
  *
  * \param x x- or y- component of the vector defined between two points
  * \param h the grid-spacing

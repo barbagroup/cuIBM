@@ -1,44 +1,37 @@
 /***************************************************************************//**
-* \file generateQT.h
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Declaration of the kernels required to generate matrix \c QT
-*/
+ * \file generateQT.h
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Declaration of the kernels to generate gradient matrix and interpolation matrix.
+ */
+
 
 #pragma once
 
 #include <types.h>
 #include <helpers.h>
 
+
 /**
-* \namespace kernels
-* \brief Contain all custom-written CUDA kernels
-*/
+ * \namespace kernels
+ * \brief Contains all custom-written CUDA kernels.
+ */
 namespace kernels
 {
 
-/**
-* \brief To be documented
-*/
 __global__ \
 void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tags);
 
-/**
-* \brief Generate the matrix \c QT
-*/
+// generate the divergence matrix
 void generateQT(int *QTRows, int *QTCols, real *QTVals, int nx, int ny);
 
-/**
-* \brief Kernel to update element of the matrix \c QT on the device
-*/
+// update elements of the divergence matrix and the interpolation matrix
 __global__ \
 void updateQT(int *QTRows, int *QTCols, real *QTVals,
               int *ERows,  int *ECols,  real *EVals,
               int nx, int ny, real *x, real *y, real *dx,
               int totalPoints, real *xB, real *yB, int *I, int *J);
 
-/**
-* \brief Update the matrix \c QTi on the host
-*/
+// update the divergence matrix and the interpolation matrix
 void updateQTHost(int *QTRows, int *QTCols, real *QTVals,
               int *ERows,  int *ECols,  real *EVals,
               int nx, int ny, real *x, real *y, real *dx,
