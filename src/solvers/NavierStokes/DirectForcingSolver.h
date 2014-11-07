@@ -1,7 +1,7 @@
 /***************************************************************************//**
  * \file  DirectForcingSolver.h
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Modified direct forcing immersed boundary method.
+ * \brief Declaration of the class \c DirectForcingSolver.
  */
 
 
@@ -28,16 +28,10 @@ protected:
 	vecH coeffs, uv;
 	vecD coeffsD, uvD;
 	
-	/**
-	 * \brief To be documented.
-	 */
 	void tagPoints();
 	
 	//void tagPoints(real *bx, real *by);
 	
-	/**
-	 * \brief To be documented.
-	 */
 	void tagPoints(real *bx, real *by, real *uB, real *vB);
 
 	virtual void generateA(real alpha);
@@ -55,12 +49,13 @@ protected:
 	void writeMassFluxInfo();
 	
 public:
-	/**
-	 * \brief Constructor of the class \c DirectForcingSolver.
-	 */
 	DirectForcingSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
 	virtual void initialise();
 	virtual void writeData();
+	
+	/**
+	 * \brief Returns the name of the solver as a string.
+	 */
 	virtual std::string name()
 	{
 		return "Direct Forcing";
