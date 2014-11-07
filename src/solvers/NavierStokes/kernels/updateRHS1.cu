@@ -1,8 +1,9 @@
 /***************************************************************************//**
-* \file updateRHS1.cu
-* \author Krishnan, A. (anush@bu.edu)
-* \brief Definition of the CUDA kernels required to update vector \c rhs1
-*/
+ * \file updateRHS1.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the kernels to update the right hand-side
+ *        of the intermadiate velocity flux solver.
+ */
 
 
 #include "updateRHS1.h"
@@ -12,13 +13,16 @@
 
 
 /**
-* \namespace kernels
-* \brief Contain all custom-written CUDA kernels
-*/
+ * \namespace kernels
+ * \brief Contains all custom-written CUDA kernels.
+ */
 namespace kernels
 {
 
 // 1-d interpolation
+/**
+ * \brief To be documented.
+ */
 __global__
 void updateRHS1(real *rhs1, int numUV, int *tags)
 {
@@ -31,8 +35,8 @@ void updateRHS1(real *rhs1, int numUV, int *tags)
 }
 
 /**
-* \brief To be documented
-*/
+ * \brief To be documented.
+ */
 __global__
 void updateRHS1X(real *rhs1, int nx, int ny, real dt, real *dx, int *tags, real *coeffs, real *uv)
 {
@@ -47,8 +51,8 @@ void updateRHS1X(real *rhs1, int nx, int ny, real dt, real *dx, int *tags, real 
 }
 
 /**
-* \brief To be documented
-*/
+ * \brief To be documented.
+ */
 __global__
 void updateRHS1Y(real *rhs1, int nx, int ny, real dt, real *dy, int *tags, real *coeffs, real *uv)
 {
