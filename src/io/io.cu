@@ -35,23 +35,6 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return elems;
 }
 
-void makeDirectory(const std::string folderPath)
-{
-	std::vector<std::string> x = split(folderPath, '/');
-	int n = x.size();
-	int i = 0;
-	std::string folder = x[i];
-	mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-	i++;
-	while(i<n)
-	{
-		folder = folder + '/' + x[i];
-		mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-		i++;
-	}
-}
-
-
 //##############################################################################
 //                                 INPUT
 //##############################################################################

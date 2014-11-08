@@ -38,9 +38,8 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	/// initial values of timeStep
 	timeStep = (*paramDB)["simulation"]["startStep"].get<int>();
 	
-	/// create directory 
+	/// get the case directory
 	std::string folder = (*paramDB)["inputs"]["caseFolder"].get<std::string>();
-	io::makeDirectory(folder);
 
 	/// write the grids information to a file
 	io::writeGrid(folder, *domInfo);
