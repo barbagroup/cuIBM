@@ -62,7 +62,7 @@ def main():
 	Omg = np.zeros((j_end-j_start, i_end-i_start))
 
 	# time-loop
-	for ite in xrange(start_step+nsave, nt+1, nsave):
+	for ite in xrange(start_step+nsave, start_step+nt+1, nsave):
 		# read the velocity data at the given time-step
 		u, v = readVelocityData(folder, ite, nx, ny, dx, dy)
 		if u == None or v == None:
