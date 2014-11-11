@@ -59,6 +59,8 @@ protected:
 	void initialiseArrays(int numQ, int numLambda);
 	virtual void initialiseFluxes();
 	virtual void initialiseFluxes(real *q);
+	void initializeLambda();
+	void initializeLambda(real *lambda);
 	void initialiseBoundaryArrays();
 	void assembleMatrices(); // contains subfunctions to calculate A, QT, BN, QTBNQ
 

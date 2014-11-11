@@ -94,6 +94,8 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 	cusp::blas::fill(temp2, 0.0);
 	
 	initialiseFluxes();
+	if (timeStep != 0)
+		initializeLambda();
 	initialiseBoundaryArrays();
 	
 	generateRN();
@@ -101,6 +103,31 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 	std::cout << "Initialised arrays!" << std::endl;
 	
 	logger.stopTimer("initialiseArrays");
+}
+
+template <>
+void NavierStokesSolver<host_memory>::initializeLambda()
+{
+	real *lambda_r = thrust::raw_pointer_cast(&lambda[0]);
+	initializeLambda(lambda_r);
+}
+
+template <>
+void NavierStokesSolver<device_memory>::initializeLambda()
+{
+	vecH lambdaHost = lambda;
+	real *lambdaHost_r = thrust::raw_pointer_cast(&lambdaHost[0]);
+	initializeLambda(lambdaHost_r);
+	lambda = lambdaHost;
+}
+
+template <typename memoryType>
+void NavierStokesSolver<memoryType>::initializeLambda(real *lambda)
+{
+	// case directory
+	std::string caseFolder = (*paramDB)["inputs"]["caseFolder"].get<std::string>();
+	// read pressure (and forces if body) from file
+	io::readData(caseFolder, timeStep, lambda, "lambda");
 }
 
 /**
@@ -167,7 +194,7 @@ void NavierStokesSolver <memoryType>::initialiseFluxes(real *q)
 		// case directory
 		std::string caseFolder = (*paramDB)["inputs"]["caseFolder"].get<std::string>();
 		// read velocity fluxes from file
-		io::readData(caseFolder, timeStep, q);
+		io::readData(caseFolder, timeStep, q, "q");
 	}
 }
 

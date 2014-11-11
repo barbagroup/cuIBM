@@ -422,17 +422,17 @@ void writeData<vecD>(std::string &caseFolder, int n, vecD &q, vecD &lambda, doma
 	writeData(caseFolder, n, qH, lambdaH, D);
 }
 
-void readData(std::string &caseFolder, int timeStep, real *q)
+void readData(std::string &caseFolder, int timeStep, real *x, std::string name)
 {
 	std::stringstream in;
 	std::string inFilePath;
-	int numQ;
+	int n;
 
-	in << caseFolder << "/" << std::setfill('0') << std::setw(7) << timeStep << "/q";
+	in << caseFolder << "/" << std::setfill('0') << std::setw(7) << timeStep << "/" << name;
 	inFilePath = in.str();
 	std::ifstream inFile(inFilePath.c_str(), std::ifstream::binary);
-	inFile.read((char*)(&numQ), sizeof(int));
-	inFile.read((char*)(&q[0]), numQ*sizeof(real));
+	inFile.read((char*)(&n), sizeof(int));
+	inFile.read((char*)(&x[0]), n*sizeof(real));
 	inFile.close();
 }
 
