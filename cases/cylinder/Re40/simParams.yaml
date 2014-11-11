@@ -1,5 +1,6 @@
 - type: simulation
   dt: 0.01
+  startStep: 0
   nt: 300
   nsave: 50
   timeScheme: [ADAMS_BASHFORTH_2, CRANK_NICOLSON]
