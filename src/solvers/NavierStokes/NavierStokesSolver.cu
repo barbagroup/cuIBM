@@ -37,7 +37,7 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	
 	/// initial values of timeStep
 	timeStep = (*paramDB)["simulation"]["startStep"].get<int>();
-	
+
 	/// get the case directory
 	std::string folder = (*paramDB)["inputs"]["caseFolder"].get<std::string>();
 
@@ -124,33 +124,43 @@ void NavierStokesSolver <device_memory>::initialiseFluxes()
 template <typename memoryType>
 void NavierStokesSolver <memoryType>::initialiseFluxes(real *q)
 {
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny,
-	     numU  = (nx-1)*ny;
-	
-	real xmin = domInfo->x[0],
-	     xmax = domInfo->x[nx],
-	     ymin = domInfo->y[0],
-	     ymax = domInfo->y[ny];
-	
-	real uInitial = (*paramDB)["flow"]["uInitial"].get<real>(),
-	     uPerturb = (*paramDB)["flow"]["uPerturb"].get<real>(),
-	     vInitial = (*paramDB)["flow"]["vInitial"].get<real>(),
-	     vPerturb = (*paramDB)["flow"]["vPerturb"].get<real>();
-	
-	for(int j=0; j<ny; j++)
+	if (timeStep == 0)
 	{
-		for(int i=0; i<nx-1; i++)
-		{
-			q[j*(nx-1) + i] = ( uInitial + uPerturb * cos( 0.5*M_PI*(2*domInfo->xu[i]-xmax-xmin)/(xmax-xmin) ) * sin( M_PI * (2*domInfo->yu[j]-ymax-ymin)/(ymax-ymin) ) ) * domInfo->dy[j];
-		}
+	    int  nx = domInfo->nx,
+	         ny = domInfo->ny,
+	         numU  = (nx-1)*ny;
+	
+	    real xmin = domInfo->x[0],
+	         xmax = domInfo->x[nx],
+	         ymin = domInfo->y[0],
+	         ymax = domInfo->y[ny];
+	
+	    real uInitial = (*paramDB)["flow"]["uInitial"].get<real>(),
+	         uPerturb = (*paramDB)["flow"]["uPerturb"].get<real>(),
+	         vInitial = (*paramDB)["flow"]["vInitial"].get<real>(),
+	         vPerturb = (*paramDB)["flow"]["vPerturb"].get<real>();
+	
+	    for(int j=0; j<ny; j++)
+	    {
+		    for(int i=0; i<nx-1; i++)
+		    {
+			    q[j*(nx-1) + i] = ( uInitial + uPerturb * cos( 0.5*M_PI*(2*domInfo->xu[i]-xmax-xmin)/(xmax-xmin) ) * sin( M_PI * (2*domInfo->yu[j]-ymax-ymin)/(ymax-ymin) ) ) * domInfo->dy[j];
+		    }
+	    }
+	    for(int j=0; j<ny-1; j++)
+	    {
+		    for(int i=0; i<nx; i++)
+		    {
+			    q[j*nx + i + numU] = ( vInitial + vPerturb * cos( 0.5*M_PI*(2*domInfo->yv[j]-ymax-ymin)/(ymax-ymin) ) * sin( M_PI * (2*domInfo->xv[i]-xmax-xmin)/(xmax-xmin) ) ) * domInfo->dx[i];
+		    }
+	    }
 	}
-	for(int j=0; j<ny-1; j++)
+	else
 	{
-		for(int i=0; i<nx; i++)
-		{
-			q[j*nx + i + numU] = ( vInitial + vPerturb * cos( 0.5*M_PI*(2*domInfo->yv[j]-ymax-ymin)/(ymax-ymin) ) * sin( M_PI * (2*domInfo->xv[i]-xmax-xmin)/(xmax-xmin) ) ) * domInfo->dx[i];
-		}
+		// case directory
+		std::string caseFolder = (*paramDB)["inputs"]["caseFolder"].get<std::string>();
+		// read velocity fluxes from file
+		io::readData(caseFolder, timeStep, q);
 	}
 }
 
@@ -248,8 +258,9 @@ void NavierStokesSolver<memoryType>::updateBoundaryConditions()
 template <typename memoryType>
 bool NavierStokesSolver<memoryType>::finished()
 {
+	int startStep = (*paramDB)["simulation"]["startStep"].get<int>();
 	int nt = (*paramDB)["simulation"]["nt"].get<int>();
-	return (timeStep < nt) ? false : true;
+	return (timeStep < startStep + nt) ? false : true;
 }
 
 //##############################################################################
