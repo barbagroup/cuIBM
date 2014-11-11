@@ -47,7 +47,14 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	/// open the required files
 	std::stringstream out;
 	out << folder << "/iterations";
-	iterationsFile.open(out.str().c_str());
+	if (timeStep != 0)
+	{
+		iterationsFile.open(out.str().c_str(), std::ofstream::app);
+	}
+	else
+	{
+		iterationsFile.open(out.str().c_str());
+	}
 	
 	/// write the plot information to a file
 	
