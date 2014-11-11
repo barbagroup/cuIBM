@@ -422,6 +422,20 @@ void writeData<vecD>(std::string &caseFolder, int n, vecD &q, vecD &lambda, doma
 	writeData(caseFolder, n, qH, lambdaH, D);
 }
 
+void readData(std::string &caseFolder, int timeStep, real *q)
+{
+	std::stringstream in;
+	std::string inFilePath;
+	int numQ;
+
+	in << caseFolder << "/" << std::setfill('0') << std::setw(7) << timeStep << "/q";
+	inFilePath = in.str();
+	std::ifstream inFile(inFilePath.c_str(), std::ifstream::binary);
+	inFile.read((char*)(&numQ), sizeof(int));
+	inFile.read((char*)(&q[0]), numQ*sizeof(real));
+	inFile.close();
+}
+
 void printDeviceMemoryUsage(char *label)
 {
 	size_t _free, _total;
