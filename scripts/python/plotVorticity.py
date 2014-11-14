@@ -2,27 +2,45 @@
 
 # file: $CUIBM_DIR/scripts/python/plotVorticity.py
 # author: Anush Krishnan (anush@bu.edu), Olivier Mesnard (mesnardo@gwu.edu)
-# description: plot the contours of vorticity at every saved timestep
+# description: Plots the contour of vorticity at saved time-steps.
+
 
 import os
 import argparse
 
-import numpy as np
-import matplotlib
-matplotlib.use('Agg')
-from matplotlib import pyplot as plt
+import numpy
+from matplotlib import pyplot
 
 from readData import readSimulationParameters, readGridData, readVelocityData
+
 
 def read_inputs():
 	"""Parses the command-line."""
 	# create the parser
-	parser = argparse.ArgumentParser(description='plots the vorticity field '
-						'at every save point for a given simulation',
+	parser = argparse.ArgumentParser(description='Plots the contour of '
+						'vorticity at saved time-steps',
 						formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	# fill the parser with arguments
-	parser.add_argument('-folder', dest='folder', type=str, default='.',
-						help='folder of the simulation')
+	parser.add_argument('--folder', dest='folder_path', type=str, 
+						default=os.getcwd(),
+						help='directory of the simulation')
+	parser.add_argument('--iterations', '-i', dest='iterations', type=float, 
+						nargs='+', default=[None, None, None],
+						help='time-steps to plot (min, max, interval)')
+	parser.add_argument('--bottom-left', '-bl', dest='bottom_left', type=float,
+						default=[-2.0, -3.0],
+						help='bottom-left coordinates of the rectangular view')
+	parser.add_argument('--top-right', '-tr', dest='top_right', type=float,
+						default=[4.0, 3.0],
+						help='top-right coordinates of the rectangular view')
+	parser.add_argument('--vorticity-limit', '-vl', dest='vorticity_limit', 
+						type=float, default=3.0,
+						help='upper limit of zero-symmetric vorticity range')
+	parser.add_argument('--levels', '-l', dest='levels', type=int, default=16,
+						help='number of contour line levels '
+							 '(choose an even number)')
+	return parser.parse_args
+
 	parser.add_argument("-xmin", type=float, dest="xmin", help="lower x-limit of the plotting region", default=-2.0)
 	parser.add_argument("-xmax", type=float, dest="xmax", help="upper x-limit of the plotting region", default=4.0)
 	parser.add_argument("-ymin", type=float, dest="ymin", help="lower y-limit of the plotting region", default=-3.0)
@@ -35,34 +53,43 @@ def read_inputs():
 
 
 def main():
-	"""Plots the contour of vorticity at every time saved."""
+	"""Plots the contour of vorticity at saved time-steps."""
 	# parse the command-line
 	args = read_inputs()
 
-	folder = args.folder	# name of the folder
+	folder_path = args.folder_path	# name of the folder
 
-	# read the parameters of the simulation
-	nt, start_step, nsave, _ = readSimulationParameters(folder)
+	# get the time-steps to plot
+	if not any(args.time_steps):
+		time_steps = [args.time_steps[0]:args.time_steps[1]:args.time_steps[2]]
+	else:
+		time_steps = sorted(int(folder) for folder in os.listdir(folder_path)
+										if folder[0]=='0')
 
 	# calculate the mesh characteristics
-	nx, ny, dx, dy, _, yu, xv, _ = readGridData(folder)
+	nx, ny, dx, dy, _, yu, xv, _ = readGridData(args.folder_path)
 
 	# calculate appropriate array boundaries
-	i_start = np.where(xv >= args.xmin)[0][0]
-	i_end = np.where(xv <= args.xmax)[0][-1]
-	j_start = np.where(yu >= args.ymin)[0][0]
-	j_end = np.where(yu <= args.ymax)[0][-1]
+	i_start = numpy.where(xv >= args.bottom_left[0])[0][0]
+	i_end = numpy.where(xv <= args.top_right[0])[0][-1]
+	j_start = numpy.where(yu >= args.bottom_left[1])[0][0]
+	j_end = numpy.where(yu <= args.top_right[1])[0][-1]
 
-	y = np.zeros(j_end-j_start)
-	x = np.zeros(i_end-i_start)
-	x[:] = 0.5*(xv[i_start:i_end] + xv[i_start+1:i_end+1])
-	y[:] = 0.5*(yu[j_start:j_end] + yu[j_start+1:j_end+1])
-	X, Y = np.meshgrid(x, y)
+	# create a mesh-grid
+	x = 0.5*(xv[i_start:i_end] + xv[i_start+1:i_end+1])
+	y = 0.5*(yu[j_start:j_end] + yu[j_start+1:j_end+1])
+	X, Y = numpy.meshgrid(x, y)
+
+	vorticity = numpy.zeros((y.size, x.size))
+
+	for time_step in time_steps:
+		# read the velocity data at the given time-step
+		u, v = readVelocityData(folder_path, time_step, nx, ny, dx, dy)
 
 	Omg = np.zeros((j_end-j_start, i_end-i_start))
 
 	# time-loop
-	for ite in xrange(start_step+nsave, nt+1, nsave):
+	for ite in xrange(start_step+nsave, start_step+nt+1, nsave):
 		# read the velocity data at the given time-step
 		u, v = readVelocityData(folder, ite, nx, ny, dx, dy)
 		if u == None or v == None:
