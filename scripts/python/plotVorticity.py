@@ -24,7 +24,7 @@ def read_inputs():
 	parser.add_argument('--folder', dest='folder_path', type=str, 
 						default=os.getcwd(),
 						help='directory of the simulation')
-	parser.add_argument('--iterations', '-i', dest='iterations', type=float, 
+	parser.add_argument('--time-steps', '-t', dest='time_steps', type=int, 
 						nargs='+', default=[None, None, None],
 						help='time-steps to plot (min, max, interval)')
 	parser.add_argument('--bottom-left', '-bl', dest='bottom_left', type=float,
@@ -39,16 +39,6 @@ def read_inputs():
 	parser.add_argument('--levels', '-l', dest='levels', type=int, default=16,
 						help='number of contour line levels '
 							 '(choose an even number)')
-	return parser.parse_args
-
-	parser.add_argument("-xmin", type=float, dest="xmin", help="lower x-limit of the plotting region", default=-2.0)
-	parser.add_argument("-xmax", type=float, dest="xmax", help="upper x-limit of the plotting region", default=4.0)
-	parser.add_argument("-ymin", type=float, dest="ymin", help="lower y-limit of the plotting region", default=-3.0)
-	parser.add_argument("-ymax", type=float, dest="ymax", help="upper y-limit of the plotting region", default=3.0)
-	parser.add_argument('-vortlim', dest='vortlim', type=float, default=3.0,
-						help='vorticity cutoff on the plot')
-	parser.add_argument('-numlevels', dest='numlevels', type=int, default=16,
-						help='number of vortex contour line levels (choose an even number)')
 	return parser.parse_args()
 
 
@@ -57,13 +47,14 @@ def main():
 	# parse the command-line
 	args = read_inputs()
 
-	folder_path = args.folder_path	# name of the folder
-
 	# get the time-steps to plot
-	if not any(args.time_steps):
-		time_steps = [args.time_steps[0]:args.time_steps[1]:args.time_steps[2]]
+	if any(args.time_steps):
+		time_steps = range(args.time_steps[0],
+						   args.time_steps[1]+1,
+						   args.time_steps[2])
 	else:
-		time_steps = sorted(int(folder) for folder in os.listdir(folder_path)
+		time_steps = sorted(int(folder) for folder 
+										in os.listdir(args.folder_path)
 										if folder[0]=='0')
 
 	# calculate the mesh characteristics
@@ -80,18 +71,12 @@ def main():
 	y = 0.5*(yu[j_start:j_end] + yu[j_start+1:j_end+1])
 	X, Y = numpy.meshgrid(x, y)
 
-	vorticity = numpy.zeros((y.size, x.size))
+	# initialize vorticity
+	vorticity = numpy.empty((y.size, x.size))
 
 	for time_step in time_steps:
 		# read the velocity data at the given time-step
-		u, v = readVelocityData(folder_path, time_step, nx, ny, dx, dy)
-
-	Omg = np.zeros((j_end-j_start, i_end-i_start))
-
-	# time-loop
-	for ite in xrange(start_step+nsave, start_step+nt+1, nsave):
-		# read the velocity data at the given time-step
-		u, v = readVelocityData(folder, ite, nx, ny, dx, dy)
+		u, v = readVelocityData(args.folder_path, time_step, nx, ny, dx, dy)
 		if u == None or v == None:
 			break
 
@@ -100,19 +85,26 @@ def main():
 			Dy = 0.5 * (dy[j] + dy[j+1])
 			for i in xrange(i_start, i_end):
 				Dx = 0.5 * (dx[i] + dx[i+1])
-				Omg[j-j_start, i-i_start] = (v[j*nx+i+1] - v[j*nx+i]) / Dx \
-					  - (u[(j+1)*(nx-1)+i] - u[j*(nx-1)+i]) / Dy
+				vorticity[j-j_start, i-i_start] = (v[j*nx+i+1]-v[j*nx+i])/Dx \
+										- (u[(j+1)*(nx-1)+i]-u[j*(nx-1)+i])/Dy
+		# plot the contour
+		pyplot.figure()
+		pyplot.xlabel(r'$x$', fontsize=18)
+		pyplot.ylabel(r'$y$', fontsize=18)
+		pyplot.xlim(args.bottom_left[0], args.top_right[0])
+		pyplot.ylim(args.bottom_left[1], args.top_right[1])
+		pyplot.axis('equal')
+		levels = numpy.linspace(-args.vorticity_limit, args.vorticity_limit, 
+								args.levels)
+		cont = pyplot.contour(X, Y, vorticity, levels)
+		cbar = pyplot.colorbar(cont)
+		cbar.set_label('vorticity')
+		pyplot.savefig('{}/o{:0>7}.png'.format(args.folder_path, time_step))
+		pyplot.clf()
+		print 'Saved figure {}/o{:0>7}.png'.format(args.folder_path, time_step)
 
-		CS = plt.contour(X, Y, Omg, levels=np.linspace(-args.vortlim, args.vortlim, args.numlevels))
-		plt.title("Vorticity")
-		plt.colorbar(CS)
-		plt.axis([xv[i_start], xv[i_end], yu[j_start], yu[j_end]])
-		plt.gca().set_aspect('equal', adjustable='box')
-		plt.savefig('{}/o{:0>7}.png'.format(folder,ite))
-		plt.clf()
-		print "Saved figure {}/O{:0>7}.png".format(folder,ite)
-	
-	print 'DONE!'
+	print 'Vorticity contours: DONE!'
+
 
 if __name__ == '__main__':
 	main()
