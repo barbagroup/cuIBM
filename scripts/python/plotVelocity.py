@@ -2,37 +2,44 @@
 
 # file: $CUIBM_DIR/scripts/python/plotVelocity.py
 # author: Anush Krishnan (anush@bu.edu), Olivier Mesnard (mesnardo@gwu.edu)
-# description: plot the contours of velocity
+# description: Plots the contour of velocity at saved time-steps.
 
 
+import os
 import argparse
 
-import numpy as np
-import matplotlib
-matplotlib.use('Agg')
-from matplotlib import pyplot as plt
+import numpy
+from matplotlib import pyplot
 
-from readData import readSimulationParameters, readGridData, readVelocityData
+from readData import read_grid, read_velocity
 
 
 def read_inputs():
 	"""Parses the command-line."""
 	# create the parser
-	parser = argparse.ArgumentParser(description='Plots the velocity field at '
-						'all save points for a given simulation',
+	parser = argparse.ArgumentParser(description='Plots the contour of '
+						'velocity at saved time-steps',
 						formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	# fill the parser with arguments
-	parser.add_argument('-folder', dest='folder', type=str, default='.',
-						help='folder of the simulation')
-	parser.add_argument("-xmin", type=float, dest="xmin", help="lower x-limit of the plotting region", default=-2.0)
-	parser.add_argument("-xmax", type=float, dest="xmax", help="upper x-limit of the plotting region", default=4.0)
-	parser.add_argument("-ymin", type=float, dest="ymin", help="lower y-limit of the plotting region", default=-3.0)
-	parser.add_argument("-ymax", type=float, dest="ymax", help="upper y-limit of the plotting region", default=3.0)
-	parser.add_argument('-ulim', dest='u_lim', type=float, default=1.0,
-						help='x-velocity cutoff on the plot')
-	parser.add_argument('-vlim', dest='v_lim', type=float, default=1.0,
-						help='y-velocity cutoff on the plot')
-	
+	parser.add_argument('--folder', dest='folder_path', type=str,
+						default=os.getcwd(),
+						help='directory of the simulation')
+	parser.add_argument('--time-steps', '-t', dest='time_steps', type=int,
+						nargs='+', default=[None, None, None],
+						help='time-steps to plot (min, max, interval)')
+	parser.add_argument('--bottom-left', '-bl', dest='bottom_left', type=float,
+						nargs='+', default=[-2.0, -3.0],
+						help='bottom-left coordinates of the rectangular view')
+	parser.add_argument('--top-right', '-tr', dest='top_right', type=float,
+						nargs='+', default=[4.0, 3.0],
+						help='top-right coordinates of the rectangular view')
+	parser.add_argument('--velocity-limits', '-vl', dest='velocity_limits',
+						type=float, nargs='+', default=[-1.0, 1.0, -1.0, 1.0],
+						help='limits of the u-velocity and v-velocity ranges')
+	parser.add_argument('--levels', '-l', dest='levels', type=int, nargs='+',
+						default=[21, 21],
+						help='number of contour line levels '
+							 'for u- and v- velocities')
 	return parser.parse_args()
 
 
@@ -41,53 +48,67 @@ def main():
 	# parse the command-line
 	args = read_inputs()
 
-	folder = args.folder	# name of the folder
+	# get the time-steps to plot
+	if any(args.time_steps):
+		# if provided by command-line arguments
+		time_steps = range(args.time_steps[0], 
+						   args.time_steps[1]+1, 
+						   args.time_steps[2])
+	else:
+		# if not, list solution folders
+		time_steps = sorted(int(folder) for folder
+										in os.listdir(args.folder_path)
+										if folder[0]=='0')
 
-	# read the parameters of the simulation
-	nt, start_step, nsave, _ = readSimulationParameters(folder)
+	# create image folder if does not exist to store PNG files
+	images_path = '%s/images' % args.folder_path
+	if not os.path.isdir(images_path):
+		os.makedirs(images_path)
 
 	# calculate the mesh characteristics
-	nx, ny, dx, dy, xu, yu, xv, yv = readGridData(folder)
-
-	# calculate appropriate array boundaries
-	i_start = np.where(xu >= args.xmin)[0][0]
-	i_end = np.where(xu <= args.xmax)[0][-1]
-	j_start = np.where(yu >= args.ymin)[0][0]
-	j_end = np.where(yu <= args.ymax)[0][-1]
-
-	x_start = xu[i_start] - dx[i_start]
-	x_end   = xu[i_end] + dx[i_end+1]
-	y_start = yu[j_start] - dy[j_start]/2.
-	y_end   = yu[j_end] + dy[j_end]/2.
+	nx, ny, dx, dy, xu, yu, xv, yv = read_grid(args.folder_path)
 
 	# generate a mesh grid for u- and v- velocities
-	Xu, Yu = np.meshgrid(xu, yu)
-	Xv, Yv = np.meshgrid(xv, yv)
+	Xu, Yu = numpy.meshgrid(xu, yu)
+	Xv, Yv = numpy.meshgrid(xv, yv)
 
-	for ite in xrange(start_step+nsave, nt+1, nsave):
-		print 'iteration %d' % ite
+	for time_step in time_steps:
 		# read the velocity data at the given time-step
-		u, v = readVelocityData(folder, ite, nx, ny, dx, dy)
-		if u == None or v == None:
-			break
+		u, v = read_velocity(args.folder_path, time_step, nx, ny, dx, dy)
 
+		print 'Generating PNG file at time-step %d...' % time_step
 		# plot u-velocity contour
-		plt.contour(Xu, Yu, u.reshape((ny, nx-1)),
-					levels=np.linspace(-args.u_lim, args.u_lim, 21))
-		plt.axis('equal')
-		plt.axis([x_start, x_end, y_start, y_end])
-		plt.colorbar()
-		plt.savefig('%s/u%07d.png' % (folder, ite))
-		plt.clf()
-	
+		print '\tu-velocity...'
+		pyplot.figure()
+		pyplot.xlabel(r'$x$', fontsize=18)
+		pyplot.ylabel(r'$y$', fontsize=18)
+		levels = numpy.linspace(args.velocity_limits[0],
+								args.velocity_limits[1],
+								args.levels[0])
+		cont = pyplot.contour(Xu, Yu, u.reshape((ny, nx-1)), levels)
+		cont_bar = pyplot.colorbar(cont)
+		cont_bar.set_label('u-velocity')
+		pyplot.xlim(args.bottom_left[0], args.top_right[0])
+		pyplot.ylim(args.bottom_left[1], args.top_right[1])
+		pyplot.savefig('{}/u{:0>7}.png'.format(images_path, time_step))
+		pyplot.clf()
 		# plot v-velocity contour
-		plt.contour(Xv, Yv, v.reshape((ny-1, nx)), 
-					levels=np.linspace(-args.v_lim, args.v_lim, 21))
-		plt.axis('equal')
-		plt.axis([x_start, x_end, y_start, y_end])
-		plt.colorbar()
-		plt.savefig('%s/v%07d.png' % (folder, ite))
-		plt.clf()
+		print '\tv-velocity...'
+		pyplot.figure()
+		pyplot.xlabel(r'$x$', fontsize=18)
+		pyplot.ylabel(r'$y$', fontsize=18)
+		levels = numpy.linspace(args.velocity_limits[2],
+								args.velocity_limits[3],
+								args.levels[1])
+		cont = pyplot.contour(Xv, Yv, v.reshape((ny-1, nx)), levels)
+		cont_bar = pyplot.colorbar(cont)
+		cont_bar.set_label('v-velocity')
+		pyplot.xlim(args.bottom_left[0], args.top_right[0])
+		pyplot.ylim(args.bottom_left[1], args.top_right[1])
+		pyplot.savefig('{}/v{:0>7}.png'.format(images_path, time_step))
+		pyplot.clf()
+
+	print '\nVelocity contours: DONE!\n'
 
 if __name__ == '__main__':
 	main()
