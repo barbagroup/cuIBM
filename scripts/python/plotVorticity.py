@@ -11,7 +11,7 @@ import argparse
 import numpy
 from matplotlib import pyplot
 
-from readData import readSimulationParameters, readGridData, readVelocityData
+from readData import readGridData, readVelocityData
 
 
 def read_inputs():
@@ -39,6 +39,8 @@ def read_inputs():
 	parser.add_argument('--levels', '-l', dest='levels', type=int, default=16,
 						help='number of contour line levels '
 							 '(choose an even number)')
+	parser.add_argument('--gnuplot', dest='using_gnuplot', action='store_true',
+						help='plots contours using Gnuplot instead of Pyplot')
 	return parser.parse_args()
 
 
@@ -49,13 +51,20 @@ def main():
 
 	# get the time-steps to plot
 	if any(args.time_steps):
+		# if provided by command-line arguments
 		time_steps = range(args.time_steps[0],
 						   args.time_steps[1]+1,
 						   args.time_steps[2])
 	else:
+		# if not, list solution folders
 		time_steps = sorted(int(folder) for folder 
 										in os.listdir(args.folder_path)
 										if folder[0]=='0')
+
+	# create images folder if does not exist to store PNG files
+	images_path = '%s/images' % args.folder_path
+	if not os.path.isdir(images_path):
+		os.makedirs(images_path)
 
 	# calculate the mesh characteristics
 	nx, ny, dx, dy, _, yu, xv, _ = readGridData(args.folder_path)
@@ -87,23 +96,65 @@ def main():
 				Dx = 0.5 * (dx[i] + dx[i+1])
 				vorticity[j-j_start, i-i_start] = (v[j*nx+i+1]-v[j*nx+i])/Dx \
 										- (u[(j+1)*(nx-1)+i]-u[j*(nx-1)+i])/Dy
-		# plot the contour
-		pyplot.figure()
-		pyplot.xlabel(r'$x$', fontsize=18)
-		pyplot.ylabel(r'$y$', fontsize=18)
-		pyplot.xlim(args.bottom_left[0], args.top_right[0])
-		pyplot.ylim(args.bottom_left[1], args.top_right[1])
-		pyplot.axis('equal')
-		levels = numpy.linspace(-args.vorticity_limit, args.vorticity_limit, 
-								args.levels)
-		cont = pyplot.contour(X, Y, vorticity, levels)
-		cbar = pyplot.colorbar(cont)
-		cbar.set_label('vorticity')
-		pyplot.savefig('{}/o{:0>7}.png'.format(args.folder_path, time_step))
-		pyplot.clf()
-		print 'Saved figure {}/o{:0>7}.png'.format(args.folder_path, time_step)
+		
+		if args.using_gnuplot:
+			# save the vorticity data in the time-step folder
+			print 'Saving vorticity data at time-step %d...' % time_step
+			vorticity_file = '{}/{:0>7}/vorticity'.format(args.folder_path, 
+			                                              time_step)
+			with open(vorticity_file, 'w') as outfile:
+				for j in xrange(y.size):
+					for i in xrange(x.size):
+						outfile.write('%f\t%f\t%f\n' 
+									  % (x[i], y[j], vorticity[j, i]))
+					outfile.write('\n')
+		else:
+			# plot the contour of vorticity using pyplot
+			print ('Generating PNG file with Pyplot at time-step %d...' 
+				   % time_step)
+			pyplot.figure()
+			pyplot.xlabel(r'$x$', fontsize=18)
+			pyplot.ylabel(r'$y$', fontsize=18)
+			pyplot.xlim(args.bottom_left[0], args.top_right[0])
+			pyplot.ylim(args.bottom_left[1], args.top_right[1])
+			pyplot.axis('equal')
+			levels = numpy.linspace(-args.vorticity_limit, args.vorticity_limit,
+									args.levels)
+			cont = pyplot.contour(X, Y, vorticity, levels)
+			cbar = pyplot.colorbar(cont)
+			cbar.set_label('vorticity')
+			pyplot.savefig('{}/vort{:0>7}.png'.format(images_path, time_step))
+			pyplot.clf()
 
-	print 'Vorticity contours: DONE!'
+	if args.using_gnuplot:
+		# create the gnuplot script file
+		print 'Creating Gnuplot vorticity script...'
+		gnuplot_file = '{}/vorticity_script.plt'.format(args.folder_path)
+		with open(gnuplot_file, 'w') as outfile:
+			outfile.write('reset;\n')
+			outfile.write('set terminal pngcairo enhanced '
+						  'font "Times, 15" size 900,600;\n')
+			for time_step in time_steps:
+				outfile.write('\nset output "%s/vort%07d.png"\n' % (images_path,
+																	time_step))
+				outfile.write('set multiplot;\n')
+				outfile.write('reset;\n')
+				outfile.write('set view map; set size ratio -1; unset key;\n')
+				outfile.write('set pm3d map;\n')
+				outfile.write('set palette defined '
+							  '(-2 "dark-blue", -1 "light-blue", 0 "white", '
+							  '1 "light-red", 2 "dark-red");\n')
+				outfile.write('set cbrange [%f:%f];\n' 
+							  % (-args.vorticity_limit, args.vorticity_limit))
+				outfile.write('splot [%f:%f] [%f:%f] "%s/%07d/vorticity";\n'
+							  % (args.bottom_left[0], args.top_right[0],
+							     args.bottom_left[1], args.top_right[1],
+								 args.folder_path, time_step))
+				outfile.write('unset multiplot;\n')
+		print 'Generating PNG files with Gnuplot...'
+		os.system('gnuplot %s' % gnuplot_file)
+
+	print '\nVorticity contours: DONE!\n'
 
 
 if __name__ == '__main__':
