@@ -11,7 +11,7 @@ import argparse
 import numpy
 from matplotlib import pyplot
 
-from readData import readGridData, readVelocityData
+from readData import read_grid, read_velocity
 
 
 def read_inputs():
@@ -28,19 +28,21 @@ def read_inputs():
 						nargs='+', default=[None, None, None],
 						help='time-steps to plot (min, max, interval)')
 	parser.add_argument('--bottom-left', '-bl', dest='bottom_left', type=float,
-						default=[-2.0, -3.0],
+						nargs='+', default=[-2.0, -3.0],
 						help='bottom-left coordinates of the rectangular view')
 	parser.add_argument('--top-right', '-tr', dest='top_right', type=float,
-						default=[4.0, 3.0],
+						nargs='+', default=[4.0, 3.0],
 						help='top-right coordinates of the rectangular view')
 	parser.add_argument('--vorticity-limit', '-vl', dest='vorticity_limit', 
 						type=float, default=3.0,
 						help='upper limit of zero-symmetric vorticity range')
 	parser.add_argument('--levels', '-l', dest='levels', type=int, default=16,
-						help='number of contour line levels '
-							 '(choose an even number)')
+						help='number of contour line levels')
+	parser.add_argument('--no-save', dest='save', action='store_false',
+						help='saves the vorticity data in the time-step folder')
 	parser.add_argument('--gnuplot', dest='using_gnuplot', action='store_true',
 						help='plots contours using Gnuplot instead of Pyplot')
+	parser.set_defaults(save=True)
 	return parser.parse_args()
 
 
@@ -67,7 +69,7 @@ def main():
 		os.makedirs(images_path)
 
 	# calculate the mesh characteristics
-	nx, ny, dx, dy, _, yu, xv, _ = readGridData(args.folder_path)
+	nx, ny, dx, dy, _, yu, xv, _ = read_grid(args.folder_path)
 
 	# calculate appropriate array boundaries
 	i_start = numpy.where(xv >= args.bottom_left[0])[0][0]
@@ -85,9 +87,7 @@ def main():
 
 	for time_step in time_steps:
 		# read the velocity data at the given time-step
-		u, v = readVelocityData(args.folder_path, time_step, nx, ny, dx, dy)
-		if u == None or v == None:
-			break
+		u, v = read_velocity(args.folder_path, time_step, nx, ny, dx, dy)
 
 		# calculate the vorticity
 		for j in xrange(j_start, j_end):
@@ -97,7 +97,7 @@ def main():
 				vorticity[j-j_start, i-i_start] = (v[j*nx+i+1]-v[j*nx+i])/Dx \
 										- (u[(j+1)*(nx-1)+i]-u[j*(nx-1)+i])/Dy
 		
-		if args.using_gnuplot:
+		if args.save:
 			# save the vorticity data in the time-step folder
 			print 'Saving vorticity data at time-step %d...' % time_step
 			vorticity_file = '{}/{:0>7}/vorticity'.format(args.folder_path, 
@@ -108,7 +108,7 @@ def main():
 						outfile.write('%f\t%f\t%f\n' 
 									  % (x[i], y[j], vorticity[j, i]))
 					outfile.write('\n')
-		else:
+		if not args.using_gnuplot:
 			# plot the contour of vorticity using pyplot
 			print ('Generating PNG file with Pyplot at time-step %d...' 
 				   % time_step)
@@ -121,9 +121,9 @@ def main():
 			levels = numpy.linspace(-args.vorticity_limit, args.vorticity_limit,
 									args.levels)
 			cont = pyplot.contour(X, Y, vorticity, levels)
-			cbar = pyplot.colorbar(cont)
-			cbar.set_label('vorticity')
-			pyplot.savefig('{}/vort{:0>7}.png'.format(images_path, time_step))
+			cont_bar = pyplot.colorbar(cont)
+			cont_bar.set_label('vorticity')
+			pyplot.savefig('{}/o{:0>7}.png'.format(images_path, time_step))
 			pyplot.clf()
 
 	if args.using_gnuplot:
@@ -135,7 +135,7 @@ def main():
 			outfile.write('set terminal pngcairo enhanced '
 						  'font "Times, 15" size 900,600;\n')
 			for time_step in time_steps:
-				outfile.write('\nset output "%s/vort%07d.png"\n' % (images_path,
+				outfile.write('\nset output "%s/o%07d.png"\n' % (images_path,
 																	time_step))
 				outfile.write('set multiplot;\n')
 				outfile.write('reset;\n')
