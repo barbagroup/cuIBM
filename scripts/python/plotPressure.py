@@ -2,35 +2,42 @@
 
 # file: $CUIBM_DIR/scripts/python/plotPressure.py
 # author: Anush Krishnan (anush@bu.edu), Olivier Mesnard (mesnardo@gwu.edu)
-# description: plot the contours of pressure at every saved timestep
+# description: Plots the contour of pressure at saved time-steps
+
 
 import os
 import argparse
 
-import numpy as np
-import matplotlib
-matplotlib.use('Agg')
-from matplotlib import pyplot as plt
+import numpy
+from matplotlib import pyplot
 
-from readData import readSimulationParameters, readGridData, readPressureData
+from readData import read_grid, read_pressure
+
 
 def read_inputs():
 	"""Parses the command-line."""
 	# create the parser
-	parser = argparse.ArgumentParser(description='plots the pressure field '
-						'at every save point for a given simulation',
+	parser = argparse.ArgumentParser(description='Plots the contour of '
+						'pressure at saved time-steps',
 						formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	# fill the parser with arguments
-	parser.add_argument('-folder', dest='folder', type=str, default='.',
-						help='folder of the simulation')
-	parser.add_argument("-xmin", type=float, dest="xmin", help="lower x-limit of the plotting region", default=-2.0)
-	parser.add_argument("-xmax", type=float, dest="xmax", help="upper x-limit of the plotting region", default=4.0)
-	parser.add_argument("-ymin", type=float, dest="ymin", help="lower y-limit of the plotting region", default=-3.0)
-	parser.add_argument("-ymax", type=float, dest="ymax", help="upper y-limit of the plotting region", default=3.0)
-	parser.add_argument('-plim', dest='plim', type=float, default=1.0,
-						help='pressure cutoff on the plot')
-	parser.add_argument('-numlevels', dest='numlevels', type=int, default=21,
-						help='number of pressure contour line levels (choose an odd number)')
+	parser.add_argument('--folder', dest='folder_path', type=str, 
+						default=os.getcwd(),
+						help='directory of the simulation')
+	parser.add_argument('--time-steps', '-t', dest='time_steps', type=int,
+						nargs='+', default=[None, None, None],
+						help='time-steps to plot (min, max, interval)')
+	parser.add_argument('--bottom-left', '-bl', dest='bottom_left', type=float,
+						nargs='+', default=[-2.0, -3.0],
+						help='bottom-left coordinates of the rectangular view')
+	parser.add_argument('--top-right', '-tr', dest='top_right', type=float,
+						nargs='+', default=[4.0, 3.0],
+						help='top-right coordinates of the rectangular view')
+	parser.add_argument('--pressure-limits', '-pl', dest='pressure_limits',
+						type=float, nargs='+', default=[-1.0, 1.0],
+						help='limits of the pressure range to plot')
+	parser.add_argument('--levels', '-l', dest='levels', type=int, default=21,
+						help='number of contour line levels')
 	return parser.parse_args()
 
 
@@ -39,48 +46,61 @@ def main():
 	# parse the command-line
 	args = read_inputs()
 
-	folder = args.folder	# name of the folder
-
-	# read the parameters of the simulation
-	nt, start_step, nsave, _ = readSimulationParameters(folder)
+	# get the time-steps to plot
+	if any(args.time_steps):
+		# if provided by command-line arguments
+		time_steps = range(args.time_steps[0],
+						   args.time_steps[1]+1,
+						   args.time_steps[2])
+	else:
+		# if not, list solution folders
+		time_steps = sorted(int(folder) for folder
+										in os.listdir(args.folder_path)
+										if folder[0]=='0')
+	
+	# create images folder if does not exit to store PNG files
+	images_path = '%s/images' % args.folder_path
+	if not os.path.isdir(images_path):
+		os.makedirs(images_path)
 
 	# calculate the mesh characteristics
-	nx, ny, dx, dy, _, yu, xv, _ = readGridData(folder)
+	nx, ny, dx, dy, _, yu, xv, _ = read_grid(args.folder_path)
 
 	# calculate appropriate array boundaries
-	i_start = np.where(xv >= args.xmin)[0][0]
-	i_end = np.where(xv <= args.xmax)[0][-1]
-	j_start = np.where(yu >= args.ymin)[0][0]
-	j_end = np.where(yu <= args.ymax)[0][-1]
+	i_start = numpy.where(xv >= args.bottom_left[0])[0][0]
+	i_end = numpy.where(xv <= args.top_right[0])[0][-1]
+	j_start = numpy.where(yu >= args.bottom_left[1])[0][0]
+	j_end = numpy.where(yu <= args.top_right[1])[0][-1]
 
-	x = np.zeros(i_end+1-i_start)
-	y = np.zeros(j_end+1-j_start)
-	x[:] = xv[i_start:i_end+1]
-	y[:] = yu[j_start:j_end+1]
-	X, Y = np.meshgrid(x, y)
+	# create a mesh-grid
+	x = xv[i_start:i_end]
+	y = yu[j_start:j_end]
+	X, Y = numpy.meshgrid(x, y)
 
-	P = np.zeros((j_end+1-j_start, i_end+1-i_start))
-
-	# time-loop
-	for ite in xrange(start_step+nsave, nt+1, nsave):
+	for time_step in time_steps:
 		# read the velocity data at the given time-step
-		p = readPressureData(folder, ite, nx, ny)
-		p = p.reshape((ny, nx))
+		pressure = read_pressure(args.folder_path, time_step, nx, ny)
+		pressure = pressure.reshape((ny, nx))[j_start:j_end, i_start:i_end]
 
-		# calculate and write the vorticity
-		for j in xrange(j_start, j_end+1):
-			P[j-j_start, :] = p[j, i_start:i_end+1]
+		# plot the contour of pressure
+		print 'Generating PNG file at time-step %d...' % time_step
+		pyplot.figure()
+		pyplot.xlabel(r'$x$', fontsize=18)
+		pyplot.ylabel(r'$y$', fontsize=18)
+		pyplot.xlim(args.bottom_left[0], args.top_right[0])
+		pyplot.ylim(args.bottom_left[1], args.top_right[1])
+		pyplot.axis('equal')
+		levels = numpy.linspace(args.pressure_limits[0], 
+								args.pressure_limits[1],
+								args.levels)
+		cont = pyplot.contour(X, Y, pressure, levels)
+		cont_bar = pyplot.colorbar(cont)
+		cont_bar.set_label('pressure')
+		pyplot.savefig('{}/p{:0>7}.png'.format(images_path, time_step))
+		pyplot.clf()
 
-		CS = plt.contour(X, Y, P, levels=np.linspace(-args.plim, args.plim, args.numlevels))
-		plt.title("Pressure")
-		plt.colorbar(CS)
-		plt.axis([xv[i_start], xv[i_end], yu[j_start], yu[j_end]])
-		plt.gca().set_aspect('equal', adjustable='box')
-		plt.savefig('{}/p{:0>7}.png'.format(folder,ite))
-		plt.clf()
-		print "Saved figure {}/p{:0>7}.png".format(folder,ite)
-	
-	print 'DONE!'
+	print '\nPressure contours: DONE!\n'
+
 
 if __name__ == '__main__':
 	main()
