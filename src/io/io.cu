@@ -102,7 +102,6 @@ void initialiseDefaultDB(parameterDB &DB)
 	DB[sim]["dt"].set<real>(0.02);
 	DB[sim]["nt"].set<int>(100);
 	DB[sim]["nsave"].set<int>(100);
-	DB[sim]["restart"].set<bool>(false);
 	DB[sim]["startStep"].set<bool>(0);
 	DB[sim]["convTimeScheme"].set<timeScheme>(EULER_EXPLICIT);
 	DB[sim]["diffTimeScheme"].set<timeScheme>(EULER_IMPLICIT);
