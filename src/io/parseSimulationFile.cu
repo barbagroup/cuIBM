@@ -66,28 +66,19 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 {
 	real   dt = 0.02,
 	       scaleCV = 2.0;
-	int    nt = 100,
-	       nsave = 100,
-	       startStep = 0;
+	int    startStep = 0,
+	       nt = 100,
+	       nsave = 100;
 	string ibmSch = "NAVIER_STOKES",
 	       convSch = "EULER_EXPLICIT",
 	       diffSch = "EULER_IMPLICIT",
 	       interpType = "LINEAR";
-	bool   restart = false;
-
 
 	// read simulation parameters
 	node["dt"] >> dt;
 	node["nsave"] >> nsave;
 	node["nt"] >> nt;
 	node["ibmScheme"] >> ibmSch;
-	try
-	{
-		node["restart"] >> restart;
-	}
-	catch(...)
-	{
-	}
 	try
 	{
 		node["startStep"] >> startStep;
@@ -122,9 +113,9 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 	string dbKey = "simulation";
 	DB[dbKey]["dt"].set<real>(dt);
 	DB[dbKey]["scaleCV"].set<real>(scaleCV);
-	DB[dbKey]["nsave"].set<int>(nsave);
+	DB[dbKey]["startStep"].set<int>(startStep);
 	DB[dbKey]["nt"].set<int>(nt);
-	DB[dbKey]["restart"].set<bool>(restart);
+	DB[dbKey]["nsave"].set<int>(nsave);
 	DB[dbKey]["ibmScheme"].set<ibmScheme>(ibmSchemeFromString(ibmSch));
 	DB[dbKey]["convTimeScheme"].set<timeScheme>(timeSchemeFromString(convSch));
 	DB[dbKey]["diffTimeScheme"].set<timeScheme>(timeSchemeFromString(diffSch));

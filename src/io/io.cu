@@ -35,23 +35,6 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return elems;
 }
 
-void makeDirectory(const std::string folderPath)
-{
-	std::vector<std::string> x = split(folderPath, '/');
-	int n = x.size();
-	int i = 0;
-	std::string folder = x[i];
-	mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-	i++;
-	while(i<n)
-	{
-		folder = folder + '/' + x[i];
-		mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-		i++;
-	}
-}
-
-
 //##############################################################################
 //                                 INPUT
 //##############################################################################
@@ -119,7 +102,6 @@ void initialiseDefaultDB(parameterDB &DB)
 	DB[sim]["dt"].set<real>(0.02);
 	DB[sim]["nt"].set<int>(100);
 	DB[sim]["nsave"].set<int>(100);
-	DB[sim]["restart"].set<bool>(false);
 	DB[sim]["startStep"].set<bool>(0);
 	DB[sim]["convTimeScheme"].set<timeScheme>(EULER_EXPLICIT);
 	DB[sim]["diffTimeScheme"].set<timeScheme>(EULER_IMPLICIT);
@@ -437,6 +419,20 @@ void writeData<vecD>(std::string &caseFolder, int n, vecD &q, vecD &lambda, doma
 	     lambdaH = lambda;
 	     
 	writeData(caseFolder, n, qH, lambdaH, D);
+}
+
+void readData(std::string &caseFolder, int timeStep, real *x, std::string name)
+{
+	std::stringstream in;
+	std::string inFilePath;
+	int n;
+
+	in << caseFolder << "/" << std::setfill('0') << std::setw(7) << timeStep << "/" << name;
+	inFilePath = in.str();
+	std::ifstream inFile(inFilePath.c_str(), std::ifstream::binary);
+	inFile.read((char*)(&n), sizeof(int));
+	inFile.read((char*)(&x[0]), n*sizeof(real));
+	inFile.close();
 }
 
 void printDeviceMemoryUsage(char *label)

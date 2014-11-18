@@ -19,7 +19,6 @@ namespace io
 {
 	std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
 	std::vector<std::string> split(const std::string &s, char delim);
-	void makeDirectory(const std::string s);
 	
 	// input
 	void readInputs(int argc, char **argv, parameterDB &DB, domain &D); 
@@ -42,5 +41,6 @@ namespace io
 	void writeGrid(std::string &caseFolder, domain &D);
 	template <typename Vector>
 	void writeData(std::string &caseFolder, int n, Vector &q, Vector &lambda, domain &D);//, bodies &B);
+	void readData(std::string &caseFolder, int timeStep, real *q, std::string name);
 	void printDeviceMemoryUsage(char *label);
 }
