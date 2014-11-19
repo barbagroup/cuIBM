@@ -13,14 +13,15 @@ PROJECT_ROOT = $(dir $(lastword $(MAKEFILE_LIST)))
 SRC_DIR = $(PROJECT_ROOT)src
 BUILD_DIR = $(PROJECT_ROOT)build
 BIN_DIR = $(PROJECT_ROOT)bin
-
 UNITTESTS_DIR = $(SRC_DIR)/unitTests
 
 SRC_EXT = .cu
 
 TARGET = bin/cuIBM
+
 SRCS = $(shell find $(SRC_DIR) -type f -name *$(SRC_EXT) ! -path $(UNITTESTS_DIR)"*")
 OBJS = $(patsubst $(SRC_DIR)/%, $(BUILD_DIR)/%, $(SRCS:$(SRC_EXT)=.o))
+
 INC = -I $(SRC_DIR) -I $(CUSP_DIR)
 
 EXT_LIBS = $(PROJECT_ROOT)external/lib/libyaml-cpp.a
@@ -40,6 +41,8 @@ external/lib/libyaml-cpp.a:
 	@echo "\nCreating static library $@ ..."
 	cd external; $(MAKE) $(MFLAGS) all
 
+#bin/unitTests/convectionTerm: 
+
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%$(SRC_EXT)
 	@mkdir -p $(@D)
 	$(CC) $(CCFLAGS) $(INC) -c $< -o $@
@@ -51,23 +54,6 @@ clean:
 cleanall: clean
 	cd external; $(MAKE) $(MFLAGS) clean
 
-
-unitTests/convectionTerm: $(TESTLIBS) $(EXT_LIBS) src/helpers.o src/parameterDB.o src/unitTests/convectionTerm.o
-	${CC} $^ -o bin/unitTests/convectionTerm
-
-unitTests/diffusionTerm: $(TESTLIBS) $(EXT_LIBS) src/helpers.o src/parameterDB.o src/unitTests/diffusionTerm.o
-	${CC} $^ -o bin/unitTests/diffusionTerm
-
-testConvection:
-	bin/unitTests/convectionTerm -caseFolder cases/unitTests/convectionTerm/6
-	bin/unitTests/convectionTerm -caseFolder cases/unitTests/convectionTerm/12
-	bin/unitTests/convectionTerm -caseFolder cases/unitTests/convectionTerm/24
-
-testDiffusion:
-	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/6
-	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/12
-	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/24
-	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/48
 
 lidDrivenCavityRe100:
 	bin/cuIBM -caseFolder cases/lidDrivenCavity/Re100
