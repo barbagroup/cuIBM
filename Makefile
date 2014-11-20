@@ -3,34 +3,51 @@
 # description: Compiles and links cuIBM code.
 
 
-# compiler
+# compiler: nvcc is NVIDIA's CUDA compiler
 CC = nvcc $(OSXOPTS)
+
+# compiler options
+# -arch=compute_20: compile to use double precision on GPU
+# -O3: optimization flag
 CCFLAGS = -arch=compute_20 -O3
 
 # variables
 RM = rm
 MAKE = make
 
-# directories
-PROJECT_ROOT = $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-SRC_DIR = $(PROJECT_ROOT)/src
-BUILD_DIR = $(PROJECT_ROOT)/build
-BIN_DIR = $(PROJECT_ROOT)/bin
+# root directory of the project
+# return the absolute path of the directory  where is located the Makefile
+# variable MAKEFILE_LIST lists all Makefiles in the working directory
+# `lastword` picks the last element of the list
+PROJ_ROOT = $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
+# source code directory
+SRC_DIR = $(PROJ_ROOT)/src
+
+# directory where object files are stored
+BUILD_DIR = $(PROJ_ROOT)/build
+
+# directory where binary executables are stored
+BIN_DIR = $(PROJ_ROOT)/bin
+
+# extension of source files
 SRC_EXT = .cu
 
-# executable
+# cuIBM executable
 TARGET = bin/cuIBM
 
+# list all source files in the source directory
 SRCS = $(shell find $(SRC_DIR) -type f -name *$(SRC_EXT))
+# absolute path of all object files to be created
 OBJS = $(patsubst $(SRC_DIR)/%, $(BUILD_DIR)/%, $(SRCS:$(SRC_EXT)=.o))
 
-# header files from cuIBM and cusp
+# include header files from cuIBM and CUSP library
 INC = -I $(SRC_DIR) -I $(CUSP_DIR)
 
-# yaml
-EXT_LIBS = $(PROJECT_ROOT)/external/lib/libyaml-cpp.a
-INC += -I $(PROJECT_ROOT)/external/yaml-cpp/include
+# path of the YAML static library
+EXT_LIBS = $(PROJ_ROOT)/external/lib/libyaml-cpp.a
+# include YAML header files
+INC += -I $(PROJ_ROOT)/external/yaml-cpp/include
 
 
 .PHONY: all
@@ -42,7 +59,7 @@ $(TARGET): $(OBJS) $(EXT_LIBS)
 	@mkdir -p $(BIN_DIR)
 	$(CC) $^ -o $@
 
-external/lib/libyaml-cpp.a:
+$(EXT_LIBS):
 	@echo "\nCreating static library $@ ..."
 	cd external; $(MAKE) $(MFLAGS) all
 
@@ -54,7 +71,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%$(SRC_EXT)
 
 .PHONY: unittests unittest
 
-UNITTESTS_DIR = $(PROJECT_ROOT)/unitTests
+UNITTESTS_DIR = $(PROJ_ROOT)/unitTests
 TEST_SRCS = $(wildcard $(TEST_DIR)/*$(SRC_EXT))
 TEST_OBJS = $(TEST_SRCS:$(SRC_EXT)=.o) $(filter-out $(BUILD_DIR)/cuIBM.o, $(OBJS))
 TEST_BIN = $(BIN_DIR)/unitTests/$(lastword $(subst /, , $(TEST_DIR)))
@@ -79,23 +96,43 @@ unittest: $(TEST_OBJS) $(EXT_LIBS)
 
 ################################################################################
 
-.PHONY: clean cleanunittests cleanall
+.PHONY: doc
+
+DOC_DIR = $(PROJ_ROOT)/doc
+DOXYGEN = doxygen
+
+doc:
+	@echo "\nGenerating Doxygen documentation ..."
+	cd $(DOC_DIR); $(DOXYGEN) Doxyfile
+
+################################################################################
+
+.PHONY: clean cleanexternal cleanunittests cleandoc cleanall
 
 clean:
-	@echo "\nCleaning ..."
-	$(RM) -rf $(LIB_DIR) $(BUILD_DIR) $(BIN_DIR)
+	@echo "\nCleaning cuIBM ..."
+	$(RM) -rf $(BUILD_DIR) $(BIN_DIR)
+
+cleanexternal:
+	@echo "\nCleaning external YAML ..."
+	cd external; $(MAKE) $(MFLAGS) clean
 
 cleanunittests:
 	@echo "\nCleaning unitTests ..."
 	find $(UNITTESTS_DIR) -type f -name *.o -delete
 	$(RM) -rf $(BIN_DIR)/unitTests
 
-cleanall: clean cleanunittests
-	cd external; $(MAKE) $(MFLAGS) clean
+cleandoc:
+	@echo "\nCleaning documentation ..."
+	find $(DOC_DIR) ! -name 'Doxyfile' -type f -delete
+	find $(DOC_DIR)/* ! -name 'Doxyfile' -type d -delete
+
+cleanall: clean cleanexternal cleanunittests cleandoc
 
 ################################################################################
 
-# unit-tests
+# commands to run unit-tests
+
 testConvection:
 	bin/unitTests/convectionTerm -caseFolder cases/unitTests/convectionTerm/6
 	bin/unitTests/convectionTerm -caseFolder cases/unitTests/convectionTerm/12
@@ -109,7 +146,8 @@ testDiffusion:
 
 ################################################################################
 
-# cases
+# commands to run cuIBM simulations
+
 lidDrivenCavityRe100:
 	bin/cuIBM -caseFolder cases/lidDrivenCavity/Re100
 
