@@ -1,0 +1,6 @@
+- type: points
+  pointsFile: quad.bdy
+  centerRotation: [0.0, 0.0]
+  initialOffset: [0.0, 0.0]
+  angleOfAttack: 0.0
+  moving: [false, false]
