@@ -3,7 +3,7 @@
 #include <domain.h>
 #include <io/io.h>
 #include <solvers/NavierStokes/NavierStokesSolver.h>
-#include <solvers/NavierStokes/unitTests/convectionTerm.h>
+#include "convectionTerm.h"
 
 int main(int argc, char **argv)
 {

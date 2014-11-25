@@ -68,7 +68,7 @@ def main():
 		print 'iteration %d' % ite
 		# read the velocity data at the given time-step
 		u, v = readVelocityData(folder, ite, nx, ny, dx, dy)
-		if u == None or v == None:
+		if u is None or v is None:
 			break
 
 		# plot u-velocity contour

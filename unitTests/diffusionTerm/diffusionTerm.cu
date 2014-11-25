@@ -1,11 +1,11 @@
-#include <solvers/NavierStokes/unitTests/convectionTerm.h>
+#include "diffusionTerm.h"
 
 //##############################################################################
 //                              INITIALISE
 //##############################################################################
 
 template <typename memoryType>
-void convectionTerm<memoryType>::initialise()
+void diffusionTerm<memoryType>::initialise()
 {
 	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
 	    ny = NavierStokesSolver<memoryType>::domInfo->ny;
@@ -15,17 +15,19 @@ void convectionTerm<memoryType>::initialise()
 	
 	NavierStokesSolver<memoryType>::initialiseCommon();
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP);
-	HExact.resize(numUV);
-	cusp::blas::fill(HExact, 0.0);
+	NavierStokesSolver<memoryType>::intgSchm.gamma[0] = 0.0;
+	NavierStokesSolver<memoryType>::intgSchm.zeta[0]  = 0.0;
+	NavierStokesSolver<memoryType>::generateRN();
+	rnExact.resize(numUV);
+	cusp::blas::fill(rnExact, 0.0);
 	initialiseExactSolution();
-	cusp::blas::scal(HExact, -1.0/NavierStokesSolver<memoryType>::intgSchm.gamma[0]);
 }
 
 /**
 * \brief Sets the initial value of all the fluxes in the flow field
 */
 template <>
-void convectionTerm<host_memory>::initialiseFluxes()
+void diffusionTerm<host_memory>::initialiseFluxes()
 {
 	real *q_r = thrust::raw_pointer_cast(&(q[0]));
 	initialiseFluxes(q_r);
@@ -33,7 +35,7 @@ void convectionTerm<host_memory>::initialiseFluxes()
 }
 
 template<>
-void convectionTerm<device_memory>::initialiseFluxes()
+void diffusionTerm<device_memory>::initialiseFluxes()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
@@ -47,7 +49,7 @@ void convectionTerm<device_memory>::initialiseFluxes()
 }
 
 template <typename memoryType>
-void convectionTerm<memoryType>::initialiseFluxes(real *q)
+void diffusionTerm<memoryType>::initialiseFluxes(real *q)
 {
 	real *xu = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->xu[0])),
 	     *yu = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->yu[0])),
@@ -80,58 +82,69 @@ void convectionTerm<memoryType>::initialiseFluxes(real *q)
 * \brief Sets the exact solution of the convection term
 */
 template <>
-void convectionTerm<host_memory>::initialiseExactSolution()
+void diffusionTerm<host_memory>::initialiseExactSolution()
 {
-	real *HExact_r = thrust::raw_pointer_cast(&(HExact[0]));
-	initialiseExactSolution(HExact_r);
+	real *rnExact_r = thrust::raw_pointer_cast(&(rnExact[0]));
+	real nu = (*paramDB)["flow"]["nu"].get<real>();
+	real dt = (*paramDB)["simulation"]["dt"].get<real>();
+	initialiseExactSolution(rnExact_r, nu, dt);
 }
 
 template<>
-void convectionTerm<device_memory>::initialiseExactSolution()
+void diffusionTerm<device_memory>::initialiseExactSolution()
 {
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny;
-	vecH HExactHost((nx-1)*ny+nx*(ny-1));
-	cusp::blas::fill(HExactHost, 0.0);
+	vecH rnExactHost((nx-1)*ny+nx*(ny-1));
+	cusp::blas::fill(rnExactHost, 0.0);
 	
 	// creating raw pointers
-	real *HExactHost_r = thrust::raw_pointer_cast(&(HExactHost[0]));
-	initialiseExactSolution(HExactHost_r);
-	HExact = HExactHost;
+	real *rnExactHost_r = thrust::raw_pointer_cast(&(rnExactHost[0]));
+	real nu = (*paramDB)["flow"]["nu"].get<real>();
+	real dt = (*paramDB)["simulation"]["dt"].get<real>();
+	initialiseExactSolution(rnExactHost_r, nu, dt);
+	rnExact = rnExactHost;
 }
 
 template <typename memoryType>
-void convectionTerm<memoryType>::initialiseExactSolution(real *HExact)
+void diffusionTerm<memoryType>::initialiseExactSolution(real *rnExact, real nu, real dt)
 {
 	real *xu = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->xu[0])),
 	     *yu = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->yu[0])),
 	     *xv = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->xv[0])),
-	     *yv = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->yv[0]));
+	     *yv = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->yv[0])),
+	     *dx = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->dx[0])),
+	     *dy = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->dy[0]));
 	int  nx = NavierStokesSolver<memoryType>::domInfo->nx,
 	     ny = NavierStokesSolver<memoryType>::domInfo->ny,
 	     numU  = (nx-1)*ny;
-	real pi = 4*atan(1.0);
-	
+	real pi = 4*atan(1.0), u=0.0, v=0.0;
+	//parameterDB *pDB = NavierStokesSolver<memoryType>::paramDB;
+	real alpha = NavierStokesSolver<memoryType>::intgSchm.alphaExplicit[0];
+	std::cout << "dt: " << dt << '\n';
+	std::cout << "alpha: " << alpha << '\n';
+	std::cout << "nu: " << nu << '\n';
+	std::cout << NavierStokesSolver<memoryType>::intgSchm.gamma[0] << " " << NavierStokesSolver<memoryType>::intgSchm.zeta[0] << std::endl;
 	for(int j=0; j<ny; j++)
 	{
 		for(int i=0; i<nx-1; i++)
 		{
-			HExact[j*(nx-1) + i] =   2*pi*cos(pi*xu[i])*sin(pi*yu[j])*(sin(pi*xu[i])*sin(pi*yu[j])+1)
-			                           + pi*sin(pi*xu[i])*cos(pi*yu[j])*(2*sin(pi*xu[i])*sin(pi*yu[j])+1);
+			u = sin(pi*xu[i])*sin(pi*yu[j]) + 1;
+			rnExact[j*(nx-1) + i]    = (u/dt - alpha*nu*2.0*pi*pi*sin(pi*xu[i])*sin(pi*yu[j]))*0.5*(dx[i]+dx[i+1]);
 		}
 	}
 	for(int j=0; j<ny-1; j++)
 	{
 		for(int i=0; i<nx; i++)
 		{
-			HExact[j*nx + i + numU] =   pi*sin(pi*xv[i])*sin(pi*xv[i])*sin(2*pi*yv[j])
-			                              + pi*cos(pi*xv[i])*sin(pi*yv[j])*(2*sin(pi*xv[i])*sin(pi*yv[j])+1);
+			v = sin(pi*xv[i])*sin(pi*yv[j]);
+			rnExact[j*nx + i + numU] = (v/dt - alpha*nu*2.0*pi*pi*sin(pi*xv[i])*sin(pi*yv[j]))*0.5*(dy[j]+dy[j+1]);
 		}
 	}
 }
 
 template <typename memoryType>
-void convectionTerm<memoryType>::writeData()
+void diffusionTerm<memoryType>::writeData()
 {
 	int  nx = NavierStokesSolver<memoryType>::domInfo->nx,
 	     ny = NavierStokesSolver<memoryType>::domInfo->ny;
@@ -140,30 +153,30 @@ void convectionTerm<memoryType>::writeData()
 	typedef typename cusp::array1d<real, memoryType>::iterator ValueIterator;
 	typedef typename cusp::array1d_view<ValueIterator>         View;
 
-	View    Hx, HExactx, Hy, HExacty;
+	View    rnx, rnExactx, rny, rnExacty;
 
-	Hx = View(NavierStokesSolver<memoryType>::H.begin(), NavierStokesSolver<memoryType>::H.begin()+(nx-1)*ny);
-	Hy = View(NavierStokesSolver<memoryType>::H.begin()+(nx-1)*ny, NavierStokesSolver<memoryType>::H.end());
+	rnx = View(NavierStokesSolver<memoryType>::rn.begin(), NavierStokesSolver<memoryType>::rn.begin()+(nx-1)*ny);
+	rny = View(NavierStokesSolver<memoryType>::rn.begin()+(nx-1)*ny, NavierStokesSolver<memoryType>::rn.end());
 
-	HExactx = View(HExact.begin(), HExact.begin()+(nx-1)*ny);
-	HExacty = View(HExact.begin()+(nx-1)*ny, HExact.end());
+	rnExactx = View(rnExact.begin(), rnExact.begin()+(nx-1)*ny);
+	rnExacty = View(rnExact.begin()+(nx-1)*ny, rnExact.end());
 
-	cusp::blas::axpby(Hx, HExactx, errorx, -1.0, 1.0);
-	cusp::blas::axpby(Hy, HExacty, errory, -1.0, 1.0);
+	cusp::blas::axpby(rnx, rnExactx, errorx, -1.0, 1.0);
+	cusp::blas::axpby(rny, rnExacty, errory, -1.0, 1.0);
 
 	real errorxNorm  = cusp::blas::nrm2(errorx),
 	     erroryNorm  = cusp::blas::nrm2(errorx),
-	     HExactxNorm = cusp::blas::nrm2(HExactx),
-	     HExactyNorm = cusp::blas::nrm2(HExacty);
-	std::cout << std::setw(11) << nx << " x " << ny << " Relative L-2 Error in Hx: " << errorxNorm/HExactxNorm << std::endl;
-	std::cout << std::setw(11) << nx << " x " << ny << " Relative L-2 Error in Hy: " << erroryNorm/HExactyNorm << std::endl;
+	     rnExactxNorm = cusp::blas::nrm2(rnExactx),
+	     rnExactyNorm = cusp::blas::nrm2(rnExacty);
+	std::cout << std::setw(11) << nx << " x " << ny << " Relative L-2 Error in rnx: " << errorxNorm/rnExactxNorm << std::endl;
+	std::cout << std::setw(11) << nx << " x " << ny << " Relative L-2 Error in rny: " << erroryNorm/rnExactyNorm << std::endl;
 }
 
 template <typename memoryType>
-void convectionTerm<memoryType>::shutDown()
+void diffusionTerm<memoryType>::shutDown()
 {
 	NavierStokesSolver<memoryType>::iterationsFile.close();
 }
 
-template class convectionTerm<host_memory>;
-template class convectionTerm<device_memory>;
+template class diffusionTerm<host_memory>;
+template class diffusionTerm<device_memory>;
