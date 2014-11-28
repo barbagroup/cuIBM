@@ -3,8 +3,32 @@
 import argparse
 import os
 import numpy
+import numpy.linalg as la
+import sys
+sys.path.insert(0, os.path.expandvars("${CUIBM_DIR}/scripts/python"))
+from readData import readEta
 
 epsilon = 1e-8
+
+def alpha_predicted(x):
+	if x>=8/9. and x<9/9.:
+		return 1+numpy.log((-18.*x-6)/(-18.*x+10))/numpy.log(3)
+	elif x>=7/9. and x<8/9.:
+		return 1+numpy.log((-18.*x-6)/(-18.*x+11))/numpy.log(3)
+	elif x>=6/9. and x<7/9.:
+		return 1+numpy.log((-18.*x-6)/(-18.*x+12))/numpy.log(3)
+	elif x>=5/9. and x<6/9.:
+		return 1+numpy.log((-18.*x-3)/(-18.*x+4))/numpy.log(3)
+	elif x>=4/9. and x<5/9.:
+		return 1+numpy.log((-18.*x-3)/(-18.*x+5))/numpy.log(3)
+	elif x>=3/9. and x<4/9.:
+		return 1+numpy.log((-18.*x-3)/(-18.*x+6))/numpy.log(3)
+	elif x>=2/9. and x<3/9.:
+		return 1+numpy.log((-18.*x)/(-18.*x-2))/numpy.log(3)
+	elif x>=1/9. and x<2/9.:
+		return 1+numpy.log((-18.*x)/(-18.*x-1))/numpy.log(3)
+	elif x>=0/9. and x<1/9.:
+		return 1.
 
 def equals(a, b):
 	if numpy.abs(a[0]-b[0]) < epsilon and numpy.abs(a[1]-b[1]) < epsilon:
@@ -20,11 +44,13 @@ def read_points(filename):
 			point = numpy.array([[float(a[0]), float(a[1])]])
 			point_list = numpy.append(point_list, point, axis=0)
 		prev = l
-	#numpy.savetxt(folder+".txt", point_list)
 	return point_list
 
 def print_common_points(point_lists, name):
 	print "\n{} grids:".format(name)
+	for i, point_list in enumerate(point_lists):
+		print "{}: {} boundary points".format(i, len(point_list))
+	
 	for i in range(len(point_lists)-1):
 		total = len(point_lists[i])
 		common = 0
@@ -32,7 +58,7 @@ def print_common_points(point_lists, name):
 			for p1 in point_lists[i+1]:
 				if equals(p0, p1):
 					common+=1
-		print "Common: {}/{}, {:.1f}%".format(common, total, common*100.0/total)
+		print "Boundary points unchanged between grids {} and {}: {}/{}, {:.1f}%".format(i, i+1, common, total, common*100.0/total)
 
 def main():
 	# Command line options
@@ -56,6 +82,19 @@ def main():
 
 	print_common_points(point_lists_u, "u")
 	print_common_points(point_lists_v, "v")
+
+	alpha_vectorized = numpy.vectorize(alpha_predicted)
+	print "\nu: ",
+	for folder in folders[:2]:
+		eta_u, _ = readEta(args.caseDir + "/" + folder)
+		alpha_u = alpha_vectorized(eta_u)
+		print la.norm(alpha_u,1)/len(alpha_u), 
+	print "\nv: ",
+	for folder in folders[:2]:
+		_, eta_v = readEta(args.caseDir + "/" + folder)
+		alpha_v = alpha_vectorized(eta_v)
+		print la.norm(alpha_v,1)/len(alpha_v), 
+	print " "
 
 if __name__=="__main__":
 	main()

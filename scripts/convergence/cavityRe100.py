@@ -13,11 +13,23 @@ from readData import readSimulationParameters, readGridData, readVelocityData, r
 import subprocess
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
+from matplotlib.font_manager import FontProperties
+import matplotlib.font_manager as font_manager
 
 def line():
 	print '-'*80
 
 def main():
+	
+	#view available fonts
+	#for font in font_manager.findSystemFonts():
+	#	print font
+
+	fontpath = '/usr/share/fonts/truetype/msttcorefonts/Georgia.ttf'
+
+	prop = font_manager.FontProperties(fname=fontpath)
+	matplotlib.rcParams['font.family'] = prop.get_name()
+
 	# Command line options
 	parser = argparse.ArgumentParser(description="Calculates the order of convergence.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument("-folder", dest="caseDir", help="folder in which the cases for different mesh sizes are present", default=os.path.expandvars("${CUIBM_DIR}/cases/convergence/cavityRe100/NavierStokes/20x20"))
@@ -80,9 +92,12 @@ def main():
 
 		if not args.removeMask:
 			# read mask
-			mask_u, mask_v = readMask(folderPath, nx, ny)
-			u[:] = u[:]*mask_u[:]
-			v[:] = v[:]*mask_v[:]
+			try:
+				mask_u, mask_v = readMask(folderPath, nx, ny)
+				u[:] = u[:]*mask_u[:]
+				v[:] = v[:]*mask_v[:]
+			except:
+				pass
 
 		U.append(np.reshape(u, (ny, nx-1))[stride/2::stride,stride-1::stride])
 		V.append(np.reshape(v, (ny-1, nx))[stride-1::stride,stride/2::stride])
@@ -98,21 +113,44 @@ def main():
 		errLInfNormV[idx] = la.norm(V[idx+1]-V[idx], np.inf)
 		
 		if idx==0:
-			h = initialMeshSpacing
-			x = np.arange(h/2., 1., h)
-			y = np.arange(h, 1., h)
-			X, Y = np.meshgrid(x,y)
 			plt.ioff()
+			h = initialMeshSpacing
+			# u diffs
+			x = np.arange(0., 1.+h/2., h)
+			y = np.arange(h/2., 1., h)
+			X, Y = np.meshgrid(x,y)
 			fig = plt.figure()
 			ax = fig.add_subplot(111)
-			diffV = np.abs(V[idx+1]-V[idx] )
-			CS = ax.pcolor(X, Y, diffV, norm=LogNorm(vmin=1e-10, vmax=1))
+			ax.set_xlim([0,1])
+			ax.set_ylim([0,1])
+			diffV = np.abs(V[idx+1]-V[idx])
+			ax.tick_params(labelsize=16)
+			CS = ax.pcolormesh(X, Y, diffV, norm=LogNorm(vmin=1e-10, vmax=1))
 			fig.gca().set_aspect('equal', adjustable='box')
-			fig.colorbar(CS)
+			cbar = fig.colorbar(CS)
+			cbar.ax.tick_params(labelsize=16) 
 			if args.removeMask:
-				fig.savefig("{}/diff_nomask.png".format(args.caseDir))
+				fig.savefig("{}/diffV_nomask.pdf".format(args.caseDir))
 			else:
-				fig.savefig("{}/diff.png".format(args.caseDir))
+				fig.savefig("{}/diffV.pdf".format(args.caseDir))
+			# v diffs
+			x = np.arange(h/2., 1., h)
+			y = np.arange(0., 1.+h/2., h)
+			X, Y = np.meshgrid(x,y)
+			fig = plt.figure()
+			ax = fig.add_subplot(111)
+			ax.set_xlim([0,1])
+			ax.set_ylim([0,1])
+			diffU = np.abs(U[idx+1]-U[idx])
+			ax.tick_params(labelsize=16)
+			CS = ax.pcolormesh(X, Y, diffU, norm=LogNorm(vmin=1e-10, vmax=1))
+			fig.gca().set_aspect('equal', adjustable='box')
+			cbar = fig.colorbar(CS)
+			cbar.ax.tick_params(labelsize=16) 
+			if args.removeMask:
+				fig.savefig("{}/diffU_nomask.pdf".format(args.caseDir))
+			else:
+				fig.savefig("{}/diffU.pdf".format(args.caseDir))
 	
 	L2OrderOfConvergenceU = -np.polyfit(np.log10(meshSize), np.log10(errL2NormU), 1)[0]
 	L2OrderOfConvergenceV = -np.polyfit(np.log10(meshSize), np.log10(errL2NormV), 1)[0]
@@ -123,6 +161,7 @@ def main():
 	line()
 	print "Mesh sizes: {}".format(meshSize)
 	line()
+
 	print "U:"
 	print "errL2Norms: {}".format(errL2NormU)
 	print "Convergence rates: {:.3f}, {:.3f}".format(np.log(errL2NormU[0]/errL2NormU[1])/np.log(3), np.log(errL2NormU[1]/errL2NormU[2])/np.log(3))
@@ -132,23 +171,24 @@ def main():
 	print "errL2Norms: {}".format(errL2NormV)
 	print "Convergence rates: {:.3f}, {:.3f}".format(np.log(errL2NormV[0]/errL2NormV[1])/np.log(3), np.log(errL2NormV[1]/errL2NormV[2])/np.log(3))
 	print "Linear fit convergence rate: {:.3f}".format(L2OrderOfConvergenceV)
-	
+	line()
+
 	plt.clf()
-	plt.loglog(meshSize, errL2NormU, 'o-b', label="L-2 norm of difference in $u$\nOrder of convergence={:.3f}".format(L2OrderOfConvergenceU))
-	plt.loglog(meshSize, errL2NormV, 'o-r', label="L-2 norm of difference in $v$\nOrder of convergence={:.3f}".format(L2OrderOfConvergenceV))
-	plt.axis([1, 1e4, 1e-4, 100])
+	plt.loglog(meshSize, errL2NormU, 's-k', label="$u$".format(L2OrderOfConvergenceU))
+	plt.loglog(meshSize, errL2NormV, 'o-k', label="$v$".format(L2OrderOfConvergenceV))
+	plt.axis([1, 1e4, 1e-4, 10])
 	x  = np.linspace(1, 1e4, 2)
 	x1 = 1/x
 	x2 = 1/x**2
 	plt.loglog(x, x1, '--k', label="First-order convergence")
 	plt.loglog(x, x2, ':k', label="Second-order convergence")
-	plt.legend()
+	plt.legend(prop={'size':15})
 	ax = plt.axes()
-	ax.set_xlabel("Mesh size")
-	ax.set_ylabel("L-2 Norm of difference between solutions on consecutive grids")
-	plt.savefig("{}/L2Convergence.png".format(args.caseDir))
-
-	line()
+	ax.set_xlabel("Mesh size", fontsize=18)
+	ax.set_ylabel("$L^2$-norm of differences", fontsize=18)
+	ax.tick_params(labelsize=18)
+	plt.savefig("{}/L2Convergence.pdf".format(args.caseDir))
+	'''
 	print "U:"
 	print "errLInfNorms: {}".format(errLInfNormU)
 	print "Convergence rates: {:.3f}, {:.3f}".format(np.log(errLInfNormU[0]/errLInfNormU[1])/np.log(3), np.log(errLInfNormU[1]/errLInfNormU[2])/np.log(3))
@@ -173,7 +213,8 @@ def main():
 	ax = plt.axes()
 	ax.set_xlabel("Mesh size")
 	ax.set_ylabel("L-Inf Norm of difference between solutions on consecutive grids")
-	plt.savefig("{}/LInfConvergence.png".format(args.caseDir))
+	plt.savefig("{}/LInfConvergence.pdf".format(args.caseDir))
+	'''
 
 if __name__ == "__main__":
 	main()

@@ -70,6 +70,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 	int  bdryFlagX, bdryFlagY, bdryFlag2X, bdryFlag2Y;
 	real a, b;
 	real cfX, cfY, cf2X, cf2Y;
+	real etaX, etaY;
 	real uvX, uvY;
 	bool flag;
 	real x, y;
@@ -77,6 +78,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 	int  totalPoints = NSWithBody<memoryType>::B.totalPoints;
 
 	std::ofstream mask((folder+"/mask.txt").c_str());
+	std::ofstream eta((folder+"/eta_u.txt").c_str());
 	
 	// tag points at which u is evaluated
 	for(int j=0; j<ny; j++)
@@ -154,6 +156,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 							outsideX   = true;
 							bdryFlagX = I;
 							bdryFlag2X= I;
+							etaX      = 0.0;
 							cfX       = 0.0;
 							cf2X      = 0.0;
 							flag      = true; // flag is true when the point of intersection coincides with the grid point
@@ -169,6 +172,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 							bdryFlag2X = I+2;
 							a = xu[i]-x;
 							b = xu[i+1]-xu[i];
+							etaX = a/b;
 							switch(interpType)
 							{
 								case CONSTANT : cfX = 0.0; cf2X = 0.0; break;
@@ -184,6 +188,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 							bdryFlag2X = I-2;
 							a = x-xu[i];
 							b = xu[i]-xu[i-1];
+							etaX = a/b;
 							switch(interpType)
 							{
 								case CONSTANT : cfX = 0.0; cf2X = 0.0; break;
@@ -213,6 +218,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 							outsideY  = true; // then the point is considered to be outside the grid
 							bdryFlagY = I;    // the point is considered to be a forcing point, with index I
 							bdryFlag2Y= I;
+							etaY      = 0.0;
 							cfY       = 0.0;  // the coefficient for the linear interpolation during forcing
 							cf2Y      = 0.0;
 							flag      = true; // flag is true when the point of intersection coincides with the grid point
@@ -228,6 +234,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 							bdryFlag2Y= I+2*(nx-1);
 							a = yu[j]-y;
 							b = yu[j+1]-yu[j];
+							etaY = a/b;
 							switch(interpType)
 							{
 								case CONSTANT : cfY = 0.0; cf2Y = 0.0; break;
@@ -243,6 +250,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 							bdryFlag2Y= I-2*(nx-1);
 							a = y-yu[j];
 							b = yu[j]-yu[j-1];
+							etaY = a/b;
 							switch(interpType)
 							{
 								case CONSTANT : cfY = 0.0; cf2Y = 0.0; break;
@@ -263,6 +271,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 				coeffs[I]  = cfX;
 				coeffs2[I] = cf2X;
 				uv[I]      = uvX;
+				eta << etaX << std::endl;
 			}
 			else if (outsideY && bdryFlagY>=0)
 			{					
@@ -271,10 +280,12 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 				coeffs[I]  = cfY;
 				coeffs2[I] = cf2Y;
 				uv[I]      = uvY;
+				eta << etaY << std::endl;
 			}
 			mask << ((outsideX || outsideY)? 1 : 0) << std::endl;
 		}
 	}
+	eta.close();
 	
 	std::ofstream file((folder+"/tagx.txt").c_str());
 	for(int j=0; j<ny; j++)
@@ -298,6 +309,8 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 		}
 	}
 	file.close();
+
+	eta.open((folder+"/eta_v.txt").c_str());
 
 	real *xv = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->xv[0])),
 	     *yv = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->yv[0]));
@@ -372,6 +385,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 							outsideX   = true;							
 							bdryFlagX = I;
 							bdryFlag2X= I;
+							etaX      = 0.0;
 							cfX       = 0.0;
 							cf2X      = 0.0;
 							flag      = true;
@@ -387,6 +401,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 							bdryFlag2X = I+2;
 							a = xv[i]-x;
 							b = xv[i+1]-xv[i];
+							etaX = a/b;
 							switch(interpType)
 							{
 								case CONSTANT : cfX = 0.0; cf2X = 0.0; break;
@@ -402,6 +417,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 							bdryFlag2X = I-2;
 							a = x-xv[i];
 							b = xv[i]-xv[i-1];
+							etaX = a/b;
 							switch(interpType)
 							{
 								case CONSTANT : cfX = 0.0; cf2X = 0.0; break;
@@ -429,6 +445,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 							outsideY   = true;
 							bdryFlagY = I;
 							bdryFlag2Y= I;
+							etaY      = 0.0;
 							cfY       = 0.0;
 							cf2Y      = 0.0;
 							flag      = true;
@@ -443,6 +460,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 							bdryFlag2Y = I+2*nx;
 							a = yv[j]-y;
 							b = yv[j+1]-yv[j];
+							etaY = a/b;
 							switch(interpType)
 							{
 								case CONSTANT : cfY = 0.0; cf2Y = 0.0; break;
@@ -457,6 +475,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 							bdryFlag2Y = I-2*nx;
 							a = y-yv[j];
 							b = yv[j]-yv[j-1];
+							etaY = a/b;
 							switch(interpType)
 							{
 								case CONSTANT : cfY = 0.0; cf2Y = 0.0; break;
@@ -477,6 +496,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 				coeffs[I]  = cfY;
 				coeffs2[I] = cf2Y;
 				uv[I]      = uvY;
+				eta << etaX << std::endl;
 			}
 			else if (outsideX && bdryFlagX>=0)
 			{
@@ -485,10 +505,12 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 				coeffs[I]  = cfX;
 				coeffs2[I] = cf2X;
 				uv[I]      = uvX;
+				eta << etaY << std::endl;
 			}
 			mask << ((outsideX || outsideY)? 1 : 0) << std::endl;
 		}
 	}
+	eta.close();
 	mask.close();
 	
 	file.open((folder+"/tagy.txt").c_str());
