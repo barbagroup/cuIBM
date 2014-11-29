@@ -77,7 +77,7 @@ protected:
 	// generate explicit terms
 	void generateRN();
 	void calculateExplicitQTerms();
-	void calculateExplicitLambdaTerms();
+	virtual void calculateExplicitLambdaTerms();
 	
 	virtual void generateBC1();
 	virtual void generateBC2();
