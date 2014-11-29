@@ -86,7 +86,7 @@ protected:
 	void assembleRHS2();
 
 	virtual void solveIntermediateVelocity();
-	void solvePoisson();
+	virtual void solvePoisson();
 	virtual void projectionStep();
 
 	void updateBoundaryConditions();

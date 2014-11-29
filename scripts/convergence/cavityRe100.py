@@ -164,12 +164,16 @@ def main():
 
 	print "U:"
 	print "errL2Norms: {}".format(errL2NormU)
-	print "Convergence rates: {:.3f}, {:.3f}".format(np.log(errL2NormU[0]/errL2NormU[1])/np.log(3), np.log(errL2NormU[1]/errL2NormU[2])/np.log(3))
+	print "Convergence rates:",
+	for i in range(len(errL2NormU)-1):
+		print "{:.3f}, ".format(np.log(errL2NormU[i]/errL2NormU[i+1])/np.log(3)),
 	print "Linear fit convergence rate: {:.3f}".format(L2OrderOfConvergenceU)
 
 	print "\nV:"
 	print "errL2Norms: {}".format(errL2NormV)
-	print "Convergence rates: {:.3f}, {:.3f}".format(np.log(errL2NormV[0]/errL2NormV[1])/np.log(3), np.log(errL2NormV[1]/errL2NormV[2])/np.log(3))
+	print "Convergence rates:",
+	for i in range(len(errL2NormV)-1):
+		print "{:.3f}, ".format(np.log(errL2NormV[i]/errL2NormV[i+1])/np.log(3)),
 	print "Linear fit convergence rate: {:.3f}".format(L2OrderOfConvergenceV)
 	line()
 

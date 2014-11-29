@@ -7,7 +7,7 @@
   startStep: 0
   timeScheme: [EULER_EXPLICIT, EULER_IMPLICIT]
   ibmScheme: DIRECT_FORCING
-  interpolationType: CONSTANT
+  interpolationType: LINEAR
   linearSolvers:
     - system: velocity
       solver: CG

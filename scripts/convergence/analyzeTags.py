@@ -87,13 +87,17 @@ def main():
 	print "\nu: ",
 	for folder in folders[:2]:
 		eta_u, _ = readEta(args.caseDir + "/" + folder)
-		alpha_u = alpha_vectorized(eta_u)
-		print la.norm(alpha_u,1)/len(alpha_u), 
+		print "{:.3f}".format(la.norm(alpha_vectorized(eta_u),1)/len(eta_u)),
+		#print "{:.3f}".format(la.norm(alpha_vectorized(eta_u),2)/len(eta_u)),
+		#print "{:.3f}".format(alpha_predicted(la.norm(eta_u,1)/numpy.sqrt(len(eta_u)))),
+		#print "{:.3f}".format(alpha_predicted(la.norm(eta_u,2)/numpy.sqrt(len(eta_u)))),
 	print "\nv: ",
 	for folder in folders[:2]:
 		_, eta_v = readEta(args.caseDir + "/" + folder)
-		alpha_v = alpha_vectorized(eta_v)
-		print la.norm(alpha_v,1)/len(alpha_v), 
+		print "{:.3f}".format(la.norm(alpha_vectorized(eta_v),1)/len(eta_v)),
+		#print "{:.3f}".format(la.norm(alpha_vectorized(eta_v),2)/len(eta_v)),
+		#print "{:.3f}".format(alpha_predicted(la.norm(eta_v,1)/numpy.sqrt(len(eta_v)))),
+		#print "{:.3f}".format(alpha_predicted(la.norm(eta_v,2)/numpy.sqrt(len(eta_v)))),
 	print " "
 
 if __name__=="__main__":

@@ -7,6 +7,7 @@
 #include "SLL0Solver.h"
 #include "SLL1Solver.h"
 #include "SLL2Solver.h"
+#include "DiffusionSolver.h"
 
 template <typename memoryType>
 NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domInfo);

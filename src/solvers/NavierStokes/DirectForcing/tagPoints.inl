@@ -496,7 +496,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 				coeffs[I]  = cfY;
 				coeffs2[I] = cf2Y;
 				uv[I]      = uvY;
-				eta << etaX << std::endl;
+				eta << etaY << std::endl;
 			}
 			else if (outsideX && bdryFlagX>=0)
 			{
@@ -505,7 +505,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 				coeffs[I]  = cfX;
 				coeffs2[I] = cf2X;
 				uv[I]      = uvX;
-				eta << etaY << std::endl;
+				eta << etaX << std::endl;
 			}
 			mask << ((outsideX || outsideY)? 1 : 0) << std::endl;
 		}

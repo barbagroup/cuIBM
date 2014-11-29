@@ -78,7 +78,8 @@ enum ibmScheme
 	TAIRA_COLONIUS, ///< Taira & Colonius (2007)
 	SLL0,           ///< SLL0
 	SLL1,           ///< SLL1
-	SLL2            ///< SLL2
+	SLL2,           ///< SLL2
+	DIFFUSION       ///< DIFFUSION
 };
 
 enum interpolationType

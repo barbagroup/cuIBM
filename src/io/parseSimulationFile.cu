@@ -48,6 +48,8 @@ ibmScheme ibmSchemeFromString(string &s)
     return TAIRA_COLONIUS;
   else if (s == "FADLUN_ET_AL")
     return FADLUN_ET_AL;
+  else if (s == "DIFFUSION")
+    return DIFFUSION;
   else
     return NAVIER_STOKES;
 }
