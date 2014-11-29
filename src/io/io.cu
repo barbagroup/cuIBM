@@ -250,6 +250,9 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			else 
 			if ( strcmp(argv[i],"SLL2")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(SLL2);
+			else 
+			if ( strcmp(argv[i],"Diffusion")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(DIFFUSION);
 		}
 		// interpolation type for Eulerian direct forcing methods
 		if ( strcmp(argv[i],"-interpolationType")==0 )
@@ -260,6 +263,9 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			else
 			if ( strcmp(argv[i],"linear")==0 )
 				DB["simulation"]["interpolationType"].set<interpolationType>(LINEAR);
+			else
+			if ( strcmp(argv[i],"quadratic")==0 )
+				DB["simulation"]["interpolationType"].set<interpolationType>(QUADRATIC);
 		}
 	}
 }
@@ -325,13 +331,14 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "nsave = " << nsave << '\n';
 	std::cout << "Convection time scheme = " << stringFromTimeScheme(DB["simulation"]["convTimeScheme"].get<timeScheme>()) << '\n';
 	std::cout << "Diffusion time scheme  = " << stringFromTimeScheme(DB["simulation"]["diffTimeScheme"].get<timeScheme>()) << '\n';
-	if(ibmSchm==FADLUN_ET_AL || ibmSchm==DIRECT_FORCING)
+	if(ibmSchm==FADLUN_ET_AL || ibmSchm==DIRECT_FORCING || ibmSchm==DIFFUSION)
 	{
 		std::cout << "Interpolation type: ";
 		switch(interpType)
 		{
-			case CONSTANT: std::cout << "Constant\n"; break;
-			case LINEAR  : std::cout << "Linear\n"; break;
+			case CONSTANT : std::cout << "Constant\n"; break;
+			case LINEAR   : std::cout << "Linear\n"; break;
+			case QUADRATIC: std::cout << "Quadratic\n"; break;
 			default : std::cout << "Unknown\n"; break;
 		}
 	}

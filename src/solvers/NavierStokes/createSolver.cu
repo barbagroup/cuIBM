@@ -30,6 +30,9 @@ NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domIn
 		case SLL2:
 			solver = new SLL2Solver<memoryType>(&paramDB, &domInfo);
 			break;
+		case DIFFUSION:
+			solver = new DiffusionSolver<memoryType>(&paramDB, &domInfo);
+			break;
 	}
 	std::cout << "\nImmersed Boundary Method" << std::endl;
 	std::cout <<   "------------------------" << std::endl;

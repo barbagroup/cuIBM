@@ -48,18 +48,22 @@ ibmScheme ibmSchemeFromString(string &s)
     return TAIRA_COLONIUS;
   else if (s == "FADLUN_ET_AL")
     return FADLUN_ET_AL;
+  else if (s == "DIFFUSION")
+    return DIFFUSION;
   else
     return NAVIER_STOKES;
 }
 
 interpolationType interpolationTypeFromString(string &s)
 {
-  if (s == "CONSTANT")
-    return CONSTANT;
-  else if (s == "LINEAR")
-    return LINEAR;
-  else
-    return LINEAR;
+	if (s == "CONSTANT")
+		return CONSTANT;
+	else if (s == "LINEAR")
+		return LINEAR;
+	else if (s == "QUADRATIC")
+		return QUADRATIC;
+	else
+		return LINEAR;
 }
 
 void parseSimulation(const YAML::Node &node, parameterDB &DB)

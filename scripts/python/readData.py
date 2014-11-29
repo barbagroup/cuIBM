@@ -170,6 +170,19 @@ def readMask(folder, nx, ny):
 	n_u = (nx-1)*ny
 	return mask[:n_u], mask[n_u:]
 
+def readEta(folder):
+	"""Reads the values of eta.
+	
+	Arguments
+	---------
+	folder -- path of the simulation case.
+	"""
+	eta_file = '{}/eta_u.txt'.format(folder)
+	eta_u = np.loadtxt(eta_file)
+	eta_file = '{}/eta_v.txt'.format(folder)
+	eta_v = np.loadtxt(eta_file)
+	return eta_u, eta_v
+
 if __name__ == "__main__":
 	#readGridData("../../cases/lidDrivenCavity/Re100")
 	readMask("cases/convergence/cavityRe100/DirectForcing/quad_T00.25_20_0.00050/20", 20, 20)
