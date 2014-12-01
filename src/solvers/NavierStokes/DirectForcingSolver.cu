@@ -3,6 +3,13 @@
 #include <thrust/extrema.h>
 
 template <typename memoryType>
+DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *dInfo)
+{
+	NavierStokesSolver<memoryType>::paramDB = pDB;
+	NavierStokesSolver<memoryType>::domInfo = dInfo;
+}
+
+template <typename memoryType>
 void DirectForcingSolver<memoryType>::initialise()
 {
 	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
@@ -29,6 +36,10 @@ void DirectForcingSolver<memoryType>::initialise()
 	coeffs2D.resize(numUV);
 	uv.resize(numUV);
 	uvD.resize(numUV);
+
+	pressure.resize(numP);
+	cusp::blas::fill(pressure, 0.0);
+
 	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");
 	
 	tagPoints();
@@ -94,6 +105,16 @@ void DirectForcingSolver<memoryType>::writeMassFluxInfo()
 }
 
 template <typename memoryType>
+void DirectForcingSolver<memoryType>::projectionStep()
+{
+	NavierStokesSolver<memoryType>::projectionStep();
+
+	NavierStokesSolver<memoryType>::logger.startTimer("projectionStep");
+	cusp::blas::axpy(NavierStokesSolver<memoryType>::lambda, pressure , 1.0);
+	NavierStokesSolver<memoryType>::logger.stopTimer("projectionStep");
+}
+
+template <typename memoryType>
 void DirectForcingSolver<memoryType>::writeData()
 {	
 	NavierStokesSolver<memoryType>::logger.startTimer("output");
@@ -111,13 +132,6 @@ void DirectForcingSolver<memoryType>::writeData()
 	writeMassFluxInfo();
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
-}
-
-template <typename memoryType>
-DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *dInfo)
-{
-	NavierStokesSolver<memoryType>::paramDB = pDB;
-	NavierStokesSolver<memoryType>::domInfo = dInfo;
 }
 
 #include "DirectForcing/tagPoints.inl"

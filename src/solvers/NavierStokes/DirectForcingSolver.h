@@ -22,6 +22,7 @@ protected:
 	vecD coeffsD, coeffs2D;
 	vecH uv;
 	vecD uvD;
+	cusp::array1d<real, memoryType> pressure;
 	
 	void tagPoints();
 	//void tagPoints(real *bx, real *by);
@@ -38,6 +39,7 @@ protected:
 	void updateRHS1();
 
 	virtual void updateSolverState();
+	virtual void projectionStep();
 
 	void writeMassFluxInfo();
 	

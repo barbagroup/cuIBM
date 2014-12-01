@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 from matplotlib.font_manager import FontProperties
 import matplotlib.font_manager as font_manager
+import warnings
+warnings.simplefilter(action = "ignore", category = FutureWarning)
 
 def line():
 	print '-'*80
@@ -61,13 +63,17 @@ def main():
 	# create arrays to store the required values
 	U = []
 	V = []
+	Q = []
 	errL2NormU  = np.zeros(numFolders-1)
 	errL2NormV  = np.zeros(numFolders-1)
+	errL2NormQ  = np.zeros(numFolders-1)
 	errLInfNormU  = np.zeros(numFolders-1)
 	errLInfNormV  = np.zeros(numFolders-1)
 	meshSize = np.zeros(numFolders-1, dtype=int)
 
 	line()
+	print "Case directory: {}".format(args.caseDir)
+	print "Folders: ",
 
 	stride = 1
 	for fIdx, folder in enumerate(folders):
@@ -101,13 +107,15 @@ def main():
 
 		U.append(np.reshape(u, (ny, nx-1))[stride/2::stride,stride-1::stride])
 		V.append(np.reshape(v, (ny-1, nx))[stride-1::stride,stride/2::stride])
+		Q.append(np.concatenate([U[fIdx].flatten(),V[fIdx].flatten()]))
 		
-		print 'Completed folder {}. u:{}, v:{}'.format(folder, U[fIdx].shape, V[fIdx].shape)
+		print '{},'.format(folder),
 		stride = stride*3
 
 	for idx in range(numFolders-1):
 		errL2NormU[idx] = la.norm(U[idx+1]-U[idx])
 		errL2NormV[idx] = la.norm(V[idx+1]-V[idx])
+		errL2NormQ[idx] = la.norm(Q[idx+1]-Q[idx])
 
 		errLInfNormU[idx] = la.norm(U[idx+1]-U[idx], np.inf)
 		errLInfNormV[idx] = la.norm(V[idx+1]-V[idx], np.inf)
@@ -151,30 +159,38 @@ def main():
 				fig.savefig("{}/diffU_nomask.pdf".format(args.caseDir))
 			else:
 				fig.savefig("{}/diffU.pdf".format(args.caseDir))
-	
+
 	L2OrderOfConvergenceU = -np.polyfit(np.log10(meshSize), np.log10(errL2NormU), 1)[0]
 	L2OrderOfConvergenceV = -np.polyfit(np.log10(meshSize), np.log10(errL2NormV), 1)[0]
+	L2OrderOfConvergenceQ = -np.polyfit(np.log10(meshSize), np.log10(errL2NormQ), 1)[0]
 
 	LInfOrderOfConvergenceU = -np.polyfit(np.log10(meshSize), np.log10(errLInfNormU), 1)[0]
 	LInfOrderOfConvergenceV = -np.polyfit(np.log10(meshSize), np.log10(errLInfNormV), 1)[0]
 	
+	print " "
 	line()
-	print "Mesh sizes: {}".format(meshSize)
-	line()
-
-	print "U:"
-	print "errL2Norms: {}".format(errL2NormU)
+	
+	print "U:",
+	#print "errL2Norms: {}".format(errL2NormU)
 	print "Convergence rates:",
 	for i in range(len(errL2NormU)-1):
 		print "{:.3f}, ".format(np.log(errL2NormU[i]/errL2NormU[i+1])/np.log(3)),
 	print "Linear fit convergence rate: {:.3f}".format(L2OrderOfConvergenceU)
 
-	print "\nV:"
-	print "errL2Norms: {}".format(errL2NormV)
+	print "V:",
+	#print "errL2Norms: {}".format(errL2NormV)
 	print "Convergence rates:",
 	for i in range(len(errL2NormV)-1):
 		print "{:.3f}, ".format(np.log(errL2NormV[i]/errL2NormV[i+1])/np.log(3)),
 	print "Linear fit convergence rate: {:.3f}".format(L2OrderOfConvergenceV)
+
+	print "Q:",
+	#print "errL2Norms: {}".format(errL2NormQ)
+	print "Convergence rates:",
+	for i in range(len(errL2NormQ)-1):
+		print "{:.3f}, ".format(np.log(errL2NormQ[i]/errL2NormQ[i+1])/np.log(3)),
+	print "Linear fit convergence rate: {:.3f}".format(L2OrderOfConvergenceQ)
+	
 	line()
 
 	plt.clf()
@@ -192,6 +208,7 @@ def main():
 	ax.set_ylabel("$L^2$-norm of differences", fontsize=18)
 	ax.tick_params(labelsize=18)
 	plt.savefig("{}/L2Convergence.pdf".format(args.caseDir))
+
 	'''
 	print "U:"
 	print "errLInfNorms: {}".format(errLInfNormU)
