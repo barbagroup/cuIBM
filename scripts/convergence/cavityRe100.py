@@ -27,11 +27,13 @@ def main():
 	#for font in font_manager.findSystemFonts():
 	#	print font
 
-	fontpath = '/usr/share/fonts/truetype/msttcorefonts/Georgia.ttf'
+	try:
+		fontpath = '/usr/share/fonts/truetype/msttcorefonts/Georgia.ttf'
 
-	prop = font_manager.FontProperties(fname=fontpath)
-	matplotlib.rcParams['font.family'] = prop.get_name()
-
+		prop = font_manager.FontProperties(fname=fontpath)
+		matplotlib.rcParams['font.family'] = prop.get_name()
+	except:
+		pass
 	# Command line options
 	parser = argparse.ArgumentParser(description="Calculates the order of convergence.", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 	parser.add_argument("-folder", dest="caseDir", help="folder in which the cases for different mesh sizes are present", default=os.path.expandvars("${CUIBM_DIR}/cases/convergence/cavityRe100/NavierStokes/20x20"))
