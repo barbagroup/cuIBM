@@ -72,7 +72,7 @@ protected:
 	virtual void generateQT();
 	void updateQ(real gamma);
 	
-	void generateC();
+	virtual void generateC();
 
 	// generate explicit terms
 	void generateRN();

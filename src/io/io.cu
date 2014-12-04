@@ -253,6 +253,9 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			else 
 			if ( strcmp(argv[i],"Diffusion")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(DIFFUSION);
+			else 
+			if ( strcmp(argv[i],"DFImproved")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(DFIMPROVED);
 		}
 		// interpolation type for Eulerian direct forcing methods
 		if ( strcmp(argv[i],"-interpolationType")==0 )
@@ -331,7 +334,7 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "nsave = " << nsave << '\n';
 	std::cout << "Convection time scheme = " << stringFromTimeScheme(DB["simulation"]["convTimeScheme"].get<timeScheme>()) << '\n';
 	std::cout << "Diffusion time scheme  = " << stringFromTimeScheme(DB["simulation"]["diffTimeScheme"].get<timeScheme>()) << '\n';
-	if(ibmSchm==FADLUN_ET_AL || ibmSchm==DIRECT_FORCING || ibmSchm==DIFFUSION)
+	if(ibmSchm==FADLUN_ET_AL || ibmSchm==DIRECT_FORCING || ibmSchm==DIFFUSION || ibmSchm==DFIMPROVED)
 	{
 		std::cout << "Interpolation type: ";
 		switch(interpType)

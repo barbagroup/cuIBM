@@ -79,7 +79,8 @@ enum ibmScheme
 	SLL0,           ///< SLL0
 	SLL1,           ///< SLL1
 	SLL2,           ///< SLL2
-	DIFFUSION       ///< DIFFUSION
+	DIFFUSION,      ///< DIFFUSION
+	DFIMPROVED      ///< Direct Forcing Improved
 };
 
 enum interpolationType

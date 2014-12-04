@@ -50,6 +50,8 @@ ibmScheme ibmSchemeFromString(string &s)
     return FADLUN_ET_AL;
   else if (s == "DIFFUSION")
     return DIFFUSION;
+  else if (s == "DFIMPROVED")
+    return DFIMPROVED;
   else
     return NAVIER_STOKES;
 }

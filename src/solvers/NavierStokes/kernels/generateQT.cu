@@ -27,9 +27,24 @@ void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tags)
 {
 	int I = threadIdx.x + blockIdx.x*blockDim.x;
 	
-	if(I >= QSize) return;
+	if(I < QSize)
+	{
+		QVals[I] *= (tags[QRows[I]] == -1);
+	}
+}
+
+__global__ \
+void updateQT(int *QTRows, int *QTCols, real *QTVals, int QTSize, int *tags, real *coeffs)
+{
+	int I = threadIdx.x + blockIdx.x*blockDim.x;
 	
-	QVals[I] *= ( tags[QRows[I]] == -1 );
+	if(I < QTSize)
+	{
+		int  col = QTCols[I];
+		real val = QTVals[I];
+		QTCols[I] = (tags[col]==-1)*col + (tags[col]!=-1)*tags[col];
+		QTVals[I] = (tags[col]==-1)*val + (tags[col]!=-1)*coeffs[col]*val;
+	}
 }
 
 void generateQT(int *QTRows, int *QTCols, real *QTVals, int nx, int ny)

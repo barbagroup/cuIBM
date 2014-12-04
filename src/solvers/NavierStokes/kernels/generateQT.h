@@ -9,6 +9,9 @@ namespace kernels
 __global__ \
 void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tags);
 
+__global__ \
+void updateQT(int *QTRows, int *QTCols, real *QTVals, int QTSize, int *tags, real *coeffs);
+
 void generateQT(int *QTRows, int *QTCols, real *QTVals, int nx, int ny);
 
 __global__ \
