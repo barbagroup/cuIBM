@@ -11,6 +11,196 @@ DFImprovedSolver<memoryType>::DFImprovedSolver(parameterDB *pDB, domain *dInfo)
 }
 
 template <typename memoryType>
+void DFImprovedSolver<memoryType>::generateQT()
+{
+	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
+	    ny = NavierStokesSolver<memoryType>::domInfo->ny;
+
+	const int N_u = (nx-1)*ny;
+
+	NavierStokesSolver<memoryType>::generateQT();
+	DirectForcingSolver<memoryType>::updateQ();
+
+	cusp::coo_matrix<int, real, host_memory> QTHost(nx*ny, (nx-1)*ny+nx*(ny-1), 4*nx*ny-2*(nx+ny));
+	cusp::blas::fill(QTHost.row_indices, -1);
+	cusp::blas::fill(QTHost.column_indices, -1);
+	cusp::blas::fill(QTHost.values, 0.0);
+
+	int idx = 0;
+	for(int j=0; j<ny; j++)
+	{
+		for(int i=0; i<nx; i++)
+		{
+			int row = j*nx+i;
+			if(i>0)
+			{
+				int I = j*(nx-1)+(i-1);
+				if(DirectForcingSolver<memoryType>::tags[I]==-1)
+				{
+					QTHost.row_indices[idx] = row;
+					QTHost.column_indices[idx] = I;
+					QTHost.values[idx] = 1.0;
+					idx++;
+				}
+				else
+				{
+					bool flag = false;
+					int start;
+					start = (idx>4)? idx-4 : 0;
+					for(int l=start; l<idx && !flag; l++)
+					{
+						if(QTHost.row_indices[l]==row && QTHost.column_indices[l]==DirectForcingSolver<memoryType>::tags[I])
+						{
+							flag = true;
+							QTHost.values[l] += DirectForcingSolver<memoryType>::coeffs[I];
+						}
+					}
+					if(!flag)
+					{
+						QTHost.row_indices[idx]    = row;
+						QTHost.column_indices[idx] = DirectForcingSolver<memoryType>::tags[I];
+						QTHost.values[idx]         = DirectForcingSolver<memoryType>::coeffs[I];
+						idx++;
+					}
+				}
+			}
+			if(i<nx-1)
+			{
+				int I = j*(nx-1)+i;
+				if(DirectForcingSolver<memoryType>::tags[I]==-1)
+				{
+					QTHost.row_indices[idx] = row;
+					QTHost.column_indices[idx] = I;
+					QTHost.values[idx] = -1.0;
+					idx++;
+				}
+				else
+				{
+					bool flag = false;
+					int start;
+					start = (idx>4)? idx-4 : 0;
+					for(int l=start; l<idx && !flag; l++)
+					{
+						if(QTHost.row_indices[l]==row && QTHost.column_indices[l]==DirectForcingSolver<memoryType>::tags[I])
+						{
+							flag = true;
+							QTHost.values[l] -= DirectForcingSolver<memoryType>::coeffs[I];
+						}
+					}
+					if(!flag)
+					{
+						QTHost.row_indices[idx]    = row;
+						QTHost.column_indices[idx] = DirectForcingSolver<memoryType>::tags[I];
+						QTHost.values[idx]         = -DirectForcingSolver<memoryType>::coeffs[I];
+						idx++;
+					}
+				}
+			}
+			if(j>0)
+			{
+				int I = (j-1)*nx+i+N_u;
+				if(DirectForcingSolver<memoryType>::tags[I]==-1)
+				{
+					QTHost.row_indices[idx] = row;
+					QTHost.column_indices[idx] = I;
+					QTHost.values[idx] = 1.0;
+					idx++;
+				}
+				else
+				{
+					bool flag = false;
+					int start;
+					start = (idx>4)? idx-4 : 0;
+					for(int l=start; l<idx && !flag; l++)
+					{
+						if(QTHost.row_indices[l]==row && QTHost.column_indices[l]==DirectForcingSolver<memoryType>::tags[I])
+						{
+							flag = true;
+							QTHost.values[l] += DirectForcingSolver<memoryType>::coeffs[I];
+						}
+					}
+					if(!flag)
+					{
+						QTHost.row_indices[idx]    = row;
+						QTHost.column_indices[idx] = DirectForcingSolver<memoryType>::tags[I];
+						QTHost.values[idx]         = DirectForcingSolver<memoryType>::coeffs[I];
+						idx++;
+					}
+				}
+			}
+			if(j<ny-1)
+			{
+				int I = j*nx+i+N_u;
+				if(DirectForcingSolver<memoryType>::tags[I]==-1)
+				{
+					QTHost.row_indices[idx] = row;
+					QTHost.column_indices[idx] = I;
+					QTHost.values[idx] = -1.0;
+					idx++;
+				}
+				else
+				{
+					bool flag = false;
+					int start;
+					start = (idx>4)? idx-4 : 0;
+					for(int l=start; l<idx && !flag; l++)
+					{
+						if(QTHost.row_indices[l]==row && QTHost.column_indices[l]==DirectForcingSolver<memoryType>::tags[I])
+						{
+							flag = true;
+							QTHost.values[l] -= DirectForcingSolver<memoryType>::coeffs[I];
+						}
+					}
+					if(!flag)
+					{
+						QTHost.row_indices[idx]    = row;
+						QTHost.column_indices[idx] = DirectForcingSolver<memoryType>::tags[I];
+						QTHost.values[idx]         = -DirectForcingSolver<memoryType>::coeffs[I];
+						idx++;
+					}
+				}
+			}
+		}
+	}
+	std::cout << "\nQT stuff:\n";
+	std::cout << "Original size: " << QTHost.values.size() << std::endl;
+	std::cout << "Actual size  : " << idx << std::endl;
+	NavierStokesSolver<memoryType>::QT = QTHost;
+	std::cout << "Copied matrix." << std::endl;
+	NavierStokesSolver<memoryType>::QT.resize(nx*ny, (nx-1)*ny+nx*(ny-1), idx);
+	std::cout << "Resized matrix." << std::endl;
+
+	cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::Q, "Q.mtx");
+	std::cout << "Wrote Q to file." << std::endl;
+	cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::QT, "QT.mtx");
+	std::cout << "Wrote QT to file." << std::endl;
+}
+
+template <typename memoryType>
+void DFImprovedSolver<memoryType>::generateC()
+{
+	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
+	    ny = NavierStokesSolver<memoryType>::domInfo->ny;
+	int index = 5*(ny/2)*nx - nx - ny + 5*(nx/2) - 1 + 2;
+	int row = (ny/2)*nx+nx/2;
+
+	NavierStokesSolver<memoryType>::generateC();
+	bool flag = true;
+	while(flag)
+	{
+		if(NavierStokesSolver<memoryType>::C.row_indices[index]==NavierStokesSolver<memoryType>::C.column_indices[index] && NavierStokesSolver<memoryType>::C.column_indices[index]==row)
+		{
+			NavierStokesSolver<memoryType>::C.values[index] += NavierStokesSolver<memoryType>::C.values[index];
+			flag = false;
+		}
+		index++;
+	}
+
+	cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::C, "C.mtx");
+}
+
+/*
+template <typename memoryType>
 void DFImprovedSolver<memoryType>::generateC()
 {
 	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
@@ -186,7 +376,7 @@ void DFImprovedSolver<memoryType>::generateC()
 	}
 	//std::cout << "Total nonzeros: " << num_nonzeros << std::endl;
 
-	CHost.resize(nx*ny, nx*ny, num_nonzeros);
+	cusp::coo_matrix<int, real, host_memory> CHost(nx*ny, nx*ny, num_nonzeros);
 
 	real valuesInColumns[5][5];
 
@@ -407,6 +597,7 @@ void DFImprovedSolver<memoryType>::generateC()
 	cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::C, "C.mtx");
 	cusp::blas::scal(NavierStokesSolver<memoryType>::C.values, dt);
 }
+*/
 
 /*
 template <typename memoryType>
