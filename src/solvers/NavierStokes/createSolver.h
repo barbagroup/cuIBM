@@ -8,6 +8,7 @@
 #include "SLL1Solver.h"
 #include "SLL2Solver.h"
 #include "DiffusionSolver.h"
+#include "DFModifiedSolver.h"
 #include "DFImprovedSolver.h"
 
 template <typename memoryType>

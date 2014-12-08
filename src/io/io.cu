@@ -235,27 +235,33 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			else
 			if ( strcmp(argv[i],"TairaColonius")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(TAIRA_COLONIUS);
-			else 
+			else
 			if ( strcmp(argv[i],"DirectForcing")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(DIRECT_FORCING);
-			else 
+			else
 			if ( strcmp(argv[i],"FadlunEtAl")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(FADLUN_ET_AL);
-			else 
+			else
 			if ( strcmp(argv[i],"SLL0")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(SLL0);
-			else 
+			else
 			if ( strcmp(argv[i],"SLL1")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(SLL1);
-			else 
+			else
 			if ( strcmp(argv[i],"SLL2")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(SLL2);
-			else 
+			else
 			if ( strcmp(argv[i],"Diffusion")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(DIFFUSION);
+			else
+			if ( strcmp(argv[i],"DFModified")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(DF_MODIFIED);
+			else
+			if ( strcmp(argv[i],"FEAModified")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(FEA_MODIFIED);
 			else 
 			if ( strcmp(argv[i],"DFImproved")==0 )
-				DB["simulation"]["ibmScheme"].set<ibmScheme>(DFIMPROVED);
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(DF_IMPROVED);
 		}
 		// interpolation type for Eulerian direct forcing methods
 		if ( strcmp(argv[i],"-interpolationType")==0 )
@@ -334,7 +340,7 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "nsave = " << nsave << '\n';
 	std::cout << "Convection time scheme = " << stringFromTimeScheme(DB["simulation"]["convTimeScheme"].get<timeScheme>()) << '\n';
 	std::cout << "Diffusion time scheme  = " << stringFromTimeScheme(DB["simulation"]["diffTimeScheme"].get<timeScheme>()) << '\n';
-	if(ibmSchm==FADLUN_ET_AL || ibmSchm==DIRECT_FORCING || ibmSchm==DIFFUSION || ibmSchm==DFIMPROVED)
+	if(ibmSchm==FADLUN_ET_AL || ibmSchm==DIRECT_FORCING || ibmSchm==DIFFUSION || ibmSchm==DF_IMPROVED || ibmSchm==DF_MODIFIED || ibmSchm==FEA_MODIFIED)
 	{
 		std::cout << "Interpolation type: ";
 		switch(interpType)

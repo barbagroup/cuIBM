@@ -73,14 +73,16 @@ enum ibmScheme
 {
 	NAVIER_STOKES,  ///< No immersed bodies. Perot (1993)
 	SAIKI_BIRINGEN, ///< Saiki & Biringen (1996)
-	DIRECT_FORCING, ///< Fully discrete direct forcing method
+	DIRECT_FORCING, ///< Fully discrete direct forrcing method
 	FADLUN_ET_AL,   ///< Fadlun et al (2000)
 	TAIRA_COLONIUS, ///< Taira & Colonius (2007)
 	SLL0,           ///< SLL0
 	SLL1,           ///< SLL1
 	SLL2,           ///< SLL2
-	DIFFUSION,      ///< DIFFUSION
-	DFIMPROVED      ///< Direct Forcing Improved
+	DIFFUSION,      ///< Diffusion
+	DF_MODIFIED,    ///< Direct Forcing modified
+	FEA_MODIFIED,   ///< Fadlun et al. modified
+	DF_IMPROVED      ///< Direct Forcing Improved
 };
 
 enum interpolationType
