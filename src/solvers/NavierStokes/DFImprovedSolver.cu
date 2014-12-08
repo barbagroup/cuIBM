@@ -162,14 +162,12 @@ void DFImprovedSolver<memoryType>::generateQT()
 			}
 		}
 	}
+	NavierStokesSolver<memoryType>::QT = QTHost;
+	NavierStokesSolver<memoryType>::QT.resize(nx*ny, (nx-1)*ny+nx*(ny-1), idx);
 	/*std::cout << "\nQT stuff:\n";
+	std::cout << "Copied and resized matrix." << std::endl;
 	std::cout << "Original size: " << QTHost.values.size() << std::endl;
 	std::cout << "Actual size  : " << idx << std::endl;
-	NavierStokesSolver<memoryType>::QT = QTHost;
-	std::cout << "Copied matrix." << std::endl;
-	NavierStokesSolver<memoryType>::QT.resize(nx*ny, (nx-1)*ny+nx*(ny-1), idx);
-	std::cout << "Resized matrix." << std::endl;
-
 	cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::Q, "Q.mtx");
 	std::cout << "Wrote Q to file." << std::endl;
 	cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::QT, "QT.mtx");
