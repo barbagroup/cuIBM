@@ -162,7 +162,7 @@ void DFImprovedSolver<memoryType>::generateQT()
 			}
 		}
 	}
-	std::cout << "\nQT stuff:\n";
+	/*std::cout << "\nQT stuff:\n";
 	std::cout << "Original size: " << QTHost.values.size() << std::endl;
 	std::cout << "Actual size  : " << idx << std::endl;
 	NavierStokesSolver<memoryType>::QT = QTHost;
@@ -173,7 +173,7 @@ void DFImprovedSolver<memoryType>::generateQT()
 	cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::Q, "Q.mtx");
 	std::cout << "Wrote Q to file." << std::endl;
 	cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::QT, "QT.mtx");
-	std::cout << "Wrote QT to file." << std::endl;
+	std::cout << "Wrote QT to file." << std::endl;*/
 }
 
 template <typename memoryType>
@@ -195,8 +195,7 @@ void DFImprovedSolver<memoryType>::generateC()
 		}
 		index++;
 	}
-
-	cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::C, "C.mtx");
+	//cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::C, "C-generateQT.mtx");
 }
 
 /*
@@ -594,48 +593,8 @@ void DFImprovedSolver<memoryType>::generateC()
 	CHost.sort_by_row_and_column();
 	CHost.values[0] += CHost.values[0];
 	NavierStokesSolver<memoryType>::C = CHost;
-	cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::C, "C.mtx");
+	//cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::C, "C-generateC.mtx");
 	cusp::blas::scal(NavierStokesSolver<memoryType>::C.values, dt);
-}
-*/
-
-/*
-template <typename memoryType>
-void DFImprovedSolver<memoryType>::generateQT()
-{
-	NavierStokesSolver<memoryType>::generateQT();
-	DirectForcingSolver<memoryType>::updateQ();
-	updateQT();
-	cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::Q, "Q.mtx");
-	cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::QT, "QT.mtx");
-}
-
-template <>
-void DFImprovedSolver<host_memory>::updateQT()
-{
-}
-
-template <>
-void DFImprovedSolver<device_memory>::updateQT()
-{
-	const int blocksize = 256;
-	
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
-	
-	int  QTSize = 4*nx*ny-2*(nx+ny);
-	
-	int  *QTRows = thrust::raw_pointer_cast(&(QT.row_indices[0])),
-	     *QTCols = thrust::raw_pointer_cast(&(QT.column_indices[0]));
-	int  *tags_r = thrust::raw_pointer_cast(&(tagsD[0]));
-	real *coeffs_r = thrust::raw_pointer_cast(&(coeffsD[0]));
-
-	real *QTVals = thrust::raw_pointer_cast(&(QT.values[0]));
-	
-	dim3 dimGrid( int((QTSize-0.5)/blocksize) + 1, 1);
-	dim3 dimBlock(blocksize, 1);
-	
-	kernels::updateQT <<<dimGrid, dimBlock>>> (QTRows, QTCols, QTVals, QTSize, tags_r, coeffs_r);
 }
 */
 
