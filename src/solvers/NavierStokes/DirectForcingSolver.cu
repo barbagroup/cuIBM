@@ -1,6 +1,7 @@
 #include "DirectForcingSolver.h"
 #include <sys/stat.h>
 #include <thrust/extrema.h>
+#include <cusp/io/matrix_market.h>
 
 template <typename memoryType>
 DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *dInfo)
@@ -132,6 +133,28 @@ void DirectForcingSolver<memoryType>::writeData()
 	writeMassFluxInfo();
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
+}
+
+template <typename memoryType>
+void DirectForcingSolver<memoryType>::generateC()
+{
+	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
+	    ny = NavierStokesSolver<memoryType>::domInfo->ny;
+	int index = 5*(ny/2)*nx - nx - ny + 5*(nx/2) - 1 + 2;
+	int row = (ny/2)*nx+nx/2;
+
+	NavierStokesSolver<memoryType>::generateC();
+	bool flag = true;
+	while(flag)
+	{
+		if(NavierStokesSolver<memoryType>::C.row_indices[index]==NavierStokesSolver<memoryType>::C.column_indices[index] && NavierStokesSolver<memoryType>::C.column_indices[index]==row)
+		{
+			NavierStokesSolver<memoryType>::C.values[index] += NavierStokesSolver<memoryType>::C.values[index];
+			flag = false;
+		}
+		index++;
+	}
+	//cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::C, "C-generateQT.mtx");
 }
 
 #include "DirectForcing/tagPoints.inl"

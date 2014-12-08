@@ -34,6 +34,8 @@ protected:
 	void generateQT(int *QTRows, int *QTCols, real *QTVals){} // check this!
 	virtual void generateQT();
 	void updateQ();
+
+	virtual void generateC();
 	
 	virtual void assembleRHS1();
 	void updateRHS1();

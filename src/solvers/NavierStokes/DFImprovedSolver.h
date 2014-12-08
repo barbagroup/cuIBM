@@ -14,7 +14,6 @@ class DFImprovedSolver : public DirectForcingSolver<memoryType>
 {
 private:
 	virtual void generateQT();
-	virtual void generateC();
 	
 public:
 	DFImprovedSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);

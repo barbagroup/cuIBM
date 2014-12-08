@@ -16,6 +16,7 @@ class FadlunEtAlSolver : public DFModifiedSolver<memoryType>
 {
 private:
 	virtual void generateQT();
+	virtual void generateC();
 	
 public:
 	FadlunEtAlSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
@@ -32,6 +33,7 @@ class FEAModifiedSolver : public DirectForcingSolver<memoryType>
 {
 private:
 	virtual void generateQT();
+	virtual void generateC();
 	
 public:
 	FEAModifiedSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
