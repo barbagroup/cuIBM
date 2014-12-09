@@ -189,12 +189,14 @@ def main():
 		print "{:.3f}, ".format(np.log(errL2NormV[i]/errL2NormV[i+1])/np.log(3)),
 	print "Linear fit convergence rate: {:.3f}".format(L2OrderOfConvergenceV)
 
+	'''
 	print "Q:",
 	#print "errL2Norms: {}".format(errL2NormQ)
 	print "Convergence rates:",
 	for i in range(len(errL2NormQ)-1):
 		print "{:.3f}, ".format(np.log(errL2NormQ[i]/errL2NormQ[i+1])/np.log(3)),
 	print "Linear fit convergence rate: {:.3f}".format(L2OrderOfConvergenceQ)
+	'''
 	
 	line()
 
