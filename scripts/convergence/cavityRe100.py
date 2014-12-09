@@ -39,7 +39,8 @@ def main():
 	parser.add_argument("-folder", dest="caseDir", help="folder in which the cases for different mesh sizes are present", default=os.path.expandvars("${CUIBM_DIR}/cases/convergence/cavityRe100/NavierStokes/20x20"))
 	parser.add_argument("-tolerance", dest="tolerance", help="folder in which the cases for different mesh sizes are present", default="")
 	parser.add_argument("-interpolation_type", dest="interpolation_type", help="the type of interpolation used in the direct forcing method", default="")
-	parser.add_argument("-run_simulations", dest="runSimulations", help="run the cases if this flag is used", action='store_true', default=False)
+	parser.add_argument("-device", dest="device", help="CUDA device number", default="")
+	parser.add_argument("-run", dest="runSimulations", help="run the cases if this flag is used", action='store_true', default=False)
 	parser.add_argument("-remove_mask", dest="removeMask", help="use values from the entire domain", action='store_true', default=False)
 	args = parser.parse_args()
 
@@ -48,6 +49,8 @@ def main():
 		commandOptions.extend(["-velocityTol", "{}".format(args.tolerance), "-poissonTol", "{}".format(args.tolerance)])
 	if args.interpolation_type:
 		commandOptions.extend(["-interpolationType", "{}".format(args.interpolation_type)])
+	if args.device:
+		commandOptions.extend(["-deviceNumber", "{}".format(args.device)])
 
 	# list of folders from which velocity data is to be obtained
 	folders = sorted(os.walk(args.caseDir).next()[1], key=int)
