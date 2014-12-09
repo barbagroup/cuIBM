@@ -32,6 +32,8 @@ preconditionerType preconditionerTypeFromString(string &s)
     return DIAGONAL;
   else if (s == "SMOOTHED_AGGREGATION")
     return SMOOTHED_AGGREGATION;
+  else if (s == "AINV")
+    return AINV;
   else
     return NONE;
 }

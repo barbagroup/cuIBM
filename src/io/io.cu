@@ -291,6 +291,8 @@ string stringFromPreconditionerType(preconditionerType s)
     return "Diagonal";
   else if (s == SMOOTHED_AGGREGATION)
     return "Smoothed Aggregation";
+  else if (s == AINV)
+    return "Approximate Inverse";
   else
     return "Unrecognised preconditioner";
 }

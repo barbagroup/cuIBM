@@ -100,7 +100,8 @@ enum preconditionerType
 {
 	NONE,                ///< No preconditioner
 	DIAGONAL,            ///< Diagonal preconditioner
-	SMOOTHED_AGGREGATION ///< Smoothed aggregation preconditioner
+	SMOOTHED_AGGREGATION, ///< Smoothed aggregation preconditioner
+	AINV
 };
 
 // Shorthand for various types
