@@ -15,7 +15,11 @@ template <typename memoryType>
 class FadlunEtAlSolver : public DFModifiedSolver<memoryType>
 {
 private:
+	cusp::coo_matrix<int, real, memoryType> G;
+
+	virtual void updateG();
 	virtual void generateQT();
+	virtual void calculateExplicitLambdaTerms();
 	virtual void generateC();
 	
 public:
