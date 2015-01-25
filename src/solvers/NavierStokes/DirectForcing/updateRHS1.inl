@@ -1,5 +1,20 @@
+/***************************************************************************//**
+ * \file updateRHS1.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c DirectForcingSolver to update
+ *        the right hand-side of the system for the intermediate velocity flux vector.
+ */
+
+
 #include <solvers/NavierStokes/kernels/updateRHS1.h>
 
+
+/**
+ * \brief The vector \a rhs1 is first set up as if it would have been in the 
+ *        absence of an immersed boundary. This function then changes values 
+ *        in the vector that correspond to the forcing nodes on the grid, 
+ *        replacing them with the rhs values from the interpolation relations.
+ */
 template <>
 void DirectForcingSolver<device_memory>::updateRHS1()
 {
@@ -32,6 +47,12 @@ void DirectForcingSolver<device_memory>::updateRHS1()
 	kernels::updateRHS1Y <<<dimGrid, dimBlock>>>(rhs1_r, nx, ny, dt, dy_r, tags_r, coeffs_r, coeffs2_r, uv_r);
 }
 
+/**
+ * \brief The vector \a rhs1 is first set up as if it would have been in the 
+ *        absence of an immersed boundary. This function then changes values 
+ *        in the vector that correspond to the forcing nodes on the grid, 
+ *        replacing them with the rhs values from the interpolation relations.
+ */
 template <>
 void DirectForcingSolver<host_memory>::updateRHS1()
 {

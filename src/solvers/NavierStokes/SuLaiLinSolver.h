@@ -1,21 +1,19 @@
-/**
-* @file  SuLaiLinSolver.h
-* @brief Solves the flow using the IB method described by Taira and Colonius (2007)
-*
-* <b>The immersed boundary method: a projection approach</b> \n
-* Taira, K and Colonius, T \n
-* Journal of Computational Physics \n
-* Volume 225 Number 2 \n
-* 2007
-*/
+/***************************************************************************//**
+ * \file  SuLaiLinSolver.h
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Declaration of the class \c SuLaiLinSolver.
+ */
+
 
 #pragma once
 
 #include "NSWithBody.h"
 
+
 /**
-* @brief Immersed boundary method described by Taira and Colonius (2007)
-*/
+ * \class SuLaiLinSolver
+ * \brief Immersed boundary method from Su, Lai and Lin.
+ */
 template <typename memoryType>
 class SuLaiLinSolver : public NSWithBody<memoryType>
 {
@@ -41,6 +39,10 @@ protected:
 public:
 	virtual void initialise();
 	virtual void writeData();
+
+	/**
+	 * \brief Returns the name of the solver as a string.
+	 */
 	virtual std::string name()
 	{
 		return "Su, Lai & Lin";

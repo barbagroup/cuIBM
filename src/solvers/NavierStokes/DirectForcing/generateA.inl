@@ -1,5 +1,20 @@
+/***************************************************************************//**
+ * \file generateA.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c DirectForcingSolver to generate
+ *        the matrix resulting from implicit terms in the discretized momentum equation.
+ */
+
+
 #include <solvers/NavierStokes/kernels/generateA.h>
 
+
+/**
+ * \brief Generates the matrix A on the device.
+ *
+ * \param alpha Coefficient of the implicit part of the diffusion term.
+ *              1 for backward Euler, 0.5 for Crank-Nicolson and 0 for explicit Euler.
+ */
 template <>
 void DirectForcingSolver  <device_memory>::generateA(real alpha)
 {
@@ -29,6 +44,12 @@ void DirectForcingSolver  <device_memory>::generateA(real alpha)
 	kernels::generateADirectForcing <<<dimGrid, dimBlock>>> (ARows, ACols, AVals, MVals, LRows, LCols, LVals, ASize, alpha, tags_r);
 }
 
+/**
+ * \brief Generates the matrix A on the host.
+ *
+ * \param alpha Coefficient of the implicit part of the diffusion term.
+ *              1 for backward Euler, 0.5 for Crank-Nicolson and 0 for explicit Euler.
+ */
 template <>
 void DirectForcingSolver<host_memory>::generateA(real alpha)
 {

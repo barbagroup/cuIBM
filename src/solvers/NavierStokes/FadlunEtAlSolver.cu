@@ -1,3 +1,10 @@
+/***************************************************************************//**
+ * \file FadlunEtAlSolver.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c FadlunEtAlSolver.
+ */
+
+
 #include "FadlunEtAlSolver.h"
 #include <sys/stat.h>
 #include <solvers/NavierStokes/kernels/generateQT.h>
@@ -9,6 +16,10 @@ FadlunEtAlSolver<memoryType>::FadlunEtAlSolver(parameterDB *pDB, domain *dInfo)
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
 }
 
+
+/**
+ * \brief Generates the matrix \c QT for FadlunEtAlSolver.
+ */
 template <typename memoryType>
 void FadlunEtAlSolver<memoryType>::generateQT()
 {
@@ -44,6 +55,9 @@ void FadlunEtAlSolver<device_memory>::updateG()
 	kernels::updateQ <<<dimGrid, dimBlock>>> (GRows, GCols, GVals, GSize, tags_r);
 }
 
+/**
+ * \brief Constructor. Copies the database and information about the computational grid.
+ */
 template <typename memoryType>
 void FadlunEtAlSolver<memoryType>::calculateExplicitLambdaTerms()
 {
@@ -59,6 +73,7 @@ void FadlunEtAlSolver<memoryType>::generateC()
 	NavierStokesSolver<memoryType>::generateC();
 }
 
+// specialization of the class
 template class FadlunEtAlSolver<host_memory>;
 template class FadlunEtAlSolver<device_memory>;
 

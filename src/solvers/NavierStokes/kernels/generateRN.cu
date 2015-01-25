@@ -1,11 +1,40 @@
+/***************************************************************************//**
+ * \file generateRN.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the kernels to generate the explicit terms of the momentum equation.
+ */
+
+
 #include "generateRN.h"
+
 
 #define BSZ 16
 
+
+/**
+ * \namespace kernels
+ * \brief Contains all custom-written CUDA kernels.
+ */
 namespace kernels
 {
 
-// CUDA kernel to generate Hx and rn
+/**
+ * \brief Computes u-component of the vector resulting from the explicit terms of
+ *        the discretized momentum equation, and element of the explcit convective terms.
+ *
+ * \param rn explicit terms of the discretized momentum equation
+ * \param H explicit convective terms of the discretized momentum equation 
+ * \param q velcoity flux vector
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direction
+ * \param dx cell-widths in the x-direction
+ * \param dy cell-widths in the y-direction
+ * \param dt time-increment
+ * \param gamma coefficient of the convection term at the current time-step
+ * \param zeta coefficient of the convection term at the previous time-step
+ * \param alpha coefficient of the explicit diffusion term
+ * \param nu viscosity
+ */
 __global__ void convectionTermU(real *rn, real *H, real *q,
                                   int nx, int ny, real *dx, real *dy, 
                                   real dt, real gamma, real zeta, real alpha, real nu)
@@ -16,8 +45,6 @@ __global__ void convectionTermU(real *rn, real *H, real *q,
 		j	= threadIdx.y;
 	
 	// work out global index of first point in block
-	//int I = (BSZ-2)*bx + i,
-	//	J = (BSZ-2)*by + j;
 	int I = (BSZ-2)*bx + i,
 	    J = (BSZ-2)*by + j;
 	
@@ -73,7 +100,23 @@ __global__ void convectionTermU(real *rn, real *H, real *q,
 	}
 }
 
-// CUDA kernel to generate Hy and rn
+/**
+ * \brief Computes v-component of the vector resulting from the explicit terms of
+ *        the discretized momentum equation, and element of the explcit convective terms.
+ *
+ * \param rn explicit terms of the discretized momentum equation
+ * \param H explicit convective terms of the discretized momentum equation 
+ * \param q velcoity flux vector
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direction
+ * \param dx cell-widths in the x-direction
+ * \param dy cell-widths in the y-direction
+ * \param dt time-increment
+ * \param gamma coefficient of the convection term at the current time-step
+ * \param zeta coefficient of the convection term at the previous time-step
+ * \param alpha coefficient of the explicit diffusion term
+ * \param nu viscosity
+ */
 __global__ void convectionTermV(real *rn, real *H, real *q,
                                   int nx, int ny, real *dx, real *dy,
                                   real dt, real gamma, real zeta, real alpha, real nu)
@@ -141,6 +184,26 @@ __global__ void convectionTermV(real *rn, real *H, real *q,
 	}
 }
 
+/**
+ * \brief Computes v-component of the vector resulting from the explicit terms of
+ *        the discretized momentum equation, and element of the explcit convective terms
+ *        on the bottom or top boundaries.
+ *
+ * \param rn explicit terms of the discretized momentum equation
+ * \param H explicit convective terms of the discretized momentum equation 
+ * \param q velcoity flux vector
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direction
+ * \param dx cell-widths in the x-direction
+ * \param dy cell-widths in the y-direction
+ * \param dt time-increment
+ * \param gamma coefficient of the convection term at the current time-step
+ * \param zeta coefficient of the convection term at the previous time-step
+ * \param alpha coefficient of the explicit diffusion term
+ * \param nu viscosity
+ * \param bcBottom bottom-boundary velocity
+ * \param bcTop top-boundary velocity
+ */
 __global__
 void convectionTermVBottomTop(real *rn, real *H, real *q, \
                                       int nx, int ny, real *dx, real *dy, \
@@ -198,6 +261,28 @@ void convectionTermVBottomTop(real *rn, real *H, real *q, \
 	rn[Iv] = ( q[Iv]/(dx[I]*dt) + cTerm + dTerm ) * 0.5*(dy[ny-2] + dy[ny-1]);
 }
 
+/**
+ * \brief Computes u-component of the vector resulting from the explicit terms of
+ *        the discretized momentum equation, and element of the explcit convective terms
+ *        on the bottom or top boundaries.
+ *
+ * \param rn explicit terms of the discretized momentum equation
+ * \param H explicit convective terms of the discretized momentum equation 
+ * \param q velcoity flux vector
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direction
+ * \param dx cell-widths in the x-direction
+ * \param dy cell-widths in the y-direction
+ * \param dt time-increment
+ * \param gamma coefficient of the convection term at the current time-step
+ * \param zeta coefficient of the convection term at the previous time-step
+ * \param alpha coefficient of the explicit diffusion term
+ * \param nu viscosity
+ * \param bcBottom bottom-boundary velocity
+ * \param bcTop top-boundary velocity
+ * \param bcLeft left-boundary velocity
+ * \param bcRight right-boundary velocity
+ */
 __global__
 void convectionTermUBottomTop(real *rn, real *H, real *q, \
                               int nx, int ny, real *dx, real *dy, \
@@ -286,6 +371,26 @@ void convectionTermUBottomTop(real *rn, real *H, real *q, \
 	rn[Iu] = ( u/dt + cTerm + dTerm) * 0.5*(dx[I] + dx[I+1]);
 }
 
+/**
+ * \brief Computes u-component of the vector resulting from the explicit terms of
+ *        the discretized momentum equation, and element of the explcit convective terms
+ *        on the left or right boundaries.
+ *
+ * \param rn explicit terms of the discretized momentum equation
+ * \param H explicit convective terms of the discretized momentum equation 
+ * \param q velcoity flux vector
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direction
+ * \param dx cell-widths in the x-direction
+ * \param dy cell-widths in the y-direction
+ * \param dt time-increment
+ * \param gamma coefficient of the convection term at the current time-step
+ * \param zeta coefficient of the convection term at the previous time-step
+ * \param alpha coefficient of the explicit diffusion term
+ * \param nu viscosity
+ * \param bcLeft left-boundary velocity
+ * \param bcRight right-boundary velocity
+ */
 __global__
 void convectionTermULeftRight(real *rn, real *H, real *q, \
                               int nx, int ny, real *dx, real *dy, \
@@ -343,6 +448,28 @@ void convectionTermULeftRight(real *rn, real *H, real *q, \
 	rn[Iu] = ( q[Iu]/(dy[I]*dt) + cTerm + dTerm ) * 0.5*(dx[nx-2] + dx[nx-1]);
 }
 
+/**
+ * \brief Computes v-component of the vector resulting from the explicit terms of
+ *        the discretized momentum equation, and element of the explcit convective terms
+ *        on the left or right boundaries.
+ *
+ * \param rn explicit terms of the discretized momentum equation
+ * \param H explicit convective terms of the discretized momentum equation 
+ * \param q velcoity flux vector
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direction
+ * \param dx cell-widths in the x-direction
+ * \param dy cell-widths in the y-direction
+ * \param dt time-increment
+ * \param gamma coefficient of the convection term at the current time-step
+ * \param zeta coefficient of the convection term at the previous time-step
+ * \param alpha coefficient of the explicit diffusion term
+ * \param nu viscosity
+ * \param bcBottom bottom-boundary velocity
+ * \param bcTop top-boundary velocity
+ * \param bcLeft left-boundary velocity
+ * \param bcRight right-boundary velocity
+ */
 __global__
 void convectionTermVLeftRight(real *rn, real *H, real *q, \
                              int nx, int ny, real *dx, real *dy, \

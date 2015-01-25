@@ -1,14 +1,30 @@
+/***************************************************************************//**
+ * \file generateL.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c DirectForcingSolver to generate
+ *        the Laplacian matrix.
+ */
+
+
 /*template <typename memoryType>
 void DirectForcingSolver<memoryType>::generateL()
 {
 	
 }*/
 
+/**
+ * \brief Sets up the Laplacian matrix for the implicit diffusion term. 
+ *        Uses second order central differences on the non-uniform grid.
+ */
 template <>
 void DirectForcingSolver<host_memory>::generateL() 
 {
 }
 
+/**
+ * \brief Sets up the Laplacian matrix for the implicit diffusion term. 
+ *        Uses second order central differences on the non-uniform grid.
+ */
 template <>
 void DirectForcingSolver<device_memory>::generateL() 
 {

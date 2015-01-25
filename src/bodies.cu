@@ -1,5 +1,19 @@
+/***************************************************************************//**
+ * \file bodies.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c bodies.
+ */
+
+
 #include "bodies.h"
 
+
+/**
+ * \brief Sets initial position and velocity of each body.
+ *
+ * \param db database that contains all the simulation parameters
+ * \param D information about the computational grid
+ */
 template <typename memoryType>
 void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 {
@@ -59,12 +73,13 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	bodiesMove = false;
 	for(int k=0; k<numBodies; k++)
 	{
-		// ASSUMING CLOSED LOOPS
+		// assume a closed body (closed loop)
 		for(int i=offsets[k], j = offsets[k]+numPoints[k]-1; i<offsets[k]+numPoints[k];)
 		{
 			// calculate the lengths of the boundary segments
 			ds[i] = sqrt( (X[i]-X[j])*(X[i]-X[j]) + (Y[i]-Y[j])*(Y[i]-Y[j]) );
-			
+
+			// j takes the value of i, then i is incremented
 			j = i++;
 		}
 		// if the body is moving, set bodiesMove to true
@@ -81,15 +96,22 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	std::cout << "DONE!" << std::endl;
 }
 
-// calculates the
-// index of the x-coordinate of the bottom-left node of the containing cell
-// index of the y-coordinate of the bottom-left node of the containing cell
+/**
+ * \brief Stores index of each cell that contains a boundary point.
+ *
+ * It calculates the index of the x-coordinate and the index of the y-coordinate
+ * of the bottom-left node of each cell that contains a boundary point.
+ * This information is useful when transferring data between the boundary points
+ * and the computational grid.
+ *
+ * \param D information about the computational grid
+ */
 template <typename memoryType>
 void bodies<memoryType>::calculateCellIndices(domain &D)
 {
 	int	i=0, j=0;
 
-	/// find the cell for the zeroth point
+	// find the cell for the zeroth point
 	while(D.x[i+1] < x[0])
 		i++;
 	while(D.y[j+1] < y[0])
@@ -128,6 +150,17 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 	}
 }
 
+/**
+ * \brief Calculates indices of the bounding box of each body in the flow.
+ *
+ * First the bounding box is scaled by a coefficient stored in the database.
+ * Then, indices of the x-coordinate and y-coordinate of the bottom left cell
+ * of the bounding box are stored. Finally, the number of cells in the x- and y-
+ * directions are calculated.
+ *
+ * \param db database that contains all the simulation parameters
+ * \param D information about the computational grid
+ */
 template <typename memoryType>
 void bodies<memoryType>::calculateBoundingBoxes(parameterDB &db, domain &D)
 {
@@ -171,6 +204,21 @@ void bodies<memoryType>::calculateBoundingBoxes(parameterDB &db, domain &D)
 	}
 }
 
+/**
+ * \brief Updates position, velocity and neighbors of each body.
+ *
+ * This is done using the formulae:
+ *
+ * \f$ x_{i,m} = X^c_m + (X_{i,m} - X^0_m) \cos\theta - (Y_{i,m} - Y^0_m) \sin\theta \f$
+ *
+ * and
+ *
+ * \f$ y_{i,m} = Y^c_m + (X_{i,m} - X^0_m) \sin\theta + (Y_{i,m} - Y^0_m) \cos\theta \f$
+ *
+ * \param db database that contains all the simulation parameters
+ * \param D information about the computational grid
+ * \param Time the time
+ */
 template <typename memoryType>
 void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 {
@@ -178,7 +226,7 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 	typedef typename Array::iterator                 Iterator;
 	typedef cusp::array1d_view<Iterator>             View;
 
-	// Views of the vectors that store the coordinates and velocities of all the body points
+	// views of the vectors that store the coordinates and velocities of all the body points
 	View    XView, YView, xView, yView, onesView, uBView, vBView;
 	
 	// body data
@@ -186,7 +234,7 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 	
 	for(int l=0; l<numBodies; l++)
 	{
-		// Update the location and velocity of the body
+		// update the location and velocity of the body
 		(*B)[l].update(Time);
 		
 		// create the views for the current body
@@ -211,15 +259,15 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 			vBView   = View(vB.begin()+offsets[l], vB.end());
 		}
 		
-		// Update postitions	
+		// update postitions	
 		// x-coordinates
 		cusp::blas::axpbypcz( onesView, XView, onesView, xView, (*B)[l].Xc[0],  cos((*B)[l].Theta), -(*B)[l].X0[0]*cos((*B)[l].Theta) );
 		cusp::blas::axpbypcz( xView,    YView, onesView, xView,           1.0, -sin((*B)[l].Theta),  (*B)[l].X0[1]*sin((*B)[l].Theta) );
-		/// y-coordinates
+		// y-coordinates
 		cusp::blas::axpbypcz( onesView, XView, onesView, yView, (*B)[l].Xc[1],  sin((*B)[l].Theta), -(*B)[l].X0[0]*sin((*B)[l].Theta) );
 		cusp::blas::axpbypcz( yView,    YView, onesView, yView,           1.0,  cos((*B)[l].Theta), -(*B)[l].X0[1]*cos((*B)[l].Theta) );
 	
-		// Update velocities
+		// update velocities
 		// x-velocities
 		cusp::blas::axpbypcz(onesView, yView, onesView, uBView, (*B)[l].vel[0], -(*B)[l].angVel,  (*B)[l].angVel*(*B)[l].Xc[1]);
 		// y-velocities
@@ -230,6 +278,12 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 		calculateCellIndices(D);
 }
 
+/**
+ * \brief Writes body coordinates into a file (using data on the host).
+ *
+ * \param caseFolder directory of the simulation
+ * \param timeStep time-step of the simulation
+ */
 template <>
 void bodies<host_memory>::writeToFile(std::string &caseFolder, int timeStep)
 {
@@ -238,6 +292,12 @@ void bodies<host_memory>::writeToFile(std::string &caseFolder, int timeStep)
 	 writeToFile(bx, by, caseFolder, timeStep);
 }
 
+/**
+ * \brief Writes body coordinates into a file (using data from the device).
+ *
+ * \param caseFolder directory of the simulation
+ * \param timeStep time-step of the simulation
+ */
 template <>
 void bodies<device_memory>::writeToFile(std::string &caseFolder, int timeStep)
 {
@@ -248,6 +308,14 @@ void bodies<device_memory>::writeToFile(std::string &caseFolder, int timeStep)
 	writeToFile(bx, by, caseFolder, timeStep);
 }
 
+/**
+ * \brief Writes body coordinates into a file called \a bodies.
+ *
+ * \param bx x-coordinate of all points of all bodies
+ * \param by y-coordinate of all points of all bodies
+ * \param caseFolder directory of the simulation
+ * \param timeStep time-step of the simulation
+ */
 template <typename memoryType>
 void bodies<memoryType>::writeToFile(real *bx, real *by, std::string &caseFolder, int timeStep)
 {
@@ -263,5 +331,6 @@ void bodies<memoryType>::writeToFile(real *bx, real *by, std::string &caseFolder
 	file.close();
 }
 
+// specialization of the class bodies
 template class bodies<host_memory>;
 template class bodies<device_memory>;

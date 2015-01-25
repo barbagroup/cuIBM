@@ -1,8 +1,15 @@
-/**
-* @file tagPoints.inl
-* @brief Tag points near the immsersed boundary using a ray-tracing algorithm
-*/
+/***************************************************************************//**
+ * \file tagPoints.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c DirectForcingSolver to tag
+ *        points near the immersed boundary using a ray-tracing algorithm.
+ */
 
+
+/**
+ * \brief Tags the forcing nodes among the velocity nodes, i.e. the nodes at 
+ *        which the velocity interpolation is performed.
+ */
 template <>
 void DirectForcingSolver<host_memory>::tagPoints()
 {
@@ -18,6 +25,10 @@ void DirectForcingSolver<host_memory>::tagPoints()
 	logger.stopTimer("tagPoints");
 }
 
+/**
+ * \brief Tags the forcing nodes among the velocity nodes, i.e. the nodes at 
+ *        which the velocity interpolation is performed.
+ */
 template <>
 void DirectForcingSolver<device_memory>::tagPoints()
 {
@@ -50,6 +61,9 @@ void DirectForcingSolver<device_memory>::tagPoints()
 }
 
 // Bilinear Fadlun1c-type interpolation outside the body, for a moving body.
+/**
+ * \brief To be documented.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real *vB)
 {

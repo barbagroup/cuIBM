@@ -1,3 +1,10 @@
+/***************************************************************************//**
+ * \file DirectForcingSolver.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c DirectForcingSolver.
+ */
+
+
 #include "DirectForcingSolver.h"
 #include <sys/stat.h>
 #include <thrust/extrema.h>
@@ -10,6 +17,10 @@ DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *d
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
 }
 
+
+/**
+ * \brief Initialize the vectors used in the simulation.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::initialise()
 {
@@ -49,6 +60,13 @@ void DirectForcingSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::assembleMatrices();
 }
 
+/**
+ * \brief Updates the matrices every time the body is moved.
+ *
+ * Change the location of the body points, re-tags all the points on the 
+ * velocity grid to locate the new forcing nodes. Reassembles the 
+ * matrices. Moving bodies have not been tested for DirectForcingSolver.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::updateSolverState()
 {
@@ -65,6 +83,13 @@ void DirectForcingSolver<memoryType>::updateSolverState()
 	}
 }
 
+/**
+ * \brief Assembles the matrix rhs1 for DirectForcingSolver.
+ *
+ * This function first calls the function assembleRHS1 from NavierStokesSolver.
+ * Then it called the function updateRHS1 to modify only the elements of the 
+ * vector that correspond to the interpolation nodes.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::assembleRHS1()
 {
@@ -75,6 +100,14 @@ void DirectForcingSolver<memoryType>::assembleRHS1()
 	NavierStokesSolver<memoryType>::logger.startTimer("updateRHS1");
 }
 
+/**
+ * \brief Prints the min, max and sum of the divergences of the velocity field 
+ *        in every cell of the domain.
+ *
+ * The divergence is calculated as QT*q, which is technically the sum of the 
+ * mass fluxes in every cell. This QT is also differs depending on the Direct 
+ * Forcing method used.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::writeMassFluxInfo()
 {
@@ -105,6 +138,10 @@ void DirectForcingSolver<memoryType>::writeMassFluxInfo()
 	fluxInfoFile.close();
 }
 
+/**
+ * \brief Projects the pressure gradient on to the intermediate velocity field
+ *        to obtain the divergence-free velocity field at the next time step.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::projectionStep()
 {
@@ -115,6 +152,9 @@ void DirectForcingSolver<memoryType>::projectionStep()
 	NavierStokesSolver<memoryType>::logger.stopTimer("projectionStep");
 }
 
+/**
+ * \brief Writes the velocity, pressure, force and mass flux data at every save point.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::writeData()
 {	
@@ -135,6 +175,9 @@ void DirectForcingSolver<memoryType>::writeData()
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }
 
+/**
+ * \brief Constructor. Initializes the simulation parameters and the domain info.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::generateC()
 {
@@ -157,13 +200,13 @@ void DirectForcingSolver<memoryType>::generateC()
 	//cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::C, "C-generateQT.mtx");
 }
 
+// inline files in the folder "DirectForcing"
 #include "DirectForcing/tagPoints.inl"
 #include "DirectForcing/generateL.inl"
-//
 #include "DirectForcing/generateA.inl"
-//
 #include "DirectForcing/updateRHS1.inl"
 #include "DirectForcing/generateQT.inl"
 
+// specialization of the class
 template class DirectForcingSolver<host_memory>;
 template class DirectForcingSolver<device_memory>;

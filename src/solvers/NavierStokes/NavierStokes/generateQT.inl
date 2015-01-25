@@ -1,5 +1,16 @@
+/***************************************************************************//**
+ * \file generateQT.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods to generate the discrete divergence matrix.
+ */
+
+
 #include <solvers/NavierStokes/kernels/generateQT.h>
 
+
+/**
+ * \brief Generates the discrete divergence matrix (on the host).
+ */
 template <>
 void NavierStokesSolver<host_memory>::generateQT()
 {
@@ -24,6 +35,9 @@ void NavierStokesSolver<host_memory>::generateQT()
 	logger.stopTimer("generateQT");
 }
 
+/**
+ * \brief Generates the discrete divergence matrix (on the device).
+ */
 template <>
 void NavierStokesSolver<device_memory>::generateQT()
 {

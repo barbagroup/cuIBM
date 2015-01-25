@@ -1,3 +1,17 @@
+/***************************************************************************//**
+ * \file generateL.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods to generate the discrete Laplacian matrix.
+ */
+
+
+/**
+ * \brief Generates the discrete Laplacian matrix (on the host).
+ *
+ * The kinematic viscosity is included in the matrix.
+ * The matrix is stored in a COO format.
+ *
+ */
 template <>
 void NavierStokesSolver<host_memory>::generateL()
 {
@@ -161,6 +175,13 @@ void NavierStokesSolver<host_memory>::generateL()
 	}
 }
 
+/**
+ * \brief Generates the discrete Laplacian matrix (on the device).
+ *
+ * The kinematic viscosity is included in the matrix.
+ * The matrix is stored in a COO format.
+ *
+ */
 template <>
 void NavierStokesSolver<device_memory>::generateL()
 {

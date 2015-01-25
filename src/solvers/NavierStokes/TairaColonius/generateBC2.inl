@@ -1,5 +1,21 @@
+/***************************************************************************//**
+ * \file generateBC2.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c TairaColoniusSolver
+ *        to generate the right hand-side of the Poisson system.
+ */
+
+
 #include <solvers/NavierStokes/kernels/generateBC2.h>
 
+
+/**
+ * \brief Generates the right hand-side of the Poisson system (on the host).
+ *
+ * It contains the inhomogeneous boundary conditions from the discrete divergence
+ * operator, as well as the no-slip boundary condition at the body surface.
+ *
+ */
 template <>
 void TairaColoniusSolver<host_memory>::generateBC2()
 {
@@ -43,6 +59,13 @@ void TairaColoniusSolver<host_memory>::generateBC2()
 	}
 }
 
+/**
+ * \brief Generates the right hand-side of the Poisson system (on the device).
+ *
+ * It contains the inhomogeneous boundary conditions from the discrete divergence
+ * operator, as well as the no-slip boundary condition at the body surface.
+ *
+ */
 template<>
 void TairaColoniusSolver<device_memory>::generateBC2()
 {

@@ -1,6 +1,21 @@
+/***************************************************************************//**
+ * \file TairaColoniusSolver.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c TairaColoniusSolver.
+ */
+
+
 #include "TairaColoniusSolver.h"
 #include <sys/stat.h>
 
+
+/**
+ * \brief Initializes the solvers.
+ *
+ * Initializes bodies, arrays and matrices of the intermediate flux solver
+ * and the Poisson solver.
+ *
+ */
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::initialise()
 {	
@@ -18,11 +33,18 @@ void TairaColoniusSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP+2*totalPoints);
 	if(totalPoints > 0)
 	{
+		// for each Lagragian point, 24 velocity nodes around it
+		// are influenced by the delta function at the point
+		// A 4x3 grid of u-nodes, and a 3x4 grid of v-nodes
+		// which gives 12*2 velocity nodes influence by a boundary point in 2D
 		E.resize(2*totalPoints, numUV, 24*totalPoints);
 	}
 	NavierStokesSolver<memoryType>::assembleMatrices();
 }
 
+/**
+ * \brief Calculates and writes forces acting on each immersed body at current time.
+ */
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::writeData()
 {	
@@ -34,10 +56,10 @@ void TairaColoniusSolver<memoryType>::writeData()
 	real         dt  = db["simulation"]["dt"].get<real>();
 	int          numBodies  = NSWithBody<memoryType>::B.numBodies;
 
-	// Calculate forces using the T&C method
+	// calculate forces using the T&C method
 	calculateForce();
 	
-	// Print to file
+	// print to file
 	NSWithBody<memoryType>::forceFile << NavierStokesSolver<memoryType>::timeStep*dt << '\t';
 	for(int l=0; l<numBodies; l++)
 	{
@@ -45,13 +67,20 @@ void TairaColoniusSolver<memoryType>::writeData()
 	}
 	NSWithBody<memoryType>::forceFile << std::endl;
 	
-	// Print forces calculated using the CV approach
+	// print forces calculated using the CV approach
 	//NSWithBody<memoryType>::calculateForce();
 	//NSWithBody<memoryType>::forceFile << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << std::endl;
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }
 
+/**
+ * \brief Updates the location of the bodies and re-generates appropriate matrices.
+ *
+ * Updates only done if the bodies are moving.
+ * It re-generates the interpolation matrix, therefore the Poisson matrix too.
+ *
+ */
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::updateSolverState()
 {
@@ -68,6 +97,9 @@ void TairaColoniusSolver<memoryType>::updateSolverState()
 	}
 }
 
+/**
+ * \brief Constructor. Copies the database and information about the computational grid.
+ */
 template <typename memoryType>
 TairaColoniusSolver<memoryType>::TairaColoniusSolver(parameterDB *pDB, domain *dInfo)
 {
@@ -75,9 +107,11 @@ TairaColoniusSolver<memoryType>::TairaColoniusSolver(parameterDB *pDB, domain *d
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
 }
 
+// include inline files located in "./TairaColonius/"
 #include "TairaColonius/generateQT.inl"
 #include "TairaColonius/generateBC2.inl"
 #include "TairaColonius/calculateForce.inl"
 
+// specialization of the class TairaColoniusSolver
 template class TairaColoniusSolver<host_memory>;
 template class TairaColoniusSolver<device_memory>;

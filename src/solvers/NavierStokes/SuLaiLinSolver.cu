@@ -1,17 +1,16 @@
-/**
-* @file  SuLaiLinSolver.h
-* @brief Solves the flow using the IB method described by Taira and Colonius (2007)
-*
-* <b>The immersed boundary method: a projection approach</b> \n
-* Taira, K and Colonius, T \n
-* Journal of Computational Physics \n
-* Volume 225 Number 2 \n
-* 2007
-*/
+/***************************************************************************//**
+ * \file SuLaiLinSolver.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c SuLaiLinSolver.
+ */
+
 
 #include "SuLaiLinSolver.h"
 #include <sys/stat.h>
 
+/**
+ * \brief To be documented.
+ */
 template <typename memoryType>
 void SuLaiLinSolver<memoryType>::initialise()
 {	
@@ -56,6 +55,9 @@ void SuLaiLinSolver<memoryType>::initialise()
 //                            TIME STEPPING
 //##############################################################################
 
+/**
+ * \brief To be documented.
+ */
 template <typename memoryType>
 void SuLaiLinSolver<memoryType>::updateSolverState()
 {
@@ -78,6 +80,9 @@ void SuLaiLinSolver<memoryType>::updateSolverState()
 //                          ASSEMBLE MATRICES
 //##############################################################################
 
+/**
+ * \brief To be documented.
+ */
 template <>
 void SuLaiLinSolver<device_memory>::generateF()
 {
@@ -90,6 +95,9 @@ void SuLaiLinSolver<device_memory>::generateF()
 	logger.stopTimer("generateF");
 }
 
+/**
+ * \brief To be documented.
+ */
 template <>
 void SuLaiLinSolver<host_memory>::generateF()
 {
@@ -107,6 +115,9 @@ void SuLaiLinSolver<host_memory>::generateF()
 //                          GENERATE VECTORS
 //##############################################################################
 
+/**
+ * \brief To be documented.
+ */
 template <typename memoryType>
 void SuLaiLinSolver<memoryType>::assembleRHS3()
 {
@@ -123,6 +134,9 @@ void SuLaiLinSolver<memoryType>::assembleRHS3()
 //                               OUTPUT
 //##############################################################################
 
+/**
+ * \brief To be documented.
+ */
 template <typename memoryType>
 void SuLaiLinSolver<memoryType>::writeData()
 {
@@ -142,9 +156,11 @@ void SuLaiLinSolver<memoryType>::writeData()
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }
 
+// include inline files located in "SuLaiLin"
 #include "SuLaiLin/generateE.inl"
 #include "SuLaiLin/generateVelB.inl"
 #include "SuLaiLin/calculateForce.inl"
 
+// specialization of the class SuLaiLinSolver
 template class SuLaiLinSolver<host_memory>;
 template class SuLaiLinSolver<device_memory>;

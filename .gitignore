@@ -9,9 +9,12 @@ massFlux
 
 # folders
 data/*
+html/*
+latex/*
 0*
 *.plt
 cases/convergence/cavityRe100/*/T*
+documentation/*
 
 # files
 bin/cuIBM

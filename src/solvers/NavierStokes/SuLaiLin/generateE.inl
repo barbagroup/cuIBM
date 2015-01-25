@@ -1,5 +1,17 @@
+/***************************************************************************//**
+ * \file generateE.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c SuLaiLinSolver to generate
+ *        the interpolation matrix.
+ */
+
+
 #include <solvers/NavierStokes/kernels/generateE.h>
 
+
+/**
+ * \brief To be documented.
+ */
 template <>
 void SuLaiLinSolver<host_memory>::generateE()
 {
@@ -33,6 +45,9 @@ void SuLaiLinSolver<host_memory>::generateE()
 	logger.stopTimer("transposeE");
 }
 
+/**
+ * \brief To be documented.
+ */
 template <>
 void SuLaiLinSolver<device_memory>::generateE()
 {
