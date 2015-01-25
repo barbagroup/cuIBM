@@ -33,7 +33,7 @@ real dhRoma(real x, real h)
 }
 
 /**
- * \brief Two-dimensional discrete elta function.
+ * \brief Two-dimensional discrete delta function.
  *
  * \param x x-coordinate of the grid point
  * \param y y-coordinate of the grid point

@@ -279,7 +279,7 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 }
 
 /**
- * \brief Writes body coordinates into a file (on the host).
+ * \brief Writes body coordinates into a file (using data on the host).
  *
  * \param caseFolder directory of the simulation
  * \param timeStep time-step of the simulation
@@ -293,7 +293,7 @@ void bodies<host_memory>::writeToFile(std::string &caseFolder, int timeStep)
 }
 
 /**
- * \brief Writes body coordinates into a file (on the device).
+ * \brief Writes body coordinates into a file (using data from the device).
  *
  * \param caseFolder directory of the simulation
  * \param timeStep time-step of the simulation

@@ -16,7 +16,13 @@
  *
  * First proposed by Fadlun et al (2000) \n
  * with modifications by Kim et al (2001).
+ * It does not follow the same equations that they used, but use a 
+ * fractional step method starting with the discretized equations,
+ * based on the idea by Perot (1993).
  *
+ * This method does not use an explicit pressure term in the step where
+ * the intermediate velocity is calculated, and the pressure is directly 
+ * obtained from the Poisson equation.
  */
 template <typename memoryType>
 class DirectForcingSolver : public NSWithBody<memoryType>

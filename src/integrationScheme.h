@@ -24,6 +24,9 @@ public:
 	     alphaImplicit, ///< coefficient of the implicit diffusion term
 	     alphaExplicit; ///< coefficient of the explicit diffusion term
 	
+	// Convection term = gamma*H(n) + zeta*H(n-1)
+	// DIffusion term  = alphaImplicit*D(n+1) + alphaExplicit*D(n)
+	
 	/**
 	 * \brief Initializes the coefficients of the time-integration scheme.
 	 *

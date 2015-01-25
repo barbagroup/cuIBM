@@ -14,8 +14,11 @@
  * \class FadlunEtAlSolver
  * \brief Direct forcing method proposed by Fadlun et al (2000).
  *
- * with modifications by Kim et al (2001).
- *
+ * This is the same method that Fadlen et al. used in their 2000 paper.
+ * An explicit pressure is used in the intermediate velocity step.
+ * The quantity obtained in the Poisson equation is the pressure correction,
+ * and has to be added to the pressure at the previous step
+ * to obtain the pressure at the next time step.
  */
 template <typename memoryType>
 class FadlunEtAlSolver : public DirectForcingSolver<memoryType>

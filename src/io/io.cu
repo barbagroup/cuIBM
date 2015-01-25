@@ -42,7 +42,7 @@ namespace io
  *
  * \param s the string to split
  * \param delim the delimiter
- * \param elems the vector that will contain the different elements of the string
+ * \param elems the vector that contains the different elements of the string
  *
  * \return a vector that contains the different elements of the string
  */
@@ -101,8 +101,8 @@ void makeDirectory(const std::string folderPath)
  *
  * \param argc number of arguments in the command-line
  * \param argv command-line arguments
- * \param DB database that will contain all the simulation parameters
- * \param D object of the class \c domain that will contain the computational grid
+ * \param DB database that contains all the simulation parameters
+ * \param D object of the class \c domain that contains the computational grid
  */
 void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 {

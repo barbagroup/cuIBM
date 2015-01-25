@@ -10,7 +10,7 @@
 
 
 /**
- * \brief To be documented.
+ * \brief Generates the matrix \c QT for FadlunEtAlSolver.
  */
 template <typename memoryType>
 void FadlunEtAlSolver<memoryType>::generateQT()

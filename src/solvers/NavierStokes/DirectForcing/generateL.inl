@@ -13,7 +13,8 @@ void DirectForcingSolver<memoryType>::generateL()
 }*/
 
 /**
- * \brief To be documented.
+ * \brief Sets up the Laplacian matrix for the implicit diffusion term. 
+ *        Uses second order central differences on the non-uniform grid.
  */
 template <>
 void DirectForcingSolver<host_memory>::generateL() 
@@ -21,7 +22,8 @@ void DirectForcingSolver<host_memory>::generateL()
 }
 
 /**
- * \brief To be documented.
+ * \brief Sets up the Laplacian matrix for the implicit diffusion term. 
+ *        Uses second order central differences on the non-uniform grid.
  */
 template <>
 void DirectForcingSolver<device_memory>::generateL() 

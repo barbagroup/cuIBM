@@ -1,7 +1,8 @@
 /***************************************************************************//**
  * \file parseDomainFile.cu
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Implementation of the functions to generate the computational grid.
+ * \brief Parse the input file \a domain.yaml to obtain information about the 
+ *        computational grid.
  */
 
 

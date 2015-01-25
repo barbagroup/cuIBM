@@ -1,7 +1,7 @@
 /***************************************************************************//**
  * \file parseBodiesFile.cu
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Parses the \a bodies file to get information about immersed bodies.
+ * \brief Parses the file \a bodies.yaml to get information about immersed bodies.
  */
 
 
@@ -118,7 +118,7 @@ void operator >> (const YAML::Node &node, body &Body)
 	{
 	}
 
-	// get the type of Body and read in appropriate details
+	// get the type of body and read in appropriate details
 	string type;
 	node["type"] >> type;
 	if (type == "points")
@@ -174,7 +174,7 @@ void operator >> (const YAML::Node &node, body &Body)
 }
 
 /**
- * \brief Parses the \a bodies file and stores information about the immersed bodies.
+ * \brief Parses the \a bodies.yaml file and stores information about the immersed bodies.
  *
  * \param bodiesFile the file that contains information about the immersed bodies
  * \param DB the database that contains the simulation parameters 

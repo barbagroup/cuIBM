@@ -1,7 +1,8 @@
 /***************************************************************************//**
  * \file parseSimulationFile.cu
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Implementation of the functions to read and store simulation parameters.
+ * \brief Parses the file \a simParams.yaml and stores the numerical 
+ *        parameters used in the simulation.
  */
 
 
@@ -218,7 +219,7 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 }
 
 /**
- * \brief Parses the \a simulation file and stores the simulation parameters.
+ * \brief Parses \a simParams.yaml and stores the simulation parameters.
  *
  * \param simFile the file that contains the simulation parameters
  * \param DB the database that will be filled

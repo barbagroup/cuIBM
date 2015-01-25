@@ -18,7 +18,10 @@ void DirectForcingSolver<host_memory>::updateQ()
 }
 
 /**
- * \brief To be documented.
+ * \brief After the Q matrix has been set up for the entire grid, this function
+ *        removes the non-zeros that correspond to the velocity nodes where the 
+ *        interpolation is performed, i.e. it sets the fluxes there to zero.
+ *        This routine is specific to DirectForcingSolver.
  */
 template <>
 void DirectForcingSolver<device_memory>::updateQ()
@@ -43,7 +46,10 @@ void DirectForcingSolver<device_memory>::updateQ()
 }
 
 /**
- * \brief To be documented.
+ * \brief After the Q matrix has been set up for the entire grid, this function
+ *        removes the non-zeros that correspond to the velocity nodes where the 
+ *        interpolation is performed, i.e. it sets the fluxes there to zero.
+ *        This routine is specific to DirectForcingSolver.
  */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::generateQT()

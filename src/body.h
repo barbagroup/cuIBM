@@ -16,6 +16,9 @@
  * boundary points are provided. The motion of the body is also described.
  * For uniform motion, the translational velocity needs to be specified.
  * For uniform rotation, the angular velocity has to be specified.
+ * You can also provide options for oscillations in the x and y directions,
+ * as well as pitching (rotational) oscillations.
+ * When the body rotates, the center of rotation must be provided too.
  *
  */
 class body
@@ -44,6 +47,8 @@ class body
 	real xOscillation[3],     ///< amplitude, angular frequency and phase difference of oscillation in the x-direction
          yOscillation[3],     ///< amplitude, angular frequency and phase difference of oscillation in the y-direction
          pitchOscillation[3]; ///< amplitude, angular frequency and phase difference of pitch oscillation
+	// Note that the angular amplitude & phase difference are stored in radians, and angular frequncy is radians/time
+	// But the inputs in bodies.yaml are provided in degrees, and degrees/time.
     
 	/**
 	 * \brief Updates the position of the center of rotation of the body,

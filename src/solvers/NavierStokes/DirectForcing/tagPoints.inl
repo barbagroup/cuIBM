@@ -7,7 +7,8 @@
 
 
 /**
- * \brief To be documented.
+ * \brief Tags the forcing nodes among the velocity nodes, i.e. the nodes at 
+ *        which the velocity interpolation is performed.
  */
 template <>
 void DirectForcingSolver<host_memory>::tagPoints()
@@ -25,7 +26,8 @@ void DirectForcingSolver<host_memory>::tagPoints()
 }
 
 /**
- * \brief To be documented.
+ * \brief Tags the forcing nodes among the velocity nodes, i.e. the nodes at 
+ *        which the velocity interpolation is performed.
  */
 template <>
 void DirectForcingSolver<device_memory>::tagPoints()

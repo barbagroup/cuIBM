@@ -1,7 +1,8 @@
 /***************************************************************************//**
  * \file parseFlowFile.cu
  * \author Anush Krishnan (anush@bu.edu)
- * \brief Implementation of the functions to get boundary and initial conditions.
+ * \brief Parse the input file \a flow.yaml to get boundary and initial 
+ *        conditions of the flow.
  */
 
 

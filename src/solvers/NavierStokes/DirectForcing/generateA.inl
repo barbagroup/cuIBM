@@ -12,7 +12,8 @@
 /**
  * \brief Generates the matrix A on the device.
  *
- * \param alpha to be documented
+ * \param alpha Coefficient of the implicit part of the diffusion term.
+ *              1 for backward Euler, 0.5 for Crank-Nicolson and 0 for explicit Euler.
  */
 template <>
 void DirectForcingSolver  <device_memory>::generateA(real alpha)
@@ -46,7 +47,8 @@ void DirectForcingSolver  <device_memory>::generateA(real alpha)
 /**
  * \brief Generates the matrix A on the host.
  *
- * \param alpha to be documented
+ * \param alpha Coefficient of the implicit part of the diffusion term.
+ *              1 for backward Euler, 0.5 for Crank-Nicolson and 0 for explicit Euler.
  */
 template <>
 void DirectForcingSolver<host_memory>::generateA(real alpha)

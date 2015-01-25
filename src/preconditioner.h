@@ -128,9 +128,9 @@ void preconditioner<Matrix>::update(const Matrix &A)
 	}
 }
 
-// Why is this required? Need to look into the implementation of preconditioners in Cusp.
 /**
- * \brief Overloads the operator ().
+ * \brief Overloads the operator (). This is required due to the way preconditioners are 
+          implemented in Cusp - as linear operators on a vector.
  */
 template <typename Matrix>
 template <typename VectorType1, typename VectorType2>
