@@ -8,6 +8,14 @@
 #include "DirectForcingSolver.h"
 #include <sys/stat.h>
 #include <thrust/extrema.h>
+#include <cusp/io/matrix_market.h>
+
+template <typename memoryType>
+DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *dInfo)
+{
+	NavierStokesSolver<memoryType>::paramDB = pDB;
+	NavierStokesSolver<memoryType>::domInfo = dInfo;
+}
 
 
 /**
@@ -32,10 +40,18 @@ void DirectForcingSolver<memoryType>::initialise()
 
 	tags.resize(numUV);
 	tagsD.resize(numUV);
+	tags2.resize(numUV);
+	tags2D.resize(numUV);
 	coeffs.resize(numUV);
 	coeffsD.resize(numUV);
+	coeffs2.resize(numUV);
+	coeffs2D.resize(numUV);
 	uv.resize(numUV);
 	uvD.resize(numUV);
+
+	pressure.resize(numP);
+	cusp::blas::fill(pressure, 0.0);
+
 	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");
 	
 	tagPoints();
@@ -126,6 +142,16 @@ void DirectForcingSolver<memoryType>::writeMassFluxInfo()
  * \brief Writes the velocity, pressure, force and mass flux data at every save point.
  */
 template <typename memoryType>
+void DirectForcingSolver<memoryType>::projectionStep()
+{
+	NavierStokesSolver<memoryType>::projectionStep();
+
+	NavierStokesSolver<memoryType>::logger.startTimer("projectionStep");
+	cusp::blas::axpy(NavierStokesSolver<memoryType>::lambda, pressure , 1.0);
+	NavierStokesSolver<memoryType>::logger.stopTimer("projectionStep");
+}
+
+template <typename memoryType>
 void DirectForcingSolver<memoryType>::writeData()
 {	
 	NavierStokesSolver<memoryType>::logger.startTimer("output");
@@ -149,10 +175,25 @@ void DirectForcingSolver<memoryType>::writeData()
  * \brief Constructor. Initializes the simulation parameters and the domain info.
  */
 template <typename memoryType>
-DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *dInfo)
+void DirectForcingSolver<memoryType>::generateC()
 {
-	NavierStokesSolver<memoryType>::paramDB = pDB;
-	NavierStokesSolver<memoryType>::domInfo = dInfo;
+	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
+	    ny = NavierStokesSolver<memoryType>::domInfo->ny;
+	int index = 5*(ny/2)*nx - nx - ny + 5*(nx/2) - 1 + 2;
+	int row = (ny/2)*nx+nx/2;
+
+	NavierStokesSolver<memoryType>::generateC();
+	bool flag = true;
+	while(flag)
+	{
+		if(NavierStokesSolver<memoryType>::C.row_indices[index]==NavierStokesSolver<memoryType>::C.column_indices[index] && NavierStokesSolver<memoryType>::C.column_indices[index]==row)
+		{
+			NavierStokesSolver<memoryType>::C.values[index] += NavierStokesSolver<memoryType>::C.values[index];
+			flag = false;
+		}
+		index++;
+	}
+	//cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::C, "C-generateQT.mtx");
 }
 
 // inline files in the folder "DirectForcing"

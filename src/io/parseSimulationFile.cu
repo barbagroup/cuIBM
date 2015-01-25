@@ -59,6 +59,8 @@ preconditionerType preconditionerTypeFromString(string &s)
     return DIAGONAL;
   else if (s == "SMOOTHED_AGGREGATION")
     return SMOOTHED_AGGREGATION;
+  else if (s == "AINV")
+    return AINV;
   else
     return NONE;
 }
@@ -82,6 +84,14 @@ ibmScheme ibmSchemeFromString(string &s)
     return TAIRA_COLONIUS;
   else if (s == "FADLUN_ET_AL")
     return FADLUN_ET_AL;
+  else if (s == "DIFFUSION")
+    return DIFFUSION;
+  else if (s == "DF_MODIFIED")
+    return DF_MODIFIED;
+  else if (s == "FEA_MODIFIED")
+    return FEA_MODIFIED;
+  else if (s == "DF_IMPROVED")
+    return DF_IMPROVED;
   else
     return NAVIER_STOKES;
 }
@@ -95,12 +105,14 @@ ibmScheme ibmSchemeFromString(string &s)
  */
 interpolationType interpolationTypeFromString(string &s)
 {
-  if (s == "CONSTANT")
-    return CONSTANT;
-  else if (s == "LINEAR")
-    return LINEAR;
-  else
-    return LINEAR;
+	if (s == "CONSTANT")
+		return CONSTANT;
+	else if (s == "LINEAR")
+		return LINEAR;
+	else if (s == "QUADRATIC")
+		return QUADRATIC;
+	else
+		return LINEAR;
 }
 
 /**

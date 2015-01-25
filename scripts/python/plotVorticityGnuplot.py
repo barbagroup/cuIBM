@@ -66,7 +66,7 @@ def main():
 		for ite in xrange(start_step+nsave, nt+1, nsave):
 			# read the velocity data at the given time-step
 			u, v = readVelocityData(folder, ite, nx, ny, dx, dy)
-			if u == None or v == None:
+			if u is None or v is None:
 				break
 
 			# calculate and write the vorticity

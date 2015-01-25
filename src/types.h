@@ -79,7 +79,11 @@ enum ibmScheme
 	TAIRA_COLONIUS, ///< Taira & Colonius (2007)
 	SLL0,           ///< SLL0
 	SLL1,           ///< SLL1
-	SLL2            ///< SLL2
+	SLL2,           ///< SLL2
+	DIFFUSION,      ///< Diffusion
+	DF_MODIFIED,    ///< Direct Forcing modified
+	FEA_MODIFIED,   ///< Fadlun et al. modified
+	DF_IMPROVED     ///< Direct Forcing Improved
 };
 
 /**
@@ -89,7 +93,8 @@ enum ibmScheme
 enum interpolationType
 {
 	CONSTANT,
-	LINEAR
+	LINEAR,
+	QUADRATIC
 };
 
 /**
@@ -98,9 +103,10 @@ enum interpolationType
  */
 enum preconditionerType
 {
-	NONE,                ///< no preconditioner
-	DIAGONAL,            ///< diagonal preconditioner
-	SMOOTHED_AGGREGATION ///< smoothed aggregation preconditioner
+	NONE,                 ///< no preconditioner
+	DIAGONAL,             ///< diagonal preconditioner
+	SMOOTHED_AGGREGATION, ///< smoothed aggregation preconditioner
+	AINV                  ///< approximate inverse preconditioner
 };
 
 /**

@@ -67,4 +67,31 @@ void updateRHS1Y(real *rhs1, int nx, int ny, real dt, real *dy, int *tags, real 
 	}
 }
 
+__global__
+void updateRHS1X(real *rhs1, int nx, int ny, real dt, real *dx, int *tags, real *coeffs, real *coeffs2, real *uv)
+{
+	int	I = blockIdx.x*blockDim.x + threadIdx.x;
+	int i = I % (nx-1);
+	
+	if( I < (nx-1)*ny )
+	{
+		rhs1[I] = (tags[I]==-1)*rhs1[I] 
+		          + ((tags[I]!=-1)*((1.0-coeffs[I]-coeffs2[I])*uv[I])) * 0.5*(dx[i+1]+dx[i])/dt;
+	}
+}
+
+__global__
+void updateRHS1Y(real *rhs1, int nx, int ny, real dt, real *dy, int *tags, real *coeffs, real *coeffs2, real *uv)
+{
+	int numU = (nx-1)*ny;
+	int	I = blockIdx.x*blockDim.x + threadIdx.x + numU;
+	int j = (I-numU) / nx;
+	
+	if( I < numU + nx*(ny-1) )
+	{
+		rhs1[I] = (tags[I]==-1)*rhs1[I] 
+		          + ((tags[I]!=-1)*((1.0-coeffs[I]-coeffs2[I])*uv[I])) * 0.5*(dy[j+1]+dy[j])/dt;
+	}
+}
+
 } // end of namespace kernels

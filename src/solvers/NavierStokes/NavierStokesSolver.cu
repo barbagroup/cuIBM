@@ -466,12 +466,18 @@ void NavierStokesSolver<memoryType>::solvePoisson()
 	logger.startTimer("solvePoisson");
 	
 	int  maxIters = (*paramDB)["PoissonSolve"]["maxIterations"].get<int>();
-	real relTol = (*paramDB)["PoissonSolve"]["tolerance"].get<real>();
-
+	real relTol   = (*paramDB)["PoissonSolve"]["tolerance"].get<real>();
+	
 	cusp::default_monitor<real> sys2Mon(rhs2, maxIters, relTol);
-	//cusp::krylov::gmres(C, lambda, rhs2, 50, sys2Mon);//, PC2);
-	//cusp::krylov::bicgstab(C, lambda, rhs2, sys2Mon);//, PC2);
-	cusp::krylov::cg(C, lambda, rhs2, sys2Mon, *PC2);
+	if((*paramDB)["simulation"]["ibmScheme"].get<ibmScheme>() != DF_IMPROVED)
+	{
+		cusp::krylov::cg(C, lambda, rhs2, sys2Mon, *PC2);
+	}
+	else
+	{
+		cusp::krylov::bicgstab(C, lambda, rhs2, sys2Mon, *PC2);
+		//cusp::krylov::gmres(C, lambda, rhs2, 50, sys2Mon, *PC2);
+	}
 	iterationCount2 = sys2Mon.iteration_count();
 	if (!sys2Mon.converged())
 	{

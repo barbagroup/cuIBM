@@ -11,6 +11,8 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
+from matplotlib.font_manager import FontProperties
+import matplotlib.font_manager as font_manager
 
 from readData import readSimulationParameters, readGridData, readVelocityData
 
@@ -37,6 +39,19 @@ def read_inputs():
 
 
 def main():
+
+	#view available fonts
+	#for font in font_manager.findSystemFonts():
+	#	print font
+
+	try:
+		fontpath = '/usr/share/fonts/truetype/msttcorefonts/Georgia.ttf'
+
+		prop = font_manager.FontProperties(fname=fontpath)
+		matplotlib.rcParams['font.family'] = prop.get_name()
+	except:
+		pass
+
 	"""Plots the contour of velocity (u and v) at every time saved."""
 	# parse the command-line
 	args = read_inputs()
@@ -68,26 +83,36 @@ def main():
 		print 'iteration %d' % ite
 		# read the velocity data at the given time-step
 		u, v = readVelocityData(folder, ite, nx, ny, dx, dy)
-		if u == None or v == None:
+		if u is None or v is None:
 			break
 
 		# plot u-velocity contour
-		plt.contour(Xu, Yu, u.reshape((ny, nx-1)),
+		fig = plt.figure()
+		ax = fig.add_subplot(111)
+		CS = ax.contour(Xu, Yu, u.reshape((ny, nx-1)),
 					levels=np.linspace(-args.u_lim, args.u_lim, 21))
-		plt.axis('equal')
-		plt.axis([x_start, x_end, y_start, y_end])
-		plt.colorbar()
-		plt.savefig('%s/u%07d.png' % (folder, ite))
-		plt.clf()
+		fig.gca().set_aspect('equal', adjustable='box')
+		ax.set_xlim([x_start,x_end])
+		ax.set_ylim([y_start,y_end])
+		ax.tick_params(labelsize=16)
+		cbar = fig.colorbar(CS)
+		cbar.ax.tick_params(labelsize=16) 
+		fig.savefig('%s/u%07d.pdf' % (folder, ite))
+		fig.clf()
 	
 		# plot v-velocity contour
-		plt.contour(Xv, Yv, v.reshape((ny-1, nx)), 
+		fig = plt.figure()
+		ax = fig.add_subplot(111)
+		CS = ax.contour(Xv, Yv, v.reshape((ny-1, nx)), 
 					levels=np.linspace(-args.v_lim, args.v_lim, 21))
-		plt.axis('equal')
-		plt.axis([x_start, x_end, y_start, y_end])
-		plt.colorbar()
-		plt.savefig('%s/v%07d.png' % (folder, ite))
-		plt.clf()
+		fig.gca().set_aspect('equal', adjustable='box')
+		ax.set_xlim([x_start,x_end])
+		ax.set_ylim([y_start,y_end])
+		ax.tick_params(labelsize=16)
+		cbar = fig.colorbar(CS)
+		cbar.ax.tick_params(labelsize=16) 
+		fig.savefig('%s/v%07d.pdf' % (folder, ite))
+		fig.clf()
 
 if __name__ == '__main__':
 	main()

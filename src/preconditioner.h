@@ -11,6 +11,7 @@
 #include <cusp/csr_matrix.h>
 #include <cusp/precond/diagonal.h>
 #include <cusp/precond/aggregation/smoothed_aggregation.h>
+#include <cusp/precond/ainv.h>
 #include <cusp/format.h>
 #include "types.h"
 
@@ -86,6 +87,9 @@ preconditioner<Matrix>::preconditioner(const Matrix &A, preconditionerType _type
 	if (type == SMOOTHED_AGGREGATION)
 		LO = new cusp::precond::aggregation::smoothed_aggregation<IndexType, ValueType, MemorySpace>(A);
 	else
+	if (type == AINV)
+		LO = new cusp::precond::nonsym_bridson_ainv<ValueType, MemorySpace>(A);
+	else
 	{
 		std::cout << "ERROR: Choose a valid preconditioner!\n" << std::endl;
 		exit(0);
@@ -122,6 +126,9 @@ void preconditioner<Matrix>::update(const Matrix &A)
 	if (type == SMOOTHED_AGGREGATION)
 		*LO = cusp::precond::aggregation::smoothed_aggregation<IndexType, ValueType, MemorySpace>(A);
 	else
+	if (type == AINV)
+		*LO = cusp::precond::nonsym_bridson_ainv<ValueType, MemorySpace>(A);
+	else
 	{
 		std::cout << "ERROR: Choose a valid preconditioner!\n" << std::endl;
 		exit(0);
@@ -155,6 +162,12 @@ void preconditioner<Matrix>::operator()(const VectorType1 &x, VectorType2 &y) co
 		cusp::precond::aggregation::smoothed_aggregation<index_type, value_type, memory_space> *SA =
 			static_cast<cusp::precond::aggregation::smoothed_aggregation<index_type, value_type, memory_space> *>(LO);
 		SA->operator()(x,y);
+	}
+	else if (type == AINV)
+	{
+		cusp::precond::nonsym_bridson_ainv<value_type, memory_space> *AI =
+			static_cast<cusp::precond::nonsym_bridson_ainv<value_type, memory_space> *>(LO);
+		AI->operator()(x,y);
 	}
 	else
 	{

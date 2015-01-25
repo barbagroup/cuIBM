@@ -104,11 +104,11 @@ protected:
 	// generate the discrete divergence matrix
 	virtual void generateQT();
 
-	// doing nothing
+	// does nothing
 	void updateQ(real gamma);
 	
 	// generate the matrix of the Poisson solver
-	void generateC();
+	virtual void generateC();
 
 	// generate explicit terms of the momemtum equation
 	void generateRN();
@@ -116,8 +116,8 @@ protected:
 	// generate explicit flux terms
 	void calculateExplicitQTerms();
 
-	// doing nothing
-	void calculateExplicitLambdaTerms();
+	// calculates the 
+	virtual void calculateExplicitLambdaTerms();
 	
 	// generate inhomogeneous boundary conditions from the discrete Laplacian operator
 	virtual void generateBC1();
@@ -135,7 +135,7 @@ protected:
 	virtual void solveIntermediateVelocity();
 
 	// solve the Poisson system for the pressure (and the body forces if immersed body)
-	void solvePoisson();
+	virtual void solvePoisson();
 
 	// project the flux onto the divergence-free field
 	virtual void projectionStep();

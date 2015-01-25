@@ -3,6 +3,7 @@
 *.a
 *.pyc
 *.png
+*.pdf
 ._*
 massFlux
 

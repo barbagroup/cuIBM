@@ -24,12 +24,14 @@ void DirectForcingSolver<device_memory>::updateRHS1()
 	
 	real dt = (*paramDB)["simulation"]["dt"].get<real>();
 	
-	real *rhs1_r = thrust::raw_pointer_cast(&(rhs1[0]));
-	int  *tags_r = thrust::raw_pointer_cast(&(tagsD[0]));
+	real *rhs1_r  = thrust::raw_pointer_cast(&(rhs1[0]));
+	int  *tags_r  = thrust::raw_pointer_cast(&(tagsD[0])),
+	     *tags2_r = thrust::raw_pointer_cast(&(tags2D[0]));
 
 	real *dx_r = thrust::raw_pointer_cast( &(domInfo->dxD[0]) ),
 	     *dy_r = thrust::raw_pointer_cast( &(domInfo->dyD[0]) ),
 	     *coeffs_r = thrust::raw_pointer_cast( &(coeffsD[0]) ),
+	     *coeffs2_r = thrust::raw_pointer_cast( &(coeffs2D[0]) ),
 	     *uv_r   = thrust::raw_pointer_cast( &(uvD[0]) );
 
 	const int blocksize = 256;
@@ -39,8 +41,10 @@ void DirectForcingSolver<device_memory>::updateRHS1()
 	// 1-d interpolation
 	kernels::updateRHS1 <<<dimGrid, dimBlock>>> (rhs1_r, numUV, tags_r);
 	
-	kernels::updateRHS1X <<<dimGrid, dimBlock>>>(rhs1_r, nx, ny, dt, dx_r, tags_r, coeffs_r, uv_r);
-	kernels::updateRHS1Y <<<dimGrid, dimBlock>>>(rhs1_r, nx, ny, dt, dy_r, tags_r, coeffs_r, uv_r);
+	//kernels::updateRHS1X <<<dimGrid, dimBlock>>>(rhs1_r, nx, ny, dt, dx_r, tags_r, coeffs_r, uv_r);
+	//kernels::updateRHS1Y <<<dimGrid, dimBlock>>>(rhs1_r, nx, ny, dt, dy_r, tags_r, coeffs_r, uv_r);
+	kernels::updateRHS1X <<<dimGrid, dimBlock>>>(rhs1_r, nx, ny, dt, dx_r, tags_r, coeffs_r, coeffs2_r, uv_r);
+	kernels::updateRHS1Y <<<dimGrid, dimBlock>>>(rhs1_r, nx, ny, dt, dy_r, tags_r, coeffs_r, coeffs2_r, uv_r);
 }
 
 /**
@@ -67,7 +71,7 @@ void DirectForcingSolver<host_memory>::updateRHS1()
 			I = j*(nx-1)+i;
 
 			rhs1[I] = (tags[I]==-1)*rhs1[I]
-			          + ((tags[I]!=-1)*(1.0-coeffs[I])*uv[I]) * 0.5*(domInfo->dx[i+1]+domInfo->dx[i])/dt;
+			          + ((tags[I]!=-1)*(1.0-coeffs[I]-coeffs2[I])*uv[I]) * 0.5*(domInfo->dx[i+1]+domInfo->dx[i])/dt;
 		}
 	}
 	
@@ -78,7 +82,7 @@ void DirectForcingSolver<host_memory>::updateRHS1()
 			I = numU + j*nx + i;
 		
 			rhs1[I] = (tags[I]==-1)*rhs1[I]
-			          + ((tags[I]!=-1)*((1.0-coeffs[I])*uv[I])) * 0.5*(domInfo->dy[j+1]+domInfo->dy[j])/dt;
+			          + ((tags[I]!=-1)*((1.0-coeffs[I]-coeffs2[I])*uv[I])) * 0.5*(domInfo->dy[j+1]+domInfo->dy[j])/dt;
 		}
 	}
 }
