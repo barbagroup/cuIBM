@@ -8,7 +8,7 @@
 /**
  * \brief Generates the discrete Laplacian matrix (on the host).
  *
- * The viscosity (Reynolds number) is included in the matrix.
+ * The kinematic viscosity is included in the matrix.
  * The matrix is stored in a COO format.
  *
  */
@@ -178,7 +178,7 @@ void NavierStokesSolver<host_memory>::generateL()
 /**
  * \brief Generates the discrete Laplacian matrix (on the device).
  *
- * The viscosity (Reynolds number) is included in the matrix.
+ * The kinematic viscosity is included in the matrix.
  * The matrix is stored in a COO format.
  *
  */

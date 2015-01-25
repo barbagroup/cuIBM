@@ -2,7 +2,7 @@
  * \file  calculateForce.h
  * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the kernels to calculate the forces acting on a body
- *        using a control-volume approach.
+ *        The method is described in Lai & Peskin (2000).
  */
 
 

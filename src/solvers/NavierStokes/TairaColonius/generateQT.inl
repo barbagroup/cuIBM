@@ -12,7 +12,8 @@
 
 
 /**
- * \brief Updates the interpolation matrix with current location of body points (on the host).
+ * \brief Updates the interpolation matrix using the current locations of body points (on the host).
+ *        Typically called after the body has moved.
  */
 template <>
 void TairaColoniusSolver<host_memory>::updateQT()
@@ -57,7 +58,8 @@ void TairaColoniusSolver<host_memory>::updateQT()
 }
 
 /**
- * \brief Updates the interpolation matrix with current location of body points (on the device).
+ * \brief Updates the interpolation matrix using the current locations of body points (on the device).
+ *        Typically called after the body has moved.
  */
 template <>
 void TairaColoniusSolver<device_memory>::updateQT()

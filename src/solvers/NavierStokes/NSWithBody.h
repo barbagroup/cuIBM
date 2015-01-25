@@ -25,7 +25,7 @@ protected:
 	bodies<memoryType> B;		///< bodies in the flow
 
 	real forceX,				///< force acting on each body in the x-direction
-		 forceY;				///< force acting on each body in the y-direction
+	     forceY;				///< force acting on each body in the y-direction
 	
 	std::ofstream forceFile;	///< file to write the forces
 

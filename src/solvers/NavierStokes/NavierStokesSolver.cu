@@ -58,7 +58,7 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	// writes the grids information to a file
 	io::writeGrid(folder, *domInfo);
 
-	// opens the required files
+	// opens the file to which the number of iterations at every step is written
 	std::stringstream out;
 	out << folder << "/iterations";
 	iterationsFile.open(out.str().c_str());
@@ -262,7 +262,7 @@ void NavierStokesSolver<memoryType>::stepTime()
 }
 
 /**
- * \brief Doing nothing.
+ * \brief Doing nothing. Used in immersed boundary methods when the body moves.
  */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::updateSolverState()

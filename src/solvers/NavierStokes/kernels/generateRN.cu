@@ -19,7 +19,7 @@ namespace kernels
 {
 
 /**
- * \brief Computes u-element of the vector resulting from the explicit terms of
+ * \brief Computes u-component of the vector resulting from the explicit terms of
  *        the discretized momentum equation, and element of the explcit convective terms.
  *
  * \param rn explicit terms of the discretized momentum equation
@@ -101,7 +101,7 @@ __global__ void convectionTermU(real *rn, real *H, real *q,
 }
 
 /**
- * \brief Computes v-element of the vector resulting from the explicit terms of
+ * \brief Computes v-component of the vector resulting from the explicit terms of
  *        the discretized momentum equation, and element of the explcit convective terms.
  *
  * \param rn explicit terms of the discretized momentum equation
@@ -185,7 +185,7 @@ __global__ void convectionTermV(real *rn, real *H, real *q,
 }
 
 /**
- * \brief Computes v-element of the vector resulting from the explicit terms of
+ * \brief Computes v-component of the vector resulting from the explicit terms of
  *        the discretized momentum equation, and element of the explcit convective terms
  *        on the bottom or top boundaries.
  *
@@ -262,7 +262,7 @@ void convectionTermVBottomTop(real *rn, real *H, real *q, \
 }
 
 /**
- * \brief Computes u-element of the vector resulting from the explicit terms of
+ * \brief Computes u-component of the vector resulting from the explicit terms of
  *        the discretized momentum equation, and element of the explcit convective terms
  *        on the bottom or top boundaries.
  *
@@ -372,7 +372,7 @@ void convectionTermUBottomTop(real *rn, real *H, real *q, \
 }
 
 /**
- * \brief Computes u-element of the vector resulting from the explicit terms of
+ * \brief Computes u-component of the vector resulting from the explicit terms of
  *        the discretized momentum equation, and element of the explcit convective terms
  *        on the left or right boundaries.
  *
@@ -449,7 +449,7 @@ void convectionTermULeftRight(real *rn, real *H, real *q, \
 }
 
 /**
- * \brief Computes v-element of the vector resulting from the explicit terms of
+ * \brief Computes v-component of the vector resulting from the explicit terms of
  *        the discretized momentum equation, and element of the explcit convective terms
  *        on the left or right boundaries.
  *

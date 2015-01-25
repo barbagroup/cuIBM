@@ -1,8 +1,10 @@
 /***************************************************************************//**
  * \file generateA.inl
  * \author Anush Krishnan (anus@bu.edu)
- * \brief Implementation of the methods to generate the matrix 
- *        resulting from the implcit flux terms.
+ * \brief Generates matrix A, which is the left-hand side matrix in the step 
+ *        where the intermediate velocity flux is solved. It consists of the 
+ *        time-stepping term and the implicit diffusion terms.
+
  */
 
 
@@ -10,7 +12,9 @@
 
 
 /**
- * \brief Generates the matrix resulting from the implicit flux terms (on the device).
+ * \brief Generates the matrix A which solves the implicit velocity flux (on the device).
+ *        Calculated from the matrices M (which contains the term from the time derivative)
+ *        and the matrix L, which is the implicit diffusion matrix.
  *
  * \param alpha implicit coefficient of the diffusive scheme
  */
@@ -44,7 +48,9 @@ void NavierStokesSolver<device_memory>::generateA(real alpha)
 }
 
 /**
- * \brief Generates the matrix resulting from the implicit flux terms (on the host).
+ * \brief Generates the matrix A which solves the implicit velocity flux (on the device).
+ *        Calculated from the matrices M (which contains the term from the time derivative)
+ *        and the matrix L, which is the implicit diffusion matrix.
  *
  * \param alpha implicit coefficient of the diffusive scheme
  */

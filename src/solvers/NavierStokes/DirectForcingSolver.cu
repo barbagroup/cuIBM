@@ -139,7 +139,8 @@ void DirectForcingSolver<memoryType>::writeMassFluxInfo()
 }
 
 /**
- * \brief Writes the velocity, pressure, force and mass flux data at every save point.
+ * \brief Projects the pressure gradient on to the intermediate velocity field
+ *        to obtain the divergence-free velocity field at the next time step.
  */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::projectionStep()
@@ -151,6 +152,9 @@ void DirectForcingSolver<memoryType>::projectionStep()
 	NavierStokesSolver<memoryType>::logger.stopTimer("projectionStep");
 }
 
+/**
+ * \brief Writes the velocity, pressure, force and mass flux data at every save point.
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::writeData()
 {	

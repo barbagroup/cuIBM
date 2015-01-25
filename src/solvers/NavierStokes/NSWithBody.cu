@@ -55,6 +55,12 @@ void NSWithBody<host_memory>::calculateForce()
 
 /**
  * \brief Calculates forces acting on an immersed body (on the device).
+ *
+ * Uses the control volume approach explained by Lai and Peskin (2000).
+ * This is a general method that can be used with any immersed boundary method.
+ * It uses only the velocity and pressure fields to calculate the forces, and
+ * does not involve any body forces on the immersed boundary.
+ * Currently works only for one body.
  */
 template <>
 void NSWithBody<device_memory>::calculateForce()

@@ -17,17 +17,17 @@
 namespace kernels
 {
 
-// compute u-element of the explicit terms of the discretized momentum equation
+// compute u-component of the explicit terms of the discretized momentum equation
 // and element of the explicit convective terms
 __global__
 void convectionTermU(real *rn, real *H, real *q, int nx, int ny, real *dx, real *dy, real dt, real gamma, real zeta, real alpha, real nu);
 
-// compute v-element of the explicit terms of the discretized momentum equation
+// compute v-component of the explicit terms of the discretized momentum equation
 // and element of the explicit convective terms
 __global__
 void convectionTermV(real *rn, real *H, real *q, int nx, int ny, real *dx, real *dy, real dt, real gamma, real zeta, real alpha, real nu);
 
-// compute v-element of the explicit terms of the discretized momentum equation
+// compute v-component of the explicit terms of the discretized momentum equation
 // and element of the explicit convective terms
 // top or bottom boundaries
 __global__
@@ -36,7 +36,7 @@ void convectionTermVBottomTop(real *rn, real *H, real *q, \
                               real dt, real gamma, real zeta, real alpha, real nu, \
                               real *bcBottom, real *bcTop);
 
-// compute u-element of the explicit terms of the discretized momentum equation
+// compute u-component of the explicit terms of the discretized momentum equation
 // and element of the explicit convective terms
 // top or bottom boundaries
 __global__
@@ -45,7 +45,7 @@ void convectionTermUBottomTop(real *rn, real *H, real *q, \
                               real dt, real gamma, real zeta, real alpha, real nu, \
                               real *bcBottom, real *bcTop, real *bcLeft, real *bcRight);
 
-// compute u-element of the explicit terms of the discretized momentum equation
+// compute u-component of the explicit terms of the discretized momentum equation
 // and element of the explicit convective terms
 // left or right boundaries
 __global__
@@ -54,7 +54,7 @@ void convectionTermULeftRight(real *rn, real *H, real *q, \
                               real dt, real gamma, real zeta, real alpha, real nu, \
                               real *bcLeft, real *bcRight);
 
-// compute v-element of the explicit terms of the discretized momentum equation
+// compute v-component of the explicit terms of the discretized momentum equation
 // and element of the explicit convective terms
 // left or right boundaries
 __global__

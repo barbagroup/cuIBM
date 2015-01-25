@@ -2,7 +2,9 @@
  * \file updateRHS1.cu
  * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the kernels to update the right hand-side
- *        of the intermadiate velocity flux solver.
+ *        of the intermediate velocity flux solver.
+ *        It replaces the right-hand side elements at the tagged points, with
+ *        values obtained from the interpolation relations at those points.
  */
 
 

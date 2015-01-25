@@ -33,9 +33,10 @@ void TairaColoniusSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::initialiseArrays(numUV, numP+2*totalPoints);
 	if(totalPoints > 0)
 	{
-		// for each Lagragian point, 24 velocity values could be used
-		// when caluclating the discrete delta function
-		// 12*2 in 2D
+		// for each Lagragian point, 24 velocity nodes around it
+		// are influenced by the delta function at the point
+		// A 4x3 grid of u-nodes, and a 3x4 grid of v-nodes
+		// which gives 12*2 velocity nodes influence by a boundary point in 2D
 		E.resize(2*totalPoints, numUV, 24*totalPoints);
 	}
 	NavierStokesSolver<memoryType>::assembleMatrices();
