@@ -62,7 +62,18 @@ void DirectForcingSolver<device_memory>::tagPoints()
 
 // Bilinear Fadlun1c-type interpolation outside the body, for a moving body.
 /**
- * \brief To be documented.
+ * \brief Tags all the forcing nodes required for the type of linear
+ *        interpolation explained in the paper by Fadlun et al. (2000).
+ *
+ * It uses a raytracing algorithm to detect points that are near the boundary,
+ * and just outside it. For more information about the algorithm, read the 
+ * section on ray-crossings in the Search and Intersection chapter of the 
+ * book Computational Geometry in C by Joseph O'Rourke.
+ *
+ * \param bx host array of the x-coordinates of the boundary points
+ * \param by host array of the y-coordinates of the boundary points
+ * \param uB host array of the x-components of the boundary velocities
+ * \param vB host array of the y-components of the boundary velocities
  */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real *vB)
