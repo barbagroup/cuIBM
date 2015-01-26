@@ -44,15 +44,6 @@ NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domIn
 		case FADLUN_ET_AL:
 			solver = new FadlunEtAlSolver<memoryType>(&paramDB, &domInfo);
 			break;
-		case SLL0:
-			solver = new SLL0Solver<memoryType>(&paramDB, &domInfo);
-			break;
-		case SLL1:
-			solver = new SLL1Solver<memoryType>(&paramDB, &domInfo);
-			break;
-		case SLL2:
-			solver = new SLL2Solver<memoryType>(&paramDB, &domInfo);
-			break;
 		case DIFFUSION:
 			solver = new DiffusionSolver<memoryType>(&paramDB, &domInfo);
 			break;

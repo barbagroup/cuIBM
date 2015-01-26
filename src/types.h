@@ -77,9 +77,6 @@ enum ibmScheme
 	DIRECT_FORCING, ///< fully discrete direct forcing method
 	FADLUN_ET_AL,   ///< Fadlun et al (2000)
 	TAIRA_COLONIUS, ///< Taira & Colonius (2007)
-	SLL0,           ///< SLL0
-	SLL1,           ///< SLL1
-	SLL2,           ///< SLL2
 	DIFFUSION,      ///< Diffusion
 	DF_MODIFIED,    ///< Direct Forcing modified
 	FEA_MODIFIED,   ///< Fadlun et al. modified
