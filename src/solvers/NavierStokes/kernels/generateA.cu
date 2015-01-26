@@ -21,6 +21,9 @@ namespace kernels
  *
  * It assembles the matrix \c A as a combination 
  * of the Laplacian matrix \c L and the mass matrix \c M.
+ * A = M-alpha*L
+ * The parameter alpha is the coefficient of the implicit part of the diffusion term.
+ * It is 1 for a backward Euler scheme, 0.5 for a Crank-Nicolson scheme, and 0 for a fully explicit scheme.
  *
  * \param ARows rows of the COO matrix \c A
  * \param ACols columns of the COO matrix \c A
@@ -49,6 +52,11 @@ void generateA(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int
  *
  * It assembles the matrix \c A as a combination 
  * of the Laplacian matrix \c L and the mass matrix \c M.
+ * The parameter alpha is the coefficient of the implicit part of the diffusion term.
+ * It is 1 for a backward Euler scheme, 0.5 for a Crank-Nicolson scheme, and 0 for a fully explicit scheme.
+ * The left-hand side matrix A is set up as M-alpha*L, where M is the mass matrix, and L the Laplacian matrix.
+ * But in the case of the direct forcing method, some rows are determined by interpolation relations,
+ * and the rows of L are modified appropriately. For these rows alone, the rows of A are given by M-L.
  *
  * \param ARows rows of the COO matrix \c A
  * \param ACols columns of the COO matrix \c A

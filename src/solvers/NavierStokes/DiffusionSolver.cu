@@ -1,6 +1,10 @@
 #include "DiffusionSolver.h"
 #include <sys/stat.h>
 
+/**
+ * \brief Sets the coefficients of the convection term to zero. This is done 
+ *        because we are solving a pure diffusion problem.
+ */
 template <typename memoryType>
 void DiffusionSolver<memoryType>::initialise()
 {
@@ -13,11 +17,17 @@ void DiffusionSolver<memoryType>::initialise()
 	}
 }
 
+/**
+ * \brief No Poisson equation needs to be solved for the unsteady diffusion problem.
+ */
 template <typename memoryType>
 void DiffusionSolver<memoryType>::solvePoisson()
 {
 }
 
+/**
+ * \brief The velocity at the next time step is the same as the intermediate velocity.
+ */
 template <typename memoryType>
 void DiffusionSolver<memoryType>::projectionStep()
 {
@@ -28,6 +38,9 @@ void DiffusionSolver<memoryType>::projectionStep()
 	NavierStokesSolver<memoryType>::logger.stopTimer("projectionStep");
 }
 
+/**
+ * \brief Constructor. Copies the simulation parameters and the domain info.
+ */
 template <typename memoryType>
 DiffusionSolver<memoryType>::DiffusionSolver(parameterDB *pDB, domain *dInfo)
 {

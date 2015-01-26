@@ -14,7 +14,7 @@
  * \class DirectForcingSolver
  * \brief A fully discrete formulation of the direct forcing method.
  *
- * First proposed by Fadlun et al (2000) \n
+ * Based on the method first proposed by Fadlun et al (2000)
  * with modifications by Kim et al (2001).
  * It does not follow the same equations that they used, but use a 
  * fractional step method starting with the discretized equations,

@@ -10,13 +10,15 @@
 #include <thrust/extrema.h>
 #include <cusp/io/matrix_market.h>
 
+/**
+ * \brief Constructor. Initializes the simulation parameters and the domain info.
+ */
 template <typename memoryType>
 DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *dInfo)
 {
 	NavierStokesSolver<memoryType>::paramDB = pDB;
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
 }
-
 
 /**
  * \brief Initialize the vectors used in the simulation.
@@ -176,7 +178,22 @@ void DirectForcingSolver<memoryType>::writeData()
 }
 
 /**
- * \brief Constructor. Initializes the simulation parameters and the domain info.
+ * \brief Generates the right-hand side matrix in the Poisson step.
+ *
+ * Because the fully discrete direct forcing method separates the domains 
+ * inside and outside the immersed boundary, and Neumann boundary conditions
+ * are enforced at the immersed boundary, a point also needs to be fixed 
+ * inside the immersed boundary, so that Poisson system does not have any 
+ * zero eigenvalues.
+ *
+ * In this function, \a phi at a point that corresponds to the center of the 
+ * grid is fixed as zero. This is the cell with indices (nx/2, ny/2), and is 
+ * the center in terms of the indices and not the physical location in space.
+ * Of course, this is invalid if the interior of the body does not include 
+ * this point, and the solution obtained will be unphysical.
+ *
+ * This needs to be done in a better way (i.e. by locating points that 
+ * are inside the immersed boundaries, and fixing them to zero)
  */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::generateC()
@@ -197,7 +214,6 @@ void DirectForcingSolver<memoryType>::generateC()
 		}
 		index++;
 	}
-	//cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::C, "C-generateQT.mtx");
 }
 
 // inline files in the folder "DirectForcing"
