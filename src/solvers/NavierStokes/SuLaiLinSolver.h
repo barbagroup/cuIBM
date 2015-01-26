@@ -9,10 +9,16 @@
 
 #include "NSWithBody.h"
 
-
 /**
  * \class SuLaiLinSolver
- * \brief Immersed boundary method from Su, Lai and Lin.
+ * \brief Immersed boundary method described by Su, Lai & Lin (2007)
+ *
+ * This method can be derived from the immersed boundary projection method of 
+ * Taira & Colonius (2007). It is obtained by further splitting the pressure and 
+ * body force system to obtain two decoupled systems, but this involves 
+ * an approximation. The approximation is that EG\phi = 0, i.e. the gradient 
+ * of pressure evaluated at the boundary points is zero.
+ *
  */
 template <typename memoryType>
 class SuLaiLinSolver : public NSWithBody<memoryType>
