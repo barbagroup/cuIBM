@@ -14,7 +14,7 @@ latex/*
 0*
 *.plt
 cases/convergence/cavityRe100/*/T*
-documentation/*
+doc/*
 
 # files
 bin/cuIBM
