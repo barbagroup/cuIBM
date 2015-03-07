@@ -1,7 +1,9 @@
-/**
-* @file  bodies.h
-* @brief Stores information about the body points in arrays
-*/
+/***************************************************************************//**
+ * \file bodies.h
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Declaration of the class \c bodies.
+ */
+
 
 #pragma once
 
@@ -9,6 +11,11 @@
 #include "parameterDB.h"
 #include "body.h"
 
+
+/**
+ * \class bodies
+ * \brief Contains information about bodies in the flow.
+ */
 template <typename memoryType>
 class bodies
 {
@@ -16,29 +23,29 @@ public:
 	int  numBodies,   ///< number of bodies
 	     totalPoints; ///< total number of boundary points (all bodies)
 
-	bool bodiesMove;  ///< Tells whether the body is moving or not
+	bool bodiesMove;  ///< tells whether the body is moving or not
 
 	cusp::array1d<int, memoryType>
-		numPoints,    ///< number of points in a body
-		offsets,      ///< array index of the first point of a body
-		I,            ///< x-index of the cell in which a body point is present
-		J;            ///< y-index of the cell in which a body point is present
+		numPoints,    ///< number of points for each body
+		offsets,      ///< array index of the first point of each body
+		I,            ///< x-index of the cell in which a body point is located
+		J;            ///< y-index of the cell in which a body point is located
 	
 	cusp::array1d<int, memoryType>
-		startI,       ///< Starting cell index of the bounding box of a body
-		startJ,       ///< Starting cell index of the bounding box of a body
-		numCellsX,    ///< Number of cells in the x-direction in the bounding box of a body
-		numCellsY;    ///< Number of cells in the y-direction in the bounding box of a body
+		startI,       ///< starting cell index of the bounding box of a body
+		startJ,       ///< starting cell index of the bounding box of a body
+		numCellsX,    ///< number of cells in the x-direction in the bounding box of a body
+		numCellsY;    ///< number of cells in the y-direction in the bounding box of a body
 		
 	cusp::array1d<real, memoryType>
-		xmin,  ///< Lowest x-coordinate for the bounding box of a body
-		xmax,  ///< Highest x-coordinate for the bounding box of a body
-		ymin,  ///< Lowest y-coordinate for the bounding box of a body
-		ymax;  ///< Highest y-coordinate for the bounding box of a body
+		xmin,  ///< lowest x-coordinate for the bounding box of a body
+		xmax,  ///< highest x-coordinate for the bounding box of a body
+		ymin,  ///< lowest y-coordinate for the bounding box of a body
+		ymax;  ///< highest y-coordinate for the bounding box of a body
 	
 	cusp::array1d<real, memoryType>
-		forceX,
-		forceY;
+		forceX,		///< force acting on a body in the x-direction
+		forceY;		///< force acting on a body in the y-direction
 
 	cusp::array1d<real, memoryType>
 		X,     ///< reference x-coordinates of the boundary points
@@ -50,48 +57,21 @@ public:
 		uB,    ///< x-velocity of the boundary points
 		vB;    ///< y-velocity of the boundary points
 
-	/**
-	* @brief Initialise the arrays in the class with information from the
-	*        @link body @endlink instances.
-	*
-	* Information regarding the coordinates of the body points and the motion 
-	* of the bodies is stored on the host as an array of instances of the 
-	* class @link body @endlink. This function transfers that information to
-	* arrays on the device, where they are stored as a structure of arrays.  
-	* This makea computation more efficient.
-	*
-	* @param db Database that contains all the simulation parameters
-	* @param D  Information about the computaional grid.
-	*/
+	// set initial position and velocity of each body
 	void initialise(parameterDB &db, domain &D);
 	
-	/**
-	* @brief Calculates the indices of the cells in which the boundary points 
-	*        are present.
-	* 
-	* This information is useful when transferring data between the 
-	* boundary points and the computational grid.
-	*
-	* @param D Information about the computational grid.
-	*/
+	// store index of each cell that contains a boundary point
 	void calculateCellIndices(domain &D);
 	
-	/**
-	* @brief Calculates the bounding boxes for each body.
-	* @param D Information about the computational grid.
-	*/
+	// store indices of the bounding box of each body
 	void calculateBoundingBoxes(parameterDB &db, domain &D);
 	
-	/**
-	* @brief Update the locations of the body points
-	* This is done using the formulae:
-	*
-	* \f$x_{i,m} = X^c_m + (X_{i,m} - X^0_m) \cos\theta - (Y_{i,m} - Y^0_m) \sin\theta\f$ and
-	*
-	* \f$y_{i,m} = Y^c_m + (X_{i,m} - X^0_m) \sin\theta + (Y_{i,m} - Y^0_m) \cos\theta\f$
-	*/
+	// update position, velocity and neighbors of each body
 	void update(parameterDB &db, domain &D, real Time);
 
+	// write body coordinates into a file
 	void writeToFile(std::string &caseFolder, int timeStep);
+
+	// write body coordinates into a file called \a bodies
 	void writeToFile(real *bx, real *by, std::string &caseFolder, int timeStep);
 };

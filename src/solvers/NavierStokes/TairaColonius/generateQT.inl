@@ -1,7 +1,20 @@
+/***************************************************************************//**
+ * \file generateQT.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c TairaColoniusSolver
+ *        to generate the transposed gradient matrix and the interpolation matrix.
+ */
+
+
 #include <solvers/NavierStokes/kernels/generateQT.h>
 
 #define BLOCKSIZE 256
 
+
+/**
+ * \brief Updates the interpolation matrix using the current locations of body points (on the host).
+ *        Typically called after the body has moved.
+ */
 template <>
 void TairaColoniusSolver<host_memory>::updateQT()
 {
@@ -44,6 +57,10 @@ void TairaColoniusSolver<host_memory>::updateQT()
 	logger.stopTimer("transposeE");
 }
 
+/**
+ * \brief Updates the interpolation matrix using the current locations of body points (on the device).
+ *        Typically called after the body has moved.
+ */
 template <>
 void TairaColoniusSolver<device_memory>::updateQT()
 {
@@ -90,6 +107,9 @@ void TairaColoniusSolver<device_memory>::updateQT()
 	logger.stopTimer("transposeE");
 }
 
+/**
+ * \brief Generates the transposed gradient matrix and interpolation matrix (on the host).
+ */
 template <>
 void TairaColoniusSolver<host_memory>::generateQT()
 {
@@ -116,6 +136,9 @@ void TairaColoniusSolver<host_memory>::generateQT()
 	updateQT();	
 }
 
+/**
+ * \brief Generates the transposed gradient matrix and interpolation matrix (on the device).
+ */
 template <>
 void TairaColoniusSolver<device_memory>::generateQT()
 {

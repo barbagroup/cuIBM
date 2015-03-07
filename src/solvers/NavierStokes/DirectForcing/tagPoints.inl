@@ -1,8 +1,15 @@
-/**
-* @file tagPoints.inl
-* @brief Tag points near the immsersed boundary using a ray-tracing algorithm
-*/
+/***************************************************************************//**
+ * \file tagPoints.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c DirectForcingSolver to tag
+ *        points near the immersed boundary using a ray-tracing algorithm.
+ */
 
+
+/**
+ * \brief Tags the forcing nodes among the velocity nodes, i.e. the nodes at 
+ *        which the velocity interpolation is performed.
+ */
 template <>
 void DirectForcingSolver<host_memory>::tagPoints()
 {
@@ -18,6 +25,10 @@ void DirectForcingSolver<host_memory>::tagPoints()
 	logger.stopTimer("tagPoints");
 }
 
+/**
+ * \brief Tags the forcing nodes among the velocity nodes, i.e. the nodes at 
+ *        which the velocity interpolation is performed.
+ */
 template <>
 void DirectForcingSolver<device_memory>::tagPoints()
 {
@@ -40,336 +51,30 @@ void DirectForcingSolver<device_memory>::tagPoints()
 	tagPoints(bx, by, uB, vB);
 	
 	// transferring tag and coeffs data to the device
-	tagsD   = tags;
-	coeffsD = coeffs;
-	uvD     = uv;
+	tagsD    = tags;
+	tags2D   = tags2;
+	coeffsD  = coeffs;
+	coeffs2D = coeffs2;
+	uvD      = uv;
 	
 	logger.stopTimer("tagPoints");
 }
-#if 0
-// Bilinear Fadlun1c-type interpolation inside the body.
-template <typename memoryType>
-void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by)
-{
-	int  nx = NavierStokesSolver<memoryType>::domInfo->nx,
-	     ny = NavierStokesSolver<memoryType>::domInfo->ny;
-	
-	real *xu = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->xu[0])),
-	     *yu = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->yu[0]));
 
-	bool insideX, insideY, flag;
-	int  bdryFlagX, bdryFlagY, k, l, I;
-	int  bottom, top, left, right;
-	real eps = 1.e-8;
-	real cfX = 0.0, cfY = 0.0, x, y;
-	
-	// tag points at which u is evaluated
-	for(int j=0; j<ny; j++)
-	{
-		for(int i=0; i<nx-1; i++)
-		{
-			I = j*(nx-1)+i;
-			tagsX[I] = -1;
-			tagsY[I] = -1;
-			coeffsX[I] = 0.0;
-			coeffsY[I] = 1.0;
-			insideX = false;
-			insideY = false;
-			k = NSWithBody<memoryType>::B.totalPoints - 1;
-			l = 0;
-			flag = false;
-			bdryFlagX = -1;
-			bdryFlagY = -1;
-				
-			while( l < NSWithBody<memoryType>::B.totalPoints)
-			{
-				if (by[k] > by[l])
-				{
-					bottom = l;
-					top = k;
-				}
-				else
-				{
-					bottom = k;
-					top = l;
-				}
-				if (bx[k] > bx[l])
-				{
-					left = l;
-					right = k;
-				}
-				else
-				{
-					left = k;
-					right = l;
-				}
-				// consider rays along the x-direction
-				/**
-				* if the ray intersects the boundary segment
-				* top endpoint must be strictly above the ray
-				* bottom can be on or below the ray
-				*/
-				if (by[bottom]-eps < yu[j] && by[top]-eps > yu[j])
-				{
-					if (fabs(by[l]-by[k]) > eps)
-					{
-						// calculate the point of intersection of the double ray with the boundary
-						x = bx[k] + (bx[l]-bx[k]) * (yu[j]-by[k]) / (by[l]-by[k]);
-						// if the point of intersection coincides with the grid point
-						if (fabs(x-xu[i]) < eps)
-						{
-							insideX   = true;
-							bdryFlagX = I;
-							cfX       = 0.0;
-							flag      = true;
-						}
-						// if the point of intersection lies to the right of the grid point
-				 		else if (x > xu[i]+eps)
-							insideX = !insideX;
-						// if the point of intersection is in the cell to the immediate left of the grid point
-						if (x>xu[i-1]+eps && x<xu[i]-eps)
-						{
-							bdryFlagX = I+1;
-							cfX = (xu[i]-x)/(xu[i+1]-x);
-						}
-						// if the point of intersection is in the cell to the immediate right of the grid point
-						else if (x>xu[i]+eps && x<xu[i+1]-eps)
-						{
-							bdryFlagX = I-1;
-							cfX = (xu[i]-x)/(xu[i-1]-x);
-						}
-					}
-				}
-				// consider rays along the y-direction
-				if (bx[left]-eps < xu[i] && bx[right]-eps > xu[i] && !flag)
-				{
-					if (fabs(bx[l]-bx[k]) > eps)
-					{
-						y = by[k] + (by[l]-by[k]) * (xu[i]-bx[k]) / (bx[l]-bx[k]);
-						if (fabs(y-yu[j]) < eps)
-						{
-							insideY   = true;
-							bdryFlagY = I;
-							cfY       = 0.0;
-						}
-				 		else if (y > yu[j]+eps)
-							insideY = !insideY;
-						// if point of intersection is below the concerned grid point
-						if (y>yu[j-1]+eps && y<yu[j]-eps)
-						{
-							bdryFlagY = I+(nx-1);
-							cfY = (yu[j]-y)/(yu[j+1]-y);
-						}
-						// if point of intersection is above the concerned grid point
-						else if (y>yu[j]+eps && y<yu[j+1]-eps)
-						{
-							bdryFlagY = I-(nx-1);
-							cfY = (yu[j]-y)/(yu[j-1]-y);
-						}
-					}
-				}
-				k = l;
-				l = l+1;
-			}
-			if (insideX && bdryFlagX>=0)
-			{
-				tagsX[I]   = bdryFlagX;
-				coeffsX[I] = cfX;
-			}
-			if (insideY && bdryFlagY>=0)
-			{					
-				tagsY[I]   = bdryFlagY;
-				coeffsY[I] = cfY;
-			}
-		}
-	}
-	
-	std::ofstream file("tagx.txt");
-	for(int j=0; j<ny; j++)
-	{
-		for(int i=0; i<nx-1; i++)
-		{
-			I = j*(nx-1)+i;
-			if (tagsX[I] >= 0 || tagsY[I] >= 0 )
-			{
-				file << xu[i] << '\t' << yu[j] << std::endl;
-				if (tagsX[I] == I-1)
-					file << xu[i-1] << '\t' << yu[j] << std::endl;
-				else if (tagsX[I] == I+1)
-					file << xu[i+1] << '\t' << yu[j] << std::endl;
-				if (tagsY[I] == I-(nx-1))
-					file << xu[i] << '\t' << yu[j-1] << std::endl;
-				else if (tagsY[I] == I+(nx-1))
-					file << xu[i] << '\t' << yu[j+1] << std::endl;
-				file << xu[i] << '\t' << yu[j] << std::endl;
-			}
-			file << std::endl;
-		}
-	}
-	file.close();
-
-	real *xv = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->xv[0])),
-	     *yv = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->yv[0]));
-	
-	// tag points at which v is evaluated
-	for(int j=0; j<ny-1; j++)
-	{
-		for(int i=0; i<nx; i++)
-		{
-			I = j*nx+i + (nx-1)*ny;
-			tagsX[I] = -1;
-			tagsY[I] = -1;
-			coeffsX[I] = 0.0;
-			coeffsY[I] = 1.0;
-			insideX = false;
-			insideY = false;
-			k = NSWithBody<memoryType>::B.totalPoints - 1;
-			l = 0;
-			flag = false;
-			bdryFlagX = -1;
-			bdryFlagY = -1;
-			
-			while( l < NSWithBody<memoryType>::B.totalPoints)
-			{
-				if (by[k] > by[l])
-				{
-					bottom = l;
-					top = k;
-				}
-				else
-				{
-					bottom = k;
-					top = l;
-				}
-				if (bx[k] > bx[l])
-				{
-					left = l;
-					right = k;
-				}
-				else
-				{
-					left = k;
-					right = l;
-				}
-				// consider rays along the x-direction
-				/**
-				* if the ray intersects the boundary segment
-				* top endpoint must be strictly above the ray
-				* bottom can be on or below the ray
-				*/
-				if (by[bottom]-eps < yv[j] && by[top]-eps > yv[j])
-				{
-					if (fabs(by[l]-by[k]) > eps)
-					{
-						// calculate the point of intersection of the double ray with the boundary
-						x = bx[k] + (bx[l]-bx[k]) * (yv[j]-by[k]) / (by[l]-by[k]);
-						// if the point of intersection coincides with the grid point
-						if (fabs(x-xv[i]) < eps)
-						{
-							insideX   = true;
-							flag      = true;
-							bdryFlagX = I;
-							cfX       = 0.0;
-						}
-						// if the point of intersection lies to the right of the grid point
-				 		else if (x > xv[i]+eps)
-							insideX = !insideX;
-						// if the point of intersection is in the cell to the immediate right of the grid point
-						if (x>xv[i-1]+eps && x<xv[i]-eps)
-						{
-							bdryFlagX = I+1;
-							cfX = (xv[i]-x)/(xv[i+1]-x);
-						}
-						// if the point of intersection is in the cell to the immediate left of the grid point
-						else if (x>xv[i]+eps && x<xv[i+1]-eps)
-						{
-							bdryFlagX = I-1;
-							cfX = (xv[i]-x)/(xv[i-1]-x);
-						}
-					}
-				}
-				// consider rays along the y-direction
-				if (bx[left]-eps < xv[i] && bx[right]-eps > xv[i] && !flag)
-				{
-					if (fabs(bx[l]-bx[k]) > eps)
-					{
-						y = by[k] + (by[l]-by[k]) * (xv[i]-bx[k]) / (bx[l]-bx[k]);
-						if (fabs(y-yv[j]) < eps)
-						{
-							insideY   = true;
-							bdryFlagY = I;
-							cfY       = 0.0;
-							flag      = true;
-						}
-				 		else if (y > yv[j]+eps)
-							insideY = !insideY;
-
-						if (y>yv[j-1]+eps && y<yv[j]-eps)
-						{
-							bdryFlagY = I+nx;
-							cfY = (yv[j]-y)/(yv[j+1]-y);
-						}
-						else if (y>yv[j]+eps && y<yv[j+1]-eps)
-						{
-							bdryFlagY = I-nx;
-							cfY = (yv[j]-y)/(yv[j-1]-y);
-						}
-					}
-				}
-				k = l;
-				l = l+1;
-			}
-			if (insideY && bdryFlagY>=0)
-			{					
-				tagsY[I]   = bdryFlagY;
-				coeffsY[I] = cfY;
-			}
-			if (insideX && bdryFlagX>=0)
-			{
-				tagsX[I]   = bdryFlagX;
-				coeffsX[I] = cfX;
-			} 
-		}
-	}
-	
-	file.open("tagy.txt");
-	for(int j=0; j<ny-1; j++)
-	{
-		for(int i=0; i<nx; i++)
-		{
-			I = j*nx+i+(nx-1)*ny;
-			if (tagsY[I] >= 0 || tagsX[I] >= 0)
-			{
-				file << xv[i] << '\t' << yv[j] << std::endl;
-				if (tagsX[I] == I-1)
-					file << xv[i-1] << '\t' << yv[j] << std::endl;
-				else if (tagsX[I] == I+1)
-					file << xv[i+1] << '\t' << yv[j] << std::endl;
-				if (tagsY[I] == I-nx)
-					file << xv[i] << '\t' << yv[j-1] << std::endl;
-				else if (tagsY[I] == I+nx)
-					file << xv[i] << '\t' << yv[j+1] << std::endl;
-				file << xv[i] << '\t' << yv[j] << std::endl;
-			}
-			file << std::endl;
-		}
-	}
-	file.close();
-	
-	file.open("body.txt");
-	for(int k=0; k<NSWithBody<memoryType>::B.totalPoints; k++)
-	{
-		file << bx[k] << '\t' << by[k] << std::endl;
-	}
-	file.close();
-}
-#endif
-/********************* ABOVE IS FOR INSIDE THE BODY ***************************/
-/********************* BELOW IS FOR OUTSIDE THE BODY **************************/
-
-/*********************** Fadlun-1c for MOVING BODY ***************************/
-#if 1
 // Bilinear Fadlun1c-type interpolation outside the body, for a moving body.
+/**
+ * \brief Tags all the forcing nodes required for the type of linear
+ *        interpolation explained in the paper by Fadlun et al. (2000).
+ *
+ * It uses a raytracing algorithm to detect points that are near the boundary,
+ * and just outside it. For more information about the algorithm, read the 
+ * section on ray-crossings in the Search and Intersection chapter of the 
+ * book Computational Geometry in C by Joseph O'Rourke.
+ *
+ * \param bx host array of the x-coordinates of the boundary points
+ * \param by host array of the y-coordinates of the boundary points
+ * \param uB host array of the x-components of the boundary velocities
+ * \param vB host array of the y-components of the boundary velocities
+ */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real *vB)
 {
@@ -387,8 +92,10 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 	int  bottom, top, left, right;
 	real eps = 1.e-10;
 	bool outsideX, outsideY;
-	int  bdryFlagX, bdryFlagY;
-	real cfX, cfY;
+	int  bdryFlagX, bdryFlagY, bdryFlag2X, bdryFlag2Y;
+	real a, b;
+	real cfX, cfY, cf2X, cf2Y;
+	real etaX, etaY;
 	real uvX, uvY;
 	bool flag;
 	real x, y;
@@ -396,6 +103,7 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 	int  totalPoints = NSWithBody<memoryType>::B.totalPoints;
 
 	std::ofstream mask((folder+"/mask.txt").c_str());
+	std::ofstream eta((folder+"/eta_u.txt").c_str());
 	
 	// tag points at which u is evaluated
 	for(int j=0; j<ny; j++)
@@ -407,7 +115,9 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 			
 			// tags and coefficients
 			tags[I] = -1;
+			tags2[I] = -1;
 			coeffs[I] = 0.0;
+			coeffs2[I] = 0.0;
 			
 			// initial indices of the points on the body that define the segment under consideration
 			k = totalPoints-1;
@@ -417,10 +127,14 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 			outsideY = true;
 			bdryFlagX = -1;  // stores if a point is near the boundary
 			bdryFlagY = -1;
+			bdryFlag2X = -1;
+			bdryFlag2Y = -1;
 			uvX = 0.0;
 			uvY = 0.0;
 			cfX = 0.0;
 			cfY = 0.0;
+			cf2X = 0.0;
+			cf2Y = 0.0;
 			flag = false;
 			
 			// cycle through all the segments on the body surface
@@ -460,13 +174,16 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 						
 						// calculate the body velocity at the point of intersection
 						uvX = uB[k] + (uB[l]-uB[k]) * (yu[j]-by[k])/(by[l]-by[k]);
-						
+					
 						// if the point of intersection coincides with the grid point
 						if (fabs(x-xu[i]) < eps)
 						{
 							outsideX   = true;
 							bdryFlagX = I;
+							bdryFlag2X= I;
+							etaX      = 0.0;
 							cfX       = 0.0;
+							cf2X      = 0.0;
 							flag      = true; // flag is true when the point of intersection coincides with the grid point
 						}
 						// if the point of intersection lies to the right of the grid point (right-facing ray intersects the boundary)
@@ -476,14 +193,34 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 						// if the point of intersection is in the cell to the immediate left of the grid point
 						if (x>xu[i-1]+eps && x<xu[i]-eps)
 						{
-							bdryFlagX = I+1;
-							cfX = (xu[i]-x)/(xu[i+1]-x);
+							bdryFlagX  = I+1;
+							bdryFlag2X = I+2;
+							a = xu[i]-x;
+							b = xu[i+1]-xu[i];
+							etaX = a/b;
+							switch(interpType)
+							{
+								case CONSTANT : cfX = 0.0; cf2X = 0.0; break;
+								case LINEAR   : cfX = a/(a+b); cf2X = 0.0; break;
+								case QUADRATIC: cfX = 2*a/(a+b); cf2X = -a/(a+2*b); break;
+								default: cfX = a/(a+b); cf2X = 0.0; break;
+							}
 						}
 						// if the point of intersection is in the cell to the immediate right of the grid point
 						else if (x>xu[i]+eps && x<xu[i+1]-eps)
 						{
-							bdryFlagX = I-1;
-							cfX = (xu[i]-x)/(xu[i-1]-x);
+							bdryFlagX  = I-1;
+							bdryFlag2X = I-2;
+							a = x-xu[i];
+							b = xu[i]-xu[i-1];
+							etaX = a/b;
+							switch(interpType)
+							{
+								case CONSTANT : cfX = 0.0; cf2X = 0.0; break;
+								case LINEAR   : cfX = a/(a+b); cf2X = 0.0; break;
+								case QUADRATIC: cfX = 2*a/(a+b); cf2X = -a/(a+2*b); break;
+								default: cfX = a/(a+b); cf2X = 0.0; break;
+							}
 						}
 					}
 				}
@@ -505,7 +242,10 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 						{
 							outsideY  = true; // then the point is considered to be outside the grid
 							bdryFlagY = I;    // the point is considered to be a forcing point, with index I
+							bdryFlag2Y= I;
+							etaY      = 0.0;
 							cfY       = 0.0;  // the coefficient for the linear interpolation during forcing
+							cf2Y      = 0.0;
 							flag      = true; // flag is true when the point of intersection coincides with the grid point
 						}
 						// if the point of intersection lies to the top of the grid point
@@ -516,13 +256,33 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 						if (y>yu[j-1]+eps && y<yu[j]-eps)
 						{
 							bdryFlagY = I+(nx-1);
-							cfY = (yu[j]-y)/(yu[j+1]-y);
+							bdryFlag2Y= I+2*(nx-1);
+							a = yu[j]-y;
+							b = yu[j+1]-yu[j];
+							etaY = a/b;
+							switch(interpType)
+							{
+								case CONSTANT : cfY = 0.0; cf2Y = 0.0; break;
+								case LINEAR   : cfY = a/(a+b); cf2Y = 0.0; break;
+								case QUADRATIC: cfY = 2*a/(a+b); cf2Y = -a/(a+2*b); break;
+								default: cfY = a/(a+b); cf2Y = 0.0; break;
+							}
 						}
 						// if point of intersection is just above the concerned grid point
 						else if (y>yu[j]+eps && y<yu[j+1]-eps)
 						{
 							bdryFlagY = I-(nx-1);
-							cfY = (yu[j]-y)/(yu[j-1]-y);
+							bdryFlag2Y= I-2*(nx-1);
+							a = y-yu[j];
+							b = yu[j]-yu[j-1];
+							etaY = a/b;
+							switch(interpType)
+							{
+								case CONSTANT : cfY = 0.0; cf2Y = 0.0; break;
+								case LINEAR   : cfY = a/(a+b); cf2Y = 0.0; break;
+								case QUADRATIC: cfY = 2*a/(a+b); cf2Y = -a/(a+2*b); break;
+								default: cfY = a/(a+b); cf2Y = 0.0; break;
+							}
 						}
 					}
 				}
@@ -532,18 +292,25 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 			if (outsideX && bdryFlagX>=0)
 			{
 				tags[I]    = bdryFlagX;
-				coeffs[I] = (interpType==LINEAR)? cfX : 0.0;
+				tags2[I]   = bdryFlag2X;
+				coeffs[I]  = cfX;
+				coeffs2[I] = cf2X;
 				uv[I]      = uvX;
+				eta << etaX << std::endl;
 			}
 			else if (outsideY && bdryFlagY>=0)
 			{					
-				tags[I]   = bdryFlagY;
-				coeffs[I] = (interpType==LINEAR)? cfY : 0.0;
+				tags[I]    = bdryFlagY;
+				tags2[I]   = bdryFlag2Y;
+				coeffs[I]  = cfY;
+				coeffs2[I] = cf2Y;
 				uv[I]      = uvY;
+				eta << etaY << std::endl;
 			}
 			mask << ((outsideX || outsideY)? 1 : 0) << std::endl;
 		}
 	}
+	eta.close();
 	
 	std::ofstream file((folder+"/tagx.txt").c_str());
 	for(int j=0; j<ny; j++)
@@ -567,6 +334,8 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 		}
 	}
 	file.close();
+
+	eta.open((folder+"/eta_v.txt").c_str());
 
 	real *xv = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->xv[0])),
 	     *yv = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->yv[0]));
@@ -638,10 +407,13 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 						// if the point of intersection coincides with the grid point
 						if (fabs(x-xv[i]) < eps)
 						{
-							outsideX   = true;
-							flag      = true;
+							outsideX   = true;							
 							bdryFlagX = I;
+							bdryFlag2X= I;
+							etaX      = 0.0;
 							cfX       = 0.0;
+							cf2X      = 0.0;
+							flag      = true;
 						}
 						// if the point of intersection lies to the right of the grid point
 				 		else if (x > xv[i]+eps)
@@ -650,14 +422,34 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 						// if the point of intersection is in the cell to the immediate right of the grid point
 						if (x>xv[i-1]+eps && x<xv[i]-eps)
 						{
-							bdryFlagX = I+1;
-							cfX = (xv[i]-x)/(xv[i+1]-x);
+							bdryFlagX  = I+1;
+							bdryFlag2X = I+2;
+							a = xv[i]-x;
+							b = xv[i+1]-xv[i];
+							etaX = a/b;
+							switch(interpType)
+							{
+								case CONSTANT : cfX = 0.0; cf2X = 0.0; break;
+								case LINEAR   : cfX = a/(a+b); cf2X = 0.0; break;
+								case QUADRATIC: cfX = 2*a/(a+b); cf2X = -a/(a+2*b); break;
+								default: cfX = a/(a+b); cf2X = 0.0; break;
+							}
 						}
 						// if the point of intersection is in the cell to the immediate left of the grid point
 						else if (x>xv[i]+eps && x<xv[i+1]-eps)
 						{
-							bdryFlagX = I-1;
-							cfX = (xv[i]-x)/(xv[i-1]-x);
+							bdryFlagX  = I-1;
+							bdryFlag2X = I-2;
+							a = x-xv[i];
+							b = xv[i]-xv[i-1];
+							etaX = a/b;
+							switch(interpType)
+							{
+								case CONSTANT : cfX = 0.0; cf2X = 0.0; break;
+								case LINEAR   : cfX = a/(a+b); cf2X = 0.0; break;
+								case QUADRATIC: cfX = 2*a/(a+b); cf2X = -a/(a+2*b); break;
+								default: cfX = a/(a+b); cf2X = 0.0; break;
+							}
 						}
 					}
 				}
@@ -677,7 +469,10 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 						{
 							outsideY   = true;
 							bdryFlagY = I;
+							bdryFlag2Y= I;
+							etaY      = 0.0;
 							cfY       = 0.0;
+							cf2Y      = 0.0;
 							flag      = true;
 						}
 						// if the point of intersection lies to the top of the grid point
@@ -686,13 +481,33 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 
 						if (y>yv[j-1]+eps && y<yv[j]-eps)
 						{
-							bdryFlagY = I+nx;
-							cfY = (yv[j]-y)/(yv[j+1]-y);
+							bdryFlagY  = I+nx;
+							bdryFlag2Y = I+2*nx;
+							a = yv[j]-y;
+							b = yv[j+1]-yv[j];
+							etaY = a/b;
+							switch(interpType)
+							{
+								case CONSTANT : cfY = 0.0; cf2Y = 0.0; break;
+								case LINEAR   : cfY = a/(a+b); cf2Y = 0.0; break;
+								case QUADRATIC: cfY = 2*a/(a+b); cf2Y = -a/(a+2*b); break;
+								default: cfY = a/(a+b); cf2Y = 0.0; break;
+							}
 						}
 						else if (y>yv[j]+eps && y<yv[j+1]-eps)
 						{
-							bdryFlagY = I-nx;
-							cfY = (yv[j]-y)/(yv[j-1]-y);
+							bdryFlagY  = I-nx;
+							bdryFlag2Y = I-2*nx;
+							a = y-yv[j];
+							b = yv[j]-yv[j-1];
+							etaY = a/b;
+							switch(interpType)
+							{
+								case CONSTANT : cfY = 0.0; cf2Y = 0.0; break;
+								case LINEAR   : cfY = a/(a+b); cf2Y = 0.0; break;
+								case QUADRATIC: cfY = 2*a/(a+b); cf2Y = -a/(a+2*b); break;
+								default: cfY = a/(a+b); cf2Y = 0.0; break;
+							}
 						}
 					}
 				}
@@ -701,19 +516,26 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 			}
 			if (outsideY && bdryFlagY>=0)
 			{					
-				tags[I]   = bdryFlagY;
-				coeffs[I] = (interpType==LINEAR)? cfY : 0.0;
-				uv[I]     = uvY;
+				tags[I]    = bdryFlagY;
+				tags2[I]   = bdryFlag2Y;
+				coeffs[I]  = cfY;
+				coeffs2[I] = cf2Y;
+				uv[I]      = uvY;
+				eta << etaY << std::endl;
 			}
 			else if (outsideX && bdryFlagX>=0)
 			{
-				tags[I]   = bdryFlagX;
-				coeffs[I] = (interpType==LINEAR)? cfX : 0.0;
-				uv[I]     = uvX;
+				tags[I]    = bdryFlagX;
+				tags2[I]   = bdryFlag2X;
+				coeffs[I]  = cfX;
+				coeffs2[I] = cf2X;
+				uv[I]      = uvX;
+				eta << etaX << std::endl;
 			}
 			mask << ((outsideX || outsideY)? 1 : 0) << std::endl;
 		}
 	}
+	eta.close();
 	mask.close();
 	
 	file.open((folder+"/tagy.txt").c_str());
@@ -739,4 +561,3 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 	}
 	file.close();
 }
-#endif

@@ -1,14 +1,30 @@
+/***************************************************************************//**
+ * \file generateL.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c DirectForcingSolver to generate
+ *        the Laplacian matrix.
+ */
+
+
 /*template <typename memoryType>
 void DirectForcingSolver<memoryType>::generateL()
 {
 	
 }*/
 
+/**
+ * \brief Sets up the Laplacian matrix for the implicit diffusion term. 
+ *        Uses second order central differences on the non-uniform grid.
+ */
 template <>
 void DirectForcingSolver<host_memory>::generateL() 
 {
 }
 
+/**
+ * \brief Sets up the Laplacian matrix for the implicit diffusion term. 
+ *        Uses second order central differences on the non-uniform grid.
+ */
 template <>
 void DirectForcingSolver<device_memory>::generateL() 
 {
@@ -93,14 +109,18 @@ void DirectForcingSolver<device_memory>::generateL()
 			if(j>0)  // no south coefficient for the bottom row
 			{
 				LHost.row_indices[num_elements] = I;
-				LHost.column_indices[num_elements] = I - (nx-1);
+				LHost.column_indices[num_elements] = I-(nx-1);
+				LHost.values[num_elements] = 0.0;
 				
 				if(notBdryNode)	// if the interpolation is definitely not taking place
 					LHost.values[num_elements] = Cy1 * scale / dy[j-1];
-				else if(tags[I] == I-(nx-1) && interpType==LINEAR)
+				else if(tags[I]==I-(nx-1) && interpType==LINEAR)
 					LHost.values[num_elements] = coeffs[I] /dt * scale / dy[j-1];
-				else
-					LHost.values[num_elements] = 0.0;
+				else if((tags2[I]==I-2 || tags2[I]==I-2*(nx-1)) && interpType==QUADRATIC)
+				{
+					LHost.column_indices[num_elements] = tags2[I];
+					LHost.values[num_elements] = coeffs2[I] /dt * scale / dy[j-1];
+				}
 					
 				num_elements++;
 			}
@@ -108,14 +128,18 @@ void DirectForcingSolver<device_memory>::generateL()
 			if(i>0)  // no west coefficient for the leftmost column			
 			{
 				LHost.row_indices[num_elements] = I;
-				LHost.column_indices[num_elements] = I - 1;
+				LHost.column_indices[num_elements] = I-1;
+				LHost.values[num_elements] = 0.0;
 				
 				if(notBdryNode)
 					LHost.values[num_elements] = Cx1 * scale / dy[j];
-				else if(tags[I] == I-1 && interpType==LINEAR)
+				else if(tags[I]==I-1)
 					LHost.values[num_elements] = coeffs[I] /dt * scale / dy[j];
-				else
-					LHost.values[num_elements] = 0.0;
+				else if(tags[I]==I-(nx-1) && interpType==QUADRATIC)
+				{
+					LHost.column_indices[num_elements] = I-(nx-1);
+					LHost.values[num_elements] = coeffs[I] /dt * scale / dy[j];
+				}
 					
 				num_elements++;
 			}
@@ -131,26 +155,38 @@ void DirectForcingSolver<device_memory>::generateL()
 			if(i<nx-2)  // no east coefficient for the rightmost column
 			{
 				LHost.row_indices[num_elements] = I;
-				LHost.column_indices[num_elements] = I + 1;
+				LHost.column_indices[num_elements] = I+1;
+				LHost.values[num_elements] = 0.0;
+
 				if(notBdryNode)
 					LHost.values[num_elements] = Cx0 * scale / dy[j];
-				else if(tags[I] == I+1 && interpType==LINEAR)
+				else if(tags[I]==I+1)
 					LHost.values[num_elements] = coeffs[I] /dt * scale / dy[j];
-				else
-					LHost.values[num_elements] = 0.0;
+				else if(tags[I]==I+(nx-1) && interpType==QUADRATIC)
+				{
+					LHost.column_indices[num_elements] = I+(nx-1);
+					LHost.values[num_elements] = coeffs[I] /dt * scale / dy[j];
+				}
+
 				num_elements++;
 			}
 			// north
 			if(j<ny-1)
 			{
 				LHost.row_indices[num_elements] = I;
-				LHost.column_indices[num_elements] = I + (nx-1);
+				LHost.column_indices[num_elements] = I+(nx-1);
+				LHost.values[num_elements] = 0.0;
+
 				if(notBdryNode)	
 					LHost.values[num_elements] = Cy0 * scale / dy[j+1];
-				else if(tags[I] == I+(nx-1) && interpType==LINEAR)
+				else if(tags[I]==I+(nx-1) && interpType==LINEAR)
 					LHost.values[num_elements] = coeffs[I] /dt * scale / dy[j+1];
-				else
-					LHost.values[num_elements] = 0.0;
+				else if((tags2[I]==I+2 || tags2[I]==I+2*(nx-1)) && interpType==QUADRATIC)
+				{
+					LHost.column_indices[num_elements] = tags2[I];
+					LHost.values[num_elements] = coeffs2[I] /dt * scale / dy[j+1];
+				}
+				
 				num_elements++;
 			}
 		}
@@ -191,26 +227,38 @@ void DirectForcingSolver<device_memory>::generateL()
 			if(j>0)  // no south coefficient for the bottom row
 			{
 				LHost.row_indices[num_elements] = I;
-				LHost.column_indices[num_elements] = I - nx;
+				LHost.column_indices[num_elements] = I-nx;
+				LHost.values[num_elements] = 0.0;
+
 				if(notBdryNode)
 					LHost.values[num_elements] = Cy1 * scale / dx[i];
-				else if(tags[I] == I-nx && interpType==LINEAR)
+				else if(tags[I]==I-nx && interpType==LINEAR)
 					LHost.values[num_elements] = coeffs[I] /dt * scale / dx[i];
-				else
-					LHost.values[num_elements] = 0.0;
+				else if((tags2[I]==I-2 || tags2[I]==I-2*nx) && interpType==QUADRATIC)
+				{
+					LHost.column_indices[num_elements] = tags2[I];
+					LHost.values[num_elements] = coeffs2[I] /dt * scale / dx[i];
+				}
+
 				num_elements++;
 			}
 			// west
 			if(i>0)  // no west coefficient for the leftmost column			
 			{
 				LHost.row_indices[num_elements] = I;
-				LHost.column_indices[num_elements] = I - 1;
+				LHost.column_indices[num_elements] = I-1;
+				LHost.values[num_elements] = 0.0;
+
 				if(notBdryNode)
 					LHost.values[num_elements] = Cx1 * scale / dx[i-1];
-				else if(tags[I]==I-1 && interpType==LINEAR)
+				else if(tags[I]==I-1)
 					LHost.values[num_elements] = coeffs[I] /dt * scale / dx[i-1];
-				else
-					LHost.values[num_elements] = 0.0;
+				else if(tags[I]==I-nx && interpType==QUADRATIC)
+				{
+					LHost.column_indices[num_elements] = I-nx;
+					LHost.values[num_elements] = coeffs[I] /dt * scale / dx[i-1];
+				}
+
 				num_elements++;
 			}
 			// centre
@@ -225,26 +273,38 @@ void DirectForcingSolver<device_memory>::generateL()
 			if(i<nx-1)  // no east coefficient for the rightmost column
 			{
 				LHost.row_indices[num_elements] = I;
-				LHost.column_indices[num_elements] = I + 1;
+				LHost.column_indices[num_elements] = I+1;
+				LHost.values[num_elements] = 0.0;
+
 				if(notBdryNode)
 					LHost.values[num_elements] = Cx0 * scale / dx[i+1];
-				else if(tags[I]==I+1 && interpType==LINEAR)
+				else if(tags[I]==I+1)
 					LHost.values[num_elements] = coeffs[I] /dt * scale / dx[i+1];
-				else
-					LHost.values[num_elements] = 0.0;
+				else if(tags[I]==I+nx && interpType==QUADRATIC)
+				{
+					LHost.column_indices[num_elements] = I+nx;
+					LHost.values[num_elements] = coeffs[I] /dt * scale / dx[i+1];
+				}
+
 				num_elements++;
 			}
 			// north
 			if(j<ny-2)
 			{
 				LHost.row_indices[num_elements] = I;
-				LHost.column_indices[num_elements] = I + nx;
+				LHost.column_indices[num_elements] = I+nx;
+				LHost.values[num_elements] = 0.0;
+
 				if(notBdryNode)
 					LHost.values[num_elements] = Cy0 * scale / dx[i];
-				else if(tags[I] == I+nx && interpType==LINEAR)
+				else if(tags[I]==I+nx && interpType==LINEAR)
 					LHost.values[num_elements] = coeffs[I] /dt * scale / dx[i];
-				else
-					LHost.values[num_elements] = 0.0;
+				else if((tags2[I]==I+2 || tags2[I]==I+2*nx) && interpType==QUADRATIC)
+				{
+					LHost.column_indices[num_elements] = tags2[I];
+					LHost.values[num_elements] = coeffs2[I] /dt * scale / dx[i];
+				}
+					
 				num_elements++;
 			}
 		}

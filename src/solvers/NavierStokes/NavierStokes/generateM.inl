@@ -1,5 +1,20 @@
+/***************************************************************************//**
+ * \file generateM.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods to generate the mass matrix and its inverse.
+ */
+
+
 #include <solvers/NavierStokes/kernels/generateM.h>
 
+
+/**
+ * \brief Generates the mass matrix and its inverse (on the host).
+ *
+ * The mass diagonal matrix is stored in a COO format. 
+ * The time-increment value is included in the matrix.
+ *
+ */
 template <>
 void NavierStokesSolver<host_memory>::generateM()
 {
@@ -50,6 +65,13 @@ void NavierStokesSolver<host_memory>::generateM()
 	}
 }
 
+/**
+ * \brief Generates the mass matrix and its inverse (on the device).
+ *
+ * The mass diagonal matrix is stored in a COO format. 
+ * The time-increment value is included in the matrix.
+ *
+ */
 template<>
 void NavierStokesSolver<device_memory>::generateM()
 {

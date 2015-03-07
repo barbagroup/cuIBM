@@ -1,7 +1,21 @@
+/***************************************************************************//**
+ * \file generateRN.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods to generate 
+ *        the explicit terms of the momentum equation.
+ */
+
+
 #include <solvers/NavierStokes/kernels/generateRN.h>
 
 #define BSZ 16
 
+
+/**
+ * \brief Doing nothing. Used in methods that use the explicit pressure term 
+ *        in the intermediate velocity solve step, such as FadlunEtAlSolver
+ *        and DFModifiedSolver.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::calculateExplicitLambdaTerms()
 {
@@ -25,6 +39,10 @@ void NavierStokesSolver<memoryType>::calculateExplicitLambdaTerms()
 */
 }
 
+/**
+ * \brief Generates explicit terms that arise from the velocity fluxes (on the device).
+ *        Includes the time derivative, convection and diffusion terms.
+ */
 template <>
 void NavierStokesSolver<device_memory>::calculateExplicitQTerms()
 {
@@ -74,6 +92,11 @@ void NavierStokesSolver<device_memory>::calculateExplicitQTerms()
 	kernels::convectionTermVLeftRight <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, nu, yminus, yplus, xminus, xplus);
 }
 
+/**
+ * \brief Generates explicit terms that arise from the velocity fluxes (on the host).
+ *        Includes the time derivative, convection and diffusion terms.
+ *        Currently incomplete. Need to fill in the diffusion terms.
+ */
 template <>
 void NavierStokesSolver<host_memory>::calculateExplicitQTerms()
 {
@@ -165,6 +188,9 @@ void NavierStokesSolver<host_memory>::calculateExplicitQTerms()
 	}
 }
 
+/**
+ * \brief Generates explicit terms of the momentum equation.
+ */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::generateRN()
 {

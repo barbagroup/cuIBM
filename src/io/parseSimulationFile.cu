@@ -1,13 +1,33 @@
+/***************************************************************************//**
+ * \file parseSimulationFile.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Parses the file \a simParams.yaml and stores the numerical 
+ *        parameters used in the simulation.
+ */
+
+
+#include <fstream>
+#include <yaml-cpp/yaml.h>
 #include "io.h"
 #include <parameterDB.h>
-#include <yaml-cpp/yaml.h>
-#include <fstream>
 
+
+/**
+ * \namespace io
+ * \brief Contains functions related to I/O tasks.
+ */
 namespace io
 {
 
 using std::string;
 
+/**
+ * \brief Converts a string to a time-integration scheme type.
+ *
+ * \param s the string that describes the time-integration scheme
+ *
+ * \return a time-integration scheme type
+ */
 timeScheme timeSchemeFromString(string &s)
 {
   if (s == "EULER_EXPLICIT")
@@ -24,6 +44,13 @@ timeScheme timeSchemeFromString(string &s)
     return EULER_EXPLICIT;
 }
 
+/**
+ * \brief Converts a string to a prconditioner type.
+ *
+ * \param s the string that describes the preconditioner
+ *
+ * \return a preconditioner type
+ */
 preconditionerType preconditionerTypeFromString(string &s)
 {
   if (s == "NONE")
@@ -32,10 +59,19 @@ preconditionerType preconditionerTypeFromString(string &s)
     return DIAGONAL;
   else if (s == "SMOOTHED_AGGREGATION")
     return SMOOTHED_AGGREGATION;
+  else if (s == "AINV")
+    return AINV;
   else
     return NONE;
 }
 
+/**
+ * \brief Converts a string to an IBM scheme.
+ *
+ * \param s the string that describes the IBM scheme
+ *
+ * \return an IBM-scheme type
+ */
 ibmScheme ibmSchemeFromString(string &s)
 {
   if (s == "NAVIER_STOKES")
@@ -48,20 +84,43 @@ ibmScheme ibmSchemeFromString(string &s)
     return TAIRA_COLONIUS;
   else if (s == "FADLUN_ET_AL")
     return FADLUN_ET_AL;
+  else if (s == "DIFFUSION")
+    return DIFFUSION;
+  else if (s == "DF_MODIFIED")
+    return DF_MODIFIED;
+  else if (s == "FEA_MODIFIED")
+    return FEA_MODIFIED;
+  else if (s == "DF_IMPROVED")
+    return DF_IMPROVED;
   else
     return NAVIER_STOKES;
 }
 
+/**
+ * \brief Converts a string to a interpolation type.
+ *
+ * \param s the string that describes the type of interpolation
+ *
+ * \return an interpolation type
+ */
 interpolationType interpolationTypeFromString(string &s)
 {
-  if (s == "CONSTANT")
-    return CONSTANT;
-  else if (s == "LINEAR")
-    return LINEAR;
-  else
-    return LINEAR;
+	if (s == "CONSTANT")
+		return CONSTANT;
+	else if (s == "LINEAR")
+		return LINEAR;
+	else if (s == "QUADRATIC")
+		return QUADRATIC;
+	else
+		return LINEAR;
 }
 
+/**
+ * \brief Fills the database with the simulation parameters.
+ *
+ * \param node the parsed file
+ * \param DB database that contains the simulation parameters
+ */
 void parseSimulation(const YAML::Node &node, parameterDB &DB)
 {
 	real   dt = 0.02,
@@ -171,6 +230,12 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 	}
 }
 
+/**
+ * \brief Parses \a simParams.yaml and stores the simulation parameters.
+ *
+ * \param simFile the file that contains the simulation parameters
+ * \param DB the database that will be filled
+ */
 void parseSimulationFile(std::string &simFile, parameterDB &DB)
 {
 	std::ifstream fin(simFile.c_str());

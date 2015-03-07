@@ -1,14 +1,32 @@
-#include "io.h"
-#include <yaml-cpp/yaml.h>
-#include <body.h>
-#include <vector>
-#include <fstream>
+/***************************************************************************//**
+ * \file parseBodiesFile.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Parses the file \a bodies.yaml to get information about immersed bodies.
+ */
 
+
+#include <fstream>
+#include <vector>
+#include <yaml-cpp/yaml.h>
+#include "io.h"
+#include <body.h>
+
+
+/**
+ * \namespace io
+ * \brief Contains functions related to I/O tasks.
+ */
 namespace io
 {
 
 using std::string;
 
+/**
+ * \brief Overloads the operator >>. Stores information about an immersed body.
+ *
+ * \param node the parsed file
+ * \param instance of the class \c body to be filled
+ */
 void operator >> (const YAML::Node &node, body &Body)
 {
 	try
@@ -100,7 +118,7 @@ void operator >> (const YAML::Node &node, body &Body)
 	{
 	}
 
-	// get the type of Body and read in appropriate details
+	// get the type of body and read in appropriate details
 	string type;
 	node["type"] >> type;
 	if (type == "points")
@@ -155,6 +173,12 @@ void operator >> (const YAML::Node &node, body &Body)
 	printf("\nnumPoints: %d",Body.numPoints);
 }
 
+/**
+ * \brief Parses the \a bodies.yaml file and stores information about the immersed bodies.
+ *
+ * \param bodiesFile the file that contains information about the immersed bodies
+ * \param DB the database that contains the simulation parameters 
+ */
 void parseBodiesFile(std::string &bodiesFile, parameterDB &DB)
 {
 	std::ifstream fin(bodiesFile.c_str());
@@ -173,4 +197,3 @@ void parseBodiesFile(std::string &bodiesFile, parameterDB &DB)
 }
 
 } // end namespace io
-

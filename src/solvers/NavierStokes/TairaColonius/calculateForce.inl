@@ -1,5 +1,21 @@
+/***************************************************************************//**
+ * \file calculateForce.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c TairaColoniusSolver
+ *        to calculate forces acting on each immersed body.
+ */
+
+
 #include <solvers/NavierStokes/kernels/calculateForce.h>
 
+
+/**
+ * \brief Calculates forces acting on each immersed body.
+ *
+ * For each immersed body, it spreads the Lagrangian forces on the Eulerian grid
+ * and sum the entire field to get the x- and y- components of the force.
+ *
+ */
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::calculateForce()
 {

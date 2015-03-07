@@ -1,12 +1,26 @@
+/***************************************************************************//**
+ * \file io.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the functions of the namespace \c io.
+ */
+
+
+#include <sys/stat.h>
 #include "io.h"
 #include <types.h>
-#include <sys/stat.h>
 #include <boundaryCondition.h>
 
 using std::string;
 using std::ios;
 
-/// convert string to real number or integer
+
+/**
+ * \brief Converts a string to a number.
+ *
+ * \param str a string
+ *
+ * \return a number (\c real or \c integer)
+ */
 template <typename T>
 T toNumber(string str)
 {
@@ -16,9 +30,22 @@ T toNumber(string str)
      return num;
 }
 
+/**
+ * \namespace io
+ * \brief Contains functions related to I/O tasks.
+ */
 namespace io
 {
 
+/**
+ * \brief Splits a string given a delimiter.
+ *
+ * \param s the string to split
+ * \param delim the delimiter
+ * \param elems the vector that contains the different elements of the string
+ *
+ * \return a vector that contains the different elements of the string
+ */
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss(s);
     std::string item;
@@ -28,13 +55,27 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
     return elems;
 }
 
-
+/**
+ * \brief Splits a string given a delimiter.
+ *
+ * \param s the string to split
+ * \param delim the delimiter
+ *
+ * \return a vector that contains the different elements of the string
+ */
 std::vector<std::string> split(const std::string &s, char delim) {
     std::vector<std::string> elems;
     split(s, delim, elems);
     return elems;
 }
 
+/**
+ * \brief Creates a directory.
+ *
+ * If the parent directory does not exist, it will be created.
+ *
+ * \param folderPath the path of the directory to create
+ */
 void makeDirectory(const std::string folderPath)
 {
 	std::vector<std::string> x = split(folderPath, '/');
@@ -51,11 +92,18 @@ void makeDirectory(const std::string folderPath)
 	}
 }
 
-
 //##############################################################################
 //                                 INPUT
 //##############################################################################
-	
+
+/**
+ * \brief Reads data inputs from the command-line and the simulation files.
+ *
+ * \param argc number of arguments in the command-line
+ * \param argv command-line arguments
+ * \param DB database that contains all the simulation parameters
+ * \param D object of the class \c domain that contains the computational grid
+ */
 void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 {
 	// get a default database
@@ -87,6 +135,11 @@ void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 	commandLineParse2(argc, argv, DB);
 }
 
+/**
+ * \brief Initializes the database with default values.
+ *
+ * \param DB database that contains all the simulation parameters
+ */
 void initialiseDefaultDB(parameterDB &DB)
 {
 	DB["inputs"] = componentParameter();
@@ -109,6 +162,7 @@ void initialiseDefaultDB(parameterDB &DB)
 	std::vector<body> *bodyVec = new std::vector<body>;
 	DB[flow]["bodies"].set<std::vector<body> *>(bodyVec);
 
+	// boundary conditions
 	boundaryCondition **bc = new boundaryCondition*[4];
 	for (int i=0; i<4; i++)
 		bc[i] = new boundaryCondition[2];
@@ -141,7 +195,14 @@ void initialiseDefaultDB(parameterDB &DB)
 	DB[solver]["maxIterations"].set<int>(20000);
 }
 
-// first pass - only get the files to continue
+/**
+ * \brief Parses the command-line to get the case folder name 
+ *        and the device number.
+ *
+ * \param argc number of arguments in the command-line
+ * \param argv arguments of the command-line
+ * \param DB database that contains all the simulation parameters
+ */
 void commandLineParse1(int argc, char **argv, parameterDB &DB)
 {
 	for (int i=1; i<argc; i++)
@@ -156,12 +217,19 @@ void commandLineParse1(int argc, char **argv, parameterDB &DB)
 			i++;
 			int devNum = toNumber<int>(string(argv[i]));
 			DB["inputs"]["deviceNumber"].set<int>(devNum);
+			// sets devNum as the current device for the calling host thread
 			cudaSetDevice(devNum);
 		}
 	}
 }
 
-// overwrite values in the DB from command line
+/**
+ * \brief Overwrites parameters with additional arguments of the command-line. 
+ *
+ * \param argc number of arguments in the command-line
+ * \param argv arguments of the command-line
+ * \param DB database that contains all the simulation parameters
+ */
 void commandLineParse2(int argc, char **argv, parameterDB &DB)
 {
 	for (int i=1; i<argc; i++)
@@ -235,21 +303,24 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			else
 			if ( strcmp(argv[i],"TairaColonius")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(TAIRA_COLONIUS);
-			else 
+			else
 			if ( strcmp(argv[i],"DirectForcing")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(DIRECT_FORCING);
-			else 
+			else
 			if ( strcmp(argv[i],"FadlunEtAl")==0 )
 				DB["simulation"]["ibmScheme"].set<ibmScheme>(FADLUN_ET_AL);
+			else
+			if ( strcmp(argv[i],"Diffusion")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(DIFFUSION);
+			else
+			if ( strcmp(argv[i],"DFModified")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(DF_MODIFIED);
+			else
+			if ( strcmp(argv[i],"FEAModified")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(FEA_MODIFIED);
 			else 
-			if ( strcmp(argv[i],"SLL0")==0 )
-				DB["simulation"]["ibmScheme"].set<ibmScheme>(SLL0);
-			else 
-			if ( strcmp(argv[i],"SLL1")==0 )
-				DB["simulation"]["ibmScheme"].set<ibmScheme>(SLL1);
-			else 
-			if ( strcmp(argv[i],"SLL2")==0 )
-				DB["simulation"]["ibmScheme"].set<ibmScheme>(SLL2);
+			if ( strcmp(argv[i],"DFImproved")==0 )
+				DB["simulation"]["ibmScheme"].set<ibmScheme>(DF_IMPROVED);
 		}
 		// interpolation type for Eulerian direct forcing methods
 		if ( strcmp(argv[i],"-interpolationType")==0 )
@@ -260,6 +331,9 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			else
 			if ( strcmp(argv[i],"linear")==0 )
 				DB["simulation"]["interpolationType"].set<interpolationType>(LINEAR);
+			else
+			if ( strcmp(argv[i],"quadratic")==0 )
+				DB["simulation"]["interpolationType"].set<interpolationType>(QUADRATIC);
 		}
 	}
 }
@@ -268,6 +342,13 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 //                                OUTPUT
 //##############################################################################
 
+/**
+ * \brief Converts a \c preconditionerType to a \c std::string.
+ *
+ * \param s a preconditioner
+ *
+ * \return a string
+ */
 string stringFromPreconditionerType(preconditionerType s)
 {
   if (s == NONE)
@@ -276,10 +357,19 @@ string stringFromPreconditionerType(preconditionerType s)
     return "Diagonal";
   else if (s == SMOOTHED_AGGREGATION)
     return "Smoothed Aggregation";
+  else if (s == AINV)
+    return "Approximate Inverse";
   else
     return "Unrecognised preconditioner";
 }
 
+/**
+ * \brief Converts a \c timeScheme to a \c std::string.
+ *
+ * \param s a time-integration scheme
+ *
+ * \return a string
+ */
 string stringFromTimeScheme(timeScheme s)
 {
 	if (s == EULER_EXPLICIT)
@@ -294,7 +384,12 @@ string stringFromTimeScheme(timeScheme s)
 		return "Unknown";
 }
 
-// output
+/**
+ * \brief Prints the parameters of the simulation.
+ *
+ * \param DB database that contains all the simulation parameters
+ * \param D information about the computational grid
+ */
 void printSimulationInfo(parameterDB &DB, domain &D)
 {
 	real dt = DB["simulation"]["dt"].get<real>(),
@@ -325,13 +420,14 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "nsave = " << nsave << '\n';
 	std::cout << "Convection time scheme = " << stringFromTimeScheme(DB["simulation"]["convTimeScheme"].get<timeScheme>()) << '\n';
 	std::cout << "Diffusion time scheme  = " << stringFromTimeScheme(DB["simulation"]["diffTimeScheme"].get<timeScheme>()) << '\n';
-	if(ibmSchm==FADLUN_ET_AL || ibmSchm==DIRECT_FORCING)
+	if(ibmSchm==FADLUN_ET_AL || ibmSchm==DIRECT_FORCING || ibmSchm==DIFFUSION || ibmSchm==DF_IMPROVED || ibmSchm==DF_MODIFIED || ibmSchm==FEA_MODIFIED)
 	{
 		std::cout << "Interpolation type: ";
 		switch(interpType)
 		{
-			case CONSTANT: std::cout << "Constant\n"; break;
-			case LINEAR  : std::cout << "Linear\n"; break;
+			case CONSTANT : std::cout << "Constant\n"; break;
+			case LINEAR   : std::cout << "Linear\n"; break;
+			case QUADRATIC: std::cout << "Quadratic\n"; break;
 			default : std::cout << "Unknown\n"; break;
 		}
 	}
@@ -365,12 +461,23 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "ECC Enabled = " << ecc << std::endl;
 }
 
+/**
+ * \brief Prints the time spent to execute tasks.
+ *
+ * \param logger object that contains the name and time spent of tasks
+ */
 void printTimingInfo(Logger &logger)
 {
 	logger.printAllTime();
 	std::cout << std::endl;
 }
 
+/**
+ * \brief Writes information about the run into the file \a run.info.
+ *
+ * \param DB database that contains all the simulation parameters
+ * \param D information about the computational grid
+ */
 void writeInfoFile(parameterDB &DB, domain &D)
 {
 	std::string   folder = DB["inputs"]["caseFolder"].get<string>();
@@ -387,6 +494,12 @@ void writeInfoFile(parameterDB &DB, domain &D)
 	infofile.close();
 }
 
+/**
+ * \brief Writes grid-points coordinates into the file \a grid.
+ *
+ * \param caseFolder the directory of the simulation
+ * \param D information about the computational grid
+ */
 void writeGrid(std::string &caseFolder, domain &D)
 {
 	std::stringstream out;
@@ -399,6 +512,19 @@ void writeGrid(std::string &caseFolder, domain &D)
 	file.close();
 }
 
+/**
+ * \brief Writes numerical data at a given time-step (on the host).
+ *
+ * It creates a directory whose name is the time-step number
+ * and writes the flux, the pressure (and eventually the body forces)
+ * into the files \a q, \a lambda, respectively.
+ *
+ * \param caseFolder directory of the simulation
+ * \param n the time-step number
+ * \param q array that contains the fluxes
+ * \param lambda array that contains the pressures (and eventually the body forces)
+ * \param D information about the computational grid
+ */
 template <>
 void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, domain &D)//, bodies &B)
 {
@@ -430,6 +556,19 @@ void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, doma
 	std::cout << "Data saved to folder " << path << std::endl;
 }
 
+/**
+ * \brief Writes numerical data at a given time-step (on the device).
+ *
+ * It creates a directory whose name is the time-step number
+ * and writes the flux, the pressure (and eventually the body forces)
+ * into the files \a q, \a lambda, respectively.
+ *
+ * \param caseFolder directory of the simulation
+ * \param n the time-step number
+ * \param q array that contains the fluxes
+ * \param lambda array that contains the pressures (and eventually the body forces)
+ * \param D information about the computational grid
+ */
 template <>
 void writeData<vecD>(std::string &caseFolder, int n, vecD &q, vecD &lambda, domain &D)//, bodies &B)
 {
@@ -439,6 +578,11 @@ void writeData<vecD>(std::string &caseFolder, int n, vecD &q, vecD &lambda, doma
 	writeData(caseFolder, n, qH, lambdaH, D);
 }
 
+/**
+ * \brief Prints device memory usage.
+ *
+ * \param label the label of the device
+ */
 void printDeviceMemoryUsage(char *label)
 {
 	size_t _free, _total;

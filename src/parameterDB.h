@@ -1,7 +1,9 @@
-/**
-* @file  parameterDB.h
-* @brief Database of all the simluation parameters
-*/
+/***************************************************************************//**
+ * \file parameterDB.h
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Declaration of the class \c property.
+ */
+
 
 #pragma once
 
@@ -11,12 +13,14 @@
 #include <map>
 #include <sstream>
 #include <iostream>
+
 #include "boundaryCondition.h"
 
-// generic property storage
+
 /**
-* @class property
-*/
+ * \class property
+ * \brief Stores information about a property in a generic way.
+ */
 class property
 {
 	template <typename T> T getInternal();
@@ -28,35 +32,34 @@ class property
 	char value[256];
 
 public:
-	/// Constructor. Intialises the memory to zero.
+	/**
+	 * \brief Constructor. Initializes the memory to zero.
+	 */
 	property()
 	{
 		memset(value, 0, 256);
 	}
 	
-	/// Get a value given a type
+	// get the value of the property as a given type
 	template <typename T> T get();
 	
-	/**
-	* @brief Set a value given a type
-	*
-	* @param v The value
-	*/
+	// set the value of the property given a type
 	template <typename T> void set(T v);
 
-	// return string describing value of property as appropriate
+	// return a string describing the value
 	const char *print();
 };
 
 /**
-* @typedef componentParameter
-* @typedef Maps from strings to a property 
-*/
+ * \typedef componentParameter
+ * \brief Map from a string to a \c property object.
+ */
 typedef std::map<std::string, property> componentParameter;
 
 /**
-* @typedef parameterDB
-*/
+ * \typedef parameterDB
+ * \brief Map from a string to a \c componentParameter.
+ */
 typedef std::map<std::string, componentParameter> parameterDB;
 
 // output a DB
@@ -71,4 +74,3 @@ void printDB(parameterDB &DB)
   }
 }
 */
-

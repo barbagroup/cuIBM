@@ -1,5 +1,18 @@
+/***************************************************************************//**
+ * \file generateBC1.inl
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods to generate 
+ *        inhomogeneous boundary conditions from the discrete Laplacian operator.
+ */
+
+
 #include <solvers/NavierStokes/kernels/generateBC1.h>
 
+
+/**
+ * \brief Generates inhomogeneous boundary conditions 
+ *        from the discrete Laplacian operator (on the device).
+ */
 template <>
 void NavierStokesSolver<device_memory>::generateBC1()
 {
@@ -35,7 +48,7 @@ void NavierStokesSolver<device_memory>::generateBC1()
 	
 	int  numU  = (nx-1)*ny;
 	
-	// zero the bc1 vector
+	// initialize vector bc1 with zeros
 	cusp::blas::fill(bc1, 0.0);
 	
 	dim3 dimGridx( int((nx - 0.5)/blocksize) + 1, 1),
@@ -145,6 +158,10 @@ void NavierStokesSolver<device_memory>::generateBC1()
 	logger.stopTimer("generateBC1");
 }
 
+/**
+ * \brief Generates inhomogeneous boundary conditions 
+ *        from the discrete Laplacian operator (on the host).
+ */
 template <>
 void NavierStokesSolver<host_memory>::generateBC1()
 {

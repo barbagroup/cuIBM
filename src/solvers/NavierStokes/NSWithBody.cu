@@ -1,7 +1,18 @@
+/***************************************************************************//**
+ * \file NSWithBody.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the methods of the class \c NSWithBody.
+ */
+
+
 #include "NSWithBody.h"
 #include "kernels/calculateForce.h"
 
-/// Initialise the bodies
+
+/**
+ * \brief Stores the parameters of the simulation and initializes the location
+ *        and motion of each immersed bodies.
+ */
 template <typename memoryType>
 void NSWithBody<memoryType>::initialiseBodies()
 {
@@ -18,7 +29,9 @@ void NSWithBody<memoryType>::initialiseBodies()
 	NavierStokesSolver<memoryType>::logger.stopTimer("initialiseBodies");
 }
 	
-/// Update the body information at each time step during motion
+/**
+ * \brief Updates location and motion of each immersed body at current time.
+ */
 template <typename memoryType>
 void NSWithBody<memoryType>::updateBodies()
 {
@@ -32,11 +45,23 @@ void NSWithBody<memoryType>::updateBodies()
 	NavierStokesSolver<memoryType>::logger.stopTimer("updateBodies");
 };
 
+/**
+ * \brief Doing nothing (on the host).
+ */
 template <>
 void NSWithBody<host_memory>::calculateForce()
 {
 }
 
+/**
+ * \brief Calculates forces acting on an immersed body (on the device).
+ *
+ * Uses the control volume approach explained by Lai and Peskin (2000).
+ * This is a general method that can be used with any immersed boundary method.
+ * It uses only the velocity and pressure fields to calculate the forces, and
+ * does not involve any body forces on the immersed boundary.
+ * Currently works only for one body.
+ */
 template <>
 void NSWithBody<device_memory>::calculateForce()
 {
@@ -101,6 +126,9 @@ void NSWithBody<device_memory>::calculateForce()
 	forceY = thrust::reduce(FyX.begin(), FyX.end()) + thrust::reduce(FyY.begin(), FyY.end()) + thrust::reduce(FyU.begin(), FyU.end());
 }
 
+/**
+ * \brief Writes flow variables and position of body points into files.
+ */
 template <typename memoryType>
 void NSWithBody<memoryType>::writeCommon()
 {	
@@ -120,6 +148,9 @@ void NSWithBody<memoryType>::writeCommon()
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }
 
+/**
+ * \brief Closes iteration file and force file.
+ */
 template <typename memoryType>
 void NSWithBody<memoryType>::shutDown()
 {
@@ -128,5 +159,6 @@ void NSWithBody<memoryType>::shutDown()
 	NavierStokesSolver<memoryType>::iterationsFile.close();
 }
 
+// specialization of the class
 template class NSWithBody<host_memory>;
 template class NSWithBody<device_memory>;

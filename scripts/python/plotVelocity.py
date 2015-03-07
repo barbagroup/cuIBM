@@ -44,6 +44,19 @@ def read_inputs():
 
 
 def main():
+
+	#view available fonts
+	#for font in font_manager.findSystemFonts():
+	#	print font
+
+	try:
+		fontpath = '/usr/share/fonts/truetype/msttcorefonts/Georgia.ttf'
+
+		prop = font_manager.FontProperties(fname=fontpath)
+		matplotlib.rcParams['font.family'] = prop.get_name()
+	except:
+		pass
+
 	"""Plots the contour of velocity (u and v) at every time saved."""
 	# parse the command-line
 	args = read_inputs()
@@ -109,6 +122,7 @@ def main():
 		pyplot.clf()
 
 	print '\nVelocity contours: DONE!\n'
+
 
 if __name__ == '__main__':
 	main()

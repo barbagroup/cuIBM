@@ -1,5 +1,21 @@
+/***************************************************************************//**
+ * \file generateE.cu
+ * \author Anush Krishnan (anush@bu.edu)
+ * \brief Implementation of the kernels to generate elements of the interpolation matrix.
+ */
+
+
 #include "generateE.h"
 
+
+/**
+ * \brief Discrete delta function defined by Roma et al. (1999).
+ *
+ * \param x x- or y- component of the vector defined between two points
+ * \param h the grid-spacing
+ *
+ * \return the value of the discrete delta function
+ */
 __device__ \
 real dhRomaDeviceE(real x, real h)
 {
@@ -13,15 +29,45 @@ real dhRomaDeviceE(real x, real h)
 		return 1.0/(3*h)*( 1.0 + sqrt(-3.0*r*r + 1.0) );
 }
 
+/**
+ * \brief Two-dimension discrete delta function.
+ *
+ * \param x x-component of the vector defined between two points
+ * \param y y-component of the vector defined between two points
+ * \param h the grid-spacing
+ *
+ * \return the value of the discrete delta function in 2D
+ */
 __device__ \
 real deltaDeviceE(real x, real y, real h)
 {
 	return dhRomaDeviceE(x, h) * dhRomaDeviceE(y, h);
 }
 
+/**
+ * \namespace kernels
+ * \brief Contains all custom-written CUDA kernels.
+ */
 namespace kernels
 {
 	
+/**
+ * \brief Generates the interpolation matrix (on the host).
+ *
+ * \param ERows row index of elements of the interpolation matrix
+ * \param ECols column index of elements of the interpolation matrix
+ * \param EVals value of elements of the interpolation matrix
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direction
+ * \param x x-component of grid points
+ * \param y y-component of grid points
+ * \param dx cell-widths in the x-direction
+ * \param totalPoints number of body points (all bodies included)
+ * \param xB x-coordinate of body points (all bodies included)
+ * \param yB y-coordinate of body points (all bodies included)
+ * \param I x-index of the cells in which body points are located
+ * \param J y-index of the cells in which body points are located
+ */
 void generateEHost(int *ERows,  int *ECols,  real *EVals,
                    int nx, int ny, real *x, real *y, real *dx,
                    int totalPoints, real *xB, real *yB, int *I, int *J)
@@ -64,6 +110,23 @@ void generateEHost(int *ERows,  int *ECols,  real *EVals,
 	}
 }
 
+/**
+ * \brief Computes elements of the interpolation matrix.
+ *
+ * \param ERows row index of elements of the interpolation matrix
+ * \param ECols column index of elements of the interpolation matrix
+ * \param EVals value of elements of the interpolation matrix
+ * \param nx number of cells in the x-direction
+ * \param ny number of cells in the y-direction
+ * \param x x-component of grid points
+ * \param y y-component of grid points
+ * \param dx cell-widths in the x-direction
+ * \param totalPoints number of body points (all bodies included)
+ * \param xB x-coordinate of body points (all bodies included)
+ * \param yB y-coordinate of body points (all bodies included)
+ * \param I x-index of the cell in which the body point is located
+ * \param J y-index of the cell in which the body point is located
+ */
 __global__ \
 void generateE(int *ERows,  int *ECols,  real *EVals,
                int nx, int ny, real *x, real *y, real *dx,

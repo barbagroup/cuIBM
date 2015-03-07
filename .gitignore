@@ -3,14 +3,18 @@
 *.a
 *.pyc
 *.png
+*.pdf
 ._*
 massFlux
 
 # folders
 data/*
+html/*
+latex/*
 0*
 *.plt
 cases/convergence/cavityRe100/*/T*
+doc/*
 
 # files
 bin/cuIBM
