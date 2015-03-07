@@ -128,8 +128,7 @@ void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 	parseDomainFile(fname, D);
 	
 	// read the body file
-	fname = folder + "/bodies.yaml";
-	parseBodiesFile(fname, DB);
+	parseBodiesFile(DB);
 	
 	// second pass of command line -- overwrite values in DB
 	commandLineParse2(argc, argv, DB);
