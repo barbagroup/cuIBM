@@ -1,5 +1,5 @@
 - type: points
-  pointsFile: flyingSnake/0.004.bdy
+  pointsFile: flyingSnake_0.004.bdy
   centerRotation: [0.0, 0.0]
   initialOffset: [0.0, 0.0]
   angleOfAttack: -30.0

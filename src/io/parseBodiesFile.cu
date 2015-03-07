@@ -25,7 +25,8 @@ using std::string;
  * \brief Overloads the operator >>. Stores information about an immersed body.
  *
  * \param node the parsed file
- * \param instance of the class \c body to be filled
+ * \param Body instance of the class \c body to be filled
+ * \param DB database with parameters of the simulation
  */
 void parseBodiesNode(const YAML::Node &node, body &Body, parameterDB &DB)
 {
@@ -125,7 +126,7 @@ void parseBodiesNode(const YAML::Node &node, body &Body, parameterDB &DB)
 	{
 		std::string fileName;
 		node["pointsFile"] >> fileName;
-    std::string folderPath(DB["inputs"]["folderPath"].get<std::string>());
+    std::string folderPath(DB["inputs"]["caseFolder"].get<std::string>());
     std::ifstream inFile((folderPath+"/"+fileName).c_str());
     inFile >> Body.numPoints;
     Body.X.resize(Body.numPoints);
@@ -185,7 +186,7 @@ void parseBodiesFile(parameterDB &DB)
 	parser.GetNextDocument(doc);
 	inFile.close();
 	body Body;
-	std::vector<body> *B = DB["flows"]["bodies"].get<std::vector<body> *>();
+	std::vector<body> *B = DB["flow"]["bodies"].get<std::vector<body> *>();
 
 	for (int i=0; i<doc.size(); i++)
 	{
