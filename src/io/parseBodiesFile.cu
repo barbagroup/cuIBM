@@ -179,15 +179,18 @@ void operator >> (const YAML::Node &node, body &Body)
  * \param bodiesFile the file that contains information about the immersed bodies
  * \param DB the database that contains the simulation parameters 
  */
-void parseBodiesFile(std::string &bodiesFile, parameterDB &DB)
+void parseBodiesFile(parameterDB &DB)
 {
-	std::ifstream fin(bodiesFile.c_str());
-	YAML::Parser  parser(fin);
-	YAML::Node    doc;
+	std::string folderPath(DB["inputs"]["caseFolder"].get<std::string>());
+	if (!std::ifstream((folderPath+"/bodies.yaml").c_str()))
+		return;
+	std::ifstream infile((folderPath+"/bodies.yaml").c_str());
+	YAML::Parser parser(infile);
+	YAML::Node doc
 	parser.GetNextDocument(doc);
 	body Body;
-	std::vector<body> *B = DB["flow"]["bodies"].get<std::vector<body> *>();
-	
+	std::vector<body> *B = DB["flows"]["bodies"].get<std::vector<body> *>();
+
 	for (int i=0; i<doc.size(); i++)
 	{
 		Body.reset();
