@@ -2,87 +2,107 @@
 
 # file: $CUIBM_DIR/scripts/python/analyzeVorticity.py
 # author: Anush Krishnan (anush@bu.edu), Olivier Mesnard (mesnardo@gwu.edu)
-# description: script to analyse the vorticity
+# description: Plots calculated and theoretical circulations at saved time-steps.
 
 
+import os
 import argparse
 import math
 
-import numpy as np
-from matplotlib import pyplot as plt
+import numpy
+from matplotlib import pyplot
 
-from readData import readSimulationParameters, readGridData
+from readData import read_simulation_parameters, read_grid
 
 
 def read_inputs():
 	"""Parse the command-line"""
 	# create the parser
 	parser = argparse.ArgumentParser()
-	# fill the parser
-	parser.add_argument('--folder', dest='folder', type=str, default='.',
-						help='path of the simualtion case')
+	# fill the parser with arguments
+	parser.add_argument('--folder', dest='folder_path', type=str, 
+						default=os.getcwd(),
+						help='directory of the simulation')
+	parser.add_argument('--time-increment', '-dt', dest='dt', type=float,
+						help='time-increment of the simulation')
+	parser.add_argument('--time-steps', '-t', dest='time_steps', type=int,
+						nargs='+', default=[None, None, None],
+						help='time-steps to plot (min, max, interval)')
+	parser.add_argument('--limits', dest='limits', type=float, nargs='+', 
+						default=[0.0, 10.0, -1.5, 1.5],
+						help='x- and y- limits of the plot')
+	parser.add_argument('--no-save', dest='save', action='store_false',
+						help='does not save the figure')
 	parser.add_argument('--show', dest='show', action='store_true',
-						help='boolean to plot the results in a figure')
+						help='displays the figure')
+	parser.set_defaults(save=True)
 	return parser.parse_args()
 
 
 def main():
-	"""Analyses the vorticity given a case."""
+	"""Plots the calculated and theoretical circulations at saved time-steps."""
 	# parse the command-line
 	args = read_inputs()
 
-	folder = args.folder	# path of the case
-
-	# read parameters of the simulation
-	nt, start_step, nsave, dt = readSimulationParameters(folder)
+	# get the time-steps
+	if any(args.time_steps):
+		# if provided by command-line arguments
+		time_steps = range(args.time_steps[0],
+						   args.time_steps[1]+1,
+						   args.time_steps[2])
+	else:
+		# if not, list solution folders
+		time_steps = sorted(int(folder) for folder
+										in os.listdir(args.folder_path)
+										if folder[0]=='0')
 
 	# read and generate the computational mesh
-	nx, ny, dx, dy, _, yu, xv, _ = readGridData(folder)
-	
-	# number of saved points
-	save_points = int( (nt-start_step)/nsave )
+	nx, ny, dx, dy, _, yu, xv, _ = read_grid(args.folder_path)
 
-	T = 10.0	# total time of the simulation
-	h = dx[0]	# uniform cell-width
+	# grid-spacing
+	h = dx[0]	# grid-spacing (grid should be uniformly spaced)
+	# total number of iterations
+	nt = time_steps[-1] - time_steps[0]
 
 	# initialization
-	total_vorticity = np.empty(save_points, dtype=float)
-	circulation = np.empty(save_points, dtype=float)
-	time = np.empty(save_points, dtype=float)
-
-	# time-loop
-	ite = start_step + nsave
-	idx = 0
-	while ite < nt+1:
-		time[idx] = ite*dt
-		# read the vorticity
-		vort_file = '%s/%07d/vorticity' % (folder, ite)
-		with open(vort_file, 'r') as infile:
-			vorticity = np.loadtxt(infile, dtype=float, usecols=(2,))
+	times = args.dt * numpy.array(time_steps)
+	total_vorticity = numpy.empty_like(times, dtype=float)
+	circulation = numpy.empty_like(times, dtype=float)
+	
+	# loop over the saved time-steps
+	for index, time_step in enumerate(time_steps):
+		# read the vorticity file
+		vorticity_file = '%s/%07d/vorticity' % (args.folder_path, time_step)
+		with open(vorticity_file, 'r') as infile:
+			vorticity = numpy.loadtxt(infile, dtype=float, usecols=(2,))
 		# calculate the total vorticity
-		total_vorticity[idx] = h**2*vorticity.sum()
+		total_vorticity[index] = h**2 * vorticity.sum()
 		# calculate the theoretical circulation
-		circulation[idx] = -math.sin(math.pi*time[idx]/T)
-		idx += 1
-		ite += nsave
+		circulation[index] = -math.sin(math.pi*time_step/nt)
 
-	# plot the total vorticity and theretical circulation
-	plt.figure()
-	plt.grid(True)
-	plt.xlabel('Time', fontsize=16)
-	plt.ylabel('Total circulation', fontsize=16)
-	plt.plot(time, total_vorticity, label='Total vorticity',
-			 color='r', ls='.', marker='o', markersize=10)
-	plt.plot(time, circulation, label='Theoretical circulation',
-			 color='b', ls='-', lw=2)
-	plt.xlim(0, 80)
-	plt.ylim(-1.5, 1.5)
-	plt.title('Comparison of Total Vorticity and Theoretical Circulation '
-			  'at Re=10,000')
-	plt.legend(loc='best', prop={'size': 16})
-	plt.savefig('%s/total_vorticity.png' % folder)
+	# plot the total vorticity and theoretical circulation
+	pyplot.figure()
+	pyplot.grid(True)
+	pyplot.xlabel('Time', fontsize=16)
+	pyplot.ylabel('Total circulation', fontsize=16)
+	pyplot.plot(times, total_vorticity, label='Total vorticity',
+			 	color='r', ls='.', marker='o', markersize=10)
+	pyplot.plot(times, circulation, label='Theoretical circulation',
+			 	color='b', ls='-', lw=2)
+	pyplot.xlim(args.limits[0], args.limits[1])
+	pyplot.ylim(args.limits[2], args.limits[3])
+	pyplot.title('Comparison of Total Vorticity and Theoretical Circulation '
+			  	 'at Re=10,000')
+	pyplot.legend(loc='best', prop={'size': 16})
+	# save the figure
+	if args.save:
+		images_path = '%s/images' % args.folder_path
+		if not os.path.isdir(images_path):
+			os.makedirs(images_path)
+		pyplot.savefig('%s/total_vorticity.png' % images_path)
+	# display the figure
 	if args.show:
-		plt.show()
+		pyplot.show()
 
 
 if __name__ == '__main__':

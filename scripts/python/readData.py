@@ -2,21 +2,22 @@
 
 # file: $CUIBM_DIR/scripts/python/readData.py
 # author: Anush Krishnan (anush@bu.edu), Olivier Mesnard (mesnardo@gwu.edu)
-# description: definitions of functions to read numerical data
+# description: Definitions of functions to read numerical data files.
 
 
+import sys
+import struct
 import argparse
 
-import numpy as np
-import struct
-import sys
+import numpy
 
-def readSimulationParameters(folder):
+
+def read_simulation_parameters(folder_path):
 	"""Reads the parameters of the simulation.
 	
 	Arguments
 	---------
-	folder -- path of the simulation case.
+	folder_path -- directory of the simulation.
 
 	Returns
 	-------
@@ -25,16 +26,10 @@ def readSimulationParameters(folder):
 	nsave -- saving interval.
 	dt -- time-increment.
 	"""
-	# open and read the info file
-	try:
-		with open(folder+'/run.info', 'r') as infile:
-			option_list = infile.read().split()
-	except IOError:
-		print "While reading simulation parameters:"
-		print "File run.info not found!"
-		print "In folder: {}".format(folder)
-		sys.exit()
-	
+	# open and read the run.info file
+	run_file = '%s/run.info' % folder_path
+	with open(run_file, 'r') as infile:
+		parameters = infile.read().split()
 	# create the parser
 	parser = argparse.ArgumentParser()
 	# fill the parser with arguments
@@ -67,122 +62,115 @@ def readSimulationParameters(folder):
 	parser.add_argument('--bodyFile', dest='body_file', type=str,
 						help='body file')
 	# parse the list
-	args = parser.parse_args(option_list)
-
+	args = parser.parse_args(parameters)
 	return args.nt, args.start_step, args.nsave, args.dt
 
 
-def readGridData(folder):
-	"""Generates the computational mesh reading the coordinates file.
+def read_grid(folder_path):
+	"""Reads the computational grid from the binary grid file.
 	
 	Arguments
 	---------
-	folder -- path the of simulation case.
+	folder_path -- directory of the simulation.
 
 	Returns
 	-------
 	nx, ny -- number of cells in the x- and y- directions.
-	dx, dy -- cell widths in the x- and y- directions.
-	xu, yu -- location of u-velocity points.
-	xv, yv -- location of v-velocity points.
+	dx, dy -- cell-widths in the x- and y- directions.
+	xu, yu -- coordinates of the u-velocity points.
+	xv, yv -- coordinates of the v-velocity points.
 	"""
-	# read the grid file
-	#with open(folder+'/grid', 'rb') as infile:
-	#	data = infile.readlines()
-	fp = open(folder+'/grid', 'rb')
-
-	# x-direction
-	nx = struct.unpack('i', fp.read(4))[0]
-	x = np.array(struct.unpack('d'*(nx+1), fp.read(8*(nx+1))))
-	dx = x[1:] - x[:-1]
-	xu = x[1:-1]
-	xv = 0.5*(x[1:]+x[:-1])
-	
-	# y-direction
-	ny = struct.unpack('i', fp.read(4))[0]
-	y = np.array(struct.unpack('d'*(ny+1), fp.read(8*(ny+1))))
-	dy = y[1:] - y[:-1]
-	yu = 0.5*(y[1:]+y[:-1])
-	yv = y[1:-1]
-
-	fp.close()
-
+	grid_file = '%s/grid' % folder_path
+	with open(grid_file, 'rb') as infile:
+		# x-direction
+		nx = struct.unpack('i', infile.read(4))[0]
+		x = numpy.array(struct.unpack('d'*(nx+1), infile.read(8*(nx+1))))
+		dx = x[1:] - x[:-1]
+		xu = x[1:-1]
+		xv = 0.5 * (x[1:] + x[:-1])
+		# y-direction
+		ny = struct.unpack('i', infile.read(4))[0]
+		y = numpy.array(struct.unpack('d'*(ny+1), infile.read(8*(ny+1))))
+		dy = y[1:] - y[:-1]
+		yu = 0.5 * (y[1:] + y[:-1])
+		yv = y[1:-1]
 	return nx, ny, dx, dy, xu, yu, xv, yv
 
-def readVelocityData(folder, time_step, nx, ny, dx, dy):
-	"""Reads the velocity data at a given time-step.
+
+def read_velocity(folder_path, time_step, nx, ny, dx, dy):
+	"""Reads velocity data from binary flux file at a given time-step.
 	
 	Arguments
 	---------
-	folder -- path of the simulation case.
-	time-step -- current time-step.
-	nx, ny -- number of cells on the x- and y- directions.
-	dx, dy -- cell widths in the x- and y- directions.
+	folder_path -- directory of the simulation.
+	time_step -- time-step to read the data.
+	nx, ny -- number of cells in the x- and y- directions.
+	dx, dy -- cell-widths in the x- and y- directions.
+
+	Returns
+	-------
+	u, v -- u-velocity values and v-velocity values.
 	"""
-	flux_file = '%s/%07d/q' % (folder, time_step)
-	fp = open(flux_file, 'rb')
-	nq = struct.unpack('i', fp.read(4))[0]             # length of flux vector q
-	q = np.array(struct.unpack('d'*nq, fp.read(8*nq))) # store flux vector q
-	fp.close()
-	
-	# store u-velocities
-	n_u = (nx-1) * ny				# number of u-velocity points
-	u = np.empty(n_u, dtype=float)
+	flux_file = '%s/%07d/q' % (folder_path, time_step)
+	with open(flux_file, 'rb') as infile:
+		nq = struct.unpack('i', infile.read(4))[0]
+		q = numpy.array(struct.unpack('d'*nq, infile.read(8*nq)))
+	# u-velocities
+	u = numpy.empty((nx-1)*ny, dtype=float)
 	for j in xrange(ny):
 		for i in xrange(nx-1):
-			u[j*(nx-1)+i] = q[j*(nx-1)+i]/dy[j]
-
-	# store v-velocities
-	v = np.empty(nx*(ny-1), dtype=float)
+			u[j*(nx-1)+i] = q[j*(nx-1)+i] / dy[j]
+	# v-velocities
+	offset = u.size
+	v = numpy.empty(nx*(ny-1), dtype=float)
 	for j in xrange(ny-1):
 		for i in xrange(nx):
-			v[j*nx+i] = q[n_u+j*nx+i]/dx[i]
-	
+			v[j*nx+i] = q[offset+j*nx+i] / dx[i]
 	return u, v
 
-def readPressureData(folder, time_step, nx, ny):
-	"""Reads the velocity data at a given time-step.
 
-	Arguments
-	---------
-	folder -- path of the simulation case.
-	time-step -- current time-step.
-	nx, ny -- number of cells on the x- and y- directions.
-	"""
-	lambda_file = '%s/%07d/lambda' % (folder, time_step)
-	fp = open(lambda_file, 'rb')
-	nlmbda = struct.unpack('i', fp.read(4))[0]             # length of vector lambda
-	lmbda = np.array(struct.unpack('d'*nlmbda, fp.read(8*nlmbda))) # store lambda
-	fp.close()
-
-	return lmbda[0:nx*ny]
-
-def readMask(folder, nx, ny):
-	"""Reads the mask.
+def read_pressure(folder_path, time_step, nx, ny):
+	"""Reads pressure data from binary lambda file at given time-step.
 	
 	Arguments
 	---------
-	folder -- path of the simulation case.
-	nx, ny -- number of cells on the x- and y- directions.
-	"""
-	mask_file = '{}/mask.txt'.format(folder)
-	mask = np.loadtxt(mask_file)
-	n_u = (nx-1)*ny
-	return mask[:n_u], mask[n_u:]
+	folder_path -- directory of the simulation.
+	time_step -- time-step to read the data.
+	nx, ny -- number of cells in the x- and y- directions.
 
-def readEta(folder):
-	"""Reads the values of eta.
+	Returns
+	-------
+	p -- pressure values.
+	"""
+	lambda_file = '%s/%07d/lambda' % (folder_path, time_step)
+	with open(lambda_file, 'rb') as infile:
+		nlambda = struct.unpack('i', infile.read(4))[0]
+		lamBda = numpy.array(struct.unpack('d'*nlambda, infile.read(8*nlambda)))
+	# return only the pressure data
+	return lamBda[:nx*ny]
+
+
+def read_mask(folder_path, nx, ny):
+	"""Reads the mask file.
 	
 	Arguments
 	---------
-	folder -- path of the simulation case.
-	"""
-	eta_file = '{}/eta_u.txt'.format(folder)
-	eta_u = np.loadtxt(eta_file)
-	eta_file = '{}/eta_v.txt'.format(folder)
-	eta_v = np.loadtxt(eta_file)
-	return eta_u, eta_v
+	folder_path -- directory of the simulation.
+	nx, ny -- number of cells in the x- and y- directions.
 
-if __name__ == "__main__":
-	#readGridData("../../cases/lidDrivenCavity/Re100")
-	readMask("cases/convergence/cavityRe100/DirectForcing/quad_T00.25_20_0.00050/20", 20, 20)
+	Returns
+	-------
+	mask -- the mask in the x- and y- directions.
+	"""
+	mask_file = '{}/mask.txt'.format(folder_path)
+	mask = numpy.loadtxt(mask_file)
+	offset = (nx-1) * ny
+	return mask[:offset], mask[offset:]
+
+
+def main():
+	pass
+
+
+if __name__ == '__main__':
+	main()
