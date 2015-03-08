@@ -25,9 +25,10 @@ using std::string;
  * \brief Overloads the operator >>. Stores information about an immersed body.
  *
  * \param node the parsed file
- * \param instance of the class \c body to be filled
+ * \param Body instance of the class \c body to be filled
+ * \param DB database with parameters of the simulation
  */
-void operator >> (const YAML::Node &node, body &Body)
+void parseBodiesNode(const YAML::Node &node, body &Body, parameterDB &DB)
 {
 	try
 	{
@@ -123,20 +124,16 @@ void operator >> (const YAML::Node &node, body &Body)
 	node["type"] >> type;
 	if (type == "points")
 	{
-		string fname;
-		node["pointsFile"] >> fname;
-		fname = "bodyFiles/" + fname;
-		std::cout << fname << std::endl;
-		// initialise points
-		std::ifstream file(fname.c_str());
-		file >> Body.numPoints;
-		Body.X.resize(Body.numPoints);
-		Body.Y.resize(Body.numPoints);
-		for(int i=0; i<Body.numPoints; i++)
-		{
-			file >> Body.X[i] >> Body.Y[i];
-		}
-		file.close();
+		std::string fileName;
+		node["pointsFile"] >> fileName;
+    std::string folderPath(DB["inputs"]["caseFolder"].get<std::string>());
+    std::ifstream inFile((folderPath+"/"+fileName).c_str());
+    inFile >> Body.numPoints;
+    Body.X.resize(Body.numPoints);
+    Body.Y.resize(Body.numPoints);
+    for (int i=0; i<Body.numPoints; i++)
+      inFile >> Body.X[i] >> Body.Y[i];
+    inFile.close();
 	}
 	else if (type == "lineSegment")
 	{
@@ -170,28 +167,31 @@ void operator >> (const YAML::Node &node, body &Body)
 	}
 	else
 		printf("[E]: unknown Body type\n");
-	printf("\nnumPoints: %d",Body.numPoints);
+	printf("\nnumPoints: %d\n",Body.numPoints);
 }
 
 /**
  * \brief Parses the \a bodies.yaml file and stores information about the immersed bodies.
  *
- * \param bodiesFile the file that contains information about the immersed bodies
  * \param DB the database that contains the simulation parameters 
  */
-void parseBodiesFile(std::string &bodiesFile, parameterDB &DB)
+void parseBodiesFile(parameterDB &DB)
 {
-	std::ifstream fin(bodiesFile.c_str());
-	YAML::Parser  parser(fin);
-	YAML::Node    doc;
+	std::string folderPath(DB["inputs"]["caseFolder"].get<std::string>());
+	if (!std::ifstream((folderPath+"/bodies.yaml").c_str()))
+		return;
+	std::ifstream inFile((folderPath+"/bodies.yaml").c_str());
+	YAML::Parser parser(inFile);
+	YAML::Node doc;
 	parser.GetNextDocument(doc);
+	inFile.close();
 	body Body;
 	std::vector<body> *B = DB["flow"]["bodies"].get<std::vector<body> *>();
-	
+
 	for (int i=0; i<doc.size(); i++)
 	{
 		Body.reset();
-		doc[i] >> Body;
+		parseBodiesNode(doc[i], Body, DB);
 		B->push_back(Body);
 	}
 }

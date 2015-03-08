@@ -42,7 +42,7 @@ namespace io
 	void parseSimulationFile(std::string &simFile, parameterDB &DB);
 	
 	// parse the \a bodies file and store information about the immersed bodies
-	void parseBodiesFile(std::string &bodiesFile, parameterDB &DB);
+	void parseBodiesFile(parameterDB &DB);
 
 	// initialize the database with default values
 	void initialiseDefaultDB(parameterDB &DB);

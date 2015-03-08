@@ -204,18 +204,14 @@ The biggest case (`cylinderRe3000`) requires a graphics card with 2GB of memory.
 Post-processing
 ---------------
 
-The only currently available post-processing script is 
-`$CUIBM_DIR/scripts/python/plotVorticity.py`. It plots the vorticity field of 
-the flow at all the saved time steps. To display a list of all the command line 
-options (which include the case folder, and the coordinates of the corners of 
-the region of interest), run:
+Post-processing scripts are available in th directory 
+`$CUIBM_DIR/scripts/python`. The command-line argument `--help` will display 
+the list of options for the script executed. 
+
+For example, `plotVorticity.py` plots the contour of the vorticity field of the 
+flow. To display its list of all the command-line options, run:
 
     > python $CUIBM_DIR/scripts/python/plotVorticity.py --help
-
-To obtain the vorticity plots, navigate to a case folder (or specify it using 
-the command line option) and run the script:
-
-    > python $CUIBM_DIR/scripts/python/plotVorticity.py
 
 Known issues
 ------------
@@ -229,5 +225,6 @@ bodies.
 Contact
 -------
 
-Please e-mail [Anush Krishnan](mailto:k.anush@gmail.com) if you have any 
+Please e-mail [Anush Krishnan](mailto:k.anush@gmail.com), 
+or [Olivier Mesnard](mailto:mesnardo@gwu.edu), if you have any 
 questions, suggestions or feedback.
