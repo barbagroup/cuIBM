@@ -105,6 +105,7 @@ def main():
 		pyplot.ylim(args.bottom_left[1], args.top_right[1])
 		pyplot.savefig('{}/u{:0>7}.png'.format(images_path, time_step))
 		pyplot.clf()
+		pyplot.close()
 		# plot v-velocity contour
 		print '\tv-velocity...'
 		pyplot.figure()
@@ -120,6 +121,7 @@ def main():
 		pyplot.ylim(args.bottom_left[1], args.top_right[1])
 		pyplot.savefig('{}/v{:0>7}.png'.format(images_path, time_step))
 		pyplot.clf()
+		pyplot.close()
 
 	print '\nVelocity contours: DONE!\n'
 

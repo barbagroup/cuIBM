@@ -125,6 +125,7 @@ def main():
 			cont_bar.set_label('vorticity')
 			pyplot.savefig('{}/o{:0>7}.png'.format(images_path, time_step))
 			pyplot.clf()
+			pyplot.close()
 
 	if args.using_gnuplot:
 		# create the gnuplot script file

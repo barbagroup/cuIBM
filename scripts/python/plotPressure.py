@@ -98,6 +98,7 @@ def main():
 		cont_bar.set_label('pressure')
 		pyplot.savefig('{}/p{:0>7}.png'.format(images_path, time_step))
 		pyplot.clf()
+		pyplot.close()
 
 	print '\nPressure contours: DONE!\n'
 
