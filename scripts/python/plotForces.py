@@ -116,7 +116,7 @@ class Case(object):
     mask = numpy.where(numpy.logical_and(t >= self.parameters.time_limits[0],
               t <= self.parameters.time_limits[1]))[0][::self.parameters.stride]
     _, mask_unique = numpy.unique(t, return_index=True)
-    mask = list(set(mask) & set(mask_unique))
+    mask = sorted(set(mask) & set(mask_unique))
     self.times = t[mask]
     n_bodies = forces.shape[0]/2
     # give default name to bodies
