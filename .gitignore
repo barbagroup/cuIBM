@@ -25,3 +25,8 @@ grid
 scripts/python/*.bdy
 *.txt
 !validation-data/*.txt
+
+# backup files of VIM
+.*.swp
+.*\~
+*\~
