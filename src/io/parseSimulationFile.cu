@@ -183,6 +183,7 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 	DB[dbKey]["scaleCV"].set<real>(scaleCV);
 	DB[dbKey]["nsave"].set<int>(nsave);
 	DB[dbKey]["nt"].set<int>(nt);
+  DB[dbKey]["startStep"].set<int>(startStep);
 	DB[dbKey]["restart"].set<bool>(restart);
 	DB[dbKey]["ibmScheme"].set<ibmScheme>(ibmSchemeFromString(ibmSch));
 	DB[dbKey]["convTimeScheme"].set<timeScheme>(timeSchemeFromString(convSch));

@@ -577,6 +577,35 @@ void writeData<vecD>(std::string &caseFolder, int n, vecD &q, vecD &lambda, doma
 	writeData(caseFolder, n, qH, lambdaH, D);
 }
 
+
+/**
+ * \brief Reads numerical data at a given time-step.
+ *
+ * \param caseFolder directory of the simulation
+ * \param timeStep the time-step number
+ * \param x array that to fill
+ * \param name name of the file containing the variable
+ */
+void readData(std::string &caseFolder, int timeStep, real *x, std::string name)
+{
+	std::stringstream in;
+	std::string inFilePath;
+	int n;
+
+	in << caseFolder << "/" << std::setfill('0') << std::setw(7) << timeStep << "/" << name;
+	inFilePath = in.str();
+	std::cout << "Reading fluxes from " << inFilePath << " ...";
+	std::ifstream inFile(inFilePath.c_str());
+	inFile >> n;
+	for (int i=0; i<n; i++)
+	{
+	       inFile >> x[i];
+	}
+	inFile.close();
+	std::cout << "done" << std::endl;
+}
+
+
 /**
  * \brief Prints device memory usage.
  *

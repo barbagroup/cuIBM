@@ -69,6 +69,9 @@ namespace io
 	template <typename Vector>
 	void writeData(std::string &caseFolder, int n, Vector &q, Vector &lambda, domain &D);//, bodies &B);
 	
+	// read numerical data at a given time-step
+	void readData(std::string &caseFolder, int timeStep, real *x, std::string name);
+
 	// print device memory usage
 	void printDeviceMemoryUsage(char *label);
 }
