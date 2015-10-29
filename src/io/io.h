@@ -25,9 +25,6 @@ namespace io
 	
 	// split a string given a delimiter
 	std::vector<std::string> split(const std::string &s, char delim);
-
-	// create a directory
-	void makeDirectory(const std::string s);
 	
 	// read data inputs from the command-line and the simulation files
 	void readInputs(int argc, char **argv, parameterDB &DB, domain &D); 

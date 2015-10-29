@@ -48,12 +48,10 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	           diffScheme = (*paramDB)["simulation"]["diffTimeScheme"].get<timeScheme>();
 	intgSchm.initialise(convScheme, diffScheme);
 	
-	// initial values of timeStep
+	// set initial timeStep
 	timeStep = (*paramDB)["simulation"]["startStep"].get<int>();
-	
-	// creates directory 
+	// get folder path 
 	std::string folder = (*paramDB)["inputs"]["caseFolder"].get<std::string>();
-	io::makeDirectory(folder);
 
 	// writes the grids information to a file
 	io::writeGrid(folder, *domInfo);
@@ -166,8 +164,7 @@ void NavierStokesSolver <memoryType>::initialiseFluxes(real *q)
 	if (timeStep != 0)
 	{
 		// case directory
-		std::string caseFolder = (*paramDB)["inputs"]["folderName"].get<std::string>();
-		std::cout << "Hello: " << caseFolder << std::endl;
+		std::string caseFolder = (*paramDB)["inputs"]["caseFolder"].get<std::string>();
 		// read velocity fluxes from file
 		io::readData(caseFolder, timeStep, q, "q");
 		return;
