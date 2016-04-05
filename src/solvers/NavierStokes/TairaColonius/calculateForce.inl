@@ -52,6 +52,11 @@ void TairaColoniusSolver<memoryType>::calculateForce()
 			fView = View(fTemp.begin() + NSWithBody<memoryType>::B.offsets[l+1], fTemp.end());
 			cusp::blas::fill(fView, 0.0);
 		}
+		else
+		{
+			fView = View(fTemp.begin() + totalPoints, fTemp.end());
+			cusp::blas::fill(fView, 0.0);
+		}
 		cusp::multiply(ET, fTemp, F);
 		NSWithBody<memoryType>::B.forceX[l] = (dx*dy)/dx*thrust::reduce(F.begin(), F.end());
 		

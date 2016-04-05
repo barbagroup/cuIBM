@@ -50,6 +50,12 @@ void NavierStokesSolver<device_memory>::calculateExplicitQTerms()
 	     zeta = intgSchm.zeta[subStep],
 	     alpha = intgSchm.alphaExplicit[subStep],
 	     nu = (*paramDB)["flow"]["nu"].get<real>();
+	// if first time-step: use Euler explicit for convective terms
+	if (timeStep == (*paramDB)["simulation"]["startStep"].get<int>())
+	{
+		gamma = 1.0;
+		zeta = 0.0;
+	}
 	     
 	// raw pointers for cup arrays
 	real *H_r  = thrust::raw_pointer_cast(&H[0]),

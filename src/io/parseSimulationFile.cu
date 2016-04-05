@@ -132,7 +132,6 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 	       convSch = "EULER_EXPLICIT",
 	       diffSch = "EULER_IMPLICIT",
 	       interpType = "LINEAR";
-	bool   restart = false;
 
 
 	// read simulation parameters
@@ -140,13 +139,6 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 	node["nsave"] >> nsave;
 	node["nt"] >> nt;
 	node["ibmScheme"] >> ibmSch;
-	try
-	{
-		node["restart"] >> restart;
-	}
-	catch(...)
-	{
-	}
 	try
 	{
 		node["startStep"] >> startStep;
@@ -183,7 +175,7 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 	DB[dbKey]["scaleCV"].set<real>(scaleCV);
 	DB[dbKey]["nsave"].set<int>(nsave);
 	DB[dbKey]["nt"].set<int>(nt);
-	DB[dbKey]["restart"].set<bool>(restart);
+  DB[dbKey]["startStep"].set<int>(startStep);
 	DB[dbKey]["ibmScheme"].set<ibmScheme>(ibmSchemeFromString(ibmSch));
 	DB[dbKey]["convTimeScheme"].set<timeScheme>(timeSchemeFromString(convSch));
 	DB[dbKey]["diffTimeScheme"].set<timeScheme>(timeSchemeFromString(diffSch));

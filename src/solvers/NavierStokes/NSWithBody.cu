@@ -24,7 +24,15 @@ void NSWithBody<memoryType>::initialiseBodies()
 	std::string folder = db["inputs"]["caseFolder"].get<std::string>();
 	std::stringstream out;
 	out << folder << "/forces";
-	forceFile.open(out.str().c_str());
+	int timeStep(db["simulation"]["startStep"].get<int>());
+	if (timeStep != 0)
+	{
+		forceFile.open(out.str().c_str(), std::ofstream::app);
+	}
+	else
+	{
+		forceFile.open(out.str().c_str());
+	}
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("initialiseBodies");
 }

@@ -25,9 +25,6 @@ namespace io
 	
 	// split a string given a delimiter
 	std::vector<std::string> split(const std::string &s, char delim);
-
-	// create a directory
-	void makeDirectory(const std::string s);
 	
 	// read data inputs from the command-line and the simulation files
 	void readInputs(int argc, char **argv, parameterDB &DB, domain &D); 
@@ -69,6 +66,9 @@ namespace io
 	template <typename Vector>
 	void writeData(std::string &caseFolder, int n, Vector &q, Vector &lambda, domain &D);//, bodies &B);
 	
+	// read numerical data at a given time-step
+	void readData(std::string &caseFolder, int timeStep, real *x, std::string name);
+
 	// print device memory usage
 	void printDeviceMemoryUsage(char *label);
 }
