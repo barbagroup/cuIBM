@@ -167,7 +167,8 @@ void initialiseDefaultDB(parameterDB &DB)
 	solver = "PoissonSolve";
 	DB[solver]["solver"].set<string>("CG");
 	DB[solver]["preconditioner"].set<preconditionerType>(DIAGONAL);
-	DB[solver]["tolerance"].set<real>(1e-5);
+	DB[solver]["rTol"].set<real>(1.0E-05);
+	DB[solver]["aTol"].set<real>(1.0E-50);
 	DB[solver]["maxIterations"].set<int>(20000);
 }
 
