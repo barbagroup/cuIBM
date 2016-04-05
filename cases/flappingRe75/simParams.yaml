@@ -3,7 +3,6 @@
   scaleCV: 5.0
   nt: 4000
   nsave: 500
-  restart: false
   startStep: 0
   timeScheme: [ADAMS_BASHFORTH_2, CRANK_NICOLSON]
   ibmScheme: TAIRA_COLONIUS

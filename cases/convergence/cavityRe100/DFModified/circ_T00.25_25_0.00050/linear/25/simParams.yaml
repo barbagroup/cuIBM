@@ -3,7 +3,6 @@
   scaleCV: 5.0
   nt: 500
   nsave: 500
-  restart: false
   startStep: 0
   timeScheme: [EULER_EXPLICIT, EULER_IMPLICIT]
   ibmScheme: DF_MODIFIED
