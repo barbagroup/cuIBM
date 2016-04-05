@@ -12,7 +12,7 @@
 #include <cusp/precond/diagonal.h>
 #include <cusp/precond/aggregation/smoothed_aggregation.h>
 #include <cusp/precond/ainv.h>
-#include <cusp/format.h>
+#include <cusp/format_utils.h>
 #include "types.h"
 
 
