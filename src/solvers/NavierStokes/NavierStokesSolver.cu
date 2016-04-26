@@ -457,7 +457,7 @@ void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 	real rTol = (*paramDB)["velocitySolve"]["rTol"].get<real>();
 	real aTol = (*paramDB)["velocitySolve"]["aTol"].get<real>();
 
-	cusp::monitor<real> sys1Mon(rhs1, maxIte, rTol, aTol, false);
+	cusp::default_monitor<real> sys1Mon(rhs1, maxIte, rTol, aTol);
 	cusp::krylov::bicgstab(A, qStar, rhs1, sys1Mon, *PC1);
 	//cusp::krylov::cg(A, qStar, rhs1, sys1Mon, *PC1);
 	iterationCount1 = sys1Mon.iteration_count();
@@ -485,7 +485,7 @@ void NavierStokesSolver<memoryType>::solvePoisson()
 	real rTol   = (*paramDB)["PoissonSolve"]["rTol"].get<real>();
 	real aTol   = (*paramDB)["PoissonSolve"]["aTol"].get<real>();
 	
-	cusp::monitor<real> sys2Mon(rhs2, maxIte, rTol, aTol, false);
+	cusp::default_monitor<real> sys2Mon(rhs2, maxIte, rTol, aTol);
 	if((*paramDB)["simulation"]["ibmScheme"].get<ibmScheme>() != DF_IMPROVED)
 	{
 		cusp::krylov::cg(C, lambda, rhs2, sys2Mon, *PC2);
