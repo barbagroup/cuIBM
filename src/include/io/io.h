@@ -61,5 +61,6 @@ namespace io
 	void writeGrid(std::string &folderName, domain &D);
 	template <typename Vector>
 	void writeData(std::string &folderName, int n, Vector &q, Vector &lambda, domain &D);//, bodies &B);
+	void readData(std::string &caseFolder, int timeStep, real *x, std::string name);
 	void printDeviceMemoryUsage(char *label);
 }

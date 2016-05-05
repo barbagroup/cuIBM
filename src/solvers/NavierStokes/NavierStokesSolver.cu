@@ -63,7 +63,7 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	           diffScheme = (*paramDB)["simulation"]["diffTimeScheme"].get<timeScheme>();
 	intgSchm.initialise(convScheme, diffScheme);
 	
-	/// initial values of timeStep
+	/// set initial timeStep
 	timeStep = (*paramDB)["simulation"]["startStep"].get<int>();
 	
 	/// create directory 
@@ -76,7 +76,14 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	/// open the required files
 	std::stringstream out;
 	out << folderName << "/iterations";
-	iterationsFile.open(out.str().c_str());
+	if (timeStep == 0)
+	{
+		iterationsFile.open(out.str().c_str());
+	}
+	else
+	{
+		iterationsFile.open(out.str().c_str(), std::ofstream::app);
+	}
 	
 	/// write the plot information to a file
 	
@@ -153,6 +160,15 @@ void NavierStokesSolver <device_memory>::initialiseFluxes()
 template <typename memoryType>
 void NavierStokesSolver <memoryType>::initialiseFluxes(real *q)
 {
+	if (timeStep != 0)
+	{
+		// case directory
+		std::string folderName = (*paramDB)["inputs"]["folderName"].get<std::string>();
+		// read velocity fluxes from file
+		io::readData(folderName, timeStep, q, "q");
+		return;
+	}
+
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny,
 	     numU  = (nx-1)*ny;
@@ -277,8 +293,9 @@ void NavierStokesSolver<memoryType>::updateBoundaryConditions()
 template <typename memoryType>
 bool NavierStokesSolver<memoryType>::finished()
 {
+	int startStep = (*paramDB)["simulation"]["startStep"].get<int>();
 	int nt = (*paramDB)["simulation"]["nt"].get<int>();
-	return (timeStep < nt) ? false : true;
+	return (timeStep < startStep+nt) ? false : true;
 }
 
 //##############################################################################
