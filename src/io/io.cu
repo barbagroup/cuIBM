@@ -448,9 +448,10 @@ void readData(std::string &caseFolder, int timeStep, real *x, std::string name)
 	in << caseFolder << "/" << std::setfill('0') << std::setw(7) << timeStep << "/" << name;
 	inFilePath = in.str();
 	std::cout << "Reading fluxes from " << inFilePath << " ... ";
-	std::ifstream inFile(inFilePath.c_str(), std::ifstream::binary);
-	inFile.read((char*)(&n), sizeof(int));
-	inFile.read((char*)(&x[0]), n*sizeof(real));
+	std::ifstream inFile(inFilePath.c_str());
+	inFile >> n;
+	for (int i=0; i<n; i++)
+		inFile >> x[i];
 	inFile.close();
 	std::cout << "done" << std::endl;
 }
