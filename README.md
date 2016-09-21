@@ -87,10 +87,6 @@ which creates the folder `$HOME/lib/cusplibrary`.
 
 ### Compiling cuIBM
 
-cuIBM is currently hosted on both [Github](https://github.com/barbagroup/cuIBM) 
-and [BitBucket](https://bitbucket.org/anushk/cuibm). The Github repository is 
-the official one, but both will reflect the latest changes.
-
 Run the following commands to create a local copy of the repository in the 
 folder `$HOME/src` (or any other folder with appropriate read/write/execute 
 permissions):
