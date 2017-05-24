@@ -9,7 +9,7 @@ CC = nvcc $(OSXOPTS)
 # compiler options
 # -arch=compute_20: compile to use double precision on GPU
 # -O3: optimization flag
-CCFLAGS = -arch=compute_20 -O3
+CCFLAGS = -arch=sm_35 -O3
 
 # variables
 RM = rm
