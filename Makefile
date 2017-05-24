@@ -34,7 +34,7 @@ BIN_DIR = $(PROJ_ROOT)/bin
 SRC_EXT = .cu
 
 # cuIBM executable
-TARGET = bin/cuIBM
+TARGET = bin/cuibm
 
 # list all source files in the source directory
 SRCS = $(shell find $(SRC_DIR) -type f -name *$(SRC_EXT))

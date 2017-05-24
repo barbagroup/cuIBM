@@ -7,11 +7,11 @@
 #pragma once
 
 #include <vector>
-#include <types.h>
-#include <domain.h>
 
-#include "parameterDB.h"
-#include "bodies.h"
+#include "utilities/types.h"
+#include "utilities/domain.h"
+#include "utilities/parameterDB.h"
+#include "utilities/bodies.h"
 
 
 /**

@@ -17,7 +17,7 @@ cases/convergence/cavityRe100/*/T*
 doc/*
 
 # files
-bin/cuIBM
+bin/cuibm
 forces
 iterations
 run.info
@@ -25,3 +25,5 @@ grid
 scripts/python/*.bdy
 *.txt
 !validation-data/*.txt
+
+set-env.rc

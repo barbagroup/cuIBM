@@ -14,11 +14,11 @@
  */
 
 
-#include "types.h"
-#include "helpers.h"
-#include "domain.h"
+#include "utilities/types.h"
+#include "utilities/helpers.h"
+#include "utilities/domain.h"
 #include "io/io.h"
-#include "solvers/NavierStokes/createSolver.h"
+#include "solvers/createSolver.h"
 
 
 int main(int argc, char **argv)

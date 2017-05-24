@@ -7,8 +7,8 @@
 #include <sys/stat.h>
 
 #include "io.h"
-#include "types.h"
-#include "boundaryCondition.h"
+#include "utilities/types.h"
+#include "utilities/boundaryCondition.h"
 
 
 /**
