@@ -159,14 +159,16 @@ void initialiseDefaultDB(parameterDB &DB)
 	string solver = "velocitySolve";
 	DB[solver]["solver"].set<string>("CG");
 	DB[solver]["preconditioner"].set<preconditionerType>(DIAGONAL);
-	DB[solver]["tolerance"].set<real>(1e-5);
+	DB[solver]["rTol"].set<real>(1.0E-05);
+	DB[solver]["aTol"].set<real>(1.0E-50);
 	DB[solver]["maxIterations"].set<int>(10000);
 
 	// Poisson solver
 	solver = "PoissonSolve";
 	DB[solver]["solver"].set<string>("CG");
 	DB[solver]["preconditioner"].set<preconditionerType>(DIAGONAL);
-	DB[solver]["tolerance"].set<real>(1e-5);
+	DB[solver]["rTol"].set<real>(1.0E-05);
+	DB[solver]["aTol"].set<real>(1.0E-50);
 	DB[solver]["maxIterations"].set<int>(20000);
 }
 
@@ -257,17 +259,29 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 			i++;
 			DB["simulation"]["dt"].set<real>(toNumber<real>(string(argv[i])));
 		}
-		// tolerance for the velocity solve
-		if ( strcmp(argv[i],"-velocityTol")==0 )
+		// relative tolerance for the velocity solve
+		if ( strcmp(argv[i],"-velocity-rtol")==0 )
 		{
 			i++;
-			DB["velocitySolve"]["tolerance"].set<real>(toNumber<real>(string(argv[i])));
+			DB["velocitySolve"]["rTol"].set<real>(toNumber<real>(string(argv[i])));
 		}
-		// tolerance for the Poisson solve
-		if ( strcmp(argv[i],"-poissonTol")==0 )
+		// absolute tolerance for the velocity solve
+		if ( strcmp(argv[i],"-velocity-atol")==0 )
 		{
 			i++;
-			DB["PoissonSolve"]["tolerance"].set<real>(toNumber<real>(string(argv[i])));
+			DB["velocitySolve"]["aTol"].set<real>(toNumber<real>(string(argv[i])));
+		}
+		// relative tolerance for the Poisson solve
+		if ( strcmp(argv[i],"-poisson-rtol")==0 )
+		{
+			i++;
+			DB["PoissonSolve"]["rTol"].set<real>(toNumber<real>(string(argv[i])));
+		}
+		// absolute tolerance for the Poisson solve
+		if ( strcmp(argv[i],"-poisson-atol")==0 )
+		{
+			i++;
+			DB["PoissonSolve"]["aTol"].set<real>(toNumber<real>(string(argv[i])));
 		}
 		// IBM Scheme
 		if ( strcmp(argv[i],"-ibmScheme")==0 )
@@ -411,13 +425,15 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "--------------" << '\n';
 	std::cout << "Solver = " << DB["velocitySolve"]["solver"].get<string>() << '\n';
 	std::cout << "Preconditioner = " << stringFromPreconditionerType(DB["velocitySolve"]["preconditioner"].get<preconditionerType>()) << '\n';
-	std::cout << "Tolerance = " << DB["velocitySolve"]["tolerance"].get<real>() << '\n';
+	std::cout << "Relative tolerance = " << DB["velocitySolve"]["rTol"].get<real>() << '\n';
+	std::cout << "Absolute tolerance = " << DB["velocitySolve"]["aTol"].get<real>() << '\n';
 	
 	std::cout << "\nPoisson Solve" << '\n';
 	std::cout << "-------------" << '\n';
 	std::cout << "Solver = " << DB["PoissonSolve"]["solver"].get<string>() << '\n';
 	std::cout << "Preconditioner = " << stringFromPreconditionerType(DB["PoissonSolve"]["preconditioner"].get<preconditionerType>()) << '\n';
-	std::cout << "Tolerance = " << DB["PoissonSolve"]["tolerance"].get<real>() << '\n';
+	std::cout << "Relative tolerance = " << DB["PoissonSolve"]["rTol"].get<real>() << '\n';
+	std::cout << "Absolute tolerance = " << DB["PoissonSolve"]["aTol"].get<real>() << '\n';
 	
 	std::cout << "\nOutput parameters" << '\n';
 	std::cout << "-----------------" << '\n';

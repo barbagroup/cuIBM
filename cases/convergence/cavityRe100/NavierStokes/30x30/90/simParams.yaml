@@ -10,10 +10,10 @@
     - system: velocity
       solver: CG
       preconditioner: DIAGONAL
-      tolerance: 1e-8
+      relTolerance: 1e-8
       maxIterations: 10000
     - system: Poisson
       solver: CG
       preconditioner: SMOOTHED_AGGREGATION
-      tolerance: 1e-8
+      relTolerance: 1e-8
       maxIterations: 20000

@@ -175,14 +175,15 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 	DB[dbKey]["scaleCV"].set<real>(scaleCV);
 	DB[dbKey]["nsave"].set<int>(nsave);
 	DB[dbKey]["nt"].set<int>(nt);
-  DB[dbKey]["startStep"].set<int>(startStep);
+	DB[dbKey]["startStep"].set<int>(startStep);
 	DB[dbKey]["ibmScheme"].set<ibmScheme>(ibmSchemeFromString(ibmSch));
 	DB[dbKey]["convTimeScheme"].set<timeScheme>(timeSchemeFromString(convSch));
 	DB[dbKey]["diffTimeScheme"].set<timeScheme>(timeSchemeFromString(diffSch));
 	DB[dbKey]["interpolationType"].set<interpolationType>(interpolationTypeFromString(interpType));
 
 	string system = "velocity", linearSolver = "CG", preconditioner = "DIAGONAL";
-	real tol = 1e-5;
+	real rTol = 1.0E-05;
+	real aTol = 0.0;
 	int maxIter = 10000;
 
 	const YAML::Node &solvers = node["linearSolvers"];
@@ -200,7 +201,14 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 		}
 		try
 		{
-			solvers[i]["tolerance"] >> tol;
+			solvers[i]["relTolerance"] >> rTol;
+		}
+		catch(...)
+		{
+		}
+		try
+		{
+			solvers[i]["absTolerance"] >> aTol;
 		}
 		catch(...)
 		{
@@ -217,7 +225,8 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 		string dbKey = system + "Solve";
 		DB[dbKey]["solver"].set<string>(linearSolver);
 		DB[dbKey]["preconditioner"].set<preconditionerType>(preconditionerTypeFromString(preconditioner));
-		DB[dbKey]["tolerance"].set<real>(tol);
+		DB[dbKey]["rTol"].set<real>(rTol);
+		DB[dbKey]["aTol"].set<real>(aTol);
 		DB[dbKey]["maxIterations"].set<int>(maxIter);
 	}
 }
