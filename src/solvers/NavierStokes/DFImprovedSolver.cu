@@ -1,7 +1,7 @@
 #include "DFImprovedSolver.h"
 #include <solvers/NavierStokes/kernels/generateQT.h>
 #include <cusp/io/matrix_market.h>
-#include <cusp/blas.h>
+#include <cusp/blas/blas.h>
 
 template <typename memoryType>
 DFImprovedSolver<memoryType>::DFImprovedSolver(parameterDB *pDB, domain *dInfo)
