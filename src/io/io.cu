@@ -1,17 +1,14 @@
 /***************************************************************************//**
  * \file io.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the functions of the namespace \c io.
  */
 
 
 #include <sys/stat.h>
-#include "io.h"
-#include <types.h>
-#include <boundaryCondition.h>
 
-using std::string;
-using std::ios;
+#include "io.h"
+#include "types.h"
+#include "boundaryCondition.h"
 
 
 /**
@@ -22,13 +19,14 @@ using std::ios;
  * \return a number (\c real or \c integer)
  */
 template <typename T>
-T toNumber(string str)
+T toNumber(std::string str)
 {
-     T num;
-     std::stringstream ss(str); //turn the string into a stream
-     ss >> num; //convert
-     return num;
+  T num;
+  std::stringstream ss(str); //turn the string into a stream
+  ss >> num; //convert
+  return num;
 }
+
 
 /**
  * \namespace io
@@ -46,14 +44,16 @@ namespace io
  *
  * \return a vector that contains the different elements of the string
  */
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems)
+{
+  std::stringstream ss(s);
+  std::string item;
+  while (std::getline(ss, item, delim)) {
+      elems.push_back(item);
+  }
+  return elems;
 }
+
 
 /**
  * \brief Splits a string given a delimiter.
@@ -63,11 +63,13 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
  *
  * \return a vector that contains the different elements of the string
  */
-std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
+std::vector<std::string> split(const std::string &s, char delim)
+{
+  std::vector<std::string> elems;
+  split(s, delim, elems);
+  return elems;
 }
+
 
 //##############################################################################
 //                                 INPUT
@@ -90,10 +92,11 @@ void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 	commandLineParse1(argc, argv, DB);
 	
 	// case folder
-	string folder = DB["inputs"]["caseFolder"].get<string>();
+	std::string folder = DB["inputs"]["caseFolder"].get<std::string>();
+	std::string fname;
 	
 	// read the simulation file
-	string fname = folder + "/simParams.yaml";
+	fname = folder + "/simParams.yaml";
 	parseSimulationFile(fname, DB);
 	
 	// read the flow file
@@ -105,11 +108,13 @@ void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 	parseDomainFile(fname, D);
 	
 	// read the body file
-	parseBodiesFile(DB);
+	fname = folder + "/bodies.yaml";
+	parseBodiesFile(fname, DB);
 	
 	// second pass of command line -- overwrite values in DB
 	commandLineParse2(argc, argv, DB);
 }
+
 
 /**
  * \brief Initializes the database with default values.
@@ -125,12 +130,12 @@ void initialiseDefaultDB(parameterDB &DB)
 	DB["PoissonSolve"] = componentParameter();
 
 	// default input files
-	string inputs = "inputs";
-	DB[inputs]["caseFolder"].set<string>("cases/cylinder/Re40");
+	std::string inputs = "inputs";
+	DB[inputs]["caseFolder"].set<std::string>("cases/cylinder/Re40");
 	DB[inputs]["deviceNumber"].set<int>(0);
 
 	// flow parameters
-	string flow = "flow";
+	std::string flow = "flow";
 	DB[flow]["nu"].set<real>(0.01);
 	DB[flow]["uInitial"].set<real>(1.0);
 	DB[flow]["vInitial"].set<real>(0.0);
@@ -145,7 +150,7 @@ void initialiseDefaultDB(parameterDB &DB)
 	DB[flow]["boundaryConditions"].set<boundaryCondition **>(bc);
 
 	// simulation parameters
-	string sim = "simulation";
+	std::string sim = "simulation";
 	DB[sim]["dt"].set<real>(0.02);
 	DB[sim]["nt"].set<int>(100);
 	DB[sim]["nsave"].set<int>(100);
@@ -156,8 +161,8 @@ void initialiseDefaultDB(parameterDB &DB)
 	DB[sim]["interpolationType"].set<interpolationType>(LINEAR);
 
 	// velocity solver
-	string solver = "velocitySolve";
-	DB[solver]["solver"].set<string>("CG");
+	std::string solver = "velocitySolve";
+	DB[solver]["solver"].set<std::string>("CG");
 	DB[solver]["preconditioner"].set<preconditionerType>(DIAGONAL);
 	DB[solver]["rTol"].set<real>(1.0E-05);
 	DB[solver]["aTol"].set<real>(1.0E-50);
@@ -165,12 +170,13 @@ void initialiseDefaultDB(parameterDB &DB)
 
 	// Poisson solver
 	solver = "PoissonSolve";
-	DB[solver]["solver"].set<string>("CG");
+	DB[solver]["solver"].set<std::string>("CG");
 	DB[solver]["preconditioner"].set<preconditionerType>(DIAGONAL);
 	DB[solver]["rTol"].set<real>(1.0E-05);
 	DB[solver]["aTol"].set<real>(1.0E-50);
 	DB[solver]["maxIterations"].set<int>(20000);
 }
+
 
 /**
  * \brief Parses the command-line to get the case folder name 
@@ -187,12 +193,12 @@ void commandLineParse1(int argc, char **argv, parameterDB &DB)
 		if (strcmp(argv[i],"-caseFolder")==0)
 		{
 			i++;
-			DB["inputs"]["caseFolder"].set<string>(string(argv[i]));
+			DB["inputs"]["caseFolder"].set<std::string>(std::string(argv[i]));
 		}
 		else if (strcmp(argv[i],"-deviceNumber")==0)
 		{
 			i++;
-			int devNum = toNumber<int>(string(argv[i]));
+			int devNum = toNumber<int>(std::string(argv[i]));
 			DB["inputs"]["deviceNumber"].set<int>(devNum);
 			// sets devNum as the current device for the calling host thread
 			cudaSetDevice(devNum);
@@ -215,73 +221,67 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 		if ( strcmp(argv[i],"-nu")==0 )
 		{
 			i++;
-			DB["flow"]["nu"].set<real>(toNumber<real>(string(argv[i])));
+			DB["flow"]["nu"].set<real>(toNumber<real>(std::string(argv[i])));
 		}
-		//// angle of attack
-		//if ( strcmp(argv[i],"-alpha")==0 )
-		//{
-		//	i++;
-		//	DB["flow"]["nu"].set<real>(toNumber<real>(string(argv[i])));
-		//}
 		// perturbation in the x-velocity
 		if ( strcmp(argv[i],"-uPerturb")==0 )
 		{
 			i++;
-			DB["flow"]["uPerturb"].set<real>(toNumber<real>(string(argv[i])));
+			DB["flow"]["uPerturb"].set<real>(toNumber<real>(std::string(argv[i])));
 		}
 		// perturbation in the y-velocity
 		if ( strcmp(argv[i],"-vPerturb")==0 )
 		{
 			i++;
-			DB["flow"]["vPerturb"].set<real>(toNumber<real>(string(argv[i])));
+			DB["flow"]["vPerturb"].set<real>(toNumber<real>(std::string(argv[i])));
 		}
 		// scale the CV with respect to the body
 		if ( strcmp(argv[i],"-scaleCV")==0 )
 		{
 			i++;
-			DB["simulation"]["scaleCV"].set<real>(toNumber<real>(string(argv[i])));
+			DB["simulation"]["scaleCV"].set<real>(toNumber<real>(std::string(argv[i])));
 		}
 		// frequency of saving the data
 		if ( strcmp(argv[i],"-nsave")==0 )
 		{
 			i++;
-			DB["simulation"]["nsave"].set<int>(toNumber<int>(string(argv[i])));
+			DB["simulation"]["nsave"].set<int>(toNumber<int>(std::string(argv[i])));
 		}
 		// total number of time steps
 		if ( strcmp(argv[i],"-nt")==0 )
 		{
 			i++;
-			DB["simulation"]["nt"].set<int>(toNumber<int>(string(argv[i])));
+			DB["simulation"]["nt"].set<int>(toNumber<int>(std::string(argv[i])));
 		}
 		// size of time increment
 		if ( strcmp(argv[i],"-dt")==0 )
 		{
 			i++;
-			DB["simulation"]["dt"].set<real>(toNumber<real>(string(argv[i])));
+			DB["simulation"]["dt"].set<real>(toNumber<real>(std::string(argv[i])));
 		}
 		// relative tolerance for the velocity solve
 		if ( strcmp(argv[i],"-velocity-rtol")==0 )
 		{
 			i++;
-			DB["velocitySolve"]["rTol"].set<real>(toNumber<real>(string(argv[i])));
+			DB["velocitySolve"]["rTol"].set<real>(toNumber<real>(std::string(argv[i])));
 		}
 		// absolute tolerance for the velocity solve
 		if ( strcmp(argv[i],"-velocity-atol")==0 )
 		{
 			i++;
-			DB["velocitySolve"]["aTol"].set<real>(toNumber<real>(string(argv[i])));
+			DB["velocitySolve"]["aTol"].set<real>(toNumber<real>(std::string(argv[i])));
 		}
 		// relative tolerance for the Poisson solve
 		if ( strcmp(argv[i],"-poisson-rtol")==0 )
 		{
 			i++;
-			DB["PoissonSolve"]["rTol"].set<real>(toNumber<real>(string(argv[i])));
+			DB["PoissonSolve"]["rTol"].set<real>(toNumber<real>(std::string(argv[i])));
 		}
 		// absolute tolerance for the Poisson solve
 		if ( strcmp(argv[i],"-poisson-atol")==0 )
 		{
 			i++;
-			DB["PoissonSolve"]["aTol"].set<real>(toNumber<real>(string(argv[i])));
+			DB["PoissonSolve"]["aTol"].set<real>(toNumber<real>(std::string(argv[i])));
 		}
 		// IBM Scheme
 		if ( strcmp(argv[i],"-ibmScheme")==0 )
@@ -327,6 +327,7 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 	}
 }
 
+
 //##############################################################################
 //                                OUTPUT
 //##############################################################################
@@ -338,7 +339,7 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
  *
  * \return a string
  */
-string stringFromPreconditionerType(preconditionerType s)
+std::string stringFromPreconditionerType(preconditionerType s)
 {
   if (s == NONE)
     return "None";
@@ -349,8 +350,12 @@ string stringFromPreconditionerType(preconditionerType s)
   else if (s == AINV)
     return "Approximate Inverse";
   else
-    return "Unrecognised preconditioner";
+  {
+  	printf("Error: Unknown preconditionerType.\n");
+  	exit(-1);
+  }
 }
+
 
 /**
  * \brief Converts a \c timeScheme to a \c std::string.
@@ -359,7 +364,7 @@ string stringFromPreconditionerType(preconditionerType s)
  *
  * \return a string
  */
-string stringFromTimeScheme(timeScheme s)
+std::string stringFromTimeScheme(timeScheme s)
 {
 	if (s == EULER_EXPLICIT)
 		return "Explicit Euler Method";
@@ -370,8 +375,12 @@ string stringFromTimeScheme(timeScheme s)
 	else if (s == CRANK_NICOLSON)
 		return "Crank-Nicolson";
 	else
-		return "Unknown";
+	{
+		printf("Error: Unknown timeScheme!\n");
+		exit(-1);
+	}
 }
+
 
 /**
  * \brief Prints the parameters of the simulation.
@@ -390,7 +399,7 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	ibmScheme ibmSchm = DB["simulation"]["ibmScheme"].get<ibmScheme>();
 
 
-    std::cout << '\n';
+  std::cout << '\n';
 	
 	std::cout << "\nFlow parameters" << '\n';
 	std::cout << "---------------" << '\n';
@@ -409,7 +418,12 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "nsave = " << nsave << '\n';
 	std::cout << "Convection time scheme = " << stringFromTimeScheme(DB["simulation"]["convTimeScheme"].get<timeScheme>()) << '\n';
 	std::cout << "Diffusion time scheme  = " << stringFromTimeScheme(DB["simulation"]["diffTimeScheme"].get<timeScheme>()) << '\n';
-	if(ibmSchm==FADLUN_ET_AL || ibmSchm==DIRECT_FORCING || ibmSchm==DIFFUSION || ibmSchm==DF_IMPROVED || ibmSchm==DF_MODIFIED || ibmSchm==FEA_MODIFIED)
+	if (ibmSchm == FADLUN_ET_AL ||
+			ibmSchm == DIRECT_FORCING ||
+			ibmSchm == DIFFUSION ||
+			ibmSchm == DF_IMPROVED ||
+			ibmSchm == DF_MODIFIED ||
+			ibmSchm == FEA_MODIFIED)
 	{
 		std::cout << "Interpolation type: ";
 		switch(interpType)
@@ -423,21 +437,21 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	
 	std::cout << "\nVelocity Solve" << '\n';
 	std::cout << "--------------" << '\n';
-	std::cout << "Solver = " << DB["velocitySolve"]["solver"].get<string>() << '\n';
+	std::cout << "Solver = " << DB["velocitySolve"]["solver"].get<std::string>() << '\n';
 	std::cout << "Preconditioner = " << stringFromPreconditionerType(DB["velocitySolve"]["preconditioner"].get<preconditionerType>()) << '\n';
 	std::cout << "Relative tolerance = " << DB["velocitySolve"]["rTol"].get<real>() << '\n';
 	std::cout << "Absolute tolerance = " << DB["velocitySolve"]["aTol"].get<real>() << '\n';
 	
 	std::cout << "\nPoisson Solve" << '\n';
 	std::cout << "-------------" << '\n';
-	std::cout << "Solver = " << DB["PoissonSolve"]["solver"].get<string>() << '\n';
+	std::cout << "Solver = " << DB["PoissonSolve"]["solver"].get<std::string>() << '\n';
 	std::cout << "Preconditioner = " << stringFromPreconditionerType(DB["PoissonSolve"]["preconditioner"].get<preconditionerType>()) << '\n';
 	std::cout << "Relative tolerance = " << DB["PoissonSolve"]["rTol"].get<real>() << '\n';
 	std::cout << "Absolute tolerance = " << DB["PoissonSolve"]["aTol"].get<real>() << '\n';
 	
 	std::cout << "\nOutput parameters" << '\n';
 	std::cout << "-----------------" << '\n';
-	std::cout << "Output folder = " << DB["inputs"]["caseFolder"].get<string>() << '\n';
+	std::cout << "Output folder = " << DB["inputs"]["caseFolder"].get<std::string>() << '\n';
 	std::cout << "nsave = " << DB["simulation"]["nsave"].get<int>() << '\n';
 	
 	cudaDeviceProp deviceProp;
@@ -452,6 +466,7 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "ECC Enabled = " << ecc << std::endl;
 }
 
+
 /**
  * \brief Prints the time spent to execute tasks.
  *
@@ -463,6 +478,7 @@ void printTimingInfo(Logger &logger)
 	std::cout << std::endl;
 }
 
+
 /**
  * \brief Writes information about the run into the file \a run.info.
  *
@@ -471,7 +487,7 @@ void printTimingInfo(Logger &logger)
  */
 void writeInfoFile(parameterDB &DB, domain &D)
 {
-	std::string   folder = DB["inputs"]["caseFolder"].get<string>();
+	std::string folder = DB["inputs"]["caseFolder"].get<std::string>();
 	std::ofstream infofile((folder+"/run.info").c_str());
 	infofile << std::setw(20) << "--nx"  << "\t" << D.nx << '\n';
 	infofile << std::setw(20) << "--ny"  << "\t" << D.ny << '\n';
@@ -485,6 +501,7 @@ void writeInfoFile(parameterDB &DB, domain &D)
 	infofile.close();
 }
 
+
 /**
  * \brief Writes grid-points coordinates into the file \a grid.
  *
@@ -495,13 +512,14 @@ void writeGrid(std::string &caseFolder, domain &D)
 {
 	std::stringstream out;
 	out << caseFolder << "/grid";
-	std::ofstream file(out.str().c_str(), ios::binary);
+	std::ofstream file(out.str().c_str(), std::ios::binary);
 	file.write((char*)(&D.nx), sizeof(int));
 	file.write((char*)(&D.x[0]), (D.nx+1)*sizeof(real));
 	file.write((char*)(&D.ny), sizeof(int));
 	file.write((char*)(&D.y[0]), (D.ny+1)*sizeof(real));
 	file.close();
 }
+
 
 /**
  * \brief Writes numerical data at a given time-step (on the host).
@@ -530,7 +548,7 @@ void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, doma
 
 	out.str("");
 	out << path << "/q";
-	std::ofstream file(out.str().c_str(), ios::binary);
+	std::ofstream file(out.str().c_str(), std::ios::binary);
 	N = q.size();
 	file.write((char*)(&N), sizeof(int));
 	file.write((char*)(&q[0]), N*sizeof(real));
@@ -538,7 +556,7 @@ void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, doma
 
 	out.str("");
 	out << path << "/lambda";
-	file.open(out.str().c_str(), ios::binary);
+	file.open(out.str().c_str(), std::ios::binary);
 	N = lambda.size();
 	file.write((char*)(&N), sizeof(int));
 	file.write((char*)(&lambda[0]), N*sizeof(real));
@@ -546,6 +564,7 @@ void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, doma
 	
 	std::cout << "Data saved to folder " << path << std::endl;
 }
+
 
 /**
  * \brief Writes numerical data at a given time-step (on the device).

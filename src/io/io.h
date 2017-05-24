@@ -1,6 +1,5 @@
 /***************************************************************************//**
  * \file io.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the functions of the namespace \c io.
  */
 
@@ -10,8 +9,9 @@
 #include <vector>
 #include <types.h>
 #include <domain.h>
-#include <parameterDB.h>
-#include <bodies.h>
+
+#include "parameterDB.h"
+#include "bodies.h"
 
 
 /**
@@ -39,7 +39,7 @@ namespace io
 	void parseSimulationFile(std::string &simFile, parameterDB &DB);
 	
 	// parse the \a bodies file and store information about the immersed bodies
-	void parseBodiesFile(parameterDB &DB);
+	void parseBodiesFile(std::string &bodiesFile, parameterDB &DB);
 
 	// initialize the database with default values
 	void initialiseDefaultDB(parameterDB &DB);

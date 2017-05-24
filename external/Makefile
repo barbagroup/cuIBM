@@ -1,12 +1,14 @@
+YAMLCPP_DIR="yaml-cpp-0.5.1"
+
 .PHONY: libyaml-cpp
 
 all: libyaml-cpp
 
 libyaml-cpp:
-	cd yaml-cpp; $(MAKE) $(MFLAGS); $(MAKE) $(MFLAGS) install
+	cd $(YAMLCPP_DIR); $(MAKE) $(MFLAGS); $(MAKE) $(MFLAGS) install
 
 clean:
-	cd yaml-cpp; $(MAKE) $(MFLAGS) clean
+	cd $(YAMLCPP_DIR); $(MAKE) $(MFLAGS) clean
 
 force_look:
 	true

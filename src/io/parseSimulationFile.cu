@@ -1,15 +1,15 @@
 /***************************************************************************//**
  * \file parseSimulationFile.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Parses the file \a simParams.yaml and stores the numerical 
  *        parameters used in the simulation.
  */
 
 
 #include <fstream>
-#include <yaml-cpp/yaml.h>
+
 #include "io.h"
-#include <parameterDB.h>
+#include "parameterDB.h"
+#include "yaml-cpp/yaml.h"
 
 
 /**
@@ -19,8 +19,6 @@
 namespace io
 {
 
-using std::string;
-
 /**
  * \brief Converts a string to a time-integration scheme type.
  *
@@ -28,7 +26,7 @@ using std::string;
  *
  * \return a time-integration scheme type
  */
-timeScheme timeSchemeFromString(string &s)
+timeScheme timeSchemeFromString(std::string s)
 {
   if (s == "EULER_EXPLICIT")
     return EULER_EXPLICIT;
@@ -41,8 +39,12 @@ timeScheme timeSchemeFromString(string &s)
   else if (s == "CRANK_NICOLSON")
     return CRANK_NICOLSON;
   else
-    return EULER_EXPLICIT;
+  {
+    printf("Error: Unknown timeScheme '%s'!\n", s.c_str());
+    exit(-1);
+  };
 }
+
 
 /**
  * \brief Converts a string to a prconditioner type.
@@ -51,7 +53,7 @@ timeScheme timeSchemeFromString(string &s)
  *
  * \return a preconditioner type
  */
-preconditionerType preconditionerTypeFromString(string &s)
+preconditionerType preconditionerTypeFromString(std::string s)
 {
   if (s == "NONE")
     return NONE;
@@ -62,8 +64,12 @@ preconditionerType preconditionerTypeFromString(string &s)
   else if (s == "AINV")
     return AINV;
   else
-    return NONE;
+  {
+    printf("Error: Unknown preconditioner '%s'!\n", s.c_str());
+    exit(-1);
+  };
 }
+
 
 /**
  * \brief Converts a string to an IBM scheme.
@@ -72,7 +78,7 @@ preconditionerType preconditionerTypeFromString(string &s)
  *
  * \return an IBM-scheme type
  */
-ibmScheme ibmSchemeFromString(string &s)
+ibmScheme ibmSchemeFromString(std::string s)
 {
   if (s == "NAVIER_STOKES")
     return NAVIER_STOKES;
@@ -93,8 +99,12 @@ ibmScheme ibmSchemeFromString(string &s)
   else if (s == "DF_IMPROVED")
     return DF_IMPROVED;
   else
-    return NAVIER_STOKES;
+  {
+    printf("Error: Unknown ibmScheme '%s'!\n", s.c_str());
+    exit(-1);
+  }
 }
+
 
 /**
  * \brief Converts a string to a interpolation type.
@@ -103,7 +113,7 @@ ibmScheme ibmSchemeFromString(string &s)
  *
  * \return an interpolation type
  */
-interpolationType interpolationTypeFromString(string &s)
+interpolationType interpolationTypeFromString(std::string s)
 {
 	if (s == "CONSTANT")
 		return CONSTANT;
@@ -112,8 +122,12 @@ interpolationType interpolationTypeFromString(string &s)
 	else if (s == "QUADRATIC")
 		return QUADRATIC;
 	else
-		return LINEAR;
+	{
+    printf("Error: Unknown interpolationType '%s'!\n", s.c_str());
+    exit(-1);
+  };
 }
+
 
 /**
  * \brief Fills the database with the simulation parameters.
@@ -123,113 +137,36 @@ interpolationType interpolationTypeFromString(string &s)
  */
 void parseSimulation(const YAML::Node &node, parameterDB &DB)
 {
-	real   dt = 0.02,
-	       scaleCV = 2.0;
-	int    nt = 100,
-	       nsave = 100,
-	       startStep = 0;
-	string ibmSch = "NAVIER_STOKES",
-	       convSch = "EULER_EXPLICIT",
-	       diffSch = "EULER_IMPLICIT",
-	       interpType = "LINEAR";
-
-
-	// read simulation parameters
-	node["dt"] >> dt;
-	node["nsave"] >> nsave;
-	node["nt"] >> nt;
-	node["ibmScheme"] >> ibmSch;
-	try
-	{
-		node["startStep"] >> startStep;
-	}
-	catch(...)
-	{
-	}
-	try
-	{
-		node["timeScheme"][0] >> convSch;
-		node["timeScheme"][1] >> diffSch;
-	}
-	catch(...)
-	{		
-	}
-	try
-	{
-		node["scaleCV"] >> scaleCV;
-	}
-	catch(...)
-	{
-	}
-	try
-	{
-		node["interpolationType"] >> interpType;
-	}
-	catch(...)
-	{
-	}
-
 	// write to DB
-	string dbKey = "simulation";
-	DB[dbKey]["dt"].set<real>(dt);
-	DB[dbKey]["scaleCV"].set<real>(scaleCV);
-	DB[dbKey]["nsave"].set<int>(nsave);
-	DB[dbKey]["nt"].set<int>(nt);
-	DB[dbKey]["startStep"].set<int>(startStep);
-	DB[dbKey]["ibmScheme"].set<ibmScheme>(ibmSchemeFromString(ibmSch));
-	DB[dbKey]["convTimeScheme"].set<timeScheme>(timeSchemeFromString(convSch));
-	DB[dbKey]["diffTimeScheme"].set<timeScheme>(timeSchemeFromString(diffSch));
-	DB[dbKey]["interpolationType"].set<interpolationType>(interpolationTypeFromString(interpType));
-
-	string system = "velocity", linearSolver = "CG", preconditioner = "DIAGONAL";
-	real rTol = 1.0E-05;
-	real aTol = 0.0;
-	int maxIter = 10000;
+	std::string dbKey = "simulation";
+	DB[dbKey]["dt"].set<real>(node["dt"].as<real>(0.02));
+  DB[dbKey]["scaleCV"].set<real>(node["scaleCV"].as<real>(2.0));
+  DB[dbKey]["startStep"].set<int>(node["startStep"].as<int>(0));
+  DB[dbKey]["nt"].set<int>(node["nt"].as<int>(100));
+  DB[dbKey]["nsave"].set<int>(node["nsave"].as<int>(100));
+  DB[dbKey]["ibmScheme"].set<ibmScheme>(
+    ibmSchemeFromString(node["ibmScheme"].as<std::string>("NAVIER_STOKES")));
+  DB[dbKey]["convTimeScheme"].set<timeScheme>(
+    timeSchemeFromString(node["timeScheme"][0].as<std::string>("EULER_EXPLICIT")));
+  DB[dbKey]["diffTimeScheme"].set<timeScheme>(
+    timeSchemeFromString(node["timeScheme"][1].as<std::string>("EULER_IMPLICIT")));
+  DB[dbKey]["interpolationType"].set<interpolationType>(
+    interpolationTypeFromString(node["interpolationType"].as<std::string>("LINEAR")));
 
 	const YAML::Node &solvers = node["linearSolvers"];
 	for (unsigned int i=0; i<solvers.size(); i++)
 	{
-		// read linear solver options
-		solvers[i]["system"] >> system;
-		solvers[i]["solver"] >> linearSolver;
-		try
-		{
-			solvers[i]["preconditioner"] >> preconditioner;
-		}
-		catch(...)
-		{
-		}
-		try
-		{
-			solvers[i]["relTolerance"] >> rTol;
-		}
-		catch(...)
-		{
-		}
-		try
-		{
-			solvers[i]["absTolerance"] >> aTol;
-		}
-		catch(...)
-		{
-		}
-		try
-		{
-			solvers[i]["maxIterations"] >> maxIter;
-		}
-		catch(...)
-		{
-		}
-
-		// write to DB
-		string dbKey = system + "Solve";
-		DB[dbKey]["solver"].set<string>(linearSolver);
-		DB[dbKey]["preconditioner"].set<preconditionerType>(preconditionerTypeFromString(preconditioner));
-		DB[dbKey]["rTol"].set<real>(rTol);
-		DB[dbKey]["aTol"].set<real>(aTol);
-		DB[dbKey]["maxIterations"].set<int>(maxIter);
+    std::string system = solvers[i]["system"].as<std::string>();
+    std::string dbKey = system + "Solve";
+    DB[dbKey]["solver"].set<std::string>(solvers[i]["solver"].as<std::string>("CG"));
+    DB[dbKey]["preconditioner"].set<preconditionerType>(
+      preconditionerTypeFromString(solvers[i].as<std::string>("DIAGONAL")));
+    DB[dbKey]["rTol"].set<real>(solvers[i]["relTolerance"].as<real>(1.0E-05));
+    DB[dbKey]["aTol"].set<real>(solvers[i]["absTolerance"].as<real>(1.0E-50));
+    DB[dbKey]["maxIterations"].set<int>(solvers[i]["maxIterations"].as<int>(10000));
 	}
 }
+
 
 /**
  * \brief Parses \a simParams.yaml and stores the simulation parameters.
@@ -239,13 +176,9 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
  */
 void parseSimulationFile(std::string &simFile, parameterDB &DB)
 {
-	std::ifstream fin(simFile.c_str());
-	YAML::Parser parser(fin);
-	YAML::Node doc;
-	parser.GetNextDocument(doc);
-
-	for(unsigned int i=0; i<doc.size(); i++)
-		parseSimulation(doc[i], DB);
+  YAML::Node nodes = YAML::LoadFile(simFile);
+	for(unsigned int i=0; i<nodes.size(); i++)
+		parseSimulation(nodes[i], DB);
 }
 
 } // end namespace io

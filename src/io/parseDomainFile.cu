@@ -1,14 +1,14 @@
 /***************************************************************************//**
  * \file parseDomainFile.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Parse the input file \a domain.yaml to obtain information about the 
  *        computational grid.
  */
 
 
 #include <fstream>
-#include <yaml-cpp/yaml.h>
+
 #include "io.h"
+#include "yaml-cpp/yaml.h"
 
 
 /**
@@ -18,22 +18,20 @@
 namespace io
 {
 
-using std::string;
-
 /**
- * \brief Overloads the operator >>. Gets information from the parsed domain file.
+ * \brief Gets information from the parsed domain file.
  *
  * \param node the parsed file
  * \param D instance of the class \c domain to be filled
  */
-void operator >> (const YAML::Node &node, domain &D)
+void parseDomain(const YAML::Node &node, domain &D)
 {
-	string dir;
-	real start;
+	std::string dir;
+	real start, end, stretchRatio, h;
 	int  numCells;
 	
-	node["direction"] >> dir;
-	node["start"] >> start;
+	dir = node["direction"].as<std::string>();
+	start = node["start"].as<real>();
 	
 	if (dir=="x")
 		D.nx = 0;
@@ -44,7 +42,7 @@ void operator >> (const YAML::Node &node, domain &D)
 	// first pass
 	for (unsigned int i=0; i<subDomains.size(); i++)
 	{
-		subDomains[i]["cells"] >> numCells;
+		numCells = subDomains[i]["cells"].as<int>();
 		if (dir=="x")
 			D.nx += numCells;
 		else if(dir=="y")
@@ -52,7 +50,7 @@ void operator >> (const YAML::Node &node, domain &D)
 	}
 	
 	// allocate memory
-	int  beg = 0;
+	int beg = 0;
 	if(dir=="x")
 	{
 		D.x.resize(D.nx+1);
@@ -71,12 +69,11 @@ void operator >> (const YAML::Node &node, domain &D)
 	}
 	
 	// second pass
-	real end, stretchRatio, h;
 	for (unsigned int i=0; i<subDomains.size(); i++)
 	{
-		subDomains[i]["end"] >> end;
-		subDomains[i]["cells"] >> numCells;
-		subDomains[i]["stretchRatio"] >> stretchRatio;
+		end = subDomains[i]["end"].as<real>();
+		numCells = subDomains[i]["cells"].as<int>();
+		stretchRatio = subDomains[i]["stretchRatio"].as<real>();
 		
 		if(fabs(stretchRatio-1.0) < 1.0e-6)
 		{
@@ -136,13 +133,9 @@ void operator >> (const YAML::Node &node, domain &D)
  */
 void parseDomainFile(std::string &domFile, domain &D)
 {
-	std::ifstream fin(domFile.c_str());
-	YAML::Parser  parser(fin);
-	YAML::Node    doc;
-	parser.GetNextDocument(doc);
-
-	for (unsigned int i=0; i<doc.size(); i++)
-		doc[i] >> D;
+	YAML::Node nodes = YAML::LoadFile(domFile);
+	for (unsigned int i=0; i<nodes.size(); i++)
+		parseDomain(nodes[i], D);
 		
 	D.xu.resize(D.nx-1);
 	D.yu.resize(D.ny);
