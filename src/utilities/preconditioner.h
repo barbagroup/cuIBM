@@ -11,7 +11,7 @@
 #include <cusp/precond/diagonal.h>
 #include <cusp/precond/aggregation/smoothed_aggregation.h>
 #include <cusp/precond/ainv.h>
-#include <cusp/format_utils.h>
+#include <cusp/detail/format.h>
 
 #include "types.h"
 

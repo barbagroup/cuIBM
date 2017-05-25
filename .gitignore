@@ -26,4 +26,10 @@ scripts/python/*.bdy
 *.txt
 !validation-data/*.txt
 
+# backup files of VIM
+.*.swp
+.*\~
+*\~
+
+# mesnardo env configuration
 set-env.rc

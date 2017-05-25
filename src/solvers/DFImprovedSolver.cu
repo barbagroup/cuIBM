@@ -4,6 +4,7 @@
 #include "DFImprovedSolver.h"
 #include "solvers/kernels/generateQT.h"
 
+
 template <typename memoryType>
 DFImprovedSolver<memoryType>::DFImprovedSolver(parameterDB *pDB, domain *dInfo)
 {
