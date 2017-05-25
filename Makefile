@@ -42,7 +42,12 @@ SRCS = $(shell find $(SRC_DIR) -type f -name *$(SRC_EXT))
 OBJS = $(patsubst $(SRC_DIR)/%, $(BUILD_DIR)/%, $(SRCS:$(SRC_EXT)=.o))
 
 # include header files from cuIBM and CUSP library
+ifdef CUSP_DIR
 INC = -I $(SRC_DIR) -I $(CUSP_DIR)
+else
+INC = -I $(SRC_DIR)
+endif
+
 
 # path of the YAML static library
 EXT_LIBS = $(PROJ_ROOT)/external/lib/libyaml-cpp.a
