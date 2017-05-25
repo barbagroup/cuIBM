@@ -154,49 +154,49 @@ testDiffusion:
 # commands to run cuIBM simulations
 
 lidDrivenCavityRe100:
-	bin/cuibm -caseFolder examples/lidDrivenCavity/Re100
+	bin/cuibm -directory examples/lidDrivenCavity/Re100
 
 lidDrivenCavityRe1000:
-	bin/cuibm -caseFolder examples/lidDrivenCavity/Re1000
+	bin/cuibm -directory examples/lidDrivenCavity/Re1000
 
 cylinder:
-	bin/cuibm -caseFolder examples/cylinder/test
+	bin/cuibm -directory examples/cylinder/test
 
 cylinderRe40:
-	bin/cuibm -caseFolder examples/cylinder/Re40
+	bin/cuibm -directory examples/cylinder/Re40
 
 cylinderRe550:
-	bin/cuibm -caseFolder examples/cylinder/Re550
+	bin/cuibm -directory examples/cylinder/Re550
 
 cylinderRe3000:
-	bin/cuibm -caseFolder examples/cylinder/Re3000
+	bin/cuibm -directory examples/cylinder/Re3000
 
 cylinderRe75:
-	bin/cuibm -caseFolder examples/cylinder/Re75
+	bin/cuibm -directory examples/cylinder/Re75
 
 cylinderRe100:
-	bin/cuibm -caseFolder examples/cylinder/Re100
+	bin/cuibm -directory examples/cylinder/Re100
 
 cylinderRe150:
-	bin/cuibm -caseFolder examples/cylinder/Re150
+	bin/cuibm -directory examples/cylinder/Re150
 
 cylinderDirectForcing:
-	bin/cuibm -caseFolder examples/cylinder/Re40 -ibmScheme DirectForcing
+	bin/cuibm -directory examples/cylinder/Re40 -ibmScheme DirectForcing
 
 snakeRe1000AOA30:
-	bin/cuibm -caseFolder examples/flyingSnake/Re1000_AoA30
+	bin/cuibm -directory examples/flyingSnake/Re1000_AoA30
 
 snakeRe1000AOA35:
-	bin/cuibm -caseFolder examples/flyingSnake/Re1000_AoA35
+	bin/cuibm -directory examples/flyingSnake/Re1000_AoA35
 
 snakeRe2000AOA30:
-	bin/cuibm -caseFolder examples/flyingSnake/Re2000_AoA30
+	bin/cuibm -directory examples/flyingSnake/Re2000_AoA30
 
 snakeRe2000AOA35:
-	bin/cuibm -caseFolder examples/flyingSnake/Re2000_AoA35
+	bin/cuibm -directory examples/flyingSnake/Re2000_AoA35
 
 flappingRe75:
-	bin/cuibm -caseFolder examples/flappingRe75
+	bin/cuibm -directory examples/flappingRe75
 
 oscillatingCylinders:
-	bin/cuibm -caseFolder examples/oscillatingCylinders
+	bin/cuibm -directory examples/oscillatingCylinders
