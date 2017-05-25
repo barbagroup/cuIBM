@@ -89,7 +89,7 @@ Note: the current Makefile compiles cuIBM with the flag `-arch=sm_35` (compute c
 
 Run an example (2D flow around cylinder at Re=40) to check that cuIBM has been built correctly:
 
-    > bin/cuibm -caseFolder cases/cylinder/Re40
+    > bin/cuibm -directory examples/cylinder/Re40
 
 Finally, you can add cuIBM to your path:
 

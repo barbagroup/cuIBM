@@ -154,49 +154,49 @@ testDiffusion:
 # commands to run cuIBM simulations
 
 lidDrivenCavityRe100:
-	bin/cuIBM -caseFolder cases/lidDrivenCavity/Re100
+	bin/cuibm -caseFolder examples/lidDrivenCavity/Re100
 
 lidDrivenCavityRe1000:
-	bin/cuIBM -caseFolder cases/lidDrivenCavity/Re1000
+	bin/cuibm -caseFolder examples/lidDrivenCavity/Re1000
 
 cylinder:
-	bin/cuIBM -caseFolder cases/cylinder/test
+	bin/cuibm -caseFolder examples/cylinder/test
 
 cylinderRe40:
-	bin/cuIBM -caseFolder cases/cylinder/Re40
+	bin/cuibm -caseFolder examples/cylinder/Re40
 
 cylinderRe550:
-	bin/cuIBM -caseFolder cases/cylinder/Re550
+	bin/cuibm -caseFolder examples/cylinder/Re550
 
 cylinderRe3000:
-	bin/cuIBM -caseFolder cases/cylinder/Re3000
+	bin/cuibm -caseFolder examples/cylinder/Re3000
 
 cylinderRe75:
-	bin/cuIBM -caseFolder cases/cylinder/Re75
+	bin/cuibm -caseFolder examples/cylinder/Re75
 
 cylinderRe100:
-	bin/cuIBM -caseFolder cases/cylinder/Re100
+	bin/cuibm -caseFolder examples/cylinder/Re100
 
 cylinderRe150:
-	bin/cuIBM -caseFolder cases/cylinder/Re150
+	bin/cuibm -caseFolder examples/cylinder/Re150
 
 cylinderDirectForcing:
-	bin/cuIBM -caseFolder cases/cylinder/Re40 -ibmScheme DirectForcing
+	bin/cuibm -caseFolder examples/cylinder/Re40 -ibmScheme DirectForcing
 
 snakeRe1000AOA30:
-	time bin/cuIBM -caseFolder cases/flyingSnake/Re1000_AoA30
+	bin/cuibm -caseFolder examples/flyingSnake/Re1000_AoA30
 
 snakeRe1000AOA35:
-	time bin/cuIBM -caseFolder cases/flyingSnake/Re1000_AoA35
+	bin/cuibm -caseFolder examples/flyingSnake/Re1000_AoA35
 
 snakeRe2000AOA30:
-	time bin/cuIBM -caseFolder cases/flyingSnake/Re2000_AoA30
+	bin/cuibm -caseFolder examples/flyingSnake/Re2000_AoA30
 
 snakeRe2000AOA35:
-	time bin/cuIBM -caseFolder cases/flyingSnake/Re2000_AoA35
+	bin/cuibm -caseFolder examples/flyingSnake/Re2000_AoA35
 
 flappingRe75:
-	time bin/cuIBM -caseFolder cases/flappingRe75
+	bin/cuibm -caseFolder examples/flappingRe75
 
 oscillatingCylinders:
-	time bin/cuIBM -caseFolder cases/oscillatingCylinders
+	bin/cuibm -caseFolder examples/oscillatingCylinders

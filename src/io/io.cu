@@ -191,7 +191,7 @@ void commandLineParse1(int argc, char **argv, parameterDB &DB)
 {
 	for (int i=1; i<argc; i++)
 	{
-		if (strcmp(argv[i],"-caseFolder")==0)
+		if (strcmp(argv[i],"-directory")==0)
 		{
 			i++;
 			DB["inputs"]["caseFolder"].set<std::string>(std::string(argv[i]));
