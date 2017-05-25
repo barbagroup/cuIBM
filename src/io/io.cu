@@ -132,7 +132,7 @@ void initialiseDefaultDB(parameterDB &DB)
 
 	// default input files
 	std::string inputs = "inputs";
-	DB[inputs]["caseFolder"].set<std::string>("cases/cylinder/Re40");
+	DB[inputs]["caseFolder"].set<std::string>(".");
 	DB[inputs]["deviceNumber"].set<int>(0);
 
 	// flow parameters
@@ -477,29 +477,6 @@ void printTimingInfo(Logger &logger)
 {
 	logger.printAllTime();
 	std::cout << std::endl;
-}
-
-
-/**
- * \brief Writes information about the run into the file \a run.info.
- *
- * \param DB database that contains all the simulation parameters
- * \param D information about the computational grid
- */
-void writeInfoFile(parameterDB &DB, domain &D)
-{
-	std::string folder = DB["inputs"]["caseFolder"].get<std::string>();
-	std::ofstream infofile((folder+"/run.info").c_str());
-	infofile << std::setw(20) << "--nx"  << "\t" << D.nx << '\n';
-	infofile << std::setw(20) << "--ny"  << "\t" << D.ny << '\n';
-	infofile << std::setw(20) << "--startStep" << "\t" << DB["simulation"]["startStep"].get<int>() << '\n';
-	infofile << std::setw(20) << "--nt"     << "\t" << DB["simulation"]["nt"].get<int>() << '\n';
-	infofile << std::setw(20) << "--nsave"  << "\t" << DB["simulation"]["nsave"].get<int>() << '\n';
-	infofile << std::setw(20) << "--dt"     << "\t" << DB["simulation"]["dt"].get<real>() << '\n';
-	infofile << std::setw(20) << "--vortlim"<< "\t" << 15 << '\n';
-	infofile << std::setw(20) << "--folder" << "\t" << folder << '\n';
-	infofile << std::setw(20) << "--nu"     << "\t" << DB["flow"]["nu"].get<real>() << '\n';
-	infofile.close();
 }
 
 

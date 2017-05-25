@@ -55,9 +55,6 @@ namespace io
 
 	// print the time spent to execute tasks
 	void printTimingInfo(Logger &logger);
-	
-	// write information about the run into the file run.info
-	void writeInfoFile(parameterDB &DB, domain &D);
 
 	// write grid-points coordinates into the file grid
 	void writeGrid(std::string &caseFolder, domain &D);

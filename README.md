@@ -1,31 +1,19 @@
-cuIBM - A GPU-based Immersed Boundary Method code
-=================================================
+# cuIBM - A GPU-based Immersed Boundary Method code
+
+cuIBM solves the 2D incompressible Navier-Stokes equations with an immersed-boundary method on a single CUDA-capable GPU device with the [CUSP](https://github.com/cusplibrary/cusplibrary) library.
+
+Currently, cuIBM runs only on Unix-based systems (no support on Windows) and was last tested on Ubuntu 16.04.
 
 
-Currently, cuIBM runs only on Unix-based systems and has been tested on 
-Ubuntu 12.04. It is not supported on Windows.
+## Installation
 
-Installation instructions
--------------------------
+### Dependencies (last tested)
 
-### Dependencies
+* GNU C++ Compiler(`g++-5.4`)
+* NVIDIA's CUDA Compiler (`nvcc-8.0`)
+* [CUSP](https://github.com/cusplibrary/cusplibrary) (`0.5.1`)
 
-Please ensure that the following dependencies are installed before compiling 
-cuIBM:
-
-* Git distributed version control system (`git`)
-* GNU C++ Compiler(`g++`)
-* NVIDIA's CUDA Compiler (`nvcc`)
-* CUSP Library (available [here](https://github.com/cusplibrary/cusplibrary))
-
-#### Git (`git`)
-
-Install `git`. On Ubuntu, this can be done via the Terminal using the following 
-command:
-
-    > sudo apt-get install git-core
-
-#### GNU C++ Compiler (`g++`)
+#### GNU C++ Compiler
 
 Install `g++` using the following command:
 
@@ -41,7 +29,7 @@ instructions under Step 1 in the
 on the Ubuntu Community Help Wiki. Software developers will find it useful to 
 install all of them.
 
-#### NVIDIA's CUDA Compiler (`nvcc`)
+#### NVIDIA's CUDA Compiler
 
 [Download and install](https://developer.nvidia.com/cuda-downloads) the CUDA 
 Toolkit.
@@ -49,11 +37,6 @@ Toolkit.
 Check the version of NVCC installed:
 
     > nvcc --version
-
-cuIBM has been compiled and tested with NVCC versions 4.1 to 6.0.
-
-**IMPORTANT**: `nvcc-4.1` is compatible only with G++ version 4.5 (`g++-4.5`) 
-or below. `nvcc-4.2` and above are compatible with `g++-4.6` and below.
 
 #### CUSP Library
 
@@ -63,109 +46,62 @@ programming language and runs code on compatible NVIDIA GPUs.
 
 CUSP is currently hosted on 
 [GitHub](https://github.com/cusplibrary/cusplibrary). cuIBM has been tested 
-and works with version 0.4.0, available for download 
-[here](https://github.com/cusplibrary/cusplibrary/archive/0.4.0.zip).
+and works with version 0.5.1, available for download 
+[here](https://github.com/cusplibrary/cusplibrary/archive/v0.5.1.tar.gz).
 
-The instructions here assume that the CUSP library is to be installed in the 
-folder `$HOME/lib`, but any other folder with write permissions can be used. 
-Create a local copy of the CUSP library using the following commands:
+    > mkdir -p $HOME/software/cusp/0.5.1
+    > wget https://github.com/cusplibrary/cusplibrary/archive/v0.5.1.tar.gz
+    > tar -xvf v0.5.1.tar.gz -C $HOME/software/cusp/0.5.1 --strip-components=1
+    > rm -f v0.5.1.tar.gz
 
-    > mkdir -p $HOME/lib
-    > cd $HOME/lib
-    > wget https://github.com/cusplibrary/cusplibrary/archive/0.4.0.zip
-    > unzip 0.4.0.zip
-
-The folder `$HOME/lib/cusplibrary-0.4.0` is now created.
-
-If you wish to use to latest version of CUSP, it can be cloned from the GitHub 
-repository.
-
-    > cd $HOME/lib
-    > git clone https://github.com/cusplibrary/cusplibrary.git
-
-which creates the folder `$HOME/lib/cusplibrary`.
 
 ### Compiling cuIBM
 
-Run the following commands to create a local copy of the repository in the 
-folder `$HOME/src` (or any other folder with appropriate read/write/execute 
-permissions):
+Clone cuIBM:
 
-    > mkdir -p $HOME/src
-    > cd $HOME/src
+    > mkdir -p $HOME/software
+    > cd $HOME/software
     > git clone https://github.com/barbagroup/cuIBM.git
 
-To compile, set the environment variable `CUSP_DIR` to point to the directory 
-with the CUSP library. For a `bash` shell, add the following line to the file 
-`~/.bashrc` or `~/.bash_profile`:
+To compile cuIBM, set the environment variable `CUSP_DIR` to point to the directory with the CUSP library.
 
-    export CUSP_DIR=/path/to/cusp/folder
-
-which for the present case would be `$HOME/lib/cusplibrary-0.4.0`.
+    > export CUSP_DIR=$HOME/software/cusp/0.5.1
 
 We also recommend setting the environment variable `CUIBM_DIR` to point to the 
 location of the cuIBM folder. While the code can be compiled and run without 
 setting this variable, some of the validation scripts provided make use of it.
 
-    export CUIBM_DIR=/path/to/cuIBM/folder
-    
-which is `$HOME/src/cuIBM`, as per the above instructions.
+    > export CUIBM_DIR=$HOME/software/cuIBM
 
-Reload the file:
+To compile cuIBM, navigate to the cuIBM directory:
 
-    > source ~/.bashrc
+    > cd $HOME/software/cuIBM
 
-Switch to the cuIBM directory:
-
-    > cd $HOME/src/cuIBM
-
-or if you've set the environment variable,
+or
 
     > cd $CUIBM_DIR
 
-Compile all the files:
-    
+then, run make:
+
     > make
 
-Run the test:
-    
-    > bin/cuIBM
-    
-**IMPORTANT**: If your NVIDIA card supports only compute capability 1.3, then 
-edit Line 13 of the file `Makefile.inc` in the cuIBM root directory before 
-compiling: replace `compute_20` with `compute_13`.
+Note: the current Makefile compiles cuIBM with the flag `-arch=sm_35` (compute capability of 3.5). You should adapt the Makefile if your NVidia card has a different compute capability.
 
-Numerical schemes
------------------
+Run an example (2D flow around cylinder at Re=40) to check that cuIBM has been built correctly:
 
-### Temporal discretisation
+    > bin/cuibm -caseFolder cases/cylinder/Re40
 
-The following schemes have been tested for the available solvers:
+Finally, you can add cuIBM to your path:
 
-* Convection
-    - `EULER_EXPLICIT`: First-order Explicit Euler
-    - `ADAMS_BASHFORTH_2`: Second-order Adams-Bashforth
+    > export PATH="$HOME/software/cuIBM/bin:$PATH"
 
-* Diffusion
-    - `EULER_EXPLICIT`: First-order explicit Euler
-    - `EULER_IMPLICIT`: First order implicit Euler
-    - `CRANK_NICOLSON`: Crank-Nicolson
 
-### Spatial discretisation 
+## Examples
 
-The convection terms are calculated using a conservative symmetric 
-finite-difference scheme, and the diffusion terms are calculated using a 
-second-order central difference scheme.
+The following examples are available:
 
-Examples
---------
-
-The following are available in the default installation:
-
-* `lidDrivenCavityRe100`: Flow in a lid-driven cavity with Reynolds number 
-100.
-* `lidDrivenCavityRe1000`: Flow in a lid-driven cavity with Reynolds number 
-1000.
+* `lidDrivenCavityRe100`: Flow in a lid-driven cavity with Reynolds number 100.
+* `lidDrivenCavityRe1000`: Flow in a lid-driven cavity with Reynolds number 1000.
 * `cylinderRe40`: Flow over a circular cylinder at Reynolds number 40. The 
 flow eventually reaches a steady state.
 * `cylinderRe75`: Flow over a circular cylinder at Reynolds number 75. The 
@@ -183,17 +119,12 @@ Reynolds number 550.
 Reynolds number 3000.
 * `flappingRe75`: Flow around a flapping airfoil.
 * `oscillatingCylinders`: Flow across two oscillating cylinders.
-
-### Run the tests
     
-To run any of the examples:
+To run any of the examples list above:
 
     > make <examplename>
 
 The biggest case (`cylinderRe3000`) requires a graphics card with 2GB of memory.
-
-Post-processing
----------------
 
 Post-processing scripts are available in th directory 
 `$CUIBM_DIR/scripts/python`. The command-line argument `--help` will display 
@@ -204,8 +135,8 @@ flow. To display its list of all the command-line options, run:
 
     > python $CUIBM_DIR/scripts/python/plotVorticity.py --help
 
-Known issues
-------------
+
+## Known issues
 
 * CPU routines do not work.
 * Cannot specify which Krylov solver to use for solving the linear systems.
@@ -213,9 +144,10 @@ Known issues
 * DirectForcingSolver has not been tested for cases with multiple or moving 
 bodies.
 
-Contact
--------
+## Contact
 
 Please e-mail [Anush Krishnan](mailto:k.anush@gmail.com), 
 or [Olivier Mesnard](mailto:mesnardo@gwu.edu), if you have any 
 questions, suggestions or feedback.
+
+To report bugs, please use the GitHub issue tracking system. We are also open to pull-requests.

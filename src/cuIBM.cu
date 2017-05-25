@@ -30,8 +30,6 @@ int main(int argc, char **argv)
 
 	io::printDeviceMemoryUsage("Initialization complete");
 	
-	io::writeInfoFile(paramDB, dom_info);
-	
 	// time-step loop
 	while (!solver->finished())
 	{
