@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file  TairaColoniusSolver.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the class \c TairaColoniusSolver.
  */
 
@@ -26,8 +25,8 @@ class TairaColoniusSolver : public NSWithBody<memoryType>
 {
 private:
 	cusp::coo_matrix<int, real, memoryType> 
-		E,		///< Interpolation matrix from the Eulerian grid to the Lagrangian points
-		ET;		///< Regularization matrix form the Lagrangian points to the Eulerian grid
+	  E,   ///< Interpolation matrix from the Eulerian grid to the Lagrangian points
+	  ET;  ///< Regularization matrix form the Lagrangian points to the Eulerian grid
 	
 	// generate the transposed gradient matrix and the interpolation matrix
 	virtual void generateQT();

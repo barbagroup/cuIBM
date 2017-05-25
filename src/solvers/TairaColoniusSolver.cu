@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file TairaColoniusSolver.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods of the class \c TairaColoniusSolver.
  */
 
@@ -19,12 +18,12 @@
  */
 template <typename memoryType>
 void TairaColoniusSolver<memoryType>::initialise()
-{	
+{
 	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
-        ny = NavierStokesSolver<memoryType>::domInfo->ny;
+      ny = NavierStokesSolver<memoryType>::domInfo->ny;
 	
-	int numUV = (nx-1)*ny + nx*(ny-1);
-	int numP  = nx*ny;
+	int numUV = (nx-1)*ny + nx*(ny-1),
+	    numP = nx*ny;
 	
 	NavierStokesSolver<memoryType>::initialiseCommon();
 	
@@ -43,6 +42,7 @@ void TairaColoniusSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::assembleMatrices();
 }
 
+
 /**
  * \brief Calculates and writes forces acting on each immersed body at current time.
  */
@@ -53,9 +53,9 @@ void TairaColoniusSolver<memoryType>::writeData()
 
 	NSWithBody<memoryType>::writeCommon();
 
-	parameterDB  &db = *NavierStokesSolver<memoryType>::paramDB;
-	real         dt  = db["simulation"]["dt"].get<real>();
-	int          numBodies  = NSWithBody<memoryType>::B.numBodies;
+	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
+	real dt = db["simulation"]["dt"].get<real>();
+	int numBodies = NSWithBody<memoryType>::B.numBodies;
 
 	// calculate forces using the T&C method
 	calculateForce();
@@ -75,6 +75,7 @@ void TairaColoniusSolver<memoryType>::writeData()
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }
 
+
 /**
  * \brief Updates the location of the bodies and re-generates appropriate matrices.
  *
@@ -86,8 +87,7 @@ template <typename memoryType>
 void TairaColoniusSolver<memoryType>::updateSolverState()
 {
 	if (NSWithBody<memoryType>::B.bodiesMove)
-	{
-		
+	{	
 		NSWithBody<memoryType>::updateBodies();
 		updateQT();
 		NavierStokesSolver<memoryType>::generateC();
@@ -97,6 +97,7 @@ void TairaColoniusSolver<memoryType>::updateSolverState()
 		NavierStokesSolver<memoryType>::logger.stopTimer("preconditioner2");
 	}
 }
+
 
 /**
  * \brief Constructor. Copies the database and information about the computational grid.
@@ -108,10 +109,12 @@ TairaColoniusSolver<memoryType>::TairaColoniusSolver(parameterDB *pDB, domain *d
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
 }
 
+
 // include inline files located in "./TairaColonius/"
 #include "TairaColonius/generateQT.inl"
 #include "TairaColonius/generateBC2.inl"
 #include "TairaColonius/calculateForce.inl"
+
 
 // specialization of the class TairaColoniusSolver
 template class TairaColoniusSolver<host_memory>;

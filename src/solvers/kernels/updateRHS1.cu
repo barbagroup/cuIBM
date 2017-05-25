@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file updateRHS1.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the kernels to update the right hand-side
  *        of the intermediate velocity flux solver.
  *        It replaces the right-hand side elements at the tagged points, with
@@ -65,7 +64,7 @@ void updateRHS1Y(real *rhs1, int nx, int ny, real dt, real *dy, int *tags, real 
 	if( I < numU + nx*(ny-1) )
 	{
 		rhs1[I] = (tags[I]==-1)*rhs1[I] 
-		          + ((tags[I]!=-1)*((1.0-coeffs[I])*uv[I])) * 0.5*(dy[j+1]+dy[j])/dt;
+		           + ((tags[I]!=-1)*((1.0-coeffs[I])*uv[I])) * 0.5*(dy[j+1]+dy[j])/dt;
 	}
 }
 
@@ -78,7 +77,7 @@ void updateRHS1X(real *rhs1, int nx, int ny, real dt, real *dx, int *tags, real 
 	if( I < (nx-1)*ny )
 	{
 		rhs1[I] = (tags[I]==-1)*rhs1[I] 
-		          + ((tags[I]!=-1)*((1.0-coeffs[I]-coeffs2[I])*uv[I])) * 0.5*(dx[i+1]+dx[i])/dt;
+		           + ((tags[I]!=-1)*((1.0-coeffs[I]-coeffs2[I])*uv[I])) * 0.5*(dx[i+1]+dx[i])/dt;
 	}
 }
 
@@ -92,7 +91,7 @@ void updateRHS1Y(real *rhs1, int nx, int ny, real dt, real *dy, int *tags, real 
 	if( I < numU + nx*(ny-1) )
 	{
 		rhs1[I] = (tags[I]==-1)*rhs1[I] 
-		          + ((tags[I]!=-1)*((1.0-coeffs[I]-coeffs2[I])*uv[I])) * 0.5*(dy[j+1]+dy[j])/dt;
+		           + ((tags[I]!=-1)*((1.0-coeffs[I]-coeffs2[I])*uv[I])) * 0.5*(dy[j+1]+dy[j])/dt;
 	}
 }
 

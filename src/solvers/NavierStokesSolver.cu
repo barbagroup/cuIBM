@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file NavierStokesSolver.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods of the class \c NavierStokesSolver.
  */
 
@@ -26,16 +25,17 @@ void NavierStokesSolver<memoryType>::initialise()
 	int nx = domInfo->nx,
 	    ny = domInfo->ny;
 	
-	int numUV = (nx-1)*ny + nx*(ny-1);
-	int numP  = nx*ny;
+	int numUV = (nx-1)*ny + nx*(ny-1),
+	    numP = nx*ny;
 	
 	initialiseCommon();
 	initialiseArrays(numUV, numP);
 	assembleMatrices();
 }
 
+
 /**
- * \bried Initializes parameters common to all Navier-Stokes solvers.
+ * \brief Initializes parameters common to all Navier-Stokes solvers.
  */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialiseCommon()
@@ -73,6 +73,7 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 	
 	logger.stopTimer("initialiseCommon");
 }
+
 
 /**
  * \brief Initializes all arrays required to solve the Navier-Stokes equations.
@@ -120,6 +121,7 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 	logger.stopTimer("initialiseArrays");
 }
 
+
 /**
  * \brief Initializes velocity flux vectors (on the host).
  *
@@ -133,6 +135,7 @@ void NavierStokesSolver<host_memory>::initialiseFluxes()
 	initialiseFluxes(q_r);
 	qStar = q;
 }
+
 
 /**
  * \brief Initializes velocity flux vectors (on the device).
@@ -154,6 +157,7 @@ void NavierStokesSolver <device_memory>::initialiseFluxes()
 	qStar=q;
 }
 
+
 /**
  * \brief Initializes velocity flux vectors.
  *
@@ -173,7 +177,7 @@ void NavierStokesSolver <memoryType>::initialiseFluxes(real *q)
 
 	int  nx = domInfo->nx,
 	     ny = domInfo->ny,
-	     numU  = (nx-1)*ny;
+	     numU = (nx-1)*ny;
 	
 	real xmin = domInfo->x[0],
 	     xmax = domInfo->x[nx],
@@ -201,6 +205,7 @@ void NavierStokesSolver <memoryType>::initialiseFluxes(real *q)
 	}
 }
 
+
 /**
  * \brief Initializes boundary velocity arrays with values stored in the database.
  */
@@ -208,11 +213,9 @@ template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 {
 	int nx = domInfo->nx,
-		ny = domInfo->ny;
+	    ny = domInfo->ny;
 
-	boundaryCondition 
-		**bcInfo
-	     = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
+	boundaryCondition **bcInfo = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
 
 	// resize boundary arrays by the number of velocity points on boundaries (u and v points)
 	bc[XMINUS].resize(2*ny-1);
@@ -224,24 +227,25 @@ void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 	for(int i=0; i<nx-1; i++)
 	{
 		bc[YMINUS][i] = bcInfo[YMINUS][0].value;
-		bc[YPLUS][i]  = bcInfo[YPLUS][0].value;
-		bc[YMINUS][i+nx-1]	= bcInfo[YMINUS][1].value;
+		bc[YPLUS][i] = bcInfo[YPLUS][0].value;
+		bc[YMINUS][i+nx-1] = bcInfo[YMINUS][1].value;
 		bc[YPLUS][i+nx-1]	= bcInfo[YPLUS][1].value;
 	}
-	bc[YMINUS][2*nx-2]	= bcInfo[YMINUS][1].value;
+	bc[YMINUS][2*nx-2] = bcInfo[YMINUS][1].value;
 	bc[YPLUS][2*nx-2]	= bcInfo[YPLUS][1].value;
 	
 	/// Left and Right
 	for(int i=0; i<ny-1; i++)
 	{
 		bc[XMINUS][i] = bcInfo[XMINUS][0].value;
-		bc[XPLUS][i]  = bcInfo[XPLUS][0].value;
+		bc[XPLUS][i] = bcInfo[XPLUS][0].value;
 		bc[XMINUS][i+ny] = bcInfo[XMINUS][1].value;
-		bc[XPLUS][i+ny]  = bcInfo[XPLUS][1].value;
+		bc[XPLUS][i+ny] = bcInfo[XPLUS][1].value;
 	}
 	bc[XMINUS][ny-1] = bcInfo[XMINUS][0].value;
-	bc[XPLUS][ny-1]  = bcInfo[XPLUS][0].value;
+	bc[XPLUS][ny-1] = bcInfo[XPLUS][0].value;
 }
+
 
 //##############################################################################
 //                            TIME STEPPING
@@ -276,6 +280,7 @@ void NavierStokesSolver<memoryType>::stepTime()
 	timeStep++;
 }
 
+
 /**
  * \brief Doing nothing. Used in immersed boundary methods when the body moves.
  */
@@ -286,6 +291,7 @@ void NavierStokesSolver<memoryType>::updateSolverState()
 //	updateQ(intgSchm.gamma[i]);
 //	updateBoundaryConditions();
 }
+
 
 /**
  * \brief Doing nothing.
@@ -299,6 +305,7 @@ void NavierStokesSolver<memoryType>::updateQ(real gamma)
 //	QCoeff = gamma;
 }
 
+
 /**
  * \brief Doing nothing.
  */
@@ -306,6 +313,7 @@ template <typename memoryType>
 void NavierStokesSolver<memoryType>::updateBoundaryConditions()
 {
 }
+
 
 /**
  * \brief Evaluates the condition required to stop the simulation.
@@ -319,6 +327,7 @@ bool NavierStokesSolver<memoryType>::finished()
 	int nt = (*paramDB)["simulation"]["nt"].get<int>();
 	return (timeStep < startStep+nt) ? false : true;
 }
+
 
 //##############################################################################
 //                          ASSEMBLE MATRICES
@@ -350,6 +359,7 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 	//std::cout << "Assembled matrices!" << std::endl;
 }
 
+
 /**
  * \brief Generates approximate inverse of the matrix resulting from implicit velocity terms.
  *
@@ -363,6 +373,7 @@ void NavierStokesSolver<memoryType>::generateBN()
 	BN = Minv; // 1st-order
 }
 
+
 /*
 template <typename memoryType>
 template <>
@@ -375,6 +386,7 @@ void NavierStokesSolver<memoryType>::generateBN<3>()
 	cusp::multiply(temp1, BN, temp2);
 	cusp::add(Minv, temp2, BN);
 }*/
+
 
 /**
  * \brief Generates the matrix of the Poisson solver (on the device).
@@ -391,6 +403,7 @@ void NavierStokesSolver<device_memory>::generateC()
 	
 	logger.stopTimer("generateC");
 }
+
 
 /**
  * \brief Generates the matrix of the Poisson solver (on the host).
@@ -426,6 +439,7 @@ void NavierStokesSolver<memoryType>::assembleRHS1()
 	logger.stopTimer("assembleRHS1");
 }
 
+
 /**
  * \brief Assembles the right hand-side of the Poisson system.
  */
@@ -439,6 +453,7 @@ void NavierStokesSolver<memoryType>::assembleRHS2()
 	
 	logger.stopTimer("assembleRHS2");
 }
+
 
 //##############################################################################
 //                           LINEAR SOLVES
@@ -454,7 +469,7 @@ void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 	
 	// Solve for qStar ========================================================
 	
-	int  maxIte = (*paramDB)["velocitySolve"]["maxIterations"].get<int>();
+	int maxIte = (*paramDB)["velocitySolve"]["maxIterations"].get<int>();
 	real rTol = (*paramDB)["velocitySolve"]["rTol"].get<real>();
 	real aTol = (*paramDB)["velocitySolve"]["aTol"].get<real>();
 
@@ -474,6 +489,7 @@ void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 	logger.stopTimer("solveIntermediateVel");
 }
 
+
 /**
  * \brief Solves the Poisson system for the pressure (and the body forces if immersed body).
  */
@@ -483,8 +499,8 @@ void NavierStokesSolver<memoryType>::solvePoisson()
 	logger.startTimer("solvePoisson");
 	
 	int  maxIte = (*paramDB)["PoissonSolve"]["maxIterations"].get<int>();
-	real rTol   = (*paramDB)["PoissonSolve"]["rTol"].get<real>();
-	real aTol   = (*paramDB)["PoissonSolve"]["aTol"].get<real>();
+	real rTol = (*paramDB)["PoissonSolve"]["rTol"].get<real>();
+	real aTol = (*paramDB)["PoissonSolve"]["aTol"].get<real>();
 	
 	cusp::monitor<real> sys2Mon(rhs2, maxIte, rTol, aTol, false);
 	if((*paramDB)["simulation"]["ibmScheme"].get<ibmScheme>() != DF_IMPROVED)
@@ -509,6 +525,7 @@ void NavierStokesSolver<memoryType>::solvePoisson()
 	logger.stopTimer("solvePoisson");
 }
 
+
 /**
  * \brief Projects the flux onto the divergence-free field.
  */
@@ -523,6 +540,7 @@ void NavierStokesSolver<memoryType>::projectionStep()
 
 	logger.stopTimer("projectionStep");
 }
+
 
 //##############################################################################
 //                               OUTPUT
@@ -548,6 +566,7 @@ void NavierStokesSolver<memoryType>::writeCommon()
 	iterationsFile << timeStep << '\t' << iterationCount1 << '\t' << iterationCount2 << std::endl;
 }
 
+
 /**
  * \brief Writes data into files.
  */
@@ -561,6 +580,7 @@ void NavierStokesSolver<memoryType>::writeData()
 	logger.stopTimer("output");
 }
 
+
 /**
  * \brief Prints timing information and closes the different files.
  */
@@ -570,6 +590,7 @@ void NavierStokesSolver<memoryType>::shutDown()
 	io::printTimingInfo(logger);
 	iterationsFile.close();
 }
+
 
 /**
  * \brief Constructor. Copies the database and information about the computational grid.
@@ -584,6 +605,7 @@ NavierStokesSolver<memoryType>::NavierStokesSolver(parameterDB *pDB, domain *dIn
 	domInfo = dInfo;
 }
 
+
 // include inline files
 #include "NavierStokes/generateM.inl"
 #include "NavierStokes/generateL.inl"
@@ -592,6 +614,7 @@ NavierStokesSolver<memoryType>::NavierStokesSolver(parameterDB *pDB, domain *dIn
 #include "NavierStokes/generateRN.inl"
 #include "NavierStokes/generateBC1.inl"
 #include "NavierStokes/generateBC2.inl"
+
 
 // specialization of the class NavierStokesSolver
 template class NavierStokesSolver<host_memory>;

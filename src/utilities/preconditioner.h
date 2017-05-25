@@ -1,4 +1,4 @@
-/***************************************************************************//**
+/**
  * \file preconditioner.h
  * \brief Definition of the class \c preconditioner.
  */
@@ -23,11 +23,11 @@
 template <typename Matrix>
 class preconditioner
 {
-	preconditionerType type;	///< type of preconditioner
+	preconditionerType type;  ///< type of preconditioner
 
 	cusp::linear_operator<typename Matrix::value_type,
 	                      typename Matrix::memory_space,
-	                      typename Matrix::index_type>* LO;
+	                      typename Matrix::index_type>* LO;  ///< linear operator
 
 public:
 	typedef typename Matrix::index_type   index_type;
@@ -133,7 +133,7 @@ void preconditioner<Matrix>::update(const Matrix &A)
 
 /**
  * \brief Overloads the operator (). This is required due to the way preconditioners are 
-          implemented in Cusp - as linear operators on a vector.
+					implemented in Cusp - as linear operators on a vector.
  */
 template <typename Matrix>
 template <typename VectorType1, typename VectorType2>
@@ -150,19 +150,19 @@ void preconditioner<Matrix>::operator()(const VectorType1 &x, VectorType2 &y) co
 	if (type == DIAGONAL)
 	{
 		cusp::precond::diagonal<value_type, memory_space> *diag =
-			static_cast<cusp::precond::diagonal<value_type, memory_space> *>(LO);
+		  static_cast<cusp::precond::diagonal<value_type, memory_space> *>(LO);
 		diag->operator()(x,y);
 	}
 	else if (type == SMOOTHED_AGGREGATION)
 	{
 		cusp::precond::aggregation::smoothed_aggregation<index_type, value_type, memory_space> *SA =
-			static_cast<cusp::precond::aggregation::smoothed_aggregation<index_type, value_type, memory_space> *>(LO);
+		  static_cast<cusp::precond::aggregation::smoothed_aggregation<index_type, value_type, memory_space> *>(LO);
 		SA->operator()(x,y);
 	}
 	else if (type == AINV)
 	{
 		cusp::precond::nonsym_bridson_ainv<value_type, memory_space> *AI =
-			static_cast<cusp::precond::nonsym_bridson_ainv<value_type, memory_space> *>(LO);
+		  static_cast<cusp::precond::nonsym_bridson_ainv<value_type, memory_space> *>(LO);
 		AI->operator()(x,y);
 	}
 	else

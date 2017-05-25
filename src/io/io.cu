@@ -1,4 +1,4 @@
-/***************************************************************************//**
+/**
  * \file io.cu
  * \brief Implementation of the functions of the namespace \c io.
  */
@@ -21,10 +21,10 @@
 template <typename T>
 T toNumber(std::string str)
 {
-  T num;
-  std::stringstream ss(str); //turn the string into a stream
-  ss >> num; //convert
-  return num;
+	T num;
+	std::stringstream ss(str); //turn the string into a stream
+	ss >> num; //convert
+	return num;
 }
 
 
@@ -46,12 +46,13 @@ namespace io
  */
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems)
 {
-  std::stringstream ss(s);
-  std::string item;
-  while (std::getline(ss, item, delim)) {
-      elems.push_back(item);
-  }
-  return elems;
+	std::stringstream ss(s);
+	std::string item;
+	while (std::getline(ss, item, delim))
+	{
+		elems.push_back(item);
+	}
+	return elems;
 }
 
 
@@ -65,9 +66,9 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
  */
 std::vector<std::string> split(const std::string &s, char delim)
 {
-  std::vector<std::string> elems;
-  split(s, delim, elems);
-  return elems;
+	std::vector<std::string> elems;
+	split(s, delim, elems);
+	return elems;
 }
 
 
@@ -341,19 +342,19 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
  */
 std::string stringFromPreconditionerType(preconditionerType s)
 {
-  if (s == NONE)
-    return "None";
-  else if (s == DIAGONAL)
-    return "Diagonal";
-  else if (s == SMOOTHED_AGGREGATION)
-    return "Smoothed Aggregation";
-  else if (s == AINV)
-    return "Approximate Inverse";
-  else
-  {
-  	printf("Error: Unknown preconditionerType.\n");
-  	exit(-1);
-  }
+	if (s == NONE)
+		return "None";
+	else if (s == DIAGONAL)
+		return "Diagonal";
+	else if (s == SMOOTHED_AGGREGATION)
+		return "Smoothed Aggregation";
+	else if (s == AINV)
+		return "Approximate Inverse";
+	else
+	{
+		printf("Error: Unknown preconditionerType.\n");
+		exit(-1);
+	}
 }
 
 
@@ -399,7 +400,7 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	ibmScheme ibmSchm = DB["simulation"]["ibmScheme"].get<ibmScheme>();
 
 
-  std::cout << '\n';
+	std::cout << '\n';
 	
 	std::cout << "\nFlow parameters" << '\n';
 	std::cout << "---------------" << '\n';
@@ -414,16 +415,16 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::cout << "dt = " << dt << '\n';
 	std::cout << "scaleCV = " << scaleCV << '\n';
 	std::cout << "startStep = " << startStep << '\n';
-	std::cout << "nt = "    << nt << '\n';
+	std::cout << "nt = " << nt << '\n';
 	std::cout << "nsave = " << nsave << '\n';
 	std::cout << "Convection time scheme = " << stringFromTimeScheme(DB["simulation"]["convTimeScheme"].get<timeScheme>()) << '\n';
 	std::cout << "Diffusion time scheme  = " << stringFromTimeScheme(DB["simulation"]["diffTimeScheme"].get<timeScheme>()) << '\n';
 	if (ibmSchm == FADLUN_ET_AL ||
-			ibmSchm == DIRECT_FORCING ||
-			ibmSchm == DIFFUSION ||
-			ibmSchm == DF_IMPROVED ||
-			ibmSchm == DF_MODIFIED ||
-			ibmSchm == FEA_MODIFIED)
+	    ibmSchm == DIRECT_FORCING ||
+	    ibmSchm == DIFFUSION ||
+	    ibmSchm == DF_IMPROVED ||
+	    ibmSchm == DF_MODIFIED ||
+	    ibmSchm == FEA_MODIFIED)
 	{
 		std::cout << "Interpolation type: ";
 		switch(interpType)
@@ -584,7 +585,7 @@ void writeData<vecD>(std::string &caseFolder, int n, vecD &q, vecD &lambda, doma
 {
 	vecH qH = q,
 	     lambdaH = lambda;
-	     
+
 	writeData(caseFolder, n, qH, lambdaH, D);
 }
 

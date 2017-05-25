@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file bodies.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods of the class \c bodies.
  */
 
@@ -62,7 +61,7 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 			X[i+offsets[k]] = (*B)[k].X[i];
 			Y[i+offsets[k]] = (*B)[k].Y[i];
 		}
-	}	
+	} 
 	x.resize(totalPoints);
 	y.resize(totalPoints);
 	uB.resize(totalPoints);
@@ -96,6 +95,7 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 	std::cout << "DONE!" << std::endl;
 }
 
+
 /**
  * \brief Stores index of each cell that contains a boundary point.
  *
@@ -109,7 +109,7 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 template <typename memoryType>
 void bodies<memoryType>::calculateCellIndices(domain &D)
 {
-	int	i=0, j=0;
+	int i=0, j=0;
 
 	// find the cell for the zeroth point
 	while(D.x[i+1] < x[0])
@@ -149,6 +149,7 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 		J[k] = j;
 	}
 }
+
 
 /**
  * \brief Calculates indices of the bounding box of each body in the flow.
@@ -204,6 +205,7 @@ void bodies<memoryType>::calculateBoundingBoxes(parameterDB &db, domain &D)
 	}
 }
 
+
 /**
  * \brief Updates position, velocity and neighbors of each body.
  *
@@ -227,7 +229,7 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 	typedef cusp::array1d_view<Iterator>             View;
 
 	// views of the vectors that store the coordinates and velocities of all the body points
-	View    XView, YView, xView, yView, onesView, uBView, vBView;
+	View XView, YView, xView, yView, onesView, uBView, vBView;
 	
 	// body data
 	std::vector<body> *B = db["flow"]["bodies"].get<std::vector<body> *>();
@@ -259,7 +261,7 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 			vBView   = View(vB.begin()+offsets[l], vB.end());
 		}
 		
-		// update postitions	
+		// update postitions  
 		// x-coordinates
 		cusp::blas::axpbypcz( onesView, XView, onesView, xView, (*B)[l].Xc[0],  cos((*B)[l].Theta), -(*B)[l].X0[0]*cos((*B)[l].Theta) );
 		cusp::blas::axpbypcz( xView,    YView, onesView, xView,           1.0, -sin((*B)[l].Theta),  (*B)[l].X0[1]*sin((*B)[l].Theta) );
@@ -278,6 +280,7 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 		calculateCellIndices(D);
 }
 
+
 /**
  * \brief Writes body coordinates into a file (using data on the host).
  *
@@ -287,10 +290,11 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 template <>
 void bodies<host_memory>::writeToFile(std::string &caseFolder, int timeStep)
 {
-	 real *bx = thrust::raw_pointer_cast(&(x[0])),
-	      *by = thrust::raw_pointer_cast(&(y[0]));
-	 writeToFile(bx, by, caseFolder, timeStep);
+	real *bx = thrust::raw_pointer_cast(&(x[0])),
+	     *by = thrust::raw_pointer_cast(&(y[0]));
+	writeToFile(bx, by, caseFolder, timeStep);
 }
+
 
 /**
  * \brief Writes body coordinates into a file (using data from the device).
@@ -307,6 +311,7 @@ void bodies<device_memory>::writeToFile(std::string &caseFolder, int timeStep)
 	     *by = thrust::raw_pointer_cast(&(yHost[0]));
 	writeToFile(bx, by, caseFolder, timeStep);
 }
+
 
 /**
  * \brief Writes body coordinates into a file called \a bodies.
@@ -330,6 +335,7 @@ void bodies<memoryType>::writeToFile(real *bx, real *by, std::string &caseFolder
 	}
 	file.close();
 }
+
 
 // specialization of the class bodies
 template class bodies<host_memory>;

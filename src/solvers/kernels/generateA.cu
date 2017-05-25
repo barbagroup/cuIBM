@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateA.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the kernels required to generate the matrix
  *        resulting from the implicit terms in the momentum equation.
  */
@@ -45,6 +44,7 @@ void generateA(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int
 		AVals[I] = -alpha*LVals[I] + (LRows[I]==LCols[I])*MVals[LRows[I]];
 	}
 }
+
 
 /**
  * \brief Generates a block of the matrix resulting from implicit terms in the momentum equation

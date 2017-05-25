@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file boundaryCondition.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Definition of the class \c boundaryCondition.
  */
 
@@ -21,7 +20,7 @@ class boundaryCondition
 {
 public:
 	bcType type; ///< type of boundary condition
-	real  value; ///< numerical value associated with the boundary condition
+	real value;  ///< numerical value associated with the boundary condition
 	
 	/**
 	 * \brief Constructor. Sets Dirichlet boundary condition with value.
@@ -37,14 +36,4 @@ public:
 	 */
 	boundaryCondition(bcType _type, real _value) : type(_type), value(_value) {}; 
 
-  /*const char *print()
-  {
-    std::stringstream ss; 
-    ss << toString(this->type);
-    ss << " : ";
-    ss << this->value;
-    std::string st = ss.str();
-    //std::cout << st << std::endl;
-    return ss.str().c_str();
-  }*/
 };

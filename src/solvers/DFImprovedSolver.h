@@ -1,6 +1,6 @@
 /**
-* @file  DFImprovedSolver.h
-* @brief Second-order direct forcing method.
+* \file  DFImprovedSolver.h
+* \brief Definition of the class \c DFImprovedSolver.
 */
 
 
@@ -10,8 +10,9 @@
 
 
 /**
-* Second-order fully-discrete direct forcing method
-*/
+ * \class DFImprovedSolver
+ * \brief Second-order fully-discrete direct forcing method.
+ */
 template <typename memoryType>
 class DFImprovedSolver : public DirectForcingSolver<memoryType>
 {

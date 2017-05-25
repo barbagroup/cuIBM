@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file calculateForce.inl
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods of the class \c TairaColoniusSolver
  *        to calculate forces acting on each immersed body.
  */
@@ -22,13 +21,13 @@ void TairaColoniusSolver<memoryType>::calculateForce()
 	typedef typename cusp::array1d<real, memoryType>::iterator ValueIterator;
 	typedef typename cusp::array1d_view<ValueIterator>         View;
 	
-	int     nx = NavierStokesSolver<memoryType>::domInfo->nx,
-	        ny = NavierStokesSolver<memoryType>::domInfo->ny,
-	        numBodies = NSWithBody<memoryType>::B.numBodies,
-	        totalPoints = NSWithBody<memoryType>::B.totalPoints,
-	        ETRows = (nx-1)*ny + nx*(ny-1);
-	real    dx, dy;
-	View    f, fView;
+	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
+	    ny = NavierStokesSolver<memoryType>::domInfo->ny,
+	    numBodies = NSWithBody<memoryType>::B.numBodies,
+	    totalPoints = NSWithBody<memoryType>::B.totalPoints,
+	    ETRows = (nx-1)*ny + nx*(ny-1);
+	real dx, dy;
+	View f, fView;
 	
 	cusp::array1d<real, memoryType> F(ETRows), fTemp(2*totalPoints);
 	

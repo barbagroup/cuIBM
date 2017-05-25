@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateM.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the kernels to generate the mass matrix and its inverse.
  */
 

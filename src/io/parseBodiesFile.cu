@@ -1,4 +1,4 @@
-/***************************************************************************//**
+/**
  * \file parseBodiesFile.cu
  * \brief Parses the file \a bodies.yaml to get information about immersed bodies.
  */
@@ -68,12 +68,12 @@ void parseBodiesNode(const YAML::Node &node, body &Body, parameterDB &DB)
 		std::string fileName = node["pointsFile"].as<std::string>();
 		std::string folderPath = DB["inputs"]["caseFolder"].get<std::string>();
 		std::ifstream inFile((folderPath + "/" + fileName).c_str());
-    inFile >> Body.numPoints;
-    Body.X.resize(Body.numPoints);
-    Body.Y.resize(Body.numPoints);
-    for (int i=0; i<Body.numPoints; i++)
-      inFile >> Body.X[i] >> Body.Y[i];
-    inFile.close();
+		inFile >> Body.numPoints;
+		Body.X.resize(Body.numPoints);
+		Body.Y.resize(Body.numPoints);
+		for (int i=0; i<Body.numPoints; i++)
+			inFile >> Body.X[i] >> Body.Y[i];
+		inFile.close();
 	}
 	else if (type == "lineSegment")
 	{

@@ -1,4 +1,4 @@
-/***************************************************************************//**
+/**
  * \file types.h
  * \brief Definition of custom types required by the code.
  */
@@ -91,9 +91,9 @@ enum ibmScheme
  */
 enum interpolationType
 {
-	CONSTANT,
-	LINEAR,
-	QUADRATIC
+	CONSTANT,  ///< constant
+	LINEAR,    ///< linear
+	QUADRATIC  ///< quadratic
 };
 
 

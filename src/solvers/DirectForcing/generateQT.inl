@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateQT.inl
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods of the class \c DirectForcingSolver to generate
  *        the divergence matrix and the interpolation matrix.
  */
@@ -17,6 +16,7 @@ void DirectForcingSolver<host_memory>::updateQ()
 {
 }
 
+
 /**
  * \brief After the Q matrix has been set up for the entire grid, this function
  *        removes the non-zeros that correspond to the velocity nodes where the 
@@ -28,14 +28,14 @@ void DirectForcingSolver<device_memory>::updateQ()
 {
 	const int blocksize = 256;
 	
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
 	
-	int  QSize = 4*nx*ny-2*(nx+ny);
+	int QSize = 4*nx*ny-2*(nx+ny);
 	
-	int  *QRows = thrust::raw_pointer_cast(&(Q.row_indices[0])),
-	     *QCols = thrust::raw_pointer_cast(&(Q.column_indices[0]));
-	int  *tags_r = thrust::raw_pointer_cast(&(tagsD[0]));
+	int *QRows = thrust::raw_pointer_cast(&(Q.row_indices[0])),
+	    *QCols = thrust::raw_pointer_cast(&(Q.column_indices[0]));
+	int *tags_r = thrust::raw_pointer_cast(&(tagsD[0]));
 
 	real *QVals = thrust::raw_pointer_cast(&(Q.values[0]));
 	
@@ -44,6 +44,7 @@ void DirectForcingSolver<device_memory>::updateQ()
 	
 	kernels::updateQ <<<dimGrid, dimBlock>>> (QRows, QCols, QVals, QSize, tags_r);
 }
+
 
 /**
  * \brief After the Q matrix has been set up for the entire grid, this function

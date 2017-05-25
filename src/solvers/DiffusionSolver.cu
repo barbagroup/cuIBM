@@ -1,3 +1,9 @@
+/**
+ * \file DiffusionSolver.cu
+ * \brief Implementation of the methods of the class \c DiffusionSolver.
+ */
+
+
 #include <sys/stat.h>
 
 #include "DiffusionSolver.h"
@@ -19,6 +25,7 @@ void DiffusionSolver<memoryType>::initialise()
 	}
 }
 
+
 /**
  * \brief No Poisson equation needs to be solved for the unsteady diffusion problem.
  */
@@ -26,6 +33,7 @@ template <typename memoryType>
 void DiffusionSolver<memoryType>::solvePoisson()
 {
 }
+
 
 /**
  * \brief The velocity at the next time step is the same as the intermediate velocity.
@@ -40,6 +48,7 @@ void DiffusionSolver<memoryType>::projectionStep()
 	NavierStokesSolver<memoryType>::logger.stopTimer("projectionStep");
 }
 
+
 /**
  * \brief Constructor. Copies the simulation parameters and the domain info.
  */
@@ -49,6 +58,7 @@ DiffusionSolver<memoryType>::DiffusionSolver(parameterDB *pDB, domain *dInfo)
 	NavierStokesSolver<memoryType>::paramDB = pDB;
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
 }
+
 
 template class DiffusionSolver<host_memory>;
 template class DiffusionSolver<device_memory>;

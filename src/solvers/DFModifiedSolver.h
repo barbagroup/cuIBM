@@ -1,7 +1,7 @@
 /**
-* @file  DFModifiedSolver.h
-* @brief Modified direct forcing immersed boundary method.
-*/
+ * \file  DFModifiedSolver.h
+ * \brief Definition of the class \c DFModifiedSolver.
+ */
 
 
 #pragma once

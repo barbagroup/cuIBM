@@ -1,16 +1,6 @@
-/***************************************************************************//**
- * \mainpage cuIBM
- *
- *		A GPU-based Immersed Boundary Method
- *
- * \author Anush Krishnan (anush@bu.edu)
- */
-
-
-/***************************************************************************//**
+/**
  * \file cuIBM.cu
- * \author Anush Krishnan (anush@bu.edu)
- * \brief Main source-file of \c cuIBM.
+ * \brief Main source file of \c cuIBM.
  */
 
 
@@ -38,7 +28,7 @@ int main(int argc, char **argv)
 	NavierStokesSolver<device_memory> *solver = createSolver<device_memory>(paramDB, dom_info);
 	solver->initialise();
 
-	io::printDeviceMemoryUsage("Initialisation complete");
+	io::printDeviceMemoryUsage("Initialization complete");
 	
 	io::writeInfoFile(paramDB, dom_info);
 	

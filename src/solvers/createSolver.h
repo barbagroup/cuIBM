@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file createSolver.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the function that creates the Navier-Stokes solver.
  */
 

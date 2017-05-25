@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file helpers.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the discrete delta function.
  */
 

@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file NSWithBody.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the class \c NSWithBody.
  */
 
@@ -22,12 +21,12 @@ template <typename memoryType>
 class NSWithBody : public NavierStokesSolver<memoryType>
 {
 protected:
-	bodies<memoryType> B;		///< bodies in the flow
+	bodies<memoryType> B;  ///< bodies in the flow
 
-	real forceX,				///< force acting on each body in the x-direction
-	     forceY;				///< force acting on each body in the y-direction
+	real forceX,  ///< force acting on each body in the x-direction
+	     forceY;  ///< force acting on each body in the y-direction
 	
-	std::ofstream forceFile;	///< file to write the forces
+	std::ofstream forceFile;  ///< file to write the forces
 
 	// calculate forces acting on an immersed body
 	virtual void calculateForce();

@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file DirectForcingSolver.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods of the class \c DirectForcingSolver.
  */
 
@@ -22,6 +21,7 @@ DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *d
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
 }
 
+
 /**
  * \brief Initialize the vectors used in the simulation.
  */
@@ -29,10 +29,10 @@ template <typename memoryType>
 void DirectForcingSolver<memoryType>::initialise()
 {
 	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
-        ny = NavierStokesSolver<memoryType>::domInfo->ny;
+      ny = NavierStokesSolver<memoryType>::domInfo->ny;
 
-	int numUV = (nx-1)*ny + nx*(ny-1);
-	int numP  = nx*ny;
+	int numUV = (nx-1)*ny + nx*(ny-1),
+	    numP = nx*ny;
 	
 	NavierStokesSolver<memoryType>::initialiseCommon();
 	
@@ -64,6 +64,7 @@ void DirectForcingSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::assembleMatrices();
 }
 
+
 /**
  * \brief Updates the matrices every time the body is moved.
  *
@@ -87,6 +88,7 @@ void DirectForcingSolver<memoryType>::updateSolverState()
 	}
 }
 
+
 /**
  * \brief Assembles the matrix rhs1 for DirectForcingSolver.
  *
@@ -104,6 +106,7 @@ void DirectForcingSolver<memoryType>::assembleRHS1()
 	NavierStokesSolver<memoryType>::logger.startTimer("updateRHS1");
 }
 
+
 /**
  * \brief Prints the min, max and sum of the divergences of the velocity field 
  *        in every cell of the domain.
@@ -115,10 +118,10 @@ void DirectForcingSolver<memoryType>::assembleRHS1()
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::writeMassFluxInfo()
 {
-	parameterDB  &db = *NavierStokesSolver<memoryType>::paramDB;
-	int     nx = NavierStokesSolver<memoryType>::domInfo->nx,
-	        ny = NavierStokesSolver<memoryType>::domInfo->ny,
-	        timeStep = NavierStokesSolver<memoryType>::timeStep;
+	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
+	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
+	    ny = NavierStokesSolver<memoryType>::domInfo->ny,
+	    timeStep = NavierStokesSolver<memoryType>::timeStep;
 
 	cusp::array1d<real, memoryType> fluxes(nx*ny);
 	cusp::multiply(NavierStokesSolver<memoryType>::QT, NavierStokesSolver<memoryType>::q, fluxes);
@@ -142,6 +145,7 @@ void DirectForcingSolver<memoryType>::writeMassFluxInfo()
 	fluxInfoFile.close();
 }
 
+
 /**
  * \brief Projects the pressure gradient on to the intermediate velocity field
  *        to obtain the divergence-free velocity field at the next time step.
@@ -156,6 +160,7 @@ void DirectForcingSolver<memoryType>::projectionStep()
 	NavierStokesSolver<memoryType>::logger.stopTimer("projectionStep");
 }
 
+
 /**
  * \brief Writes the velocity, pressure, force and mass flux data at every save point.
  */
@@ -164,9 +169,9 @@ void DirectForcingSolver<memoryType>::writeData()
 {	
 	NavierStokesSolver<memoryType>::logger.startTimer("output");
 
-	parameterDB  &db = *NavierStokesSolver<memoryType>::paramDB;
-	real         dt  = db["simulation"]["dt"].get<real>();
-	int          timeStep = NavierStokesSolver<memoryType>::timeStep;
+	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
+	real dt = db["simulation"]["dt"].get<real>();
+	int timeStep = NavierStokesSolver<memoryType>::timeStep;
 
 	NSWithBody<memoryType>::writeCommon();
 	
@@ -178,6 +183,7 @@ void DirectForcingSolver<memoryType>::writeData()
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }
+
 
 /**
  * \brief Generates the right-hand side matrix in the Poisson step.
@@ -218,12 +224,14 @@ void DirectForcingSolver<memoryType>::generateC()
 	}
 }
 
+
 // inline files in the folder "DirectForcing"
 #include "DirectForcing/tagPoints.inl"
 #include "DirectForcing/generateL.inl"
 #include "DirectForcing/generateA.inl"
 #include "DirectForcing/updateRHS1.inl"
 #include "DirectForcing/generateQT.inl"
+
 
 // specialization of the class
 template class DirectForcingSolver<host_memory>;

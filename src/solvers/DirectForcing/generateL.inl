@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateL.inl
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods of the class \c DirectForcingSolver to generate
  *        the Laplacian matrix.
  */
@@ -12,6 +11,7 @@ void DirectForcingSolver<memoryType>::generateL()
 	
 }*/
 
+
 /**
  * \brief Sets up the Laplacian matrix for the implicit diffusion term. 
  *        Uses second order central differences on the non-uniform grid.
@@ -21,6 +21,7 @@ void DirectForcingSolver<host_memory>::generateL()
 {
 }
 
+
 /**
  * \brief Sets up the Laplacian matrix for the implicit diffusion term. 
  *        Uses second order central differences on the non-uniform grid.
@@ -29,7 +30,7 @@ template <>
 void DirectForcingSolver<device_memory>::generateL() 
 {
 #if 1
-	int  nx = domInfo->nx,
+	int nx = domInfo->nx,
 	     ny = domInfo->ny;
 	
 	real Cx0 = 0.0, Cx1 = 0.0, Cy0 = 0.0, Cy1 = 0.0,
@@ -39,10 +40,10 @@ void DirectForcingSolver<device_memory>::generateL()
 	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
 	     *dy = thrust::raw_pointer_cast(&(domInfo->dy[0]));
 	
-	int  numU = (nx-1)*ny;
-	int  numUV = numU + nx*(ny-1);
-	int  I,
-	     num_elements = 0;
+	int numU = (nx-1)*ny;
+	int numUV = numU + nx*(ny-1);
+	int I,
+	    num_elements = 0;
 			
 	cooH LHost(numUV, numUV, 5*numUV-4*(nx+ny)+4);
 
@@ -312,6 +313,7 @@ void DirectForcingSolver<device_memory>::generateL()
 	L = LHost;
 #endif
 }
+
 
 /*
 template <typename Matrix, typename Vector>

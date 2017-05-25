@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateRN.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the kernels to generate the explicit terms of the momentum equation.
  */
 

@@ -1,4 +1,4 @@
-/***************************************************************************//**
+/**
  * \file parameterDB.h
  * \brief Declaration of the class \c property.
  */

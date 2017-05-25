@@ -1,6 +1,5 @@
-/***************************************************************************//**
- * \file  calculateForce.h
- * \author Anush Krishnan (anush@bu.edu)
+/**
+ * \file calculateForce.h
  * \brief Declaration of the kernels to calculate the forces acting on a body
  *        The method is described in Lai & Peskin (2000).
  */

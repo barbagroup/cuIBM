@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateM.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the kernels to generate the mass matrix and its inverse.
  */
 
@@ -49,6 +48,7 @@ void fillM_u(int *MRows, int *MCols, real *MVals, int *MinvRows, int *MinvCols, 
 	MinvCols[I] = I;
 	MinvVals[I] = 1.0/value;
 }
+
 
 /**
  * \brief Computes an element of the mass matrix and its inverse for a y-velocity node.

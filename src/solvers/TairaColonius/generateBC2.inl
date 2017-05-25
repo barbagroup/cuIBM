@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateBC2.inl
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods of the class \c TairaColoniusSolver
  *        to generate the right hand-side of the Poisson system.
  */
@@ -19,8 +18,8 @@
 template <>
 void TairaColoniusSolver<host_memory>::generateBC2()
 {
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
 	
 	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
 	     *dy = thrust::raw_pointer_cast(&(domInfo->dy[0]));
@@ -59,6 +58,7 @@ void TairaColoniusSolver<host_memory>::generateBC2()
 	}
 }
 
+
 /**
  * \brief Generates the right hand-side of the Poisson system (on the device).
  *
@@ -81,8 +81,8 @@ void TairaColoniusSolver<device_memory>::generateBC2()
 	     *uB     = thrust::raw_pointer_cast(&(B.uB[0])),
 	     *vB     = thrust::raw_pointer_cast(&(B.vB[0]));
 	
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
 	
 	cusp::blas::fill(bc2, 0.0);
 	

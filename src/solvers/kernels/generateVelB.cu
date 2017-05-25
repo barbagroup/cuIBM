@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateVelB.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the kernels to generate body-velocities.
  */
 

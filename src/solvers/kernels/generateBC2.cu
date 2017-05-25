@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateBC2.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the kernels to generate elements of the right hand-side
  *        of the Poisson solver.
  */
@@ -37,6 +36,7 @@ void fillBC2_v(real *bc2, real *yminus, real *yplus, real *dx, int nx, int ny)
 	bc2[(ny-1)*nx + i] += yplus[i+nx-1]*dx[i];
 }
 
+
 /**
  * \brief Computes inhomogeneous terms of the discrete divergence operator 
  *        from the left and right boundaries at the u-velocity locations.
@@ -57,6 +57,7 @@ void fillBC2_u(real *bc2, real *xminus, real *xplus, real *dy, int nx, int ny)
 	bc2[j*nx] -= xminus[j]*dy[j];
 	bc2[j*nx+nx-1] += xplus[j]*dy[j];
 }
+
 
 /**
  * \brief Computes inhomogeneous terms of the discrete divergence operator 

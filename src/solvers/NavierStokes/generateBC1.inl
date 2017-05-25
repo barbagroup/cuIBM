@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateBC1.inl
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods to generate 
  *        inhomogeneous boundary conditions from the discrete Laplacian operator.
  */
@@ -35,7 +34,7 @@ void NavierStokesSolver<device_memory>::generateBC1()
 
 	real dx0, dx1, dy0, dy1,
 	     nu = (*paramDB)["flow"]["nu"].get<real>(),
-         dt = (*paramDB)["simulation"]["dt"].get<real>();
+       dt = (*paramDB)["simulation"]["dt"].get<real>();
 
 	boundaryCondition **bcInfo = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
 	
@@ -43,10 +42,10 @@ void NavierStokesSolver<device_memory>::generateBC1()
 	
 	real C, beta;
 	
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
 	
-	int  numU  = (nx-1)*ny;
+	int numU = (nx-1)*ny;
 	
 	// initialize vector bc1 with zeros
 	cusp::blas::fill(bc1, 0.0);
@@ -158,6 +157,7 @@ void NavierStokesSolver<device_memory>::generateBC1()
 	logger.stopTimer("generateBC1");
 }
 
+
 /**
  * \brief Generates inhomogeneous boundary conditions 
  *        from the discrete Laplacian operator (on the host).
@@ -170,22 +170,22 @@ void NavierStokesSolver<host_memory>::generateBC1()
 	real alpha = intgSchm.alphaImplicit[subStep];
 	
 	// raw pointers from cusp arrays
-	real *dx  = thrust::raw_pointer_cast(&(domInfo->dx[0])),
-	     *dy  = thrust::raw_pointer_cast(&(domInfo->dy[0]));
+	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
+	     *dy = thrust::raw_pointer_cast(&(domInfo->dy[0]));
 	
 	real dx0, dx1, dy0, dy1,
 	     nu = (*paramDB)["flow"]["nu"].get<real>(),
-         dt = (*paramDB)["simulation"]["dt"].get<real>();
+	     dt = (*paramDB)["simulation"]["dt"].get<real>();
 
 	boundaryCondition **bcInfo = (*paramDB)["flow"]["boundaryConditions"].get<boundaryCondition **>();
 	
 	real C,     // coefficient that the boundary velocity is multiplied with for the diffusion term
 	     beta;  // coefficient that is used to convect the velocity to the boundary 
 	
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
 	
-	int  numU  = (nx-1)*ny;
+	int numU = (nx-1)*ny;
 	
 	// zero the bc1 vector
 	cusp::blas::fill(bc1, 0.0);

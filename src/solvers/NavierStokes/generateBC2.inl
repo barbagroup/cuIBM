@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateBC2.inl
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods to generate 
  *        inhomogeneous boundary conditions from the discrete continuity equation.
  */
@@ -16,8 +15,8 @@
 template <>
 void NavierStokesSolver<host_memory>::generateBC2()
 {
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
 	//int  numP  = nx*ny;
 	
 	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
@@ -46,6 +45,7 @@ void NavierStokesSolver<host_memory>::generateBC2()
 	}
 }
 
+
 /**
  * \brief Generates inhomogeneous boundary conditions 
  *        from the discrete continuity equation (on the device).
@@ -63,8 +63,8 @@ void NavierStokesSolver<device_memory>::generateBC2()
 	     *yminus = thrust::raw_pointer_cast(&(bc[YMINUS][0])),
 	     *yplus  = thrust::raw_pointer_cast(&(bc[YPLUS][0]));
 	
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
 
 	// initialize array with zeros
 	cusp::blas::fill(bc2, 0.0);

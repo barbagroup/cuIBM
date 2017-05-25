@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file bodies.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the class \c bodies.
  */
 
@@ -26,36 +25,36 @@ public:
 	bool bodiesMove;  ///< tells whether the body is moving or not
 
 	cusp::array1d<int, memoryType>
-		numPoints,    ///< number of points for each body
-		offsets,      ///< array index of the first point of each body
-		I,            ///< x-index of the cell in which a body point is located
-		J;            ///< y-index of the cell in which a body point is located
+	  numPoints,    ///< number of points for each body
+	  offsets,      ///< array index of the first point of each body
+	  I,            ///< x-index of the cell in which a body point is located
+	  J;            ///< y-index of the cell in which a body point is located
 	
 	cusp::array1d<int, memoryType>
-		startI,       ///< starting cell index of the bounding box of a body
-		startJ,       ///< starting cell index of the bounding box of a body
-		numCellsX,    ///< number of cells in the x-direction in the bounding box of a body
-		numCellsY;    ///< number of cells in the y-direction in the bounding box of a body
+	  startI,       ///< starting cell index of the bounding box of a body
+	  startJ,       ///< starting cell index of the bounding box of a body
+	  numCellsX,    ///< number of cells in the x-direction in the bounding box of a body
+	  numCellsY;    ///< number of cells in the y-direction in the bounding box of a body
 		
 	cusp::array1d<real, memoryType>
-		xmin,  ///< lowest x-coordinate for the bounding box of a body
-		xmax,  ///< highest x-coordinate for the bounding box of a body
-		ymin,  ///< lowest y-coordinate for the bounding box of a body
-		ymax;  ///< highest y-coordinate for the bounding box of a body
+	  xmin,  ///< lowest x-coordinate for the bounding box of a body
+	  xmax,  ///< highest x-coordinate for the bounding box of a body
+	  ymin,  ///< lowest y-coordinate for the bounding box of a body
+	  ymax;  ///< highest y-coordinate for the bounding box of a body
 	
 	cusp::array1d<real, memoryType>
-		forceX,		///< force acting on a body in the x-direction
-		forceY;		///< force acting on a body in the y-direction
+	  forceX,   ///< force acting on a body in the x-direction
+	  forceY;   ///< force acting on a body in the y-direction
 
 	cusp::array1d<real, memoryType>
-		X,     ///< reference x-coordinates of the boundary points
-		Y,     ///< reference y-coordinates of the boundary points
-		ds,    ///< vector containing the lengths of all the boundary segments
-		ones,  ///< vector of size \link totalPoints \endlink with all elements 1
-		x,     ///< actual x-coordinate of the boundary points
-		y,     ///< actual y-coordinate of the boundary points
-		uB,    ///< x-velocity of the boundary points
-		vB;    ///< y-velocity of the boundary points
+	  X,     ///< reference x-coordinates of the boundary points
+	  Y,     ///< reference y-coordinates of the boundary points
+	  ds,    ///< vector containing the lengths of all the boundary segments
+	  ones,  ///< vector of size \link totalPoints \endlink with all elements 1
+	  x,     ///< actual x-coordinate of the boundary points
+	  y,     ///< actual y-coordinate of the boundary points
+	  uB,    ///< x-velocity of the boundary points
+	  vB;    ///< y-velocity of the boundary points
 
 	// set initial position and velocity of each body
 	void initialise(parameterDB &db, domain &D);

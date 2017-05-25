@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file integrationScheme.h
- * \auhor Anush Krishnan (anush@bu.edu)
  * \brief Definition of the class \c integrationScheme.
  */
 
@@ -17,7 +16,7 @@
 class integrationScheme
 {
 public:
-	int  subSteps;      ///< number of substeps inside each time step
+	int subSteps;      ///< number of substeps inside each time step
 	
 	vecH gamma,         ///< coefficient of the convection term in the current time step
 	     zeta,          ///< coefficient of the convection term in the previous time step 
@@ -35,7 +34,7 @@ public:
 	 */
 	void initialise(timeScheme convScheme, timeScheme diffScheme)
 	{
-		std::cout << "Initialising integration scheme... ";
+		std::cout << "Initializing integration scheme... ";
 		
 		// set the number of substeps required for the specified scheme
 		switch(convScheme)
@@ -104,7 +103,7 @@ public:
 		{
 			alphaExplicit[i] = aE*(gamma[i]+zeta[i]);
 			alphaImplicit[i] = aI*(gamma[i]+zeta[i]);
-		}	
+		}
 		std::cout << "DONE! " << std::endl;
 		
 		// print the coefficients

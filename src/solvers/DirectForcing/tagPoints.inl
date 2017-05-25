@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file tagPoints.inl
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods of the class \c DirectForcingSolver to tag
  *        points near the immersed boundary using a ray-tracing algorithm.
  */
@@ -24,6 +23,7 @@ void DirectForcingSolver<host_memory>::tagPoints()
 
 	logger.stopTimer("tagPoints");
 }
+
 
 /**
  * \brief Tags the forcing nodes among the velocity nodes, i.e. the nodes at 
@@ -60,6 +60,7 @@ void DirectForcingSolver<device_memory>::tagPoints()
 	logger.stopTimer("tagPoints");
 }
 
+
 // Bilinear Fadlun1c-type interpolation outside the body, for a moving body.
 /**
  * \brief Tags all the forcing nodes required for the type of linear
@@ -78,8 +79,8 @@ void DirectForcingSolver<device_memory>::tagPoints()
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, real *vB)
 {
-	int  nx = NavierStokesSolver<memoryType>::domInfo->nx,
-	     ny = NavierStokesSolver<memoryType>::domInfo->ny;
+	int nx = NavierStokesSolver<memoryType>::domInfo->nx,
+	    ny = NavierStokesSolver<memoryType>::domInfo->ny;
 	
 	real *xu = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->xu[0])),
 	     *yu = thrust::raw_pointer_cast(&(NavierStokesSolver<memoryType>::domInfo->yu[0]));

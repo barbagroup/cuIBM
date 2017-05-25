@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file helpers.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the discrete delta function.
  */
 
@@ -31,6 +30,7 @@ real dhRoma(real x, real h)
 	else
 		return 1.0/(3*h)*( 1.0 + sqrt(-3.0*r*r + 1.0) );
 }
+
 
 /**
  * \brief Two-dimensional discrete delta function.

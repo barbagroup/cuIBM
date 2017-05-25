@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file body.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Definition of the class \c body.
  */
 
@@ -23,18 +22,18 @@
  */
 class body
 {
-  public:
-    int  numPoints; ///< number of boundary points
+public:
+	int numPoints; ///< number of boundary points
 	
 	vecH X,         ///< reference x-coordinate of boundary points
 	     Y;         ///< reference y-coordinate of boundary points
-         
+				 
 	real X0[2];     ///< reference center of rotation
-	     
+			 
 	real Xc0[2],    ///< initial position of center of rotation
 	     Theta0;    ///< initial angle of attack
-    
-    real Xc[2],     ///< actual center of rotation (x- and y-coordinates)
+		
+	real Xc[2],     ///< actual center of rotation (x- and y-coordinates)
 	     Theta,     ///< actual angle of attack (counterclockwise is positive)
 	     vel[2],    ///< translational velocity (x- and y- components)
 	     angVel;    ///< angular velocity (counterlockwise is positive)
@@ -43,13 +42,13 @@ class body
 
 	real velocity[2], ///< uniform translational velocity (x- and y-components)
 	     omega;       ///< uniform rotational velocity
-         
+				 
 	real xOscillation[3],     ///< amplitude, angular frequency and phase difference of oscillation in the x-direction
-         yOscillation[3],     ///< amplitude, angular frequency and phase difference of oscillation in the y-direction
-         pitchOscillation[3]; ///< amplitude, angular frequency and phase difference of pitch oscillation
+	     yOscillation[3],     ///< amplitude, angular frequency and phase difference of oscillation in the y-direction
+	     pitchOscillation[3]; ///< amplitude, angular frequency and phase difference of pitch oscillation
 	// Note that the angular amplitude & phase difference are stored in radians, and angular frequncy is radians/time
 	// But the inputs in bodies.yaml are provided in degrees, and degrees/time.
-    
+		
 	/**
 	 * \brief Updates the position of the center of rotation of the body,
 	 *        as well as its the translational and rotational velocities.
@@ -63,8 +62,8 @@ class body
 		{
 			Xc[0] = Xc0[0] + velocity[0]*Time + xOscillation[0]*sin(xOscillation[1]*Time + xOscillation[2]);
 			Xc[1] = Xc0[1] + velocity[1]*Time + yOscillation[0]*sin(yOscillation[1]*Time + yOscillation[2]);
-			vel[0]= velocity[0] + xOscillation[0]*xOscillation[1]*cos(xOscillation[1]*Time + xOscillation[2]);
-			vel[1]= velocity[1] + yOscillation[0]*yOscillation[1]*cos(yOscillation[1]*Time + yOscillation[2]);
+			vel[0] = velocity[0] + xOscillation[0]*xOscillation[1]*cos(xOscillation[1]*Time + xOscillation[2]);
+			vel[1] = velocity[1] + yOscillation[0]*yOscillation[1]*cos(yOscillation[1]*Time + yOscillation[2]);
 		}
 		// if the body is rotating
 		if(moving[1])

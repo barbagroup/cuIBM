@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateA.inl
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods of the class \c DirectForcingSolver to generate
  *        the matrix resulting from implicit terms in the discretized momentum equation.
  */
@@ -18,19 +17,19 @@
 template <>
 void DirectForcingSolver  <device_memory>::generateA(real alpha)
 {
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
 
-	int  ASize = 5*( (nx-1)*ny + nx*(ny-1) ) - 4*(nx+ny) + 4,
-	     numUV = (nx-1)*ny + nx*(ny-1);
+	int ASize = 5*( (nx-1)*ny + nx*(ny-1) ) - 4*(nx+ny) + 4,
+	    numUV = (nx-1)*ny + nx*(ny-1);
 
 	A.resize(numUV, numUV, ASize);
 
-	int  *LRows = thrust::raw_pointer_cast(&(L.row_indices[0])),
-	     *LCols = thrust::raw_pointer_cast(&(L.column_indices[0])),
-	     *ARows = thrust::raw_pointer_cast(&(A.row_indices[0])),
-	     *ACols = thrust::raw_pointer_cast(&(A.column_indices[0])),
-	     *tags_r = thrust::raw_pointer_cast(&(tagsD[0]));
+	int *LRows = thrust::raw_pointer_cast(&(L.row_indices[0])),
+	    *LCols = thrust::raw_pointer_cast(&(L.column_indices[0])),
+	    *ARows = thrust::raw_pointer_cast(&(A.row_indices[0])),
+	    *ACols = thrust::raw_pointer_cast(&(A.column_indices[0])),
+	    *tags_r = thrust::raw_pointer_cast(&(tagsD[0]));
 
 	real *MVals = thrust::raw_pointer_cast(&(M.values[0])),
 	     *LVals = thrust::raw_pointer_cast(&(L.values[0])),
@@ -44,6 +43,7 @@ void DirectForcingSolver  <device_memory>::generateA(real alpha)
 	kernels::generateADirectForcing <<<dimGrid, dimBlock>>> (ARows, ACols, AVals, MVals, LRows, LCols, LVals, ASize, alpha, tags_r);
 }
 
+
 /**
  * \brief Generates the matrix A on the host.
  *
@@ -53,11 +53,11 @@ void DirectForcingSolver  <device_memory>::generateA(real alpha)
 template <>
 void DirectForcingSolver<host_memory>::generateA(real alpha)
 {
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
 
-	int  ASize = 5*( (nx-1)*ny + nx*(ny-1) ) - 4*(nx+ny) + 4,
-	     numUV = (nx-1)*ny + nx*(ny-1);
+	int ASize = 5*( (nx-1)*ny + nx*(ny-1) ) - 4*(nx+ny) + 4,
+	    numUV = (nx-1)*ny + nx*(ny-1);
 
 	A.resize(numUV, numUV, ASize);
 

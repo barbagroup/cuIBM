@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file NavierStokesSolver.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the class \c NavierStokesSolver.
  */
 
@@ -27,49 +26,49 @@ template <typename memoryType>
 class NavierStokesSolver
 {
 protected:
-	parameterDB *paramDB;		///< database that contains all the simulation parameters
-	domain      *domInfo;		///< computational grid information
-	integrationScheme intgSchm;	///< instance of the class \c integrationScheme
+	parameterDB *paramDB;        ///< database that contains all the simulation parameters
+	domain *domInfo;             ///< computational grid information
+	integrationScheme intgSchm;  ///< instance of the class \c integrationScheme
 
 	real QCoeff;
 	
 	cusp::coo_matrix<int, real, memoryType>
-	    M,		///< diagonal mass matrix
-	    Minv,	///< inverse of the mass matrix
-	    L,		///< discrete Laplacian matrix
-	    A,		///< combination of mass and Laplacian matrices
-	    Q,		///< gradient matrix (and regularization matrix if immersed body)
-	    QT,		///< transposed gradient matrix (and interpolation matrix if immersed body)
-	    BN,		///< N-th order Taylor series expansion of the inverse of \c A
-	    C;		///< matrix of the Poisson system
+	    M,     ///< diagonal mass matrix
+	    Minv,  ///< inverse of the mass matrix
+	    L,     ///< discrete Laplacian matrix
+	    A,     ///< combination of mass and Laplacian matrices
+	    Q,     ///< gradient matrix (and regularization matrix if immersed body)
+	    QT,    ///< transposed gradient matrix (and interpolation matrix if immersed body)
+	    BN,    ///< N-th order Taylor series expansion of the inverse of \c A
+	    C;     ///< matrix of the Poisson system
 
 	cusp::array1d<real, memoryType>
-	    q,			///< velocity flux vector
-		qStar,		///< intermediate velocity flux vector
-		qOld,		///< velocity flux vector at the previous time-step
-		lambda,		///< pressure vector (and body forces if immersed body)
-		rn,			///< explicit terms of the momentum equation
-		bc1,		///< inhomogeneous boundary conditions from the discrete Laplacian operator
-		bc2,		///< inhomogeneous boundary conditions from the discrete continuity equation
-		rhs1,		///< right hand-side of the system for the intermediate velocity flux vector
-		rhs2,		///< right hand-side of the Poisson system
-		H,
-		temp1,		///< temporary 1D Cusp array
-		temp2,		///< temporary 1D Cusp array
-		bc[4];		///< array that contains the boundary conditions of the rectangular domain
+	  q,       ///< velocity flux vector
+	  qStar,   ///< intermediate velocity flux vector
+	  qOld,    ///< velocity flux vector at the previous time-step
+	  lambda,  ///< pressure vector (and body forces if immersed body)
+	  rn,      ///< explicit terms of the momentum equation
+	  bc1,     ///< inhomogeneous boundary conditions from the discrete Laplacian operator
+	  bc2,     ///< inhomogeneous boundary conditions from the discrete continuity equation
+	  rhs1,    ///< right hand-side of the system for the intermediate velocity flux vector
+	  rhs2,    ///< right hand-side of the Poisson system
+	  H,       ///< hold convective terms from previous time step
+	  temp1,   ///< temporary 1D Cusp array
+	  temp2,   ///< temporary 1D Cusp array
+	  bc[4];   ///< array that contains the boundary conditions of the rectangular domain
 	     
 	preconditioner< cusp::coo_matrix<int, real, memoryType> >
-		*PC1,		///< preconditioner for the intermediate flux solver
-		*PC2;		///< preconditioner for the Poisson solver
+	  *PC1,  ///< preconditioner for the intermediate flux solver
+	  *PC2;  ///< preconditioner for the Poisson solver
 
-	size_t  timeStep,			///< iteration number
-			subStep,			///< number of sub-iterations
-			iterationCount1,	///< number of iteration to solve the intermediate fluxes
-			iterationCount2;	///< number of iteration to solve the Poisson equation
+	size_t timeStep,         ///< iteration number
+	       subStep,          ///< number of sub-iterations
+	       iterationCount1,  ///< number of iteration to solve the intermediate fluxes
+	       iterationCount2;  ///< number of iteration to solve the Poisson equation
 	
-	Logger logger;	///< instance of the class \c Logger to track time of different tasks
+	Logger logger;  ///< instance of the class \c Logger to track time of different tasks
 	
-	std::ofstream iterationsFile;	///< file that contains the number of iterations
+	std::ofstream iterationsFile;  ///< file that contains the number of iterations
 	
 	// initialize parameters common to all Navier-Stokes solvers
 	void initialiseCommon();

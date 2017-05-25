@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file createSolver.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the function that creates the Navier-Stokes solver.
  */
 
@@ -62,6 +61,7 @@ NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domIn
 	std::cout << solver->name() << '\n' << std::endl;
 	return solver;
 }
+
 
 // specializations of the template function
 template NavierStokesSolver<host_memory>* createSolver(parameterDB &paramDB, domain &domInfo);

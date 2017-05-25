@@ -1,4 +1,4 @@
-/***************************************************************************//**
+/**
  * \file parameterDB.cu
  * \brief Implementation of the methods of the class \c property.
  */
@@ -19,9 +19,9 @@
 template <typename T>
 std::string toString(T num)
 {
-  std::stringstream ss; 
-  ss << num;
-  return ss.str();
+	std::stringstream ss; 
+	ss << num;
+	return ss.str();
 }
 
 
@@ -35,17 +35,17 @@ std::string toString(T num)
 template <>
 std::string toString(bcType b)
 {
-  if (b == DIRICHLET)
-    return "Dirichlet";
-  else if (b == NEUMANN)
-    return "Neumann";
-  else if (b == CONVECTIVE)
-    return "Convective";
-  else
-  {
-    printf("Error: Unknown boundary type!\n");
-    exit(-1);
-  }
+	if (b == DIRICHLET)
+		return "Dirichlet";
+	else if (b == NEUMANN)
+		return "Neumann";
+	else if (b == CONVECTIVE)
+		return "Convective";
+	else
+	{
+		printf("Error: Unknown boundary type!\n");
+		exit(-1);
+	}
 }
 
 
@@ -57,7 +57,7 @@ std::string toString(bcType b)
 template <>
 std::string property::get()
 {
-  return std::string(value);
+	return std::string(value);
 }
 
 
@@ -69,8 +69,8 @@ std::string property::get()
 template <typename T>
 T property::get()
 {
-  T r = *reinterpret_cast<T*>(&value[0]);
-  return r;
+	T r = *reinterpret_cast<T*>(&value[0]);
+	return r;
 }
 
 
@@ -95,19 +95,19 @@ template boundaryCondition **property::get<boundaryCondition **>();
  */
 const char *property::print()
 { 
-  if (*type == typeid(int))
-    return toString(this->get<int>()).c_str();
-  else if (*type == typeid(double))
-    return toString(this->get<double>()).c_str();
-  else if (*type == typeid(float))
-    return toString(this->get<float>()).c_str();
-  else if (*type == typeid(std::string))
-    return (const char *)value;
-  else
-  {
-    printf("Error: Unsupported type!\n");
-    exit(-1);
-  }
+	if (*type == typeid(int))
+		return toString(this->get<int>()).c_str();
+	else if (*type == typeid(double))
+		return toString(this->get<double>()).c_str();
+	else if (*type == typeid(float))
+		return toString(this->get<float>()).c_str();
+	else if (*type == typeid(std::string))
+		return (const char *)value;
+	else
+	{
+		printf("Error: Unsupported type!\n");
+		exit(-1);
+	}
 }
 
 
@@ -119,7 +119,7 @@ const char *property::print()
 template <>
 void property::set(std::string s)
 {
-  strncpy(value, s.c_str(), 256);
+	strncpy(value, s.c_str(), 256);
 }
 
 
@@ -131,9 +131,9 @@ void property::set(std::string s)
 template <typename T>
 void property::set(T v)
 {
-  // assume we have enough space (256 bytes)
-  type = &typeid(T);
-  *reinterpret_cast<T*>(&value[0]) = v;
+	// assume we have enough space (256 bytes)
+	type = &typeid(T);
+	*reinterpret_cast<T*>(&value[0]) = v;
 }
 
 

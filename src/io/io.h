@@ -29,7 +29,7 @@ namespace io
 	// read data inputs from the command-line and the simulation files
 	void readInputs(int argc, char **argv, parameterDB &DB, domain &D); 
 
-    // parse the \a domain file and generate the computational grid
+	// parse the \a domain file and generate the computational grid
 	void parseDomainFile(std::string &domFile, domain &D);
 	
 	// parse the \a flow file and store the parameters in the database

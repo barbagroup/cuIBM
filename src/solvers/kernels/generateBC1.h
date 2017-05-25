@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateBC1.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the kernels to generate right hand-side terms of the
  *        intermediate velocity flux solver.
  */

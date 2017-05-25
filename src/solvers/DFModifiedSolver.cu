@@ -1,3 +1,9 @@
+/**
+ * \file DFModifiedSolver.cu
+ * \brief Implementation of the methods of the class \c DFModifiedSolver.
+ */
+
+
 #include <sys/stat.h>
 
 #include "DFModifiedSolver.h"
@@ -11,6 +17,7 @@ DFModifiedSolver<memoryType>::DFModifiedSolver(parameterDB *pDB, domain *dInfo)
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
 }
 
+
 // r^n = r^n - Q.pressure
 // Include the pressure gradient to the explicit terms on the right-hand side 
 // of the intermediate velocity solve.
@@ -23,6 +30,7 @@ void DFModifiedSolver<memoryType>::calculateExplicitLambdaTerms()
 	cusp::blas::axpy(NavierStokesSolver<memoryType>::temp1, NavierStokesSolver<memoryType>::rn, -1.0);
 }
 
+
 template <typename memoryType>
 void DFModifiedSolver<memoryType>::projectionStep()
 {
@@ -34,6 +42,7 @@ void DFModifiedSolver<memoryType>::projectionStep()
 	cusp::blas::axpy(NavierStokesSolver<memoryType>::lambda, DirectForcingSolver<memoryType>::pressure, 1.0);
 	NavierStokesSolver<memoryType>::logger.stopTimer("projectionStep");
 }
+
 
 template class DFModifiedSolver<host_memory>;
 template class DFModifiedSolver<device_memory>;

@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateQT.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the kernels to generate the gradient matrix and interpolation matrix.
  */
 
@@ -29,6 +28,7 @@ real dhRomaDeviceQT(real x, real h)
 		return 1.0/(3*h)*( 1.0 + sqrt(-3.0*r*r + 1.0) );
 }
 
+
 /**
  * \brief Two-dimensional discrete delta function.
  *
@@ -43,6 +43,7 @@ real deltaDeviceQT(real x, real y, real h)
 {
 	return dhRomaDeviceQT(x, h) * dhRomaDeviceQT(y, h);
 }
+
 
 /**
  * \namespace kernels
@@ -65,6 +66,7 @@ void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tags)
 	}
 }
 
+
 __global__ \
 void updateQT(int *QTRows, int *QTCols, real *QTVals, int QTSize, int *tags, real *coeffs)
 {
@@ -78,6 +80,7 @@ void updateQT(int *QTRows, int *QTCols, real *QTVals, int QTSize, int *tags, rea
 		QTVals[I] = (tags[col]==-1)*val + (tags[col]!=-1)*coeffs[col]*val;
 	}
 }
+
 
 /**
  * \brief Generates the divergence matrix.
@@ -138,6 +141,7 @@ void generateQT(int *QTRows, int *QTCols, real *QTVals, int nx, int ny)
 		}
 	}
 }
+
 
 /**
  * \brief Updates elements of the divergence matrix and the interpolation matrix.
@@ -218,6 +222,7 @@ void updateQT(int *QTRows, int *QTCols, real *QTVals,
 	}
 }
 
+
 /**
  * \brief Updates the divergence matrix and the interpolation matrix..
  *
@@ -239,9 +244,9 @@ void updateQT(int *QTRows, int *QTCols, real *QTVals,
  * \param J y-index of grid cells in which body points are located
  */
 void updateQTHost(int *QTRows, int *QTCols, real *QTVals,
-              int *ERows,  int *ECols,  real *EVals,
-              int nx, int ny, real *x, real *y, real *dx,
-              int totalPoints, real *xB, real *yB, int *I, int *J)
+                  int *ERows,  int *ECols,  real *EVals,
+                  int nx, int ny, real *x, real *y, real *dx,
+                  int totalPoints, real *xB, real *yB, int *I, int *J)
 {
 	for(int bodyIdx=0; bodyIdx<totalPoints; bodyIdx++)
 	{

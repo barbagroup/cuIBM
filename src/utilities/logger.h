@@ -1,4 +1,4 @@
-/***************************************************************************//**
+/**
  * \file logger.h
  * \brief Definition of the class \c Logger.
  */
@@ -33,13 +33,13 @@ typedef std::map<std::string, double>::iterator E_iter;
 class Logger
 {
 private:
-	std::ofstream file;			///< file to write the time spent
-	std::ofstream stepFile;		///< file to write the time spent for 1 step
-	std::ofstream legendFile;	///< file to write the name of the events
-	Event         tic;			///< contain the starting time of events
-	Event         timer;		///< contain the total time spent of events during the simulation
-	Event         timeStep; 	///< contain the tiem spent times of events for 1 step
-	Event         memory;		///< contain info about the memomry allocated for events
+	std::ofstream file,        ///< file to write the time spent
+	              stepFile,    ///< file to write the time spent for 1 step
+	              legendFile;  ///< file to write the name of the events
+	Event tic,       ///< contain the starting time of events
+	      timer,     ///< contain the total time spent of events during the simulation
+	      timeStep,  ///< contain the tiem spent times of events for 1 step
+	      memory;    ///< contain info about the memomry allocated for events
 
 	/**
 	 * \brief Gets the time of the day.
@@ -54,7 +54,7 @@ private:
 	}
 
 public:
-	bool printNow;	///< boolean to print or not the time in the terminal
+	bool printNow;  ///< boolean to print or not the time in the terminal
 
 	/**
 	 * \brief Constructor.
@@ -194,12 +194,12 @@ public:
 		}
 		std::cout << "-------------------------------------" << std::endl;
 		std::cout << std::setw(24) << "TOTAL" << std::setw(13) << std::fixed \
-			          << std::setprecision(4) << totalTime << std::endl;
+		          << std::setprecision(4) << totalTime << std::endl;
 	}
 
 	/**
-	  * \brief Writes the events into a file.
-	  */
+		* \brief Writes the events into a file.
+		*/
 	void writeLegend()
 	{
 		for( E_iter E=timer.begin(); E!=timer.end(); ++E )
@@ -216,7 +216,7 @@ public:
 		for( E_iter E=timer.begin(); E!=timer.end(); ++E )
 			file <<  E->first << " " << E->second << std::endl;
 	}
-  
+	
 	/**
 	 * \brief Writes time spent for an iteration into a file.
 	 *

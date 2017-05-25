@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file updateRHS1.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the kernels to update the right hand-side 
  *        of the intermediate velocity flux solver.
  *        It replaces the right-hand side elements at the tagged points, with

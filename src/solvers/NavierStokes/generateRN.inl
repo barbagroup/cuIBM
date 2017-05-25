@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateRN.inl
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods to generate 
  *        the explicit terms of the momentum equation.
  */
@@ -39,6 +38,7 @@ void NavierStokesSolver<memoryType>::calculateExplicitLambdaTerms()
 */
 }
 
+
 /**
  * \brief Generates explicit terms that arise from the velocity fluxes (on the device).
  *        Includes the time derivative, convection and diffusion terms.
@@ -69,8 +69,8 @@ void NavierStokesSolver<device_memory>::calculateExplicitQTerms()
 	     *yminus = thrust::raw_pointer_cast(&(bc[YMINUS][0])),
 	     *yplus  = thrust::raw_pointer_cast(&(bc[YPLUS][0]));
 	
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
 	
 	real dt = (*paramDB)["simulation"]["dt"].get<real>();
 	
@@ -98,6 +98,7 @@ void NavierStokesSolver<device_memory>::calculateExplicitQTerms()
 	kernels::convectionTermVLeftRight <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, nu, yminus, yplus, xminus, xplus);
 }
 
+
 /**
  * \brief Generates explicit terms that arise from the velocity fluxes (on the host).
  *        Includes the time derivative, convection and diffusion terms.
@@ -110,11 +111,11 @@ void NavierStokesSolver<host_memory>::calculateExplicitQTerms()
 	     zeta = intgSchm.zeta[subStep],
 	     alpha = intgSchm.alphaExplicit[subStep];
 	      
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
 	     
-	int  numU = (nx-1)*ny;
-	int  Iu = 0, Iv = 0;
+	int numU = (nx-1)*ny;
+	int Iu = 0, Iv = 0;
 	real east = 0, west = 0, north = 0, south = 0, Hn = 0, cTerm = 0, dTerm = 0, u = 0, v = 0;
 
 	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
@@ -193,6 +194,7 @@ void NavierStokesSolver<host_memory>::calculateExplicitQTerms()
 		}
 	}
 }
+
 
 /**
  * \brief Generates explicit terms of the momentum equation.

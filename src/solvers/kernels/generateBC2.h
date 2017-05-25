@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateBC2.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the kernels to generate elements of the right hand-side
  *        of the Poisson solver.
  */

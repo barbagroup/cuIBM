@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateVelB.h
- * \author Anush Krishnan (anush@bu.edu
  * \brief Declaration of the kernels required to generate body-velocities.
  */
 

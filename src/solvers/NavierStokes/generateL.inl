@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateL.inl
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods to generate the discrete Laplacian matrix.
  */
 
@@ -15,8 +14,8 @@
 template <>
 void NavierStokesSolver<host_memory>::generateL()
 {
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
 	
 	real Cx0 = 0.0, Cx1 = 0.0, Cy0 = 0.0, Cy1 = 0.0,
 	     scale = 0.0,
@@ -25,10 +24,10 @@ void NavierStokesSolver<host_memory>::generateL()
 	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
 	     *dy = thrust::raw_pointer_cast(&(domInfo->dy[0]));
 	
-	int  numU = (nx-1)*ny;
-	int  numUV = numU + nx*(ny-1);
-	int  I,
-	     num_elements = 0;
+	int numU = (nx-1)*ny;
+	int numUV = numU + nx*(ny-1);
+	int I,
+	    num_elements = 0;
 			
 	L.resize(numUV, numUV, 5*numUV-4*(nx+ny)+4);
 
@@ -175,6 +174,7 @@ void NavierStokesSolver<host_memory>::generateL()
 	}
 }
 
+
 /**
  * \brief Generates the discrete Laplacian matrix (on the device).
  *
@@ -186,8 +186,8 @@ template <>
 void NavierStokesSolver<device_memory>::generateL()
 {
 
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
+	int nx = domInfo->nx,
+	    ny = domInfo->ny;
 	
 	real Cx0 = 0.0, Cx1 = 0.0, Cy0 = 0.0, Cy1 = 0.0,
 	     scale = 0.0,
@@ -196,10 +196,10 @@ void NavierStokesSolver<device_memory>::generateL()
 	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
 	     *dy = thrust::raw_pointer_cast(&(domInfo->dy[0]));
 	
-	int  numU = (nx-1)*ny;
-	int  numUV = numU + nx*(ny-1);
-	int  I,
-	     num_elements = 0;
+	int numU = (nx-1)*ny;
+	int numUV = numU + nx*(ny-1);
+	int I,
+	    num_elements = 0;
 
 	cooH LHost(numUV, numUV, 5*numUV-4*(nx+ny)+4);
 
@@ -345,6 +345,7 @@ void NavierStokesSolver<device_memory>::generateL()
 	}
 	L = LHost;
 }
+
 
 /*
 template <typename Matrix, typename Vector>

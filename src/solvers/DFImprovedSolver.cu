@@ -1,3 +1,9 @@
+/**
+ * \file DFImprovedSolver.cu
+ * \brief Implementation of the methods of the class \c DFImprovedSolver.
+ */
+
+
 #include <cusp/io/matrix_market.h>
 #include <cusp/blas/blas.h>
 

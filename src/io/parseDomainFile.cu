@@ -1,4 +1,4 @@
-/***************************************************************************//**
+/**
  * \file parseDomainFile.cu
  * \brief Parse the input file \a domain.yaml to obtain information about the 
  *        computational grid.
@@ -62,7 +62,7 @@ void parseDomain(const YAML::Node &node, domain &D)
 	if(dir=="y")
 	{
 		D.y.resize(D.ny+1);
-		D.dy.resize(D.ny);	
+		D.dy.resize(D.ny);  
 		D.yD.resize(D.ny+1);
 		D.dyD.resize(D.ny);
 		D.y[beg] = start;
@@ -89,7 +89,7 @@ void parseDomain(const YAML::Node &node, domain &D)
 				{
 					D.dy[j]  = h;
 					D.y[j+1] = D.y[j] + D.dy[j];
-				}	
+				} 
 			}
 		}
 		else
@@ -124,6 +124,7 @@ void parseDomain(const YAML::Node &node, domain &D)
 		D.dyD = D.dy;
 	}
 }
+
 
 /**
  * \brief Parses the \a domain file and generates the computational grid.

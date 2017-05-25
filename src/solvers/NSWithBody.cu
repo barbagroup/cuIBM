@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file NSWithBody.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the methods of the class \c NSWithBody.
  */
 
@@ -36,7 +35,8 @@ void NSWithBody<memoryType>::initialiseBodies()
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("initialiseBodies");
 }
-	
+
+
 /**
  * \brief Updates location and motion of each immersed body at current time.
  */
@@ -53,6 +53,7 @@ void NSWithBody<memoryType>::updateBodies()
 	NavierStokesSolver<memoryType>::logger.stopTimer("updateBodies");
 };
 
+
 /**
  * \brief Doing nothing (on the host).
  */
@@ -60,6 +61,7 @@ template <>
 void NSWithBody<host_memory>::calculateForce()
 {
 }
+
 
 /**
  * \brief Calculates forces acting on an immersed body (on the device).
@@ -79,17 +81,17 @@ void NSWithBody<device_memory>::calculateForce()
 	real dt = (*paramDB)["simulation"]["dt"].get<real>(),
 	     nu = (*paramDB)["flow"]["nu"].get<real>();
 	
-	real *q_r      = thrust::raw_pointer_cast(&q[0]),
-		 *qOld_r   = thrust::raw_pointer_cast(&qOld[0]),
-		 *lambda_r = thrust::raw_pointer_cast(&lambda[0]),
-		 *dxD = thrust::raw_pointer_cast(&(domInfo->dxD[0])),
-		 *dyD = thrust::raw_pointer_cast(&(domInfo->dyD[0]));
+	real *q_r = thrust::raw_pointer_cast(&q[0]),
+	     *qOld_r = thrust::raw_pointer_cast(&qOld[0]),
+	     *lambda_r = thrust::raw_pointer_cast(&lambda[0]),
+	     *dxD = thrust::raw_pointer_cast(&(domInfo->dxD[0])),
+	     *dyD = thrust::raw_pointer_cast(&(domInfo->dyD[0]));
 	
 	// Calculating drag
 	cusp::array1d<real, device_memory>
-		FxX(B.numCellsY[0]),
-		FxY(B.numCellsX[0]+1),
-		FxU((B.numCellsX[0]+1)*B.numCellsY[0]);
+	  FxX(B.numCellsY[0]),
+	  FxY(B.numCellsX[0]+1),
+	  FxU((B.numCellsX[0]+1)*B.numCellsY[0]);
 	
 	real *FxX_r = thrust::raw_pointer_cast(&FxX[0]),
 	     *FxY_r = thrust::raw_pointer_cast(&FxY[0]),
@@ -113,9 +115,9 @@ void NSWithBody<device_memory>::calculateForce()
 	
 	// Calculating lift
 	cusp::array1d<real, device_memory>
-		FyX(B.numCellsY[0]+1),
-		FyY(B.numCellsX[0]),
-		FyU((B.numCellsX[0]+1)*B.numCellsY[0]);
+	  FyX(B.numCellsY[0]+1),
+	  FyY(B.numCellsX[0]),
+	  FyU((B.numCellsX[0]+1)*B.numCellsY[0]);
 	
 	real *FyX_r = thrust::raw_pointer_cast(&FyX[0]),
 	     *FyY_r = thrust::raw_pointer_cast(&FyY[0]),
@@ -134,6 +136,7 @@ void NSWithBody<device_memory>::calculateForce()
 	forceY = thrust::reduce(FyX.begin(), FyX.end()) + thrust::reduce(FyY.begin(), FyY.end()) + thrust::reduce(FyU.begin(), FyU.end());
 }
 
+
 /**
  * \brief Writes flow variables and position of body points into files.
  */
@@ -142,10 +145,10 @@ void NSWithBody<memoryType>::writeCommon()
 {	
 	NavierStokesSolver<memoryType>::logger.startTimer("output");
 
-	parameterDB  &db = *NavierStokesSolver<memoryType>::paramDB;
-	std::string  caseFolder = db["inputs"]["caseFolder"].get<std::string>();
-	int          nsave = db["simulation"]["nsave"].get<int>();
-	int          timeStep = NavierStokesSolver<memoryType>::timeStep;
+	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
+	std::string caseFolder = db["inputs"]["caseFolder"].get<std::string>();
+	int nsave = db["simulation"]["nsave"].get<int>();
+	int timeStep = NavierStokesSolver<memoryType>::timeStep;
 
 	NavierStokesSolver<memoryType>::writeCommon();
 	
@@ -155,6 +158,7 @@ void NSWithBody<memoryType>::writeCommon()
 
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
 }
+
 
 /**
  * \brief Closes iteration file and force file.
@@ -166,6 +170,7 @@ void NSWithBody<memoryType>::shutDown()
 	forceFile.close();
 	NavierStokesSolver<memoryType>::iterationsFile.close();
 }
+
 
 // specialization of the class
 template class NSWithBody<host_memory>;

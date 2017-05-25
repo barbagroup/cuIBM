@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file  DiffusionSolver.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the class \c DiffusionSolver. 
  */
 

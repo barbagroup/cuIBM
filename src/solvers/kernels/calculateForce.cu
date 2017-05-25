@@ -1,10 +1,10 @@
-/***************************************************************************//**
+/**
  * \file calculateForce.cu
- * \author Anush Krishnan (anus@bu.edu)
  * \brief Implementation of the kernels to calculate the forces acting on a body
  *        using a control-volume approach.
  *        The method is described in Lai & Peskin (2000).
  */
+
 
 #include "calculateForce.h"
 
@@ -65,6 +65,7 @@ void dragLeftRight(real *FxX, real *q, real *lambda, real nu, real *dx, real *dy
 	            );
 }
 
+
 /**
  * \brief Calculate drag using a control-volume approach (bottom-top).
  *
@@ -118,6 +119,7 @@ void dragBottomTop(real *FxY, real *q, real nu, real *dx, real *dy,
 
 }
 
+
 /**
  * \brief Calculate drag using a control-volume approach (unsteady).
  *
@@ -152,6 +154,7 @@ void dragUnsteady(real *FxU, real *q, real *qOld, real *dx, real *dy, real dt,
 	
 	FxU[idx] = - (q[Iu] - qOld[Iu])/dt * 0.5*(dx[I+i]+dx[I-1+i]);
 }
+
 
 /**
  * \brief Calculate lift using a control-volume approach (left-right).
@@ -205,6 +208,7 @@ void liftLeftRight(real *FyX, real *q, real nu, real *dx, real *dy,
 	            )*0.5*(dy[J+idx]+dy[J-1+idx]);
 }
 
+
 /**
  * \brief Calculate lift using a control-volume approach (bottom-top).
  *
@@ -250,7 +254,8 @@ void liftBottomTop(real *FyY, real *q, real *lambda, real nu, real *dx, real *dy
 	              )
 	            );
 }
-            
+
+
 /**
  * \brief Calculate lift using a control-volume approach (unsteady).
  *
@@ -285,6 +290,7 @@ void liftUnsteady(real *FyU, real *q, real *qOld, real *dx, real *dy, real dt,
 
 	FyU[idx] = - (q[Iv] - qOld[Iv])/dt * 0.5*(dy[J+j]+dy[J-1+j]);
 }
+
 
 /**
 * \brief To be documented
@@ -339,6 +345,7 @@ void forceX(real *f, real *q, real *rn, int *tags,
 		f[Gidx_x] = ( u[j][i]/dt - dTerm - rn[Gidx_x]/(0.5*(Dx[j][i]+Dx[j][i+1])) ) * (!(tags[Gidx_x]==-1));
 	}
 }
+
 
 /**
  * \brief Doing nothing.

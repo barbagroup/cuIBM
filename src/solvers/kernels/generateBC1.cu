@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateBC1.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the kernels to generate right hand-side terms of the
  *        intermediate velocity flux solver.
  */
@@ -40,9 +39,10 @@ void bc1DirichletU(real *bc1, int N, int nx, int offset, int stride, real *dx, r
 	if ( idx >= N ) return;	/// check if idx too high
 	
 	int	I	= (offset + idx*stride),
-		i	= I % (nx-1);
+	    i	= I % (nx-1);
 	bc1[I] += bc[idx] * C * 0.5*(dx[i] + dx[i+1]);
 }
+
 
 /**
  * \brief Computes inhomogeneous term from the discrete Laplacian operator 
@@ -70,9 +70,10 @@ void bc1DirichletV(real *bc1, int N, int nx, int numU, int offset, int stride, r
 	if ( idx >= N ) return;	/// check if idx too high
 	
 	int	I	= (offset + idx*stride),
-		j	= I / nx;
+	    j	= I / nx;
 	bc1[numU + I] += bc[idx+numUbc] * C * 0.5*(dy[j] + dy[j+1]);
 }
+
 
 /**
  * \brief Computes inhomogeneous term from the discrete Laplacian operator 
@@ -101,13 +102,14 @@ void bc1ConvectiveU(real *bc1, int N, int nx, int offset, int stride, real *dx, 
 	if ( idx >= N ) return;	/// check if idx too high
 	
 	int	I = (offset + idx*stride),
-		i = I % (nx-1),
-		j = I / (nx-1);
+	    i = I % (nx-1),
+	    j = I / (nx-1);
 	
 	bc[idx] = (1.0-beta)*bc[idx] + beta*q[I]/dy[j];
 	
 	bc1[I] += bc[idx] * C * 0.5*(dx[i] + dx[i+1]);
 }
+
 
 /**
  * \brief Computes inhomogeneous term from the discrete Laplacian operator 
@@ -138,13 +140,14 @@ void bc1ConvectiveV(real *bc1, int N, int nx, int numU, int offset, int stride, 
 	if ( idx >= N ) return;	/// check if idx too high
 	
 	int	I = (offset + idx*stride),
-		i = I % nx,
-		j = I / nx;
+	    i = I % nx,
+	    j = I / nx;
 	
 	bc[idx+numUbc] = (1.0-beta)*bc[idx+numUbc] + beta*q[numU + I]/dx[i];
 	
 	bc1[numU + I] += bc[idx+numUbc] * C * 0.5*(dy[j] + dy[j+1]);
 }
+
 
 /**
  * \brief Computes inhomogeneous term from the discrete Laplacian operator 
@@ -172,7 +175,7 @@ void bc1SpecialU(real *bc1, int N, int nx, int offset, int stride, real *dx, rea
 	if ( idx >= N ) return;	/// check if idx too high
 	
 	int	I = (offset + idx*stride),
-		i = I % (nx-1);
+	    i = I % (nx-1);
 		
 	const real T = 10.0;
 	

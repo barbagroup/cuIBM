@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file generateE.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Implementation of the kernels to generate elements of the interpolation matrix.
  */
 
@@ -29,6 +28,7 @@ real dhRomaDeviceE(real x, real h)
 		return 1.0/(3*h)*( 1.0 + sqrt(-3.0*r*r + 1.0) );
 }
 
+
 /**
  * \brief Two-dimension discrete delta function.
  *
@@ -43,6 +43,7 @@ real deltaDeviceE(real x, real y, real h)
 {
 	return dhRomaDeviceE(x, h) * dhRomaDeviceE(y, h);
 }
+
 
 /**
  * \namespace kernels
@@ -110,6 +111,7 @@ void generateEHost(int *ERows,  int *ECols,  real *EVals,
 	}
 }
 
+
 /**
  * \brief Computes elements of the interpolation matrix.
  *
@@ -136,10 +138,10 @@ void generateE(int *ERows,  int *ECols,  real *EVals,
 	
 	if(bodyIdx < totalPoints)
 	{
-		int  Ib=I[bodyIdx],
-			 Jb=J[bodyIdx],
-			 EIdx  = bodyIdx*12,
-			 i, j;
+		int Ib=I[bodyIdx],
+		    Jb=J[bodyIdx],
+		    EIdx  = bodyIdx*12,
+		    i, j;
 
 		real Dx = dx[Ib];
 	
