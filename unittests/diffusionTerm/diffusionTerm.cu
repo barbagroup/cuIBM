@@ -1,4 +1,11 @@
+/**
+ * \file diffusionTerm.cu
+ * \brief Implementation of the methods of the class \c diffusionTerm.
+ */
+
+
 #include "diffusionTerm.h"
+
 
 //##############################################################################
 //                              INITIALISE

@@ -7,8 +7,6 @@
 CC = nvcc $(OSXOPTS)
 
 # compiler options
-# -arch=compute_20: compile to use double precision on GPU
-# -O3: optimization flag
 CCFLAGS = -arch=sm_35 -O3
 
 # variables
@@ -76,24 +74,24 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%$(SRC_EXT)
 
 .PHONY: unittests unittest
 
-UNITTESTS_DIR = $(PROJ_ROOT)/unitTests
+UNITTESTS_DIR = $(PROJ_ROOT)/unittests
 TEST_SRCS = $(wildcard $(TEST_DIR)/*$(SRC_EXT))
 TEST_OBJS = $(TEST_SRCS:$(SRC_EXT)=.o) $(filter-out $(BUILD_DIR)/cuIBM.o, $(OBJS))
-TEST_BIN = $(BIN_DIR)/unitTests/$(lastword $(subst /, , $(TEST_DIR)))
+TEST_BIN = $(BIN_DIR)/unittests/$(lastword $(subst /, , $(TEST_DIR)))
 
 unittests: convectionTerm_test diffusionTerm_test
 
-convectionTerm_test:  export TEST_DIR = $(UNITTESTS_DIR)/convectionTerm
-convectionTerm_test: 
+convectionTerm_test: export TEST_DIR=$(UNITTESTS_DIR)/convectionTerm
+convectionTerm_test:
 	$(MAKE) unittest
 
-diffusionTerm_test: export TEST_DIR = $(UNITTESTS_DIR)/diffusionTerm
+diffusionTerm_test: export TEST_DIR=$(UNITTESTS_DIR)/diffusionTerm
 diffusionTerm_test:
 	$(MAKE) unittest
 
 unittest: $(TEST_OBJS) $(EXT_LIBS)
 	@echo "\nUnit-test: $(TEST_DIR) ..."
-	@mkdir -p $(BIN_DIR)/unitTests
+	@mkdir -p $(BIN_DIR)/unittests
 	$(CC) $^ -o $(TEST_BIN)
 
 %.o: %$(SRC_EXT)
@@ -112,7 +110,7 @@ doc:
 
 ################################################################################
 
-.PHONY: clean cleanexternal cleanunittests cleandoc cleanall
+.PHONY: clean cleanexternal cleanunittests cleanall
 
 clean:
 	@echo "\nCleaning cuIBM ..."
@@ -125,29 +123,24 @@ cleanexternal:
 cleanunittests:
 	@echo "\nCleaning unitTests ..."
 	find $(UNITTESTS_DIR) -type f -name *.o -delete
-	$(RM) -rf $(BIN_DIR)/unitTests
+	$(RM) -rf $(BIN_DIR)/unittests
 
-cleandoc:
-	@echo "\nCleaning documentation ..."
-	find $(DOC_DIR) ! -name 'Doxyfile' -type f -delete
-	find $(DOC_DIR)/* ! -name 'Doxyfile' -type d -delete
-
-cleanall: clean cleanexternal cleanunittests cleandoc
+cleanall: clean cleanexternal cleanunittests
 
 ################################################################################
 
 # commands to run unit-tests
 
 testConvection:
-	bin/unitTests/convectionTerm -caseFolder cases/unitTests/convectionTerm/6
-	bin/unitTests/convectionTerm -caseFolder cases/unitTests/convectionTerm/12
-	bin/unitTests/convectionTerm -caseFolder cases/unitTests/convectionTerm/24
+	bin/unittests/convectionTerm -directory unittests/cases/6
+	bin/unittests/convectionTerm -directory unittests/cases/12
+	bin/unittests/convectionTerm -directory unittests/cases/24
 
 testDiffusion:
-	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/6
-	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/12
-	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/24
-	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/48
+	bin/unittests/diffusionTerm -directory unittests/cases/6
+	bin/unittests/diffusionTerm -directory unittests/cases/12
+	bin/unittests/diffusionTerm -directory unittests/cases/24
+	bin/unittests/diffusionTerm -directory unittests/cases/48
 
 ################################################################################
 

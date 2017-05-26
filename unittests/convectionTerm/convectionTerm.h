@@ -1,16 +1,19 @@
 /**
-* @file  convectionTerm.h
-* @brief Unit test class to calculate the convection term.
-*/
+ * \file convectionTerm.h
+ * \brief Unit-test class to calculate the convection term.
+ */
+
 
 #pragma once
 
-#include <solvers/NavierStokes/NavierStokesSolver.h>
-#include <bodies.h>
+#include "solvers/NavierStokesSolver.h"
+#include "utilities/bodies.h"
+
 
 /**
-* @brief Generic Navier-Stokes solver in the presence of immersed boundaries
-*/
+ * \class convectionTerm
+ * \brief Generic Navier-Stokes solver.
+ */
 template <typename memoryType>
 class convectionTerm : public NavierStokesSolver<memoryType>
 {

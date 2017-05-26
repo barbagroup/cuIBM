@@ -1,9 +1,16 @@
-#include <types.h>
-#include <helpers.h>
-#include <domain.h>
-#include <io/io.h>
-#include <solvers/NavierStokes/NavierStokesSolver.h>
+/**
+ * \file main.cu
+ * \brief Unit-test to check the spatial order of convergence of the convective terms.
+ */
+
+
+#include "utilities/types.h"
+#include "utilities/helpers.h"
+#include "utilities/domain.h"
+#include "io/io.h"
+#include "solvers//NavierStokesSolver.h"
 #include "convectionTerm.h"
+
 
 int main(int argc, char **argv)
 {
@@ -16,8 +23,6 @@ int main(int argc, char **argv)
 	convectionTerm<device_memory> *solver = new convectionTerm<device_memory>(paramDB, dom_info);
 	
 	solver->initialise();
-	
-	io::writeInfoFile(paramDB, dom_info);
 	
 	solver->writeData();
 

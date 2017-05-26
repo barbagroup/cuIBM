@@ -1,4 +1,11 @@
+/**
+ * \file convectionTerm.cu
+ * \brief Implementation of the methods of the class \c convectionTerm.
+ */
+
+
 #include "convectionTerm.h"
+
 
 //##############################################################################
 //                              INITIALISE
