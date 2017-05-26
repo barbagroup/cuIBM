@@ -10,6 +10,7 @@ The following file could be used to simulate external flows over bodies:
 
     - nu: 0.025
       initialVelocity: [1.0, 0.0]
+      initialPerturbation: [0.0, 0.0]
       boundaryConditions:
         - location: xMinus
           u: [DIRICHLET, 1.0]
@@ -28,6 +29,7 @@ The following file could be used to simulate external flows over bodies:
 ## File options
 * `nu`: (mandatory) the kinematic viscosity of the fluid. Can be any positive number.
 * `initialVelocity`: (mandatory) this is the initial velocity of the fluid set throughout the computational domain. For 2d flows, two components are required within square brackets, separated by a comma.
+* `initialPerturbation`: (optional, default: `[0.0, 0.0]`) initial sinusoidal perturbation in the x- and y- directions.
 * `boundaryConditions`: (mandatory) specifies the velocity boundary condition on each edge of the domain. These are listed in subsections, which need to be indented using two spaces.
   * Each boundary edge is represented by its relative `location` on the Cartesian axes - `xMinus`, `xPlus`, `yMinus` and `yPlus`.
   * For each component of velocity (`u` and `v`) on the boundary, you can specify the type of boundary condition and an associated value. There are four types currently available: `DIRICHLET`, `NEUMANN`, and `CONVECTIVE`.
