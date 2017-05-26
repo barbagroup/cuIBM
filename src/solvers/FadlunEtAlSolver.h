@@ -15,7 +15,7 @@
  * \class FadlunEtAlSolver
  * \brief Direct forcing method proposed by Fadlun et al (2000).
  *
- * This is the same method that Fadlen et al. used in their 2000 paper.
+ * This is the same method that Fadlun et al. used in their 2000 paper.
  * An explicit pressure is used in the intermediate velocity step.
  * The quantity obtained in the Poisson equation is the pressure correction,
  * and has to be added to the pressure at the previous step
