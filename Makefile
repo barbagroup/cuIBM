@@ -152,9 +152,6 @@ lidDrivenCavityRe100:
 lidDrivenCavityRe1000:
 	bin/cuibm -directory examples/lidDrivenCavity/Re1000
 
-cylinder:
-	bin/cuibm -directory examples/cylinder/test
-
 cylinderRe40:
 	bin/cuibm -directory examples/cylinder/Re40
 
@@ -164,14 +161,14 @@ cylinderRe550:
 cylinderRe3000:
 	bin/cuibm -directory examples/cylinder/Re3000
 
-cylinderRe75:
-	bin/cuibm -directory examples/cylinder/Re75
-
 cylinderRe100:
 	bin/cuibm -directory examples/cylinder/Re100
 
 cylinderRe150:
 	bin/cuibm -directory examples/cylinder/Re150
+
+cylinderRe200:
+	bin/cuibm -directory examples/cylinder/Re200
 
 cylinderDirectForcing:
 	bin/cuibm -directory examples/cylinder/Re40 -ibmScheme DirectForcing
