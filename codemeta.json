@@ -1,0 +1,37 @@
+{
+  "@context": "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld",
+  "@type": "Code",
+  "author": [
+    {
+      "@id": "",
+      "@type": "Person",
+      "email": "k.anush@gmail.com",
+      "name": "Anush Krishnan",
+      "affiliation": "Boston University"
+    },
+    {
+      "@id": "0000-0001-5335-7853",
+      "@type": "Person",
+      "email": "mesnardo@gwu.edu",
+      "name": "Olivier Mesnard",
+      "affiliation": "The George Washington University"
+    }
+    {
+      "@id": "0000-0001-5812-2711",
+      "@type": "Person",
+      "email": "labarba@gwu.edu",
+      "name": "Lorena A. Barba",
+      "affiliation": "The George Washington University"
+    }
+  ],
+  "identifier": "",
+  "codeRepository": "https://github.com/barbagroup/cuIBM",
+  "datePublished": "2017-05-30",
+  "dateModified": "2017-05-30",
+  "dateCreated": "2017-05-30",
+  "description": "A GPU-based Immersed Boundary Method code",
+  "keywords": "GPU, Immersed-Boundary Method, CUSP library",
+  "license": "MIT",
+  "title": "cuIBM",
+  "version": ""
+}

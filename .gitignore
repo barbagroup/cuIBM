@@ -34,3 +34,6 @@ scripts/python/*.bdy
 
 # mesnardo env configuration
 set-env.rc
+
+# ignore Ruby script to generate metadata file codemeta.json
+generate_codemeta.rb
