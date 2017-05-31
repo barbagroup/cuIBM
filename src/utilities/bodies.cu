@@ -92,7 +92,6 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 		calculateCellIndices(D);
 		calculateBoundingBoxes(db, D);
 	}
-	std::cout << "DONE!" << std::endl;
 } // initialise
 
 

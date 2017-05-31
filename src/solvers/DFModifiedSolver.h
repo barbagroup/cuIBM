@@ -10,7 +10,7 @@
 
 
 /**
- * \class DirectForcingSolver
+ * \class DFModifiedSolver
  * \brief A fully discrete formulation of the direct forcing method, with an 
  *        explicit pressure term in the intermediate velocity solve.
  *
