@@ -25,7 +25,7 @@ T toNumber(std::string str)
 	std::stringstream ss(str); //turn the string into a stream
 	ss >> num; //convert
 	return num;
-}
+} // toNumber
 
 
 /**
@@ -53,7 +53,7 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
 		elems.push_back(item);
 	}
 	return elems;
-}
+} // split
 
 
 /**
@@ -69,12 +69,8 @@ std::vector<std::string> split(const std::string &s, char delim)
 	std::vector<std::string> elems;
 	split(s, delim, elems);
 	return elems;
-}
+} // split
 
-
-//##############################################################################
-//                                 INPUT
-//##############################################################################
 
 /**
  * \brief Reads data inputs from the command-line and the simulation files.
@@ -114,7 +110,7 @@ void readInputs(int argc, char **argv, parameterDB &DB, domain &D)
 	
 	// second pass of command line -- overwrite values in DB
 	commandLineParse2(argc, argv, DB);
-}
+} // readInputs
 
 
 /**
@@ -176,7 +172,7 @@ void initialiseDefaultDB(parameterDB &DB)
 	DB[solver]["rTol"].set<real>(1.0E-05);
 	DB[solver]["aTol"].set<real>(1.0E-50);
 	DB[solver]["maxIterations"].set<int>(20000);
-}
+} // initialiseDefaultDB
 
 
 /**
@@ -205,7 +201,8 @@ void commandLineParse1(int argc, char **argv, parameterDB &DB)
 			cudaSetDevice(devNum);
 		}
 	}
-}
+} // commandLineParse1
+
 
 /**
  * \brief Overwrites parameters with additional arguments of the command-line. 
@@ -326,12 +323,8 @@ void commandLineParse2(int argc, char **argv, parameterDB &DB)
 				DB["simulation"]["interpolationType"].set<interpolationType>(QUADRATIC);
 		}
 	}
-}
+} // commandLineParse2
 
-
-//##############################################################################
-//                                OUTPUT
-//##############################################################################
 
 /**
  * \brief Converts a \c preconditionerType to a \c std::string.
@@ -355,7 +348,7 @@ std::string stringFromPreconditionerType(preconditionerType s)
 		printf("Error: Unknown preconditionerType.\n");
 		exit(-1);
 	}
-}
+} // stringFromPreconditionerType
 
 
 /**
@@ -380,7 +373,7 @@ std::string stringFromTimeScheme(timeScheme s)
 		printf("Error: Unknown timeScheme!\n");
 		exit(-1);
 	}
-}
+} // stringFromTimeScheme
 
 
 /**
@@ -465,7 +458,7 @@ void printSimulationInfo(parameterDB &DB, domain &D)
 	std::string ecc = deviceProp.ECCEnabled ? "yes" : "no";
 	std::cout << "Compute capability = " << deviceProp.major << "." << deviceProp.minor << '\n';
 	std::cout << "ECC Enabled = " << ecc << std::endl;
-}
+} // printSimulationInfo
 
 
 /**
@@ -477,7 +470,7 @@ void printTimingInfo(Logger &logger)
 {
 	logger.printAllTime();
 	std::cout << std::endl;
-}
+} // printTimingInfo
 
 
 /**
@@ -496,7 +489,7 @@ void writeGrid(std::string &caseFolder, domain &D)
 	file.write((char*)(&D.ny), sizeof(int));
 	file.write((char*)(&D.y[0]), (D.ny+1)*sizeof(real));
 	file.close();
-}
+} // writeGrid
 
 
 /**
@@ -541,7 +534,7 @@ void writeData<vecH>(std::string &caseFolder, int n, vecH &q, vecH &lambda, doma
 	file.close();
 	
 	std::cout << "Data saved to folder " << path << std::endl;
-}
+} // writeData
 
 
 /**
@@ -564,7 +557,7 @@ void writeData<vecD>(std::string &caseFolder, int n, vecD &q, vecD &lambda, doma
 	     lambdaH = lambda;
 
 	writeData(caseFolder, n, qH, lambdaH, D);
-}
+} // writeData
 
 
 /**
@@ -589,7 +582,7 @@ void readData(std::string &caseFolder, int timeStep, real *x, std::string name)
 	inFile.read((char*)(&x[0]), n*sizeof(real));
 	inFile.close();
 	std::cout << "done" << std::endl;
-}
+} // readData
 
 
 /**
@@ -603,6 +596,6 @@ void printDeviceMemoryUsage(char *label)
 	cudaMemGetInfo(&_free, &_total);
 	std::cout << '\n' << label << ": Memory Usage " << std::setprecision(3) << (_total-_free)/(1024.0*1024*1024) \
 	          << " / " << std::setprecision(3) << _total/(1024.0*1024*1024) << " GB" << std::setprecision(6) << '\n' << std::endl;
-}
+} // printDeviceMemoryUsage
 
-} // end namespace io
+} // End of namespace io

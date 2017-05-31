@@ -106,7 +106,7 @@ void parseBodiesNode(const YAML::Node &node, body &Body, parameterDB &DB)
 		printf("Error: Unknown body type '%s'!\n", type.c_str());
 		exit(-1);
 	}
-}
+} // parseBodiesNode
 
 
 /**
@@ -127,6 +127,6 @@ void parseBodiesFile(std::string &bodiesFile, parameterDB &DB)
 		parseBodiesNode(nodes[i], Body, DB);
 		B->push_back(Body);
 	}
-}
+} // parseBodiesFile
 
-} // end namespace io
+} // End of namespace io

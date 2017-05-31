@@ -1,4 +1,4 @@
-/***************************************************************************//**
+/**
  * \file io.h
  * \brief Declaration of the functions of the namespace \c io.
  */
@@ -68,4 +68,5 @@ namespace io
 
 	// print device memory usage
 	void printDeviceMemoryUsage(char *label);
-}
+
+} // End of namespace io

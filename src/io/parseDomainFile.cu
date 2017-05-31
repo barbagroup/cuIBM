@@ -123,7 +123,7 @@ void parseDomain(const YAML::Node &node, domain &D)
 		D.yD  = D.y;
 		D.dyD = D.dy;
 	}
-}
+} // parseDomain
 
 
 /**
@@ -157,6 +157,6 @@ void parseDomainFile(std::string &domFile, domain &D)
 		D.yv[j] = D.y[j+1];
 	}
 	D.yu[j] = (D.y[j]+D.y[j+1])/2.0;
-}
+} // parseDomainFile
 
-} // end namespace io
+} // End of namespace io

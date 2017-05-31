@@ -42,8 +42,8 @@ timeScheme timeSchemeFromString(std::string s)
 	{
 		printf("Error: Unknown timeScheme '%s'!\n", s.c_str());
 		exit(-1);
-	};
-}
+	}
+} // timeSchemeFromString
 
 
 /**
@@ -68,7 +68,7 @@ preconditionerType preconditionerTypeFromString(std::string s)
 		printf("Error: Unknown preconditioner '%s'!\n", s.c_str());
 		exit(-1);
 	};
-}
+} // preconditionerTypeFromString
 
 
 /**
@@ -103,7 +103,7 @@ ibmScheme ibmSchemeFromString(std::string s)
 		printf("Error: Unknown ibmScheme '%s'!\n", s.c_str());
 		exit(-1);
 	}
-}
+} // ibmSchemeFromString
 
 
 /**
@@ -126,7 +126,7 @@ interpolationType interpolationTypeFromString(std::string s)
 		printf("Error: Unknown interpolationType '%s'!\n", s.c_str());
 		exit(-1);
 	};
-}
+} // interpolationTypeFromString
 
 
 /**
@@ -165,7 +165,7 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 		DB[dbKey]["aTol"].set<real>(solvers[i]["absTolerance"].as<real>(1.0E-50));
 		DB[dbKey]["maxIterations"].set<int>(solvers[i]["maxIterations"].as<int>(10000));
 	}
-}
+} // parseSimulation
 
 
 /**
@@ -179,6 +179,6 @@ void parseSimulationFile(std::string &simFile, parameterDB &DB)
 	YAML::Node nodes = YAML::LoadFile(simFile);
 	for(unsigned int i=0; i<nodes.size(); i++)
 		parseSimulation(nodes[i], DB);
-}
+} // parseSimulationFile
 
-} // end namespace io
+} // End of namespace io

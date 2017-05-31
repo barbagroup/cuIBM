@@ -40,7 +40,7 @@ boundary boundaryFromString(std::string s)
 		printf("Error: Unknown location '%s'!\n", s.c_str());
 		exit(-1);
 	}
-}
+} // boundaryFromString
 
 
 /**
@@ -67,7 +67,7 @@ bcType bcTypeFromString(std::string s)
 		printf("Error: Unknown boundary type '%s'!\n", s.c_str());
 		exit(-1);
 	}
-}
+} // bcTypeFromString
 
 
 /**
@@ -101,7 +101,7 @@ void parseFlow(const YAML::Node &node, parameterDB &DB)
 		bc[loc][1] = boundaryCondition(
 			bcTypeFromString(BCs[i]["v"][0].as<std::string>()), BCs[i]["v"][1].as<real>());
 	}
-}
+} // parseFlow
 
 
 /**
@@ -115,6 +115,6 @@ void parseFlowFile(std::string &flowFile, parameterDB &DB)
 	YAML::Node nodes = YAML::LoadFile(flowFile);
 	for (unsigned int i=0; i<nodes.size(); i++)
 		parseFlow(nodes[i], DB);
-}
+} // parseFlowFile
 
-} // end namespace io
+} // End of namespace io
