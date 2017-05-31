@@ -117,7 +117,14 @@ void parseBodiesNode(const YAML::Node &node, body &Body, parameterDB &DB)
 void parseBodiesFile(std::string &bodiesFile, parameterDB &DB)
 {
 	if (!std::ifstream(bodiesFile.c_str()))
+	{
+		if (DB["simulation"]["ibmScheme"].get<ibmScheme>() != NAVIER_STOKES)
+		{
+			printf("Error: Missing YAML file bodies.yaml!\n");
+			exit(-1);
+		}
 		return;
+	}
 	printf("Parsing YAML file with bodies info ...\n");
 	YAML::Node nodes = YAML::LoadFile(bodiesFile);
 	body Body;
