@@ -33,4 +33,4 @@ public:
 	     yu,  ///< y-coordinates where the x-components of velocity are evaluated
 	     xv,  ///< x-coordinates where the y-components of velocity are evaluated
 	     yv;  ///< y-coordinates where the y-components of velocity are evaluated
-};
+}; // domain

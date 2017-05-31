@@ -50,7 +50,7 @@ public:
 	// overload the operator ()
 	template <typename VectorType1, typename VectorType2>
 	void operator()(const VectorType1 &x, VectorType2 &y) const;
-};
+}; // preconditioner
 
 
 /**
@@ -87,7 +87,7 @@ preconditioner<Matrix>::preconditioner(const Matrix &A, preconditionerType _type
 		printf("Error: Unknown preconditionerType!\n");
 		exit(-1);
 	}
-}
+} // preconditioner
 
 
 /**
@@ -128,7 +128,7 @@ void preconditioner<Matrix>::update(const Matrix &A)
 		printf("Error: Unknown preconditionerType!\n");
 		exit(-1);
 	}
-}
+} // update
 
 
 /**
@@ -170,4 +170,4 @@ void preconditioner<Matrix>::operator()(const VectorType1 &x, VectorType2 &y) co
 		printf("Error: Unknown preconditionerType!\n");
 		exit(-1);
 	}
-}
+} // operator()

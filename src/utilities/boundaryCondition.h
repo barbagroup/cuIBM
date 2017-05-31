@@ -36,4 +36,4 @@ public:
 	 */
 	boundaryCondition(bcType _type, real _value) : type(_type), value(_value) {}; 
 
-};
+}; // boundaryCondition

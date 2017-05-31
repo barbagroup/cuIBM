@@ -51,7 +51,7 @@ private:
 		struct timeval tv;
 		gettimeofday(&tv, NULL);
 		return double(tv.tv_sec+tv.tv_usec*1e-6);
-	}
+	} // get_time
 
 public:
 	bool printNow;  ///< boolean to print or not the time in the terminal
@@ -92,7 +92,7 @@ public:
 	void startTimer(std::string event)
 	{
 		tic[event] = get_time();
-	}
+	} // startTimer
 
 	/**
 	 * \brief Stops the timer.
@@ -107,7 +107,7 @@ public:
 		timer[event] += toc - tic[event];
 		if(print) 
 			std::cout << event << " : " << timer[event] << std::endl;
-	}
+	} // stopTimer
 
 	/**
 	 * \brief Erases the timer of a given event.
@@ -117,7 +117,7 @@ public:
 	void eraseTimer(std::string event)
 	{
 		timer.erase(event);
-	}
+	} // eraseTimer
 
 	/**
 	 * \brief Resets the timer.
@@ -126,7 +126,7 @@ public:
 	{
 		for( E_iter E=timer.begin(); E!=timer.end(); ++E )
 			E->second = 0;
-	}
+	} // resetTimer
 
 	/**
 	 * \brief Resets the time-step timer.
@@ -135,7 +135,7 @@ public:
 	{
 		for (E_iter E=timeStep.begin(); E!=timeStep.end(); ++E )
 			E->second = 0;
-	}
+	} // resetTimeStep
 
 	/**
 	 * \brief Allocates memory for an event given a size.
@@ -146,7 +146,7 @@ public:
 	void allocMemory(std::string event, double bytes)
 	{
 		memory[event] += bytes;
-	}
+	} // allocMemory
 
 	/**
 	 * \brief Frees memory allocated for a given event.
@@ -157,7 +157,7 @@ public:
 	void freeMemory(std::string event, double bytes)
 	{
 		memory[event] -= bytes;
-	}
+	} // freeMemory
 
 	/**
 	 * \brief Prints the time spent to achieve a event.
@@ -167,7 +167,7 @@ public:
 	void printTime(std::string event)
 	{
 		std::cout << event << " : " << timer[event] << std::endl;
-	}
+	} // printTime
 
 	/**
 	 * \brief Prints the memory allocated for a given event.
@@ -177,7 +177,7 @@ public:
 	void printMemory(std::string event)
 	{
 		std::cout << event << " : " << memory[event] << std::endl;
-	}
+	} // printMemory
 
 	/**
 	 * \brief Prints time spent for each event as well as the total time.
@@ -195,7 +195,7 @@ public:
 		std::cout << "-------------------------------------" << std::endl;
 		std::cout << std::setw(24) << "TOTAL" << std::setw(13) << std::fixed \
 		          << std::setprecision(4) << totalTime << std::endl;
-	}
+	} // printAllTime
 
 	/**
 		* \brief Writes the events into a file.
@@ -206,7 +206,7 @@ public:
 		{
 			legendFile <<  E->first << std::endl;
 		}
-	}
+	} // writeLegend
 
 	/**
 	 * \brief Writes time spent for each event into a file.
@@ -215,7 +215,7 @@ public:
 	{
 		for( E_iter E=timer.begin(); E!=timer.end(); ++E )
 			file <<  E->first << " " << E->second << std::endl;
-	}
+	} // writeTime
 	
 	/**
 	 * \brief Writes time spent for an iteration into a file.
@@ -228,5 +228,6 @@ public:
 		for ( E_iter E=timeStep.begin(); E!=timeStep.end(); ++E )
 			stepFile << E->second << "\t";
 		stepFile << std::endl;
-	}
-};
+	} // writeTimeStep
+
+}; // Logger

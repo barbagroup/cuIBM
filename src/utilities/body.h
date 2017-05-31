@@ -48,7 +48,8 @@ public:
 	     pitchOscillation[3]; ///< amplitude, angular frequency and phase difference of pitch oscillation
 	// Note that the angular amplitude & phase difference are stored in radians, and angular frequncy is radians/time
 	// But the inputs in bodies.yaml are provided in degrees, and degrees/time.
-		
+
+
 	/**
 	 * \brief Updates the position of the center of rotation of the body,
 	 *        as well as its the translational and rotational velocities.
@@ -71,7 +72,8 @@ public:
 			Theta = Theta0 + omega*Time + pitchOscillation[0]*sin(pitchOscillation[1]*Time + pitchOscillation[2]);
 			angVel = omega + pitchOscillation[0]*pitchOscillation[1]*cos(pitchOscillation[1]*Time + pitchOscillation[2]);
 		}
-	}
+	} // update
+
 
 	/**
 	 * \brief Resets the position and motion of the body.
@@ -96,5 +98,5 @@ public:
 		xOscillation[0] = xOscillation[1] = xOscillation[2] = 0.0;
 		yOscillation[0] = yOscillation[1] = yOscillation[2] = 0.0;
 		pitchOscillation[0] = pitchOscillation[1] = pitchOscillation[2] = 0.0;
-	}
-};
+	} // reset
+}; // body

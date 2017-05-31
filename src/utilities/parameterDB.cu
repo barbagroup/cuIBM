@@ -22,7 +22,7 @@ std::string toString(T num)
 	std::stringstream ss; 
 	ss << num;
 	return ss.str();
-}
+} // toString
 
 
 /**
@@ -46,7 +46,7 @@ std::string toString(bcType b)
 		printf("Error: Unknown boundary type!\n");
 		exit(-1);
 	}
-}
+} // toString
 
 
 /**
@@ -58,7 +58,7 @@ template <>
 std::string property::get()
 {
 	return std::string(value);
-}
+} // get
 
 
 /**
@@ -71,7 +71,7 @@ T property::get()
 {
 	T r = *reinterpret_cast<T*>(&value[0]);
 	return r;
-}
+} // get
 
 
 // explicit instantiations of the method property::get()
@@ -108,7 +108,7 @@ const char *property::print()
 		printf("Error: Unsupported type!\n");
 		exit(-1);
 	}
-}
+} // print
 
 
 /**
@@ -120,7 +120,7 @@ template <>
 void property::set(std::string s)
 {
 	strncpy(value, s.c_str(), 256);
-}
+} // set
 
 
 /**
@@ -134,7 +134,7 @@ void property::set(T v)
 	// assume we have enough space (256 bytes)
 	type = &typeid(T);
 	*reinterpret_cast<T*>(&value[0]) = v;
-}
+} // set
 
 
 // explicit instantiations of the method property::set()

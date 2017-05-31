@@ -25,7 +25,8 @@ public:
 	
 	// Convection term = gamma*H(n) + zeta*H(n-1)
 	// DIffusion term  = alphaImplicit*D(n+1) + alphaExplicit*D(n)
-	
+
+
 	/**
 	 * \brief Initializes the coefficients of the time-integration scheme.
 	 *
@@ -111,5 +112,6 @@ public:
 		{
 			std::cout << '[' <<  i << ']' << " " << gamma[i] << " " << zeta[i] << " " << alphaExplicit[i] << " " << alphaImplicit[i] << std::endl;
 		}
-	}
-};
+	} // initialise
+
+}; // integrationScheme

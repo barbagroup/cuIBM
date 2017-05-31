@@ -93,7 +93,7 @@ void bodies<memoryType>::initialise(parameterDB &db, domain &D)
 		calculateBoundingBoxes(db, D);
 	}
 	std::cout << "DONE!" << std::endl;
-}
+} // initialise
 
 
 /**
@@ -148,7 +148,7 @@ void bodies<memoryType>::calculateCellIndices(domain &D)
 		I[k] = i;
 		J[k] = j;
 	}
-}
+} // calculateCellIndices
 
 
 /**
@@ -203,7 +203,7 @@ void bodies<memoryType>::calculateBoundingBoxes(parameterDB &db, domain &D)
 		numCellsX[k] = i - startI[k];
 		numCellsY[k] = j - startJ[k];
 	}
-}
+} // calculateBoundingBoxes
 
 
 /**
@@ -278,7 +278,7 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 	
 	if(numBodies)
 		calculateCellIndices(D);
-}
+} // update
 
 
 /**
@@ -293,7 +293,7 @@ void bodies<host_memory>::writeToFile(std::string &caseFolder, int timeStep)
 	real *bx = thrust::raw_pointer_cast(&(x[0])),
 	     *by = thrust::raw_pointer_cast(&(y[0]));
 	writeToFile(bx, by, caseFolder, timeStep);
-}
+} // writeToFile
 
 
 /**
@@ -310,7 +310,7 @@ void bodies<device_memory>::writeToFile(std::string &caseFolder, int timeStep)
 	real *bx = thrust::raw_pointer_cast(&(xHost[0])),
 	     *by = thrust::raw_pointer_cast(&(yHost[0]));
 	writeToFile(bx, by, caseFolder, timeStep);
-}
+} // writeToFile
 
 
 /**
@@ -334,7 +334,7 @@ void bodies<memoryType>::writeToFile(real *bx, real *by, std::string &caseFolder
 		file << bx[l] << '\t' << by[l] << '\n';
 	}
 	file.close();
-}
+} // writeToFile
 
 
 // specialization of the class bodies

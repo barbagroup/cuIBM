@@ -47,7 +47,7 @@ public:
 
 	// return a string describing the value
 	const char *print();
-};
+}; // property
 
 
 /**

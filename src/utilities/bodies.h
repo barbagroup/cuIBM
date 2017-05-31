@@ -73,4 +73,4 @@ public:
 
 	// write body coordinates into a file called \a bodies
 	void writeToFile(real *bx, real *by, std::string &caseFolder, int timeStep);
-};
+}; // bodies
