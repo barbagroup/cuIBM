@@ -10,6 +10,17 @@
 
 
 /**
+ * \brief Constructor. Copies the database and information about the computational grid.
+ */
+template <typename memoryType>
+TairaColoniusSolver<memoryType>::TairaColoniusSolver(parameterDB *pDB, domain *dInfo)
+{
+	NavierStokesSolver<memoryType>::paramDB = pDB;
+	NavierStokesSolver<memoryType>::domInfo = dInfo;
+} // TairaColoniusSolver
+
+
+/**
  * \brief Initializes the solvers.
  *
  * Initializes bodies, arrays and matrices of the intermediate flux solver
@@ -40,7 +51,7 @@ void TairaColoniusSolver<memoryType>::initialise()
 		E.resize(2*totalPoints, numUV, 24*totalPoints);
 	}
 	NavierStokesSolver<memoryType>::assembleMatrices();
-}
+} // initialise
 
 
 /**
@@ -73,7 +84,7 @@ void TairaColoniusSolver<memoryType>::writeData()
 	//NSWithBody<memoryType>::forceFile << NSWithBody<memoryType>::forceX << '\t' << NSWithBody<memoryType>::forceY << std::endl;
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
-}
+} // writeData
 
 
 /**
@@ -96,21 +107,10 @@ void TairaColoniusSolver<memoryType>::updateSolverState()
 		NavierStokesSolver<memoryType>::PC2->update(NavierStokesSolver<memoryType>::C);
 		NavierStokesSolver<memoryType>::logger.stopTimer("preconditioner2");
 	}
-}
+} // updateSolverState
 
 
-/**
- * \brief Constructor. Copies the database and information about the computational grid.
- */
-template <typename memoryType>
-TairaColoniusSolver<memoryType>::TairaColoniusSolver(parameterDB *pDB, domain *dInfo)
-{
-	NavierStokesSolver<memoryType>::paramDB = pDB;
-	NavierStokesSolver<memoryType>::domInfo = dInfo;
-}
-
-
-// include inline files located in "./TairaColonius/"
+// include inline files
 #include "TairaColonius/generateQT.inl"
 #include "TairaColonius/generateBC2.inl"
 #include "TairaColonius/calculateForce.inl"

@@ -19,7 +19,7 @@ DirectForcingSolver<memoryType>::DirectForcingSolver(parameterDB *pDB, domain *d
 {
 	NavierStokesSolver<memoryType>::paramDB = pDB;
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
-}
+} // DirectForcingSolver
 
 
 /**
@@ -59,10 +59,9 @@ void DirectForcingSolver<memoryType>::initialise()
 	NavierStokesSolver<memoryType>::logger.startTimer("allocateMemory");
 	
 	tagPoints();
-	std::cout << "Done tagging points!" << std::endl;
 	
 	NavierStokesSolver<memoryType>::assembleMatrices();
-}
+} // initialise
 
 
 /**
@@ -86,7 +85,7 @@ void DirectForcingSolver<memoryType>::updateSolverState()
 		// assemble the matrices generated using new tags
 		NavierStokesSolver<memoryType>::assembleMatrices();
 	}
-}
+} // updateSolverState
 
 
 /**
@@ -104,7 +103,7 @@ void DirectForcingSolver<memoryType>::assembleRHS1()
 	NavierStokesSolver<memoryType>::logger.startTimer("updateRHS1");
 	updateRHS1();
 	NavierStokesSolver<memoryType>::logger.startTimer("updateRHS1");
-}
+} // assembleRHS1
 
 
 /**
@@ -143,7 +142,7 @@ void DirectForcingSolver<memoryType>::writeMassFluxInfo()
 		
 	fluxInfoFile << timeStep << '\t' << minFlux << '\t' << maxFlux << '\t' << globalSum << std::endl;
 	fluxInfoFile.close();
-}
+} // writeMassFluxInfo
 
 
 /**
@@ -158,7 +157,7 @@ void DirectForcingSolver<memoryType>::projectionStep()
 	NavierStokesSolver<memoryType>::logger.startTimer("projectionStep");
 	cusp::blas::axpy(NavierStokesSolver<memoryType>::lambda, pressure , 1.0);
 	NavierStokesSolver<memoryType>::logger.stopTimer("projectionStep");
-}
+} // projectionStep
 
 
 /**
@@ -182,7 +181,7 @@ void DirectForcingSolver<memoryType>::writeData()
 	writeMassFluxInfo();
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
-}
+} // writeData
 
 
 /**
@@ -222,10 +221,10 @@ void DirectForcingSolver<memoryType>::generateC()
 		}
 		index++;
 	}
-}
+} // generateC
 
 
-// inline files in the folder "DirectForcing"
+// include inline files
 #include "DirectForcing/tagPoints.inl"
 #include "DirectForcing/generateL.inl"
 #include "DirectForcing/generateA.inl"

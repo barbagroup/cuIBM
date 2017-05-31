@@ -56,7 +56,7 @@ void TairaColoniusSolver<host_memory>::generateBC2()
 		bc2[row] = B.vB[k];
 		row++;
 	}
-}
+} // generateBC2
 
 
 /**
@@ -94,4 +94,4 @@ void TairaColoniusSolver<device_memory>::generateBC2()
 	
 	dim3 dimGridB( int((B.totalPoints-0.5)/blockSize) + 1, 1);
 	kernels::fillBC2_uvB <<<dimGridB, dimBlock>>> (bc2_r, uB, vB, B.totalPoints, nx, ny);
-}
+} // generateBC2

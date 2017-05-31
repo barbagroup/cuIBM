@@ -10,7 +10,7 @@
 
 /**
  * \brief Generates inhomogeneous boundary conditions 
- *        from the discrete continuity equation (on the host).
+ *        from the discrete continuity equation (host).
  */
 template <>
 void NavierStokesSolver<host_memory>::generateBC2()
@@ -43,12 +43,12 @@ void NavierStokesSolver<host_memory>::generateBC2()
 		// right
 		bc2[j*nx+nx-1] += bc[XPLUS][j]*dy[j]; // u[j+1][nx]*dy;
 	}
-}
+} // generateBC2
 
 
 /**
  * \brief Generates inhomogeneous boundary conditions 
- *        from the discrete continuity equation (on the device).
+ *        from the discrete continuity equation (device).
  */
 template<>
 void NavierStokesSolver<device_memory>::generateBC2()
@@ -75,4 +75,4 @@ void NavierStokesSolver<device_memory>::generateBC2()
 	
 	kernels::fillBC2_v <<<dimGrid, dimBlock>>> (bc2_r, yminus, yplus, dxD, nx, ny);
 	kernels::fillBC2_u <<<dimGrid, dimBlock>>> (bc2_r, xminus, xplus, dyD, nx, ny);
-}
+} // generateBC2

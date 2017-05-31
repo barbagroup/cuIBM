@@ -10,7 +10,7 @@
 
 /**
  * \brief Generates inhomogeneous boundary conditions 
- *        from the discrete Laplacian operator (on the device).
+ *        from the discrete Laplacian operator (device).
  */
 template <>
 void NavierStokesSolver<device_memory>::generateBC1()
@@ -155,12 +155,12 @@ void NavierStokesSolver<device_memory>::generateBC1()
 	}
 	
 	logger.stopTimer("generateBC1");
-}
+} // generateBC1
 
 
 /**
  * \brief Generates inhomogeneous boundary conditions 
- *        from the discrete Laplacian operator (on the host).
+ *        from the discrete Laplacian operator (host).
  */
 template <>
 void NavierStokesSolver<host_memory>::generateBC1()
@@ -318,4 +318,4 @@ void NavierStokesSolver<host_memory>::generateBC1()
 	}
 	
 	logger.stopTimer("generateBC1");
-}
+} // generateBC1

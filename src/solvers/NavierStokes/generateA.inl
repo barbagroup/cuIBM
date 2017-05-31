@@ -10,9 +10,11 @@
 
 
 /**
- * \brief Generates the matrix A which solves the implicit velocity flux (on the device).
- *        Calculated from the matrices M (which contains the term from the time derivative)
- *        and the matrix L, which is the implicit diffusion matrix.
+ * \brief Assembles the matrix from implicit terms of momentum equation (device).
+ * 
+ * Generates the matrix A which solves the implicit velocity flux.
+ * Calculated from the matrices M (which contains the term from the time derivative)
+ * and the matrix L, which is the implicit diffusion matrix.
  *
  * \param alpha implicit coefficient of the diffusive scheme
  */
@@ -43,13 +45,15 @@ void NavierStokesSolver<device_memory>::generateA(real alpha)
 	dim3 dimBlock(blockSize, 1);
 	
 	kernels::generateA <<<dimGrid, dimBlock>>> (ARows, ACols, AVals, MVals, LRows, LCols, LVals, ASize, alpha);
-}
+} // generateA
 
 
 /**
- * \brief Generates the matrix A which solves the implicit velocity flux (on the device).
- *        Calculated from the matrices M (which contains the term from the time derivative)
- *        and the matrix L, which is the implicit diffusion matrix.
+ * \brief Assembles the matrix from implicit terms of momentum equation (host).
+ * 
+ * Generates the matrix A which solves the implicit velocity flux.
+ * Calculated from the matrices M (which contains the term from the time derivative)
+ * and the matrix L, which is the implicit diffusion matrix.
  *
  * \param alpha implicit coefficient of the diffusive scheme
  */
@@ -72,4 +76,4 @@ void NavierStokesSolver<host_memory>::generateA(real alpha)
 		if(A.row_indices[i] == A.column_indices[i])
 			A.values[i] += M.values[A.row_indices[i]];
 	}
-}
+} // generateA

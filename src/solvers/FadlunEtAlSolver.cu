@@ -1,7 +1,6 @@
-/***************************************************************************//**
+/**
  * \file FadlunEtAlSolver.cu
- * \author Anush Krishnan (anush@bu.edu)
- * \brief Implementation of the methods of the class \c FadlunEtAlSolver.
+ * \brief Implementation of the methods of the classes \c FadlunEtAlSolver and \c FEAModifiedSolver.
  */
 
 
@@ -20,7 +19,8 @@ FadlunEtAlSolver<memoryType>::FadlunEtAlSolver(parameterDB *pDB, domain *dInfo)
 {
 	NavierStokesSolver<memoryType>::paramDB = pDB;
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
-}
+} // FadlunEtAlSolver
+
 
 /**
  * \brief Generates the matrix \c QT, Q and G for FadlunEtAlSolver.
@@ -31,7 +31,8 @@ void FadlunEtAlSolver<memoryType>::generateQT()
 	NavierStokesSolver<memoryType>::generateQT();
 	G = NavierStokesSolver<memoryType>::Q;
 	updateG();
-}
+} // generateQT
+
 
 /**
  * \brief The host function for updateG() is incomplete.
@@ -39,11 +40,13 @@ void FadlunEtAlSolver<memoryType>::generateQT()
 template <>
 void FadlunEtAlSolver<host_memory>::updateG()
 {
-}
+} // updateG
+
 
 /**
- * \brief Zeros rows of G that correspond to the forcing nodes.
+ * \brief Update the gradient operator (device).
  *
+ * Zeros rows of G that correspond to the forcing nodes.
  * Calls the function updateQ, but passes the matrix G to it.
  */
 template <>
@@ -66,7 +69,8 @@ void FadlunEtAlSolver<device_memory>::updateG()
 	dim3 dimBlock(blocksize, 1);
 	
 	kernels::updateQ <<<dimGrid, dimBlock>>> (GRows, GCols, GVals, GSize, tags_r);
-}
+} // updateG
+
 
 /**
  * \brief Add the pressure gradient to the right hand side of the 
@@ -79,7 +83,8 @@ void FadlunEtAlSolver<memoryType>::calculateExplicitLambdaTerms()
 	cusp::multiply(G, DirectForcingSolver<memoryType>::pressure, NavierStokesSolver<memoryType>::temp1);
 	// r^n = r^n - temp_1
 	cusp::blas::axpy(NavierStokesSolver<memoryType>::temp1, NavierStokesSolver<memoryType>::rn, -1.0);
-}
+} // calculateExplicitLambdaTerms
+
 
 /**
  * \brief Generates the matrix for the Poisson equation.
@@ -91,13 +96,13 @@ template <typename memoryType>
 void FadlunEtAlSolver<memoryType>::generateC()
 {
 	NavierStokesSolver<memoryType>::generateC();
-}
+} // generateC
+
 
 // specialization of the class
 template class FadlunEtAlSolver<host_memory>;
 template class FadlunEtAlSolver<device_memory>;
 
-/******************************************************************************/
 
 /**
  * \brief Constructor. Copies the database and information about the 
@@ -108,7 +113,8 @@ FEAModifiedSolver<memoryType>::FEAModifiedSolver(parameterDB *pDB, domain *dInfo
 {
 	NavierStokesSolver<memoryType>::paramDB = pDB;
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
-}
+} // FEAModifiedSolver
+
 
 /**
  * \brief Generates the matrices QT and Q, which are the same as if an 
@@ -118,7 +124,8 @@ template <typename memoryType>
 void FEAModifiedSolver<memoryType>::generateQT()
 {
 	NavierStokesSolver<memoryType>::generateQT();
-}
+} // generateQT
+
 
 /**
  * \brief Generates the matrix for the Poisson equation.
@@ -130,7 +137,8 @@ template <typename memoryType>
 void FEAModifiedSolver<memoryType>::generateC()
 {
 	NavierStokesSolver<memoryType>::generateC();
-}
+} // generateC
+
 
 template class FEAModifiedSolver<host_memory>;
 template class FEAModifiedSolver<device_memory>;

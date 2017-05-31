@@ -18,30 +18,13 @@
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::calculateExplicitLambdaTerms()
 {
-	/**
-	* Figure this part out for RK3. Not required for 1-step schemes
-	*/
-/*	
-	int  nx = domInfo->nx,
-	     ny = domInfo->ny;
-	
-	// rn = rn - zeta * Q.lambda
-	if(fabs(intgSchm.zeta[subStep]) > 1e-6)
-	{
-		// temp = Q.lambda
-		cusp::multiply(Q, lambda, temp1);
-		// temp = zeta*temp
-		cusp::blas::scal(temp1, intgSchm.zeta[subStep]);
-		// rn = rn - temp
-		cusp::blas::axpy(temp1, rn, -1.0);
-	}
-*/
 }
 
 
 /**
- * \brief Generates explicit terms that arise from the velocity fluxes (on the device).
- *        Includes the time derivative, convection and diffusion terms.
+ * \brief Generates explicit terms that arise from the velocity fluxes (device).
+ *
+ * Includes the time derivative, convection and diffusion terms.
  */
 template <>
 void NavierStokesSolver<device_memory>::calculateExplicitQTerms()
@@ -96,13 +79,14 @@ void NavierStokesSolver<device_memory>::calculateExplicitQTerms()
 	// calculate convection terms for the columns adjoining the left and right boundaries
 	kernels::convectionTermULeftRight <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, nu, xminus, xplus);
 	kernels::convectionTermVLeftRight <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, nu, yminus, yplus, xminus, xplus);
-}
+} // calculateExplicitQTerms
 
 
 /**
- * \brief Generates explicit terms that arise from the velocity fluxes (on the host).
- *        Includes the time derivative, convection and diffusion terms.
- *        Currently incomplete. Need to fill in the diffusion terms.
+ * \brief Generates explicit terms that arise from the velocity fluxes (host).
+ *
+ * Includes the time derivative, convection and diffusion terms.
+ * Currently incomplete. Need to fill in the diffusion terms.
  */
 template <>
 void NavierStokesSolver<host_memory>::calculateExplicitQTerms()
@@ -193,7 +177,7 @@ void NavierStokesSolver<host_memory>::calculateExplicitQTerms()
 			rn[Iv] = (v/dt + cTerm + dTerm) * 0.5*(dy[j]+dy[j+1]);
 		}
 	}
-}
+} // calculateExplicitQTerms
 
 
 /**
@@ -208,4 +192,4 @@ void NavierStokesSolver<memoryType>::generateRN()
 	calculateExplicitLambdaTerms();
 	
 	logger.stopTimer("generateRN");
-}
+} // generateRN

@@ -15,6 +15,7 @@
 template <typename memoryType>
 void NSWithBody<memoryType>::initialiseBodies()
 {
+	printf("Initializing bodies ...\n");
 	NavierStokesSolver<memoryType>::logger.startTimer("initialiseBodies");
 	
 	parameterDB &db = *NavierStokesSolver<memoryType>::paramDB;
@@ -34,7 +35,7 @@ void NSWithBody<memoryType>::initialiseBodies()
 	}
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("initialiseBodies");
-}
+} // initialiseBodies
 
 
 /**
@@ -51,7 +52,7 @@ void NSWithBody<memoryType>::updateBodies()
 	B.update(db, *NavierStokesSolver<memoryType>::domInfo, Time);
 	
 	NavierStokesSolver<memoryType>::logger.stopTimer("updateBodies");
-};
+} // updateBodies
 
 
 /**
@@ -60,7 +61,7 @@ void NSWithBody<memoryType>::updateBodies()
 template <>
 void NSWithBody<host_memory>::calculateForce()
 {
-}
+} // calculateForce
 
 
 /**
@@ -134,7 +135,7 @@ void NSWithBody<device_memory>::calculateForce()
 	                                                nx, ny, B.startI[0], B.startJ[0], B.numCellsX[0], B.numCellsY[0]);
 
 	forceY = thrust::reduce(FyX.begin(), FyX.end()) + thrust::reduce(FyY.begin(), FyY.end()) + thrust::reduce(FyU.begin(), FyU.end());
-}
+} // calculateForce
 
 
 /**
@@ -157,7 +158,7 @@ void NSWithBody<memoryType>::writeCommon()
 		B.writeToFile(caseFolder, timeStep);
 
 	NavierStokesSolver<memoryType>::logger.stopTimer("output");
-}
+} // writeCommon
 
 
 /**
@@ -169,7 +170,7 @@ void NSWithBody<memoryType>::shutDown()
 	io::printTimingInfo(NavierStokesSolver<memoryType>::logger);
 	forceFile.close();
 	NavierStokesSolver<memoryType>::iterationsFile.close();
-}
+} // shutDown
 
 
 // specialization of the class

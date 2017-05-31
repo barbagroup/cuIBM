@@ -9,6 +9,8 @@
 
 /**
  * \brief Generates the discrete divergence matrix (on the host).
+ *
+ * The gradient matrix is also computed as the transpose of the divergence one.
  */
 template <>
 void NavierStokesSolver<host_memory>::generateQT()
@@ -32,11 +34,13 @@ void NavierStokesSolver<host_memory>::generateQT()
 	cusp::transpose(QT, Q);
 	
 	logger.stopTimer("generateQT");
-}
+} // generateQT
 
 
 /**
  * \brief Generates the discrete divergence matrix (on the device).
+ *
+ * The gradient matrix is also computed as the transpose of the divergence one.
  */
 template <>
 void NavierStokesSolver<device_memory>::generateQT()
@@ -61,4 +65,4 @@ void NavierStokesSolver<device_memory>::generateQT()
 	cusp::transpose(QT, Q);
 	
 	logger.stopTimer("generateQT");
-}
+} // generateQT

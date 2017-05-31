@@ -11,8 +11,10 @@
 
 
 /**
- * \brief Updates the interpolation matrix using the current locations of body points (on the host).
- *        Typically called after the body has moved.
+ * \brief Updates the interpolation matrix using the current locations of body
+ *        points (on the host).
+ *
+ * Typically called after the body has moved.
  */
 template <>
 void TairaColoniusSolver<host_memory>::updateQT()
@@ -54,12 +56,14 @@ void TairaColoniusSolver<host_memory>::updateQT()
 	logger.startTimer("transposeE");
 	cusp::transpose(E, ET);
 	logger.stopTimer("transposeE");
-}
+} // updateQT
 
 
 /**
- * \brief Updates the interpolation matrix using the current locations of body points (on the device).
- *        Typically called after the body has moved.
+ * \brief Updates the interpolation matrix using the current locations 
+ *        of body points (on the device).
+ *
+ * Typically called after the body has moved.
  */
 template <>
 void TairaColoniusSolver<device_memory>::updateQT()
@@ -105,7 +109,7 @@ void TairaColoniusSolver<device_memory>::updateQT()
 	logger.startTimer("transposeE");
 	cusp::transpose(E, ET);
 	logger.stopTimer("transposeE");
-}
+} // updateQT
 
 
 /**
@@ -135,7 +139,7 @@ void TairaColoniusSolver<host_memory>::generateQT()
 	logger.stopTimer("generateQT");
 	
 	updateQT();	
-}
+} // generateQT
 
 
 /**
@@ -167,4 +171,4 @@ void TairaColoniusSolver<device_memory>::generateQT()
 	logger.stopTimer("generateQT");
 	
 	updateQT();
-}
+} // generateQT

@@ -71,4 +71,4 @@ void TairaColoniusSolver<memoryType>::calculateForce()
 		cusp::multiply(ET, fTemp, F);
 		NSWithBody<memoryType>::B.forceY[l] = (dx*dy)/dy*thrust::reduce(F.begin(), F.end());
 	}
-}
+} // calculateForce

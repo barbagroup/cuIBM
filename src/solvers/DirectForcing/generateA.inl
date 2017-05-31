@@ -41,7 +41,7 @@ void DirectForcingSolver  <device_memory>::generateA(real alpha)
 	dim3 dimBlock(blockSize, 1);
 
 	kernels::generateADirectForcing <<<dimGrid, dimBlock>>> (ARows, ACols, AVals, MVals, LRows, LCols, LVals, ASize, alpha, tags_r);
-}
+} // generateA
 
 
 /**
@@ -72,4 +72,4 @@ void DirectForcingSolver<host_memory>::generateA(real alpha)
 		if(A.row_indices[i] == A.column_indices[i])
 			A.values[i] += M.values[A.row_indices[i]];
 	}
-}
+} // generateA

@@ -34,34 +34,50 @@ protected:
 	vecD coeffsD, coeffs2D;
 	vecH uv;
 	vecD uvD;
-	cusp::array1d<real, memoryType> pressure;
+	cusp::array1d<real, memoryType> pressure;  ///< pressure field
 	
+	// tag forcing points
 	void tagPoints();
-	
-	//void tagPoints(real *bx, real *by);
-	
 	void tagPoints(real *bx, real *by, real *uB, real *vB);
 
+	// assemble the LHS matrix of the velocity system
 	virtual void generateA(real alpha);
 
+	// assemble the Laplacian operator
 	virtual void generateL();
+	
+	// assemble the divergence operator
 	void generateQT(int *QTRows, int *QTCols, real *QTVals){} // check this!
 	virtual void generateQT();
+	
+	// update the gradient operator
 	void updateQ();
 
+	// compute the Poisson matrix
 	virtual void generateC();
 	
+	// assemble the RHS of the velocity system
 	virtual void assembleRHS1();
+	// update the RHS of the velocity system
 	void updateRHS1();
 
+	// update the solver
 	virtual void updateSolverState();
+
+	// projection velocity onto divergence-free space
 	virtual void projectionStep();
 
+	// write info about mass flux
 	void writeMassFluxInfo();
 	
 public:
+	// constructor
 	DirectForcingSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
+
+	// initialize the direct-forcing solver
 	virtual void initialise();
+
+	// write data
 	virtual void writeData();
 	
 	/**
@@ -71,4 +87,4 @@ public:
 	{
 		return "Direct Forcing";
 	}
-};
+}; // DirectForcingSolver

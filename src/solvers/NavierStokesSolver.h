@@ -115,7 +115,7 @@ protected:
 	// generate explicit flux terms
 	void calculateExplicitQTerms();
 
-	// calculates the 
+	// calculates the explicit lambda terms
 	virtual void calculateExplicitLambdaTerms();
 	
 	// generate inhomogeneous boundary conditions from the discrete Laplacian operator

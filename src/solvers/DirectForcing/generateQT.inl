@@ -9,19 +9,21 @@
 
 
 /**
- * \brief To be documented.
+ * \brief Update the gradient operator.
  */
 template <>
 void DirectForcingSolver<host_memory>::updateQ()
 {
-}
+} // updateQ
 
 
 /**
- * \brief After the Q matrix has been set up for the entire grid, this function
- *        removes the non-zeros that correspond to the velocity nodes where the 
- *        interpolation is performed, i.e. it sets the fluxes there to zero.
- *        This routine is specific to DirectForcingSolver.
+ * \brief Update the gradient operator (device).
+ * 
+ * After the Q matrix has been set up for the entire grid, this function
+ * removes the non-zeros that correspond to the velocity nodes where the 
+ * interpolation is performed, i.e. it sets the fluxes there to zero.
+ * This routine is specific to DirectForcingSolver.
  */
 template <>
 void DirectForcingSolver<device_memory>::updateQ()
@@ -43,14 +45,11 @@ void DirectForcingSolver<device_memory>::updateQ()
 	dim3 dimBlock(blocksize, 1);
 	
 	kernels::updateQ <<<dimGrid, dimBlock>>> (QRows, QCols, QVals, QSize, tags_r);
-}
+} // updateQ
 
 
 /**
- * \brief After the Q matrix has been set up for the entire grid, this function
- *        removes the non-zeros that correspond to the velocity nodes where the 
- *        interpolation is performed, i.e. it sets the fluxes there to zero.
- *        This routine is specific to DirectForcingSolver.
+ * \brief Compute the divergence operator (transpose of the gradient one).
  */
 template <typename memoryType>
 void DirectForcingSolver<memoryType>::generateQT()
@@ -58,4 +57,4 @@ void DirectForcingSolver<memoryType>::generateQT()
 	NavierStokesSolver<memoryType>::generateQT();
 	updateQ();
 	cusp::transpose(NavierStokesSolver<memoryType>::Q, NavierStokesSolver<memoryType>::QT);
-}
+} // generateQT

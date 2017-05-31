@@ -9,18 +9,20 @@
 #include "DFModifiedSolver.h"
 
 
-// Constructor
+/**
+ * \brief Constructor -- get simulation parameters and grid.
+ */
 template <typename memoryType>
 DFModifiedSolver<memoryType>::DFModifiedSolver(parameterDB *pDB, domain *dInfo)
 {
 	NavierStokesSolver<memoryType>::paramDB = pDB;
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
-}
+} // DFModifiedSolver
 
 
-// r^n = r^n - Q.pressure
-// Include the pressure gradient to the explicit terms on the right-hand side 
-// of the intermediate velocity solve.
+/**
+ * \brief Compute and add the explicit pressure gradient to the RHS of velocity system.
+ */
 template <typename memoryType>
 void DFModifiedSolver<memoryType>::calculateExplicitLambdaTerms()
 {
@@ -28,9 +30,12 @@ void DFModifiedSolver<memoryType>::calculateExplicitLambdaTerms()
 	cusp::multiply(NavierStokesSolver<memoryType>::Q, DirectForcingSolver<memoryType>::pressure, NavierStokesSolver<memoryType>::temp1);
 	// r^n = r^n - temp1
 	cusp::blas::axpy(NavierStokesSolver<memoryType>::temp1, NavierStokesSolver<memoryType>::rn, -1.0);
-}
+} // calculateExplicitLambdaTerms
 
 
+/**
+ * \brief Project velocity field onto divergence-free space and update pressure.
+ */
 template <typename memoryType>
 void DFModifiedSolver<memoryType>::projectionStep()
 {
@@ -41,7 +46,7 @@ void DFModifiedSolver<memoryType>::projectionStep()
 	NavierStokesSolver<memoryType>::logger.startTimer("projectionStep");
 	cusp::blas::axpy(NavierStokesSolver<memoryType>::lambda, DirectForcingSolver<memoryType>::pressure, 1.0);
 	NavierStokesSolver<memoryType>::logger.stopTimer("projectionStep");
-}
+} // projectionStep
 
 
 template class DFModifiedSolver<host_memory>;

@@ -62,7 +62,7 @@ void NavierStokesSolver<host_memory>::generateM()
 			Minv.values[I] = 1.0/value;
 		}
 	}
-}
+} // generateM
 
 
 /**
@@ -101,4 +101,4 @@ void NavierStokesSolver<device_memory>::generateM()
 	dim3 dimBlock(blockSize, 1);
 	kernels::fillM_u <<<dimGrid, dimBlock>>> (MRows, MCols, MVals, MinvRows, MinvCols, MinvVals, nx, ny, dxD, dyD, dt);
 	kernels::fillM_v <<<dimGrid, dimBlock>>> (MRows, MCols, MVals, MinvRows, MinvCols, MinvVals, nx, ny, dxD, dyD, dt);
-}
+} // generateM

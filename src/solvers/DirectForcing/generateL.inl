@@ -5,13 +5,6 @@
  */
 
 
-/*template <typename memoryType>
-void DirectForcingSolver<memoryType>::generateL()
-{
-	
-}*/
-
-
 /**
  * \brief Sets up the Laplacian matrix for the implicit diffusion term. 
  *        Uses second order central differences on the non-uniform grid.
@@ -19,7 +12,7 @@ void DirectForcingSolver<memoryType>::generateL()
 template <>
 void DirectForcingSolver<host_memory>::generateL() 
 {
-}
+} // generateL
 
 
 /**
@@ -312,7 +305,7 @@ void DirectForcingSolver<device_memory>::generateL()
 	}
 	L = LHost;
 #endif
-}
+} // generateL
 
 
 /*

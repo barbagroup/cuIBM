@@ -15,12 +15,26 @@
 //##############################################################################
 
 /**
+ * \brief Constructor. Copies the database and information about the computational grid.
+ *
+ * \param pDB database that contains all the simulation parameters
+ * \param dInfo information related to the computational grid
+ */
+template <typename memoryType>
+NavierStokesSolver<memoryType>::NavierStokesSolver(parameterDB *pDB, domain *dInfo)
+{
+	paramDB = pDB;
+	domInfo = dInfo;
+} // NavierStokesSolver
+
+
+/**
  * \brief Initializes parameters, arrays and matrices required for the simulation.
  */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialise()
 {
-	printf("NS initalising\n");
+	printf("Initializing Navier-Stokes solver ...\n");
 	
 	int nx = domInfo->nx,
 	    ny = domInfo->ny;
@@ -31,7 +45,7 @@ void NavierStokesSolver<memoryType>::initialise()
 	initialiseCommon();
 	initialiseArrays(numUV, numP);
 	assembleMatrices();
-}
+} // initialise
 
 
 /**
@@ -40,6 +54,7 @@ void NavierStokesSolver<memoryType>::initialise()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialiseCommon()
 {
+	printf("Initializing common parts ...\n");
 	logger.startTimer("initialiseCommon");
 	
 	QCoeff = 1.0;
@@ -69,10 +84,8 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 		iterationsFile.open(out.str().c_str(), std::ofstream::app);
 	}
 	
-	std::cout << "Initialised common stuff!" << std::endl;
-	
 	logger.stopTimer("initialiseCommon");
-}
+} // initialiseCommon
 
 
 /**
@@ -84,6 +97,7 @@ void NavierStokesSolver<memoryType>::initialiseCommon()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 {	
+	printf("Initializing arrays ...\n");
 	logger.startTimer("initialiseArrays");
 	
 	q.resize(numQ);
@@ -119,7 +133,7 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 	std::cout << "Initialised arrays!" << std::endl;
 	
 	logger.stopTimer("initialiseArrays");
-}
+} // initialiseArrays
 
 
 /**
@@ -134,7 +148,7 @@ void NavierStokesSolver<host_memory>::initialiseFluxes()
 	real *q_r = thrust::raw_pointer_cast(&(q[0]));
 	initialiseFluxes(q_r);
 	qStar = q;
-}
+} // initialiseFluxes
 
 
 /**
@@ -155,7 +169,7 @@ void NavierStokesSolver <device_memory>::initialiseFluxes()
 	initialiseFluxes(qHost_r);
 	q = qHost;
 	qStar=q;
-}
+} // initialiseFluxes
 
 
 /**
@@ -203,7 +217,7 @@ void NavierStokesSolver <memoryType>::initialiseFluxes(real *q)
 			q[j*nx + i + numU] = ( vInitial + vPerturb * cos( 0.5*M_PI*(2*domInfo->yv[j]-ymax-ymin)/(ymax-ymin) ) * sin( M_PI * (2*domInfo->xv[i]-xmax-xmin)/(xmax-xmin) ) ) * domInfo->dx[i];
 		}
 	}
-}
+} // initialiseFluxes
 
 
 /**
@@ -244,7 +258,7 @@ void NavierStokesSolver<memoryType>::initialiseBoundaryArrays()
 	}
 	bc[XMINUS][ny-1] = bcInfo[XMINUS][0].value;
 	bc[XPLUS][ny-1] = bcInfo[XPLUS][0].value;
-}
+} // initialiseBoundaryArrays
 
 
 //##############################################################################
@@ -278,7 +292,7 @@ void NavierStokesSolver<memoryType>::stepTime()
 	}
 	
 	timeStep++;
-}
+} // stepTime
 
 
 /**
@@ -290,7 +304,7 @@ void NavierStokesSolver<memoryType>::updateSolverState()
 //	generateA(intgSchm.alphaImplicit[subStep]);
 //	updateQ(intgSchm.gamma[i]);
 //	updateBoundaryConditions();
-}
+} // updateSolverState
 
 
 /**
@@ -303,7 +317,7 @@ void NavierStokesSolver<memoryType>::updateQ(real gamma)
 {
 //	cusp::blas::scal(Q.values, gamma/QCoeff);
 //	QCoeff = gamma;
-}
+} // updateQ
 
 
 /**
@@ -312,7 +326,7 @@ void NavierStokesSolver<memoryType>::updateQ(real gamma)
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::updateBoundaryConditions()
 {
-}
+} // updateBoundaryConditions
 
 
 /**
@@ -326,7 +340,7 @@ bool NavierStokesSolver<memoryType>::finished()
 	int startStep = (*paramDB)["simulation"]["startStep"].get<int>();
 	int nt = (*paramDB)["simulation"]["nt"].get<int>();
 	return (timeStep < startStep+nt) ? false : true;
-}
+} // finished
 
 
 //##############################################################################
@@ -339,6 +353,7 @@ bool NavierStokesSolver<memoryType>::finished()
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::assembleMatrices()
 {
+	printf("Initializing matrices ...\n");
 	logger.startTimer("assembleMatrices");
 	
 	generateM();
@@ -355,9 +370,7 @@ void NavierStokesSolver<memoryType>::assembleMatrices()
 	logger.startTimer("preconditioner2");
 	PC2 = new preconditioner< cusp::coo_matrix<int, real, memoryType> >(C, (*paramDB)["PoissonSolve"]["preconditioner"].get<preconditionerType>());
 	logger.stopTimer("preconditioner2");
-
-	//std::cout << "Assembled matrices!" << std::endl;
-}
+} // assembleMatrices
 
 
 /**
@@ -371,7 +384,7 @@ template <typename memoryType>
 void NavierStokesSolver<memoryType>::generateBN()
 {
 	BN = Minv; // 1st-order
-}
+} // generateBN
 
 
 /*
@@ -402,7 +415,7 @@ void NavierStokesSolver<device_memory>::generateC()
 	C.values[0] += C.values[0];
 	
 	logger.stopTimer("generateC");
-}
+} // generateC
 
 
 /**
@@ -420,7 +433,8 @@ void NavierStokesSolver<host_memory>::generateC()
 	C.values[0] += C.values[0];
 	
 	logger.stopTimer("generateC");
-}
+} // generateC
+
 
 //##############################################################################
 //                          GENERATE VECTORS
@@ -437,7 +451,7 @@ void NavierStokesSolver<memoryType>::assembleRHS1()
 	cusp::blas::axpby(rn, bc1, rhs1, 1.0, 1.0);
 	
 	logger.stopTimer("assembleRHS1");
-}
+} // assembleRHS1
 
 
 /**
@@ -452,7 +466,7 @@ void NavierStokesSolver<memoryType>::assembleRHS2()
 	cusp::blas::axpby(temp2, bc2, rhs2, 1.0, -1.0);
 	
 	logger.stopTimer("assembleRHS2");
-}
+} // assembleRHS2
 
 
 //##############################################################################
@@ -466,8 +480,6 @@ template <typename memoryType>
 void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 {
 	logger.startTimer("solveIntermediateVel");
-	
-	// Solve for qStar ========================================================
 	
 	int maxIte = (*paramDB)["velocitySolve"]["maxIterations"].get<int>();
 	real rTol = (*paramDB)["velocitySolve"]["rTol"].get<real>();
@@ -487,11 +499,11 @@ void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 	}
 
 	logger.stopTimer("solveIntermediateVel");
-}
+} // solveIntermediateVelocity
 
 
 /**
- * \brief Solves the Poisson system for the pressure (and the body forces if immersed body).
+ * \brief Solves the Poisson system.
  */
 template <typename memoryType>
 void NavierStokesSolver<memoryType>::solvePoisson()
@@ -523,7 +535,7 @@ void NavierStokesSolver<memoryType>::solvePoisson()
 	}
 	
 	logger.stopTimer("solvePoisson");
-}
+} // solvePoisson
 
 
 /**
@@ -539,7 +551,7 @@ void NavierStokesSolver<memoryType>::projectionStep()
 	cusp::blas::axpby(qStar, q, q, 1.0, -1.0);
 
 	logger.stopTimer("projectionStep");
-}
+} // projectionStep
 
 
 //##############################################################################
@@ -564,7 +576,7 @@ void NavierStokesSolver<memoryType>::writeCommon()
 	
 	// write the number of iterations for each solve
 	iterationsFile << timeStep << '\t' << iterationCount1 << '\t' << iterationCount2 << std::endl;
-}
+} // writeCommon
 
 
 /**
@@ -578,7 +590,7 @@ void NavierStokesSolver<memoryType>::writeData()
 	writeCommon();	
 	
 	logger.stopTimer("output");
-}
+} // writeData
 
 
 /**
@@ -589,21 +601,7 @@ void NavierStokesSolver<memoryType>::shutDown()
 {
 	io::printTimingInfo(logger);
 	iterationsFile.close();
-}
-
-
-/**
- * \brief Constructor. Copies the database and information about the computational grid.
- *
- * \param pDB database that contains all the simulation parameters
- * \param dInfo information related to the computational grid
- */
-template <typename memoryType>
-NavierStokesSolver<memoryType>::NavierStokesSolver(parameterDB *pDB, domain *dInfo)
-{
-	paramDB = pDB;
-	domInfo = dInfo;
-}
+} // shutDown
 
 
 // include inline files

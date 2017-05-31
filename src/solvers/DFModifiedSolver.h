@@ -25,13 +25,22 @@ template <typename memoryType>
 class DFModifiedSolver : public DirectForcingSolver<memoryType>
 {
 protected:
+  // compute and add explicit pressure gradient to RHS of velocity system
 	virtual void calculateExplicitLambdaTerms();
+
+  // project velocity onto divergence-free space and update pressure
 	virtual void projectionStep();
 	
 public:
+  // constructor -- get simulation parameters and grid
 	DFModifiedSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
+
+  /**
+   * \brief Return name of solver.
+   */
 	virtual std::string name()
 	{
 		return "DFModified";
 	}
-};
+
+}; // DFModifiedSolver

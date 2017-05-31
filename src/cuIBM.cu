@@ -11,6 +11,9 @@
 #include "solvers/createSolver.h"
 
 
+/**
+ * \brief Main function.
+ */
 int main(int argc, char **argv)
 {
 	// initialize the computational domain
@@ -38,4 +41,4 @@ int main(int argc, char **argv)
 	}
 
 	solver->shutDown();
-}
+} // main

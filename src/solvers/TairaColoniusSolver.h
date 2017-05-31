@@ -43,11 +43,6 @@ private:
 	// calculate forces acting on each immersed body
 	virtual void calculateForce();
 	
-	/**
-	 * \brief Warning: the definition of this method does not exist.
-	 */
-	void generateE();
-	
 public:
 	// constructor -- copy the database and information about the computational grid
 	TairaColoniusSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
@@ -65,4 +60,4 @@ public:
 	{
 		return "Taira & Colonius";
 	}
-};
+}; // TairaColoniusSolver

@@ -1,7 +1,6 @@
-/***************************************************************************//**
+/**
  * \file  FadlunEtAlSolver.h
- * \author Anush Krishnan (anush@bu.edu)
- * \brief Declaration of the class \c FadlunEtAlSolver.
+ * \brief Declaration of the classes \c FadlunEtAlSolver and \c FEAModifiedSolver.
  */
 
 
@@ -34,11 +33,18 @@ template <typename memoryType>
 class FadlunEtAlSolver : public DFModifiedSolver<memoryType>
 {
 private:
-	cusp::coo_matrix<int, real, memoryType> G;
+	cusp::coo_matrix<int, real, memoryType> G;  ///< gradient operator
 
+	// update the gradient operator
 	virtual void updateG();
+
+	// compute the gradient and divergence operators
 	virtual void generateQT();
+
+	// add explicit pressure gradient to RHS of velocity system
 	virtual void calculateExplicitLambdaTerms();
+
+	// compute the matrix Poisson system
 	virtual void generateC();
 	
 public:
@@ -52,9 +58,8 @@ public:
 	{
 		return "Fadlun et al.";
 	}
-};
+}; // FadlunEtAlSolver
 
-//----------------------------------------------------------------------------//
 
 /**
  * \class FEAModifiedSolver
@@ -69,13 +74,20 @@ template <typename memoryType>
 class FEAModifiedSolver : public DirectForcingSolver<memoryType>
 {
 private:
+	// compute the gradient and divergence operators
 	virtual void generateQT();
+	// compute the matrix of the Poisson system
 	virtual void generateC();
 	
 public:
+	// constructor -- copy database and grid
 	FEAModifiedSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
+	
+	/**
+	 * \brief Returns the name of the solver as a string.
+	 */
 	virtual std::string name()
 	{
 		return "FEAModified";
 	}
-};
+}; // FEAModifiedSolver

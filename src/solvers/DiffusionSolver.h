@@ -25,14 +25,24 @@ template <typename memoryType>
 class DiffusionSolver : public DirectForcingSolver<memoryType>
 {
 private:
+  // do nothing -- no Poisson system needs to be solved
 	virtual void solvePoisson();
+
+  // project velocity onto divergence-free space
 	virtual void projectionStep();
 	
 public:
+  // constructor -- get simulation parameters and grid
+  DiffusionSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
+
+  // initialize solver
 	virtual void initialise();
-	DiffusionSolver(parameterDB *pDB=NULL, domain *dInfo=NULL);
+
+	/**
+   * \brief Return name of solver.
+   */
 	virtual std::string name()
 	{
 		return "Diffusion";
 	}
-};
+}; // DiffusionSolver

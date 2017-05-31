@@ -172,7 +172,7 @@ void NavierStokesSolver<host_memory>::generateL()
 			}
 		}
 	}
-}
+} // generateL
 
 
 /**
@@ -344,7 +344,7 @@ void NavierStokesSolver<device_memory>::generateL()
 		}
 	}
 	L = LHost;
-}
+} // generateL
 
 
 /*

@@ -22,7 +22,7 @@ void DirectForcingSolver<host_memory>::tagPoints()
 	tagPoints(bx, by, uB, vB);
 
 	logger.stopTimer("tagPoints");
-}
+} // tagPoints
 
 
 /**
@@ -58,7 +58,7 @@ void DirectForcingSolver<device_memory>::tagPoints()
 	uvD      = uv;
 	
 	logger.stopTimer("tagPoints");
-}
+} // tagPoints
 
 
 // Bilinear Fadlun1c-type interpolation outside the body, for a moving body.
@@ -561,4 +561,4 @@ void DirectForcingSolver<memoryType>::tagPoints(real *bx, real *by, real *uB, re
 		}
 	}
 	file.close();
-}
+} // tagPoints

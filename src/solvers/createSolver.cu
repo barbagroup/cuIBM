@@ -60,7 +60,7 @@ NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domIn
 	std::cout <<   "------------------------" << std::endl;
 	std::cout << solver->name() << '\n' << std::endl;
 	return solver;
-}
+} // createSolver
 
 
 // specializations of the template function

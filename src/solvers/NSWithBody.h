@@ -43,4 +43,4 @@ public:
 	
 	// close iteration file and force file
 	virtual void shutDown();
-};
+}; // NSWithBody

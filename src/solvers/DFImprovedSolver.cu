@@ -11,13 +11,20 @@
 #include "solvers/kernels/generateQT.h"
 
 
+/**
+ * \brief Constructor -- get simulation parameters and grid.
+ */
 template <typename memoryType>
 DFImprovedSolver<memoryType>::DFImprovedSolver(parameterDB *pDB, domain *dInfo)
 {
 	NavierStokesSolver<memoryType>::paramDB = pDB;
 	NavierStokesSolver<memoryType>::domInfo = dInfo;
-}
+} // DFImprovedSolver
 
+
+/**
+ * \brief Compute the modified divergence operator.
+ */
 template <typename memoryType>
 void DFImprovedSolver<memoryType>::generateQT()
 {
@@ -180,7 +187,8 @@ void DFImprovedSolver<memoryType>::generateQT()
 	std::cout << "Wrote Q to file." << std::endl;
 	cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::QT, "QT.mtx");
 	std::cout << "Wrote QT to file." << std::endl;*/
-}
+} // generateQT
+
 
 /*
 template <typename memoryType>
@@ -579,7 +587,7 @@ void DFImprovedSolver<memoryType>::generateC()
 	NavierStokesSolver<memoryType>::C = CHost;
 	//cusp::io::write_matrix_market_file(NavierStokesSolver<memoryType>::C, "C-generateC.mtx");
 	cusp::blas::scal(NavierStokesSolver<memoryType>::C.values, dt);
-}
+} // generateC
 */
 
 template class DFImprovedSolver<host_memory>;
