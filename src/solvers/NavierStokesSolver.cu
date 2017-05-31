@@ -480,21 +480,36 @@ void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 {
 	logger.startTimer("solveIntermediateVel");
 	
+	std::string krylov = (*paramDB)["velocitySolve"]["solver"].get<std::string>();
 	int maxIte = (*paramDB)["velocitySolve"]["maxIterations"].get<int>();
 	real rTol = (*paramDB)["velocitySolve"]["rTol"].get<real>();
 	real aTol = (*paramDB)["velocitySolve"]["aTol"].get<real>();
 
 	cusp::monitor<real> sys1Mon(rhs1, maxIte, rTol, aTol, false);
-	cusp::krylov::bicgstab(A, qStar, rhs1, sys1Mon, *PC1);
-	//cusp::krylov::cg(A, qStar, rhs1, sys1Mon, *PC1);
+
+	if (krylov == "CG")
+		cusp::krylov::cg(A, qStar, rhs1, sys1Mon, *PC1);
+	else if (krylov == "BICGSTAB")
+		cusp::krylov::bicgstab(A, qStar, rhs1, sys1Mon, *PC1);
+	else if (krylov == "GMRES")
+	{
+		int restart = (*paramDB)["velocitySolve"]["restart"].get<int>();
+		cusp::krylov::gmres(A, qStar, rhs1, restart, sys1Mon, *PC1);
+	}
+	else
+	{
+		printf("Error: Unknown Krylov solver '%s' for velocity system!\n", krylov.c_str());
+		exit(-1);
+	}
+
 	iterationCount1 = sys1Mon.iteration_count();
 	if (!sys1Mon.converged())
 	{
-		std::cout << "ERROR: Solve for q* failed at time step " << timeStep << std::endl;
+		std::cout << "Error: Solve for q* failed at time step " << timeStep << std::endl;
 		std::cout << "Iterations   : " << iterationCount1 << std::endl;          
 		std::cout << "Residual norm: " << sys1Mon.residual_norm() << std::endl;
 		std::cout << "Tolerance    : " << sys1Mon.tolerance() << std::endl;
-		std::exit(-1);
+		exit(-1);
 	}
 
 	logger.stopTimer("solveIntermediateVel");
@@ -509,28 +524,36 @@ void NavierStokesSolver<memoryType>::solvePoisson()
 {
 	logger.startTimer("solvePoisson");
 	
-	int  maxIte = (*paramDB)["PoissonSolve"]["maxIterations"].get<int>();
+	std::string krylov = (*paramDB)["PoissonSolve"]["solver"].get<std::string>();
+	int maxIte = (*paramDB)["PoissonSolve"]["maxIterations"].get<int>();
 	real rTol = (*paramDB)["PoissonSolve"]["rTol"].get<real>();
 	real aTol = (*paramDB)["PoissonSolve"]["aTol"].get<real>();
 	
 	cusp::monitor<real> sys2Mon(rhs2, maxIte, rTol, aTol, false);
-	if((*paramDB)["simulation"]["ibmScheme"].get<ibmScheme>() != DF_IMPROVED)
-	{
+
+	if (krylov == "CG")
 		cusp::krylov::cg(C, lambda, rhs2, sys2Mon, *PC2);
+	else if (krylov == "BICGSTAB")
+		cusp::krylov::bicgstab(C, lambda, rhs2, sys2Mon, *PC2);
+	else if (krylov == "GMRES")
+	{
+		int restart = (*paramDB)["PoissonSolve"]["restart"].get<int>();
+		cusp::krylov::gmres(C, lambda, rhs2, restart, sys2Mon, *PC2);
 	}
 	else
 	{
-		cusp::krylov::bicgstab(C, lambda, rhs2, sys2Mon, *PC2);
-		//cusp::krylov::gmres(C, lambda, rhs2, 50, sys2Mon, *PC2);
+		printf("Error: Unknown Krylov solver '%s' for Poisson system!\n", krylov.c_str());
+		exit(-1);
 	}
+
 	iterationCount2 = sys2Mon.iteration_count();
 	if (!sys2Mon.converged())
 	{
-		std::cout << "ERROR: Solve for Lambda failed at time step " << timeStep << std::endl;
+		std::cout << "Error: Solve for Lambda failed at time step " << timeStep << std::endl;
 		std::cout << "Iterations   : " << iterationCount2 << std::endl;          
 		std::cout << "Residual norm: " << sys2Mon.residual_norm() << std::endl;
 		std::cout << "Tolerance    : " << sys2Mon.tolerance() << std::endl;
-		std::exit(-1);
+		exit(-1);
 	}
 	
 	logger.stopTimer("solvePoisson");

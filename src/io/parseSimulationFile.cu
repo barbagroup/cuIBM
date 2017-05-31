@@ -159,6 +159,8 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 		std::string system = solvers[i]["system"].as<std::string>();
 		std::string dbKey = system + "Solve";
 		DB[dbKey]["solver"].set<std::string>(solvers[i]["solver"].as<std::string>("CG"));
+		if (DB[dbKey]["solver"].get<std::string>() == "GMRES")
+			DB[dbKey]["restart"].set<int>(solvers[i]["restart"].as<int>(50));
 		DB[dbKey]["preconditioner"].set<preconditionerType>(
 		  preconditionerTypeFromString(solvers[i].as<std::string>("DIAGONAL")));
 		DB[dbKey]["rTol"].set<real>(solvers[i]["relTolerance"].as<real>(1.0E-05));
