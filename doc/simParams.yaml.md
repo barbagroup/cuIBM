@@ -17,7 +17,7 @@ Note: text is case-sensitive.
       interpolationType: LINEAR
       linearSolvers:
         - system: velocity
-          solver: CG
+          solver: BICGSTAB
           preconditioner: DIAGONAL
           absTolerance: 1.0E-06
           relTolerance: 0.0
@@ -46,7 +46,8 @@ Note: text is case-sensitive.
 * `timeScheme`: (optional, default: `[EULER_EXPLICIT, EULER_IMPLICIT]`) specifies the time-schemes to use for the convective terms and diffusive terms of the momentum equation. In cuIBM, the convective terms can be temporally discretized using an explicit Euler method (`EULER_EXPLICIT`, default value) or a second-order Adams-Bashforth scheme (`ADAMS_BASHFORTH_2`). The diffusive terms can be  treated explicitly (`EULER_EXPLICIT`), implicitly (`EULER_IMPLICIT`, default), or using a second-order Crank-Nicolson scheme (`CRANK_NICOLSON`).
 * For the linear systems, the user can control the type of preconditioner to use, the type of solver, and the exit criterion of the solver.
   - `preconditioner`: (optional, default: `DIAGONAL`) the type of preconditioner. Choices are: `NONE`, `DIAGONAL`, `SMOOTH_AGGREGATION`, and `AINV`.
-  - `solver`: WARNING: as of now, the user cannot control the type of solver to use.
+  - `solver`: (optional, default: `CG`) Krylov solver to use. Currently, conjugate-gradient (`CG`), bi-conjugate gradient stabilized (`BICGSTAB`), and GMRES (`GMRES`) are supported.
+  - `restart`: (optional, default: `50`) restart value for GMRES.
   - `absTolerance`: (optional, default: `1.0E-50`) absolute tolerance in the reduction of the residuals as an exit criterion.
   - `relTolerance`: (optional, default: `1.0E-05`) relative tolerance in the reduction of the residuals as an exit criterion.
   - `maxIterations`: (optional, default: `10000`) maximum number of iterations allowed for the solver.

@@ -139,7 +139,6 @@ flow. To display its list of all the command-line options, run:
 ## Known issues
 
 * CPU routines do not work.
-* Cannot specify which Krylov solver to use for solving the linear systems.
 * TairaColoniusSolver and DirectForcingSolver fail if no body is present.
 * DirectForcingSolver has not been tested for cases with multiple or moving 
 bodies.
