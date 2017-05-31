@@ -130,7 +130,6 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 	
 	generateRN();
 	cusp::blas::scal(H, 1.0/intgSchm.gamma[subStep]);
-	std::cout << "Initialised arrays!" << std::endl;
 	
 	logger.stopTimer("initialiseArrays");
 } // initialiseArrays

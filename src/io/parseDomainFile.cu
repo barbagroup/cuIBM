@@ -134,6 +134,7 @@ void parseDomain(const YAML::Node &node, domain &D)
  */
 void parseDomainFile(std::string &domFile, domain &D)
 {
+	printf("Parsing YAML file with grid info ...\n");
 	YAML::Node nodes = YAML::LoadFile(domFile);
 	for (unsigned int i=0; i<nodes.size(); i++)
 		parseDomain(nodes[i], D);

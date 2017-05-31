@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 	NavierStokesSolver<device_memory> *solver = createSolver<device_memory>(paramDB, dom_info);
 	solver->initialise();
 
-	io::printDeviceMemoryUsage("Initialization complete");
+	io::printDeviceMemoryUsage(std::string("Initialization complete"));
 	
 	// time-step loop
 	while (!solver->finished())

@@ -118,6 +118,7 @@ void parseBodiesFile(std::string &bodiesFile, parameterDB &DB)
 {
 	if (!std::ifstream(bodiesFile.c_str()))
 		return;
+	printf("Parsing YAML file with bodies info ...\n");
 	YAML::Node nodes = YAML::LoadFile(bodiesFile);
 	body Body;
 	std::vector<body> *B = DB["flow"]["bodies"].get<std::vector<body> *>();

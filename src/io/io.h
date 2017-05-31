@@ -67,6 +67,6 @@ namespace io
 	void readData(std::string &caseFolder, int timeStep, real *x, std::string name);
 
 	// print device memory usage
-	void printDeviceMemoryUsage(char *label);
+	void printDeviceMemoryUsage(std::string label);
 
 } // End of namespace io

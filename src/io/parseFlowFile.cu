@@ -112,6 +112,7 @@ void parseFlow(const YAML::Node &node, parameterDB &DB)
  */
 void parseFlowFile(std::string &flowFile, parameterDB &DB)
 {
+	printf("Parsing YAML file with flow conditions ...\n");
 	YAML::Node nodes = YAML::LoadFile(flowFile);
 	for (unsigned int i=0; i<nodes.size(); i++)
 		parseFlow(nodes[i], DB);

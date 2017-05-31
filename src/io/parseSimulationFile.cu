@@ -176,6 +176,7 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
  */
 void parseSimulationFile(std::string &simFile, parameterDB &DB)
 {
+	printf("Parsing YAML file with simulation parameters ...\n");
 	YAML::Node nodes = YAML::LoadFile(simFile);
 	for(unsigned int i=0; i<nodes.size(); i++)
 		parseSimulation(nodes[i], DB);

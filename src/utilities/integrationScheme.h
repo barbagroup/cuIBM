@@ -34,9 +34,7 @@ public:
 	 * \param diffScheme time-stepping scheme used for the diffusion term
 	 */
 	void initialise(timeScheme convScheme, timeScheme diffScheme)
-	{
-		std::cout << "Initializing integration scheme... ";
-		
+	{	
 		// set the number of substeps required for the specified scheme
 		switch(convScheme)
 		{
@@ -104,13 +102,6 @@ public:
 		{
 			alphaExplicit[i] = aE*(gamma[i]+zeta[i]);
 			alphaImplicit[i] = aI*(gamma[i]+zeta[i]);
-		}
-		std::cout << "DONE! " << std::endl;
-		
-		// print the coefficients
-		for(int i=0; i<subSteps; i++)
-		{
-			std::cout << '[' <<  i << ']' << " " << gamma[i] << " " << zeta[i] << " " << alphaExplicit[i] << " " << alphaImplicit[i] << std::endl;
 		}
 	} // initialise
 

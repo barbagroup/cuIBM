@@ -590,11 +590,11 @@ void readData(std::string &caseFolder, int timeStep, real *x, std::string name)
  *
  * \param label the label of the device
  */
-void printDeviceMemoryUsage(char *label)
+void printDeviceMemoryUsage(std::string label)
 {
 	size_t _free, _total;
 	cudaMemGetInfo(&_free, &_total);
-	std::cout << '\n' << label << ": Memory Usage " << std::setprecision(3) << (_total-_free)/(1024.0*1024*1024) \
+	std::cout << label << ": Memory Usage " << std::setprecision(3) << (_total-_free)/(1024.0*1024*1024) \
 	          << " / " << std::setprecision(3) << _total/(1024.0*1024*1024) << " GB" << std::setprecision(6) << '\n' << std::endl;
 } // printDeviceMemoryUsage
 
