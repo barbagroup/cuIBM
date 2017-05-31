@@ -27,13 +27,20 @@ template <typename memoryType>
 class DirectForcingSolver : public NSWithBody<memoryType>
 {
 protected:
-	// For the 1D interpolations
-	cusp::array1d<int, host_memory>    tags,  tags2;
-	cusp::array1d<int, device_memory>  tagsD, tags2D;
-	vecH coeffs, coeffs2;
-	vecD coeffsD, coeffs2D;
-	vecH uv;
-	vecD uvD;
+	// for the 1D interpolations
+	cusp::array1d<int, host_memory>
+		tags,   ///< vector used to differentiate forcing points from regular ones (host)
+		tags2;  ///< vector used to differentiate forcing points from regular ones (host)
+	cusp::array1d<int, device_memory>
+		tagsD,   ///< vector used to differentiate forcing points from regular ones (device)
+		tags2D;  ///< vector used to differentiate forcing points from regular ones (device)
+	vecH coeffs,   ///< coefficients of interpolation (host)
+	     coeffs2;  ///< other coefficients of interpolation; quadratic interpolation (host)
+	vecD coeffsD,   ///< coefficients of interpolation (device)
+	     coeffs2D;  ///< other coefficients of interpolation; quadratic interpolation (device)
+	
+	vecH uv;  ///< velocity field (host)
+	vecD uvD; ///< velocity field (device)
 	cusp::array1d<real, memoryType> pressure;  ///< pressure field
 	
 	// tag forcing points
@@ -87,4 +94,5 @@ public:
 	{
 		return "Direct Forcing";
 	}
+
 }; // DirectForcingSolver
