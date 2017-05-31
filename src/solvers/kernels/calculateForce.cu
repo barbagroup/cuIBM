@@ -63,7 +63,7 @@ void dragLeftRight(real *FxX, real *q, real *lambda, real nu, real *dx, real *dy
 	                - (q[Iu] - q[Iu-1])/dx[I-1]
 	              )
 	            );
-}
+} // dragLeftRight
 
 
 /**
@@ -117,7 +117,7 @@ void dragBottomTop(real *FxY, real *q, real nu, real *dx, real *dy,
 	              )
 	            )*0.5*(dx[I+idx]+dx[I+idx-1]);
 
-}
+} // dragBottomTop
 
 
 /**
@@ -153,7 +153,7 @@ void dragUnsteady(real *FxU, real *q, real *qOld, real *dx, real *dy, real dt,
 	int Iu = (J+j)*(nx-1) + (I-1+i);
 	
 	FxU[idx] = - (q[Iu] - qOld[Iu])/dt * 0.5*(dx[I+i]+dx[I-1+i]);
-}
+} // dragUnsteady
 
 
 /**
@@ -206,7 +206,7 @@ void liftLeftRight(real *FyX, real *q, real nu, real *dx, real *dy,
 	                )
 	              )
 	            )*0.5*(dy[J+idx]+dy[J-1+idx]);
-}
+} // liftLeftRight
 
 
 /**
@@ -253,7 +253,7 @@ void liftBottomTop(real *FyY, real *q, real *lambda, real nu, real *dx, real *dy
 	                - (q[Iv] - q[Iv-nx])/dy[J-1]
 	              )
 	            );
-}
+} // liftBottomTop
 
 
 /**
@@ -289,12 +289,12 @@ void liftUnsteady(real *FyU, real *q, real *qOld, real *dx, real *dy, real dt,
 	int Iv = (J-1+j)*nx + (I+i) + (nx-1)*ny;
 
 	FyU[idx] = - (q[Iv] - qOld[Iv])/dt * 0.5*(dy[J+j]+dy[J-1+j]);
-}
+} // liftUnsteady
 
 
 /**
-* \brief To be documented
-*/
+ * \brief Kernel not usable.
+ */
 __global__
 void forceX(real *f, real *q, real *rn, int *tags,
             int nx, int ny, real *dx, real *dy,
@@ -344,13 +344,15 @@ void forceX(real *f, real *q, real *rn, int *tags,
 		
 		f[Gidx_x] = ( u[j][i]/dt - dTerm - rn[Gidx_x]/(0.5*(Dx[j][i]+Dx[j][i+1])) ) * (!(tags[Gidx_x]==-1));
 	}
-}
+} // forceX
 
 
 /**
- * \brief Doing nothing.
+ * \brief Kernel not usable.
  */
 __global__
-void forceY(){}
+void forceY()
+{
+} // forceY
 
-} // end of namespace kernels
+} // End of namespace kernels

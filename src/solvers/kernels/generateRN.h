@@ -62,4 +62,4 @@ void convectionTermVLeftRight(real *rn, real *H, real *q, \
                               real dt, real gamma, real zeta, real alpha, real nu, \
                               real *bcBottom, real *bcTop, real *bcLeft, real *bcRight);
 
-} // end of namespace kernels
+} // End of namespace kernels

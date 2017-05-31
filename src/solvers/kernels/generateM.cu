@@ -47,7 +47,7 @@ void fillM_u(int *MRows, int *MCols, real *MVals, int *MinvRows, int *MinvCols, 
 	MinvRows[I] = I;
 	MinvCols[I] = I;
 	MinvVals[I] = 1.0/value;
-}
+} // fillM_u
 
 
 /**
@@ -84,6 +84,6 @@ void fillM_v(int *MRows, int *MCols, real *MVals, int *MinvRows, int *MinvCols, 
 	MinvRows[I+numU] = I+numU;
 	MinvCols[I+numU] = I+numU;
 	MinvVals[I+numU] = 1.0/value;
-}
+} // fillM_v
 
-} // end of namespace kernels
+} // End of namespace kernels

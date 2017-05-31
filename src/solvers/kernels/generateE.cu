@@ -15,7 +15,7 @@
  *
  * \return the value of the discrete delta function
  */
-__device__ \
+__device__
 real dhRomaDeviceE(real x, real h)
 {
 	real r = fabs(x)/h;
@@ -26,7 +26,7 @@ real dhRomaDeviceE(real x, real h)
 		return 1.0/(6*h)*( 5.0 - 3.0*r - sqrt(-3.0*(1-r)*(1-r) + 1.0) );
 	else
 		return 1.0/(3*h)*( 1.0 + sqrt(-3.0*r*r + 1.0) );
-}
+} // dhRomaDeviceE
 
 
 /**
@@ -38,11 +38,11 @@ real dhRomaDeviceE(real x, real h)
  *
  * \return the value of the discrete delta function in 2D
  */
-__device__ \
+__device__
 real deltaDeviceE(real x, real y, real h)
 {
 	return dhRomaDeviceE(x, h) * dhRomaDeviceE(y, h);
-}
+} // deltaDeviceE
 
 
 /**
@@ -109,7 +109,7 @@ void generateEHost(int *ERows,  int *ECols,  real *EVals,
 			}
 		}
 	}
-}
+} // generateEHost
 
 
 /**
@@ -129,7 +129,7 @@ void generateEHost(int *ERows,  int *ECols,  real *EVals,
  * \param I x-index of the cell in which the body point is located
  * \param J y-index of the cell in which the body point is located
  */
-__global__ \
+__global__
 void generateE(int *ERows,  int *ECols,  real *EVals,
                int nx, int ny, real *x, real *y, real *dx,
                int totalPoints, real *xB, real *yB, int *I, int *J)
@@ -173,6 +173,6 @@ void generateE(int *ERows,  int *ECols,  real *EVals,
 			}
 		}
 	}
-}
+} // generateE
 
-} // end of namespace kernels
+} // End of namespace kernels

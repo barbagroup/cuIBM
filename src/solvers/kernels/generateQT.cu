@@ -15,7 +15,7 @@
  *
  * \return the value of the discrete delta function 
  */
-__device__ \
+__device__
 real dhRomaDeviceQT(real x, real h)
 {
 	real r = fabs(x)/h;
@@ -26,7 +26,7 @@ real dhRomaDeviceQT(real x, real h)
 		return 1.0/(6*h)*( 5.0 - 3.0*r - sqrt(-3.0*(1-r)*(1-r) + 1.0) );
 	else
 		return 1.0/(3*h)*( 1.0 + sqrt(-3.0*r*r + 1.0) );
-}
+} // dhRomaDeviceQT
 
 
 /**
@@ -38,11 +38,11 @@ real dhRomaDeviceQT(real x, real h)
  *
  * \return the value of the discrete delta function in 2D
  */
-__device__ \
+__device__
 real deltaDeviceQT(real x, real y, real h)
 {
 	return dhRomaDeviceQT(x, h) * dhRomaDeviceQT(y, h);
-}
+} // deltaDeviceQT
 
 
 /**
@@ -53,9 +53,15 @@ namespace kernels
 {
 
 /**
- * \brief To be documented.
+ * \brief Update the gradient operator at forcing nodes.
+ *
+ * \param QRows row index of elements of the matrix
+ * \param QCols column index of elements of the matrix
+ * \param QVals value of elements of the matrix
+ * \param QSize size of the matrix
+ * \param tags tags of regular and forcing nodes
  */
-__global__ \
+__global__
 void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tags)
 {
 	int I = threadIdx.x + blockIdx.x*blockDim.x;
@@ -64,10 +70,20 @@ void updateQ(int *QRows, int *QCols, real *QVals, int QSize, int *tags)
 	{
 		QVals[I] *= (tags[QRows[I]] == -1);
 	}
-}
+} // updateQ
 
 
-__global__ \
+/**
+ * \brief Update the divergence operator at forcing nodes.
+ *
+ * \param QTRows row index of elements of the matrix
+ * \param QTCols column index of elements of the matrix
+ * \param QTVals value of elements of the matrix
+ * \param QTSize size of the matrix
+ * \param tags tags of regular and forcing nodes
+ * \param coeffs
+ */
+__global__
 void updateQT(int *QTRows, int *QTCols, real *QTVals, int QTSize, int *tags, real *coeffs)
 {
 	int I = threadIdx.x + blockIdx.x*blockDim.x;
@@ -79,15 +95,15 @@ void updateQT(int *QTRows, int *QTCols, real *QTVals, int QTSize, int *tags, rea
 		QTCols[I] = (tags[col]==-1)*col + (tags[col]!=-1)*tags[col];
 		QTVals[I] = (tags[col]==-1)*val + (tags[col]!=-1)*coeffs[col]*val;
 	}
-}
+} // updateQT
 
 
 /**
- * \brief Generates the divergence matrix.
+ * \brief Generates the divergence matrix (on the host).
  *
- * \param QTRows row index of elements of the  divergence matrix
- * \param QTCols column index of elements of the divergence matrix
- * \param QTVals value of elements of the divergence matrix
+ * \param QTRows row index of elements of the matrix
+ * \param QTCols column index of elements of the matrix
+ * \param QTVals value of elements of the matrix
  * \param nx number of cells in the x-direction
  * \param ny number of cells in the y-direction
  */
@@ -140,7 +156,7 @@ void generateQT(int *QTRows, int *QTCols, real *QTVals, int nx, int ny)
 			row++;
 		}
 	}
-}
+} // generateQT
 
 
 /**
@@ -164,7 +180,7 @@ void generateQT(int *QTRows, int *QTCols, real *QTVals, int nx, int ny)
  * \param I x-index of grid cells in which body points are located
  * \param J y-index of grid cells in which body points are located
  */
-__global__ \
+__global__
 void updateQT(int *QTRows, int *QTCols, real *QTVals,
               int *ERows,  int *ECols,  real *EVals,
               int nx, int ny, real *x, real *y, real *dx,
@@ -220,11 +236,11 @@ void updateQT(int *QTRows, int *QTCols, real *QTVals,
 			EIdx++;
 		}
 	}
-}
+} // updateQT
 
 
 /**
- * \brief Updates the divergence matrix and the interpolation matrix..
+ * \brief Updates the divergence matrix and the interpolation matrix (on the host).
  *
  * \param QTRows row index of elements of the matrix
  * \param QTCols column index of elements of the matrix
@@ -296,6 +312,6 @@ void updateQTHost(int *QTRows, int *QTCols, real *QTVals,
 			}
 		}
 	}
-}
+} // updateQTHost
 
-} // end of namespace kernels
+} // End of namespace kernels

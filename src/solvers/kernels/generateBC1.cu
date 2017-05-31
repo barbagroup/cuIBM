@@ -41,7 +41,7 @@ void bc1DirichletU(real *bc1, int N, int nx, int offset, int stride, real *dx, r
 	int	I	= (offset + idx*stride),
 	    i	= I % (nx-1);
 	bc1[I] += bc[idx] * C * 0.5*(dx[i] + dx[i+1]);
-}
+} // bc1DirichletU
 
 
 /**
@@ -72,7 +72,7 @@ void bc1DirichletV(real *bc1, int N, int nx, int numU, int offset, int stride, r
 	int	I	= (offset + idx*stride),
 	    j	= I / nx;
 	bc1[numU + I] += bc[idx+numUbc] * C * 0.5*(dy[j] + dy[j+1]);
-}
+} // bc1DirichletV
 
 
 /**
@@ -108,7 +108,7 @@ void bc1ConvectiveU(real *bc1, int N, int nx, int offset, int stride, real *dx, 
 	bc[idx] = (1.0-beta)*bc[idx] + beta*q[I]/dy[j];
 	
 	bc1[I] += bc[idx] * C * 0.5*(dx[i] + dx[i+1]);
-}
+} // bc1ConvectiveU
 
 
 /**
@@ -146,7 +146,7 @@ void bc1ConvectiveV(real *bc1, int N, int nx, int numU, int offset, int stride, 
 	bc[idx+numUbc] = (1.0-beta)*bc[idx+numUbc] + beta*q[numU + I]/dx[i];
 	
 	bc1[numU + I] += bc[idx+numUbc] * C * 0.5*(dy[j] + dy[j+1]);
-}
+} // bc1ConvectiveV
 
 
 /**
@@ -182,6 +182,6 @@ void bc1SpecialU(real *bc1, int N, int nx, int offset, int stride, real *dx, rea
 	bc[idx] = sin(M_PI*time/T);
 	
 	bc1[I] += bc[idx] * C * 0.5*(dx[i] + dx[i+1]);
-}
+} // bc1SpecialU
 
-} // end of namespace kernels
+} // End of namespace kernels

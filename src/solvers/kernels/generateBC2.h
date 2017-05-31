@@ -32,4 +32,4 @@ void fillBC2_u(real *bc2, real *xminus, real *xplus, real *dy, int nx, int ny);
 __global__
 void fillBC2_uvB(real *bc2, real *uB, real *vB, int totalPoints, int nx, int ny);
 
-} // end of namespace kernels
+} // End of namespace kernels

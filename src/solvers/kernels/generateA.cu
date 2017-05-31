@@ -35,7 +35,10 @@ namespace kernels
  * \param alpha implicit coefficient of the diffusive scheme
  */
 __global__
-void generateA(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int *LCols, real *LVals, int ASize, real alpha)
+void generateA(int *ARows, int *ACols, real *AVals,
+               real *MVals,
+               int *LRows, int *LCols, real *LVals,
+               int ASize, real alpha)
 {
 	for (int I=threadIdx.x + blockIdx.x*blockDim.x; I<ASize; I += blockDim.x*gridDim.x)
 	{
@@ -43,7 +46,7 @@ void generateA(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int
 		ACols[I] = LCols[I];
 		AVals[I] = -alpha*LVals[I] + (LRows[I]==LCols[I])*MVals[LRows[I]];
 	}
-}
+} // generateA
 
 
 /**
@@ -71,7 +74,10 @@ void generateA(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int
  * \param tagsY tag to check if the node is next to an immersed boundary
  */
 __global__
-void generateADirectForcing(int *ARows, int *ACols, real *AVals, real *MVals, int *LRows, int *LCols, real *LVals, int ASize, real alpha, int *tags)
+void generateADirectForcing(int *ARows, int *ACols, real *AVals,
+                            real *MVals,
+                            int *LRows, int *LCols, real *LVals,
+                            int ASize, real alpha, int *tags)
 {
 	for(int I=threadIdx.x + blockIdx.x*blockDim.x; I<ASize; I += blockDim.x*gridDim.x)
 	{
@@ -81,6 +87,6 @@ void generateADirectForcing(int *ARows, int *ACols, real *AVals, real *MVals, in
 		           + (tags[LRows[I]] != -1)*(-LVals[I]) // if the current location is tagged, add -L
 		           + (LRows[I]==LCols[I])*MVals[LRows[I]]; // if it is a diagonal, add M
 	}
-}
+} // generateADirectForcing
 	
-} // end of namespace kernels
+} // End of namespace kernels

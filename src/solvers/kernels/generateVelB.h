@@ -20,4 +20,4 @@ namespace kernels
 __global__
 void fill_velB(real *velB, real *uB, real *vB, int totalPoints);
 
-} // end of namespace kernels
+} // End of namespace kernels

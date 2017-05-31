@@ -31,6 +31,6 @@ void fill_velB(real *velB, real *uB, real *vB, int totalPoints)
 		velB[k] = uB[k];
 		velB[k + totalPoints] = vB[k];
 	}
-}
+} // fill_velB
 
-} // end of namespace kernels
+} // End of namespace kernels

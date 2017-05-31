@@ -34,9 +34,10 @@ namespace kernels
  * \param alpha coefficient of the explicit diffusion term
  * \param nu viscosity
  */
-__global__ void convectionTermU(real *rn, real *H, real *q,
-                                  int nx, int ny, real *dx, real *dy, 
-                                  real dt, real gamma, real zeta, real alpha, real nu)
+__global__
+void convectionTermU(real *rn, real *H, real *q,
+                     int nx, int ny, real *dx, real *dy, 
+                     real dt, real gamma, real zeta, real alpha, real nu)
 {
 	int bx = blockIdx.x,
 	    by = blockIdx.y,
@@ -97,7 +98,7 @@ __global__ void convectionTermU(real *rn, real *H, real *q,
 		        );
 		rn[Gidx_x] = (u[j][i]/dt + cTerm + dTerm) * 0.5*(Dx[j][i]+Dx[j][i+1]);
 	}
-}
+} // convectionTermU
 
 
 /**
@@ -117,9 +118,10 @@ __global__ void convectionTermU(real *rn, real *H, real *q,
  * \param alpha coefficient of the explicit diffusion term
  * \param nu viscosity
  */
-__global__ void convectionTermV(real *rn, real *H, real *q,
-                                  int nx, int ny, real *dx, real *dy,
-                                  real dt, real gamma, real zeta, real alpha, real nu)
+__global__
+void convectionTermV(real *rn, real *H, real *q,
+                     int nx, int ny, real *dx, real *dy,
+                     real dt, real gamma, real zeta, real alpha, real nu)
 {
 	int bx = blockIdx.x,
 	    by = blockIdx.y,
@@ -182,7 +184,7 @@ __global__ void convectionTermV(real *rn, real *H, real *q,
 		        );
 		rn[Gidx_y] = (v[j][i]/dt + cTerm + dTerm) * 0.5*(Dy[j][i]+Dy[j+1][i]);
 	}
-}
+} // convectionTermV
 
 
 /**
@@ -206,9 +208,9 @@ __global__ void convectionTermV(real *rn, real *H, real *q,
  * \param bcTop top-boundary velocity
  */
 __global__
-void convectionTermVBottomTop(real *rn, real *H, real *q, \
-                              int nx, int ny, real *dx, real *dy, \
-                              real dt, real gamma, real zeta, real alpha, real nu,\
+void convectionTermVBottomTop(real *rn, real *H, real *q,
+                              int nx, int ny, real *dx, real *dy,
+                              real dt, real gamma, real zeta, real alpha, real nu,
                               real *bcBottom, real *bcTop)
 {
 	int	I = blockIdx.x*blockDim.x + threadIdx.x;
@@ -260,7 +262,7 @@ void convectionTermVBottomTop(real *rn, real *H, real *q, \
 	        );
 	/// Calculate rn
 	rn[Iv] = ( q[Iv]/(dx[I]*dt) + cTerm + dTerm ) * 0.5*(dy[ny-2] + dy[ny-1]);
-}
+} // convectionTermVBottomTop
 
 
 /**
@@ -286,9 +288,9 @@ void convectionTermVBottomTop(real *rn, real *H, real *q, \
  * \param bcRight right-boundary velocity
  */
 __global__
-void convectionTermUBottomTop(real *rn, real *H, real *q, \
-                              int nx, int ny, real *dx, real *dy, \
-                              real dt, real gamma, real zeta, real alpha, real nu, \
+void convectionTermUBottomTop(real *rn, real *H, real *q,
+                              int nx, int ny, real *dx, real *dy,
+                              real dt, real gamma, real zeta, real alpha, real nu,
                               real *bcBottom, real *bcTop, real *bcLeft, real *bcRight)
 {
 	int	I = blockIdx.x*blockDim.x + threadIdx.x;
@@ -371,7 +373,7 @@ void convectionTermUBottomTop(real *rn, real *H, real *q, \
 	        );
 	/// Calculate rn
 	rn[Iu] = ( u/dt + cTerm + dTerm) * 0.5*(dx[I] + dx[I+1]);
-}
+} // convectionTermUBottomTop
 
 
 /**
@@ -395,9 +397,9 @@ void convectionTermUBottomTop(real *rn, real *H, real *q, \
  * \param bcRight right-boundary velocity
  */
 __global__
-void convectionTermULeftRight(real *rn, real *H, real *q, \
-                              int nx, int ny, real *dx, real *dy, \
-                              real dt, real gamma, real zeta, real alpha, real nu, \
+void convectionTermULeftRight(real *rn, real *H, real *q,
+                              int nx, int ny, real *dx, real *dy,
+                              real dt, real gamma, real zeta, real alpha, real nu,
                               real *bcLeft, real *bcRight)
 {
 	int	I = blockIdx.x*blockDim.x + threadIdx.x;
@@ -449,7 +451,7 @@ void convectionTermULeftRight(real *rn, real *H, real *q, \
 	        );
 	/// Calculate rn
 	rn[Iu] = ( q[Iu]/(dy[I]*dt) + cTerm + dTerm ) * 0.5*(dx[nx-2] + dx[nx-1]);
-}
+} // convectionTermULeftRight
 
 
 /**
@@ -475,9 +477,9 @@ void convectionTermULeftRight(real *rn, real *H, real *q, \
  * \param bcRight right-boundary velocity
  */
 __global__
-void convectionTermVLeftRight(real *rn, real *H, real *q, \
-                             int nx, int ny, real *dx, real *dy, \
-                             real dt, real gamma, real zeta, real alpha, real nu,\
+void convectionTermVLeftRight(real *rn, real *H, real *q,
+                             int nx, int ny, real *dx, real *dy,
+                             real dt, real gamma, real zeta, real alpha, real nu,
                              real *bcBottom, real *bcTop, real *bcLeft, real *bcRight)
 {
 	int	I = blockIdx.x*blockDim.x + threadIdx.x;
@@ -559,6 +561,6 @@ void convectionTermVLeftRight(real *rn, real *H, real *q, \
 	        );
 	/// Calculate rn
 	rn[Iv] = ( v/dt + cTerm + dTerm ) * 0.5*(dy[I] + dy[I+1]);
-}
+} // convectionTermVLeftRight
 
-} // end of namespace kernels
+} // End of namespace kernels

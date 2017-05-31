@@ -42,4 +42,4 @@ void bc1ConvectiveV(real *bc1, int N, int nx, int numU, int offset, int stride, 
 __global__
 void bc1SpecialU(real *bc1, int N, int nx, int offset, int stride, real *dx, real C, real *bc, real time);
 	
-} // end of namespace kernels
+} // End of namespace kernels
