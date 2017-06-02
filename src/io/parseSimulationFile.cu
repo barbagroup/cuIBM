@@ -162,7 +162,7 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 		if (DB[dbKey]["solver"].get<std::string>() == "GMRES")
 			DB[dbKey]["restart"].set<int>(solvers[i]["restart"].as<int>(50));
 		DB[dbKey]["preconditioner"].set<preconditionerType>(
-		  preconditionerTypeFromString(solvers[i].as<std::string>("DIAGONAL")));
+		  preconditionerTypeFromString(solvers[i]["preconditioner"].as<std::string>("DIAGONAL")));
 		DB[dbKey]["rTol"].set<real>(solvers[i]["relTolerance"].as<real>(1.0E-05));
 		DB[dbKey]["aTol"].set<real>(solvers[i]["absTolerance"].as<real>(1.0E-50));
 		DB[dbKey]["maxIterations"].set<int>(solvers[i]["maxIterations"].as<int>(10000));
