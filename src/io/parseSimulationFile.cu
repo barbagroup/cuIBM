@@ -166,6 +166,7 @@ void parseSimulation(const YAML::Node &node, parameterDB &DB)
 		DB[dbKey]["rTol"].set<real>(solvers[i]["relTolerance"].as<real>(1.0E-05));
 		DB[dbKey]["aTol"].set<real>(solvers[i]["absTolerance"].as<real>(1.0E-50));
 		DB[dbKey]["maxIterations"].set<int>(solvers[i]["maxIterations"].as<int>(10000));
+		DB[dbKey]["monitor"].set<int>(solvers[i]["monitor"].as<bool>(false));
 	}
 } // parseSimulation
 

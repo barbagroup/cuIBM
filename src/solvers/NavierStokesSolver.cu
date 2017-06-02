@@ -484,8 +484,9 @@ void NavierStokesSolver<memoryType>::solveIntermediateVelocity()
 	int maxIte = (*paramDB)["velocitySolve"]["maxIterations"].get<int>();
 	real rTol = (*paramDB)["velocitySolve"]["rTol"].get<real>();
 	real aTol = (*paramDB)["velocitySolve"]["aTol"].get<real>();
+	bool monitor = (*paramDB)["velocitySolve"]["monitor"].get<bool>();
 
-	cusp::monitor<real> sys1Mon(rhs1, maxIte, rTol, aTol, false);
+	cusp::monitor<real> sys1Mon(rhs1, maxIte, rTol, aTol, monitor);
 
 	if (krylov == "CG")
 		cusp::krylov::cg(A, qStar, rhs1, sys1Mon, *PC1);
@@ -528,8 +529,9 @@ void NavierStokesSolver<memoryType>::solvePoisson()
 	int maxIte = (*paramDB)["PoissonSolve"]["maxIterations"].get<int>();
 	real rTol = (*paramDB)["PoissonSolve"]["rTol"].get<real>();
 	real aTol = (*paramDB)["PoissonSolve"]["aTol"].get<real>();
+	bool monitor = (*paramDB)["PoissonSolve"]["monitor"].get<bool>();
 	
-	cusp::monitor<real> sys2Mon(rhs2, maxIte, rTol, aTol, false);
+	cusp::monitor<real> sys2Mon(rhs2, maxIte, rTol, aTol, monitor);
 
 	if (krylov == "CG")
 		cusp::krylov::cg(C, lambda, rhs2, sys2Mon, *PC2);

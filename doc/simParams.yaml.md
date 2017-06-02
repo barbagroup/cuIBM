@@ -22,12 +22,14 @@ Note: text is case-sensitive.
           absTolerance: 1.0E-06
           relTolerance: 0.0
           maxIterations: 10000
+          monitor: true
         - system: Poisson
           solver: CG
           preconditioner: SMOOTHED_AGGREGATION
           absTolerance: 1.0E-06
           relTolerance: 0.0
           maxIterations: 20000
+          monitor: true
 
 
 ## File options
@@ -51,3 +53,4 @@ Note: text is case-sensitive.
   - `absTolerance`: (optional, default: `1.0E-50`) absolute tolerance in the reduction of the residuals as an exit criterion.
   - `relTolerance`: (optional, default: `1.0E-05`) relative tolerance in the reduction of the residuals as an exit criterion.
   - `maxIterations`: (optional, default: `10000`) maximum number of iterations allowed for the solver.
+  - `monitor`: (optional, default: `false`) when `true`, output the residual norm at each iteration of the Krylov solver.
