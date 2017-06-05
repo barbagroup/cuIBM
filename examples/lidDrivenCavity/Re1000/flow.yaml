@@ -1,7 +1,7 @@
-- type: flow
-  nu: 0.001
+# flow.yaml
+
+- nu: 0.001
   initialVelocity: [0.0, 0.0]
-  initialPerturbation: [0.0, 0.0]
   boundaryConditions:
     - location: xMinus
       u: [DIRICHLET, 0.0]

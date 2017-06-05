@@ -1,5 +1,6 @@
-- type: simulation
-  dt: 0.005
+# simParams.yaml
+
+- dt: 0.005
   scaleCV: 5.0
   nt: 16000
   nsave: 1600
@@ -8,12 +9,14 @@
   ibmScheme: TAIRA_COLONIUS
   linearSolvers:
     - system: velocity
-      solver: CG
+      solver: BICGSTAB
       preconditioner: DIAGONAL
-      relTolerance: 1e-5
+      relTolerance: 1.0E-05
+      absTolerance: 0.0
       maxIterations: 10000
     - system: Poisson
       solver: CG
       preconditioner: SMOOTHED_AGGREGATION
-      relTolerance: 1e-5
+      relTolerance: 1.0E-05
+      absTolerance: 0.0
       maxIterations: 20000

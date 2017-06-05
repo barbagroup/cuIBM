@@ -152,6 +152,12 @@ lidDrivenCavityRe100:
 lidDrivenCavityRe1000:
 	bin/cuibm -directory examples/lidDrivenCavity/Re1000
 
+lidDrivenCavityRe3200:
+	bin/cuibm -directory examples/lidDrivenCavity/Re3200
+
+lidDrivenCavityRe5000:
+	bin/cuibm -directory examples/lidDrivenCavity/Re5000
+
 cylinderRe40:
 	bin/cuibm -directory examples/cylinder/Re40
 
@@ -174,19 +180,25 @@ cylinderDirectForcing:
 	bin/cuibm -directory examples/cylinder/Re40 -ibmScheme DirectForcing
 
 snakeRe1000AOA30:
-	bin/cuibm -directory examples/flyingSnake/Re1000_AoA30
+	bin/cuibm -directory examples/flyingSnake/Re1000AoA30
 
 snakeRe1000AOA35:
-	bin/cuibm -directory examples/flyingSnake/Re1000_AoA35
+	bin/cuibm -directory examples/flyingSnake/Re1000AoA35
 
 snakeRe2000AOA30:
-	bin/cuibm -directory examples/flyingSnake/Re2000_AoA30
+	bin/cuibm -directory examples/flyingSnake/Re2000AoA30
 
 snakeRe2000AOA35:
-	bin/cuibm -directory examples/flyingSnake/Re2000_AoA35
+	bin/cuibm -directory examples/flyingSnake/Re2000AoA35
 
 flappingRe75:
-	bin/cuibm -directory examples/flappingRe75
+	bin/cuibm -directory examples/flapping/Re75
 
-oscillatingCylinders:
-	bin/cuibm -directory examples/oscillatingCylinders
+heavingRe500:
+	bin/cuibm -directory examples/heaving/Re500
+
+oscillatingCylindersRe100:
+	bin/cuibm -directory examples/oscillatingCylinders/Re100
+
+convergence:
+	cd examples/convergence/lidDrivenCavityRe100; $(MAKE) all

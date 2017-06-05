@@ -1,19 +1,21 @@
-- type: simulation
-  dt: 0.004
+# simParams.yaml
+
+- dt: 0.004
   scaleCV: 5.0
   nt: 10000
   nsave: 10000
   startStep: 0
   timeScheme: [ADAMS_BASHFORTH_2, CRANK_NICOLSON]
-  ibmScheme: NAVIER_STOKES
   linearSolvers:
     - system: velocity
-      solver: CG
+      solver: BICGSTAB
       preconditioner: DIAGONAL
-      relTolerance: 1e-5
+      relTolerance: 1.0E-05
+      absTolerance: 0.0
       maxIterations: 10000
     - system: Poisson
       solver: CG
       preconditioner: SMOOTHED_AGGREGATION
-      relTolerance: 1e-5
+      relTolerance: 1.0E-05
+      absTolerance: 0.0
       maxIterations: 20000

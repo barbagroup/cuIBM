@@ -1,25 +1,27 @@
+# domain.yaml
+# 330x330 = 108900
+
 - direction: x
   start: -15.0
   subDomains:
-    - end: -0.6
-      cells: 69
-      stretchRatio: 0.952380952
-    - end: 0.6
-      cells: 48
-      stretchRatio: 1.0
-    - end: 15.0
-      cells: 69
-      stretchRatio: 1.05
-
+  - cells: 138
+    end: -0.54
+    stretchRatio: 0.9803921568627451
+  - cells: 54
+    end: 0.54
+    stretchRatio: 1.0
+  - cells: 138
+    end: 15.0
+    stretchRatio: 1.02
 - direction: y
   start: -15.0
   subDomains:
-    - end: -0.6
-      cells: 69
-      stretchRatio: 0.952380952
-    - end: 0.6
-      cells: 48
-      stretchRatio: 1.0
-    - end: 15.0
-      cells: 69
-      stretchRatio: 1.05
+  - cells: 138
+    end: -0.54
+    stretchRatio: 0.9803921568627451
+  - cells: 54
+    end: 0.54
+    stretchRatio: 1.0
+  - cells: 138
+    end: 15.0
+    stretchRatio: 1.02

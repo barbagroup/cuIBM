@@ -1,13 +1,15 @@
+# domain.yaml
+# 128x128 = 16384
+
 - direction: x
   start: 0.0
   subDomains:
-    - end: 1.0
-      cells: 128
-      stretchRatio: 1.0
-
+  - cells: 128
+    end: 1.0
+    stretchRatio: 1.0
 - direction: y
   start: 0.0
   subDomains:
-    - end: 1.0
-      cells: 128
-      stretchRatio: 1.0
+  - cells: 128
+    end: 1.0
+    stretchRatio: 1.0
