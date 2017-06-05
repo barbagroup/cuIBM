@@ -7,7 +7,7 @@ tags:
   - CUSP library
 authors:
  - name: Anush Krishnan
-   affiliation: Boston University
+   affiliation: nuTonomy Inc. (previously at Boston University)
  - name: Olivier Mesnard
    orcid:  0000-0001-5335-7853
    affiliation: 1
