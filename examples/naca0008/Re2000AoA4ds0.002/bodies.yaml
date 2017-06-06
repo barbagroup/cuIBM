@@ -1,5 +1,7 @@
+# bodies.yaml
+
 - type: points
-  pointsFile: NACA0008/0.004.bdy
+  pointsFile: naca0008ds0.002.bdy
   centerRotation: [0.0, 0.0]
   initialOffset: [0.0, 0.0]
   angleOfAttack: -4.0
