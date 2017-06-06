@@ -33,17 +33,16 @@ simulation = CuIBMSimulation(directory=directory,
                              description='cuIBM')
 simulation.read_forces()
 
-# Reads drag coefficient of Koumoutsakos and Leonard (1995) for Re=40.
-kl1995 = KoumoutsakosLeonard1995(Re=550)
+# Reads drag coefficient of Koumoutsakos and Leonard (1995) for Re=550.
+file_name = 'koumoutsakos_leonard_1995_cylinder_dragCoefficientRe550.dat'
+file_path = os.path.join(os.environ['CUIBM_DIR'], 'data', file_name)
+kl1995 = KoumoutsakosLeonard1995(file_path=file_path, Re=550)
 
 # Plots the instantaneous drag coefficients.
 images_directory = os.path.join(directory, 'images')
 if not os.path.isdir(images_directory):
   os.makedirs(images_directory)
-pyplot.style.use(os.path.join(os.environ['SNAKE'],
-                              'snake',
-                              'styles',
-                              'mesnardo.mplstyle'))
+pyplot.style.use('seaborn-dark')
 kwargs_data = {'label': simulation.description,
                'color': '#336699',
                'linestyle': '-',
@@ -60,12 +59,12 @@ kwargs_kl1995 = {'label': kl1995.description,
                  'zorder': 10}
 fig, ax = pyplot.subplots(figsize=(6, 6))
 ax.grid(True, zorder=0)
-ax.set_xlabel('non-dimensional time')
-ax.set_ylabel('drag coefficient')
+ax.set_xlabel('non-dimensional time', fontsize=16)
+ax.set_ylabel('drag coefficient', fontsize=16)
 ax.plot(simulation.forces[0].times, 2.0 * simulation.forces[0].values,
         **kwargs_data)
 ax.plot(kl1995.cd.times, kl1995.cd.values,
         **kwargs_kl1995)
 ax.axis([0.0, 3.0, 0.0, 2.0])
-ax.legend()
+ax.legend(prop={'size': 16})
 pyplot.savefig(os.path.join(images_directory, 'dragCoefficient.png'))

@@ -21,10 +21,10 @@ for time_step in simulation.get_time_steps():
   bodies[1].y = all_bodies.y[n_total // 2:]
   simulation.read_fields('vorticity', time_step)
   simulation.plot_contour('vorticity',
-                          field_range=[-2.0, 2.0, 40],
+                          field_range=(-2.0, 2.0, 40),
                           filled_contour=True,
                           bodies=bodies,
-                          view=[-3.0, -5.0, 15.0, 5.0],
+                          view=(-3.0, -5.0, 15.0, 5.0),
                           style='seaborn-dark',
                           cmap='viridis',
                           width=8.0)

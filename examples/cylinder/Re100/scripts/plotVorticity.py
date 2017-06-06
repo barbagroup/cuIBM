@@ -14,7 +14,7 @@ for time_step in simulation.get_time_steps():
   simulation.plot_contour('vorticity',
                           field_range=(-5.0, 5.0, 40),
                           filled_contour=False,
-                          view=[-1.0, -3.0, 15.0, 3.0],
+                          view=(-1.0, -3.0, 15.0, 3.0),
                           colorbar=False,
                           cmap=None,
                           colors='k',

@@ -29,8 +29,11 @@ simulation.read_fields(['x-velocity', 'y-velocity'], time_step)
 y, u = simulation.fields['x-velocity'].get_vertical_gridline_values(0.5)
 x, v = simulation.fields['y-velocity'].get_horizontal_gridline_values(0.5)
 
-# Gets the centerline velocities at Re=100 reported in Ghia et al. (1982).
-ghia = GhiaEtAl1982(Re=3200)
+# Gets the centerline velocities at Re=3200 reported in Ghia et al. (1982).
+file_path = os.path.join(os.environ['CUIBM_DIR'],
+                         'data',
+                         'ghia_et_al_1982_lid_driven_cavity.dat')
+ghia = GhiaEtAl1982(file_path=file_path, Re=3200)
 
 # Plots the instantaneous drag coefficients.
 images_directory = os.path.join(directory, 'images')

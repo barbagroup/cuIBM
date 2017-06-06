@@ -14,10 +14,10 @@ for time_step in simulation.get_time_steps():
   body = Body(file_path=os.path.join('{:0>7}'.format(time_step), 'bodies'))
   simulation.read_fields('vorticity', time_step)
   simulation.plot_contour('vorticity',
-                          field_range=[-20.0, 20.0, 20],
+                          field_range=(-20.0, 20.0, 20),
                           filled_contour=False,
                           bodies=body,
-                          view=[-2.0, -1.0, 2.0, 1.0],
+                          view=(-2.0, -1.0, 2.0, 1.0),
                           style='seaborn-dark',
                           colors='grey',
                           colorbar=False,

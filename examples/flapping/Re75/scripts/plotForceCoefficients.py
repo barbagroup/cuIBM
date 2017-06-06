@@ -56,7 +56,7 @@ for i in range(cd.size):
 # cl = numpy.convolve(cl, window, 'same')
 # cd = numpy.convolve(cd, window, 'same')
 
-directory = os.path.join(os.environ['SNAKE'], 'resources', 'results')
+directory = os.path.join(os.environ['CUIBM_DIR'], 'data')
 # Load lift coefficient from Li et al. (2015)
 filepath = os.path.join(directory,
                         'li_et_al_2015_flapping_liftCoefficientRe75.dat')
