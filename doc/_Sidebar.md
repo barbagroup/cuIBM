@@ -7,3 +7,7 @@
   * [[simParams.yaml]]
   * [[bodies.yaml]]
 * [[Output files|outputs]]
+* [[Examples|examples]]
+  * [[Lid-driven cavity|lidDrivenCavity]]
+  * [[Cylinder|cylinder]]
+  * [[Flapping wing|flapping]]
