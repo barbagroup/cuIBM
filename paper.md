@@ -29,7 +29,7 @@ cuIBM implements various immersed-boundary techniques that fit into the framewor
 Among them, the immersed-boundary projection approach from @TairaColonius2007, the direct-forcing method from @FadlunEtAl2000, and a second-order accurate direct-forcing method (@Krishnan2015).
 
 cuIBM exploits NVIDIA GPU hardware by solving the linear systems and applying stencil operations on a single GPU device.
-For that purpose, we use [CUSP](https://github.com/cusplibrary/cusplibrary), an open-source C++ library for sparse linear algebra on CUDA-capable GPUs
+For that purpose, we use [CUSP](https://github.com/cusplibrary/cusplibrary), an open-source C++ library for sparse linear algebra on CUDA-capable GPUs.
 cuIBM is written in C++ with CUDA kernels.
 
 As an example, we used cuIBM to investigate the aerodynamics of an anatomically-accurate cross-section of the gliding snake, *Chrysopelea Paradisi* (@KrishnanEtAl2014).
