@@ -33,8 +33,9 @@ RUN BOOST_VERSION=1.64.0 && \
     cd ${BOOST_DIR} && \
     wget https://dl.bintray.com/boostorg/release/${BOOST_VERSION}/source/${TARBALL} && \
     tar -xvf ${TARBALL} -C ${BOOST_DIR} --strip-components=1 && \
-    rm -f ${TARBALL} && \
-    cp -r boost /usr/local/include
+    rm -f ${TARBALL}
+
+ENV BOOST_DIR=/opt/boost/1.64.0
 
 # cuIBM
 RUN CUIBM_DIR=/opt/cuIBM && \
@@ -42,7 +43,7 @@ RUN CUIBM_DIR=/opt/cuIBM && \
     cd /opt && \
     git clone https://github.com/mesnardo/cuIBM.git && \
     cd ${CUIBM_DIR} && \
-    BRANCH_NAME=examples-using-snake && \
+    BRANCH_NAME=master && \
     git checkout -b ${BRANCH_NAME} origin/${BRANCH_NAME} && \
     make -j2
 
