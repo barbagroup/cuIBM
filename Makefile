@@ -39,13 +39,8 @@ SRCS = $(shell find $(SRC_DIR) -type f -name *$(SRC_EXT))
 # absolute path of all object files to be created
 OBJS = $(patsubst $(SRC_DIR)/%, $(BUILD_DIR)/%, $(SRCS:$(SRC_EXT)=.o))
 
-# include header files from cuIBM and CUSP library
-ifdef CUSP_DIR
-INC = -I $(SRC_DIR) -I $(CUSP_DIR)
-else
-INC = -I $(SRC_DIR)
-endif
-
+# include header files from cuIBM, CUSP library, and Boost library
+INC = -I$(SRC_DIR) -I$(CUSP_DIR) -I$(BOOST_DIR)
 
 # path of the YAML static library
 EXT_LIBS = $(PROJ_ROOT)/external/lib/libyaml-cpp.a

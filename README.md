@@ -4,6 +4,7 @@ cuIBM solves the 2D incompressible Navier-Stokes equations with an immersed-boun
 
 Currently, cuIBM runs only on Unix-based systems (no support on Windows) and was last tested on Ubuntu 16.04.
 
+---
 
 ## Installation
 
@@ -12,6 +13,7 @@ Currently, cuIBM runs only on Unix-based systems (no support on Windows) and was
 * GNU C++ Compiler(`g++-5.4`)
 * NVIDIA's CUDA Compiler (`nvcc-8.0`)
 * [CUSP](https://github.com/cusplibrary/cusplibrary) (`0.5.1`)
+* [Boost](https://www.boost.org) (`1.64.0`)
 
 #### GNU C++ Compiler
 
@@ -19,7 +21,7 @@ Install `g++` using the following command:
 
     > sudo apt-get install g++
 
-Check the version of G++ installed:
+Check the version of g++ installed:
 
     > g++ --version
 
@@ -49,10 +51,21 @@ CUSP is currently hosted on
 and works with version 0.5.1, available for download 
 [here](https://github.com/cusplibrary/cusplibrary/archive/v0.5.1.tar.gz).
 
-    > mkdir -p $HOME/software/cusp/0.5.1
+    > export CUSP_DIR=$HOME/software/cusp/0.5.1
+    > mkdir -p $CUSP_DIR
     > wget https://github.com/cusplibrary/cusplibrary/archive/v0.5.1.tar.gz
-    > tar -xvf v0.5.1.tar.gz -C $HOME/software/cusp/0.5.1 --strip-components=1
+    > tar -xvf v0.5.1.tar.gz -C $CUSP_DIR --strip-components=1
     > rm -f v0.5.1.tar.gz
+
+#### Boost library
+
+In cuIBM, we use the parser [YAML-CPP](https://github.com/jbeder/yaml-cpp) (version `0.5.1` bundled in cuIBM) that requires header files from the Boost library.
+
+    > export BOOST_DIR=$HOME/software/boost/1.64.0
+    > mkdir -p $BOOST_DIR
+    > wget https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.tar.gz
+    > tar -xvf boost_1_64_0.tar.gz -C $BOOST_DIR --strip-components=1
+    > rm -f boost_1_64_0.tar.gz
 
 
 ### Compiling cuIBM
@@ -63,9 +76,10 @@ Clone cuIBM:
     > cd $HOME/software
     > git clone https://github.com/barbagroup/cuIBM.git
 
-To compile cuIBM, set the environment variable `CUSP_DIR` to point to the directory with the CUSP library.
+To compile cuIBM, make sure you have set correctly the environment variables `CUSP_DIR` and `BOOST_DIR` to point to their respective folder:
 
     > export CUSP_DIR=$HOME/software/cusp/0.5.1
+    > export BOOST_DIR=$HOME/software/boost/1.64.0
 
 We also recommend setting the environment variable `CUIBM_DIR` to point to the 
 location of the cuIBM folder. While the code can be compiled and run without 
@@ -95,52 +109,87 @@ Finally, you can add cuIBM to your path:
 
     > export PATH="$HOME/software/cuIBM/bin:$PATH"
 
+Users-documentation is available in the Wiki pages of the GitHub repository.
 
-## Examples
 
-The following examples are available:
+### Post-processing
 
-* `lidDrivenCavityRe100`: Flow in a lid-driven cavity with Reynolds number 100.
-* `lidDrivenCavityRe1000`: Flow in a lid-driven cavity with Reynolds number 1000.
-* `cylinderRe40`: Flow over a circular cylinder at Reynolds number 40. The 
-flow eventually reaches a steady state.
-* `cylinderRe75`: Flow over a circular cylinder at Reynolds number 75. The 
+To post-process the numerical solution from cuIBM, we provide Python scripts (present in each case in the folder `examples`).
+They make use of the package [`snake`](https://github.com/mesnardo/snake) that is bundled in the `external` folder of cuIBM (version `0.3`).
+
+To install `snake`:
+
+    > cd $CUIBM_DIR/external/snake-0.3
+    > python setup.py install
+
+`snake` requires Python (2.7 or 3.5), Matplotlib, Scipy, and Pandas.
+
+---
+
+## Example: Flow over impulsively started cylinder (Re=550)
+
+To run the example:
+
+    > cd $CUIBM_DIR/examples/cylinder/Re550
+    > cuibm
+
+To plot the instantaneous drag coefficient and the vorticity field at saved time steps:
+
+    > python scripts/plotDragCoefficient.py
+    > python scripts/plotVorticity.py
+
+Figures are saved in the folder `images` of the simulation directory.
+
+---
+
+## List of examples
+
+* `lidDrivenCavityRe100`: lid-driven cavity flow at Reynolds number 100.
+* `lidDrivenCavityRe1000`: lid-driven cavity flow at Reynolds number 1000.
+* `lidDrivenCavityRe3200`: lid-driven cavity flow at Reynolds number 3200.
+* `lidDrivenCavityRe5000`: lid-driven cavity flow at Reynolds number 5000.
+* `cylinderRe40`: flow over a circular cylinder at Reynolds number 40.
+* `cylinderRe100`: flow over a circular cylinder at Reynolds number 100. The 
 initial flow field has an asymmetric perturbation that triggers instability in 
 the flow and vortex shedding is observed in the wake.
-* `cylinderRe100`: Flow over a circular cylinder at Reynolds number 100. The 
+* `cylinderRe150`: flow over a circular cylinder at Reynolds number 150. The 
 initial flow field has an asymmetric perturbation that triggers instability in 
 the flow and vortex shedding is observed in the wake.
-* `cylinderRe150`: Flow over a circular cylinder at Reynolds number 150. The 
+* `cylinderRe200`: flow over a circular cylinder at Reynolds number 150. The 
 initial flow field has an asymmetric perturbation that triggers instability in 
 the flow and vortex shedding is observed in the wake.
-* `cylinderRe550`: Initial flow over an impulsively started cylinder at 
+* `cylinderRe550`: initial flow over an impulsively started cylinder at 
 Reynolds number 550.
-* `cylinderRe3000`: Initial flow over an impulsively started cylinder at 
+* `cylinderRe3000`: initial flow over an impulsively started cylinder at 
 Reynolds number 3000.
-* `flappingRe75`: Flow around a flapping airfoil.
-* `oscillatingCylinders`: Flow across two oscillating cylinders.
+* `flappingRe75`: flow around a flapping foil at Reynolds number 75.
+* `heavingRe500`: flow around heaving foil at Reynolds number 500.
+* `oscillatingCylindersRe100`: flow across two oscillating cylinders at Reynolds number 100.
+* `snakeRe1000AoA30`: flow around the cross-section of a gliding snake forming a 30-degree angle of attack with the freestream at Reynolds number 1000.
+* `snakeRe1000AoA35`: flow around the cross-section of a gliding snake forming a 35-degree angle of attack with the freestream at Reynolds number 1000.
+* `snakeRe1000AoA30`: flow around the cross-section of a gliding snake forming a 30-degree angle of attack with the freestream at Reynolds number 2000.
+* `snakeRe1000AoA35`: flow around the cross-section of a gliding snake forming a 35-degree angle of attack with the freestream at Reynolds number 2000.
     
-To run any of the examples list above:
+To run any of the examples listed above:
 
+    > cd $CUIBM_DIR
     > make <examplename>
 
-The biggest case (`cylinderRe3000`) requires a graphics card with 2GB of memory.
+or change directory to the corresponding example's folder and
 
-Post-processing scripts are available in th directory 
-`$CUIBM_DIR/scripts/python`. The command-line argument `--help` will display 
-the list of options for the script executed. 
+    > cuibm
 
-For example, `plotVorticity.py` plots the contour of the vorticity field of the 
-flow. To display its list of all the command-line options, run:
+The biggest cases (for the gliding snake) requires a GPU device with at least 4GB of memory.
 
-    > python $CUIBM_DIR/scripts/python/plotVorticity.py --help
-
+---
 
 ## Known issues
 
 * CPU routines do not work.
 * DirectForcingSolver has not been tested for cases with multiple or moving 
 bodies.
+
+---
 
 ## Contact
 
