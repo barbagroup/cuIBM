@@ -183,6 +183,15 @@ The biggest cases (for the gliding snake) requires a GPU device with at least 4G
 
 ---
 
+## Papers published using cuIBM
+
+* Layton, S. K., Krishnan, A., Barba, L. A. (2011). "cuIBM--a GPU-accelerated immersed boundary method," unpublished. Preprint on arXiv: https://arxiv.org/abs/1109.3524v1
+* Krishnan, A., Barba, L. A. (2013). "Validation of the cuIBM code for Navier-Stokes equations with immersed boundary methods," Figshare: https://doi.org/10.6084/m9.figshare.92789.v3
+* Krishnan, A., Socha, J. J., Vlachos, P. V., Barba, L. A. (2014). "Lift and wakes of flying snakes," _Physics of Fluids_, __26__:031901, [10.1063/1.4866444](https://dx.doi.org/10.1063/1.4866444). Preprint on arXiv: https://arxiv.org/abs/1309.2969
+* Mesnard, O., Barba, L. A. (2017). "Reproducible and replicable computational fluid dynamics: it's harder than you think," _IEEE/AIP Computing in Science and Engineering_, in press. Preprint on arXiv: https://arxiv.org/abs/1605.04339
+
+---
+
 ## Known issues
 
 * CPU routines do not work.
