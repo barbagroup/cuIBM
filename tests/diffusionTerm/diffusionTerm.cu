@@ -177,6 +177,11 @@ void diffusionTerm<memoryType>::writeData()
 	     rnExactyNorm = cusp::blas::nrm2(rnExacty);
 	std::cout << std::setw(11) << nx << " x " << ny << " Relative L-2 Error in rnx: " << errorxNorm/rnExactxNorm << std::endl;
 	std::cout << std::setw(11) << nx << " x " << ny << " Relative L-2 Error in rny: " << erroryNorm/rnExactyNorm << std::endl;
+
+	std::ofstream outfile;
+	outfile.open("data.txt", std::ofstream::app);
+	outfile << nx << "\t" << ny << "\t" << errorxNorm/rnExactxNorm << "\t" << erroryNorm/rnExactyNorm << std::endl;
+	outfile.close();
 }
 
 template <typename memoryType>

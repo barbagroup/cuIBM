@@ -81,19 +81,25 @@ testConvectionTerm: export TEST_SRC_DIR=$(TESTS_DIR)/convectionTerm
 testConvectionTerm: export TEST_BUILD_DIR=$(BUILD_DIR)/tests/convectionTerm
 testConvectionTerm:
 	$(MAKE) unittest
+	@echo "" > data.txt
 	$(TEST_BIN) -directory tests/cases/6
 	$(TEST_BIN) -directory tests/cases/12
 	$(TEST_BIN) -directory tests/cases/24
 	$(TEST_BIN) -directory tests/cases/48
+	@python $(TESTS_DIR)/convergence.py --filepath data.txt
+	@$(RM) data.txt
 
 testDiffusionTerm: export TEST_SRC_DIR=$(TESTS_DIR)/diffusionTerm
 testDiffusionTerm: export TEST_BUILD_DIR=$(BUILD_DIR)/tests/diffusionTerm
 testDiffusionTerm:
 	$(MAKE) unittest
+	@echo "" > data.txt
 	$(TEST_BIN) -directory tests/cases/6
 	$(TEST_BIN) -directory tests/cases/12
 	$(TEST_BIN) -directory tests/cases/24
 	$(TEST_BIN) -directory tests/cases/48
+	@python $(TESTS_DIR)/convergence.py --filepath data.txt
+	@$(RM) data.txt
 
 unittest: $(TEST_OBJS) $(EXT_LIBS)
 	@echo "\nTest: $(TEST_DIR) ..."

@@ -164,6 +164,11 @@ void convectionTerm<memoryType>::writeData()
 	     HExactyNorm = cusp::blas::nrm2(HExacty);
 	std::cout << std::setw(11) << nx << " x " << ny << " Relative L-2 Error in Hx: " << errorxNorm/HExactxNorm << std::endl;
 	std::cout << std::setw(11) << nx << " x " << ny << " Relative L-2 Error in Hy: " << erroryNorm/HExactyNorm << std::endl;
+
+	std::ofstream outfile;
+	outfile.open("data.txt", std::ofstream::app);
+	outfile << nx << "\t" << ny << "\t" << errorxNorm/HExactxNorm << "\t" << erroryNorm/HExactyNorm << std::endl;
+	outfile.close();
 }
 
 template <typename memoryType>

@@ -1,19 +1,21 @@
-- type: simulation
-  dt: 0.02
+# simParams.yaml
+
+- dt: 0.02
   scaleCV: 5.0
   nt: 1
   nsave: 1
   startStep: 0
   timeScheme: [EULER_EXPLICIT, EULER_EXPLICIT]
-  ibmScheme: NAVIER_STOKES
   linearSolvers:
     - system: velocity
-      solver: CG
+      solver: BICGSTAB
       preconditioner: DIAGONAL
-      relTolerance: 1e-6
+      absTolerance: 1.0E-06
+      relTolerance: 0.0
       maxIterations: 10000
     - system: Poisson
       solver: CG
       preconditioner: SMOOTHED_AGGREGATION
-      relTolerance: 1e-6
+      absTolerance: 1.0E-06
+      relTolerance: 0.0
       maxIterations: 20000
