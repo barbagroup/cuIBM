@@ -17,14 +17,13 @@ doc/html
 
 # files
 bin/cuibm
-bin/unittests
+bin/tests
 forces
 iterations
 run.info
 grid
 scripts/python/*.bdy
 *.txt
-!validation-data/*.txt
 
 # backup files of VIM
 .*.swp

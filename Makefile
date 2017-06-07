@@ -67,30 +67,42 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%$(SRC_EXT)
 
 ################################################################################
 
-.PHONY: unittests unittest
+.PHONY: tests testConvectionTerm testDiffusionTerm unittest
 
-UNITTESTS_DIR = $(PROJ_ROOT)/unittests
-TEST_SRCS = $(wildcard $(TEST_DIR)/*$(SRC_EXT))
-TEST_OBJS = $(TEST_SRCS:$(SRC_EXT)=.o) $(filter-out $(BUILD_DIR)/cuIBM.o, $(OBJS))
-TEST_BIN = $(BIN_DIR)/unittests/$(lastword $(subst /, , $(TEST_DIR)))
+TESTS_DIR = $(PROJ_ROOT)/tests
+TEST_SRCS = $(wildcard $(TEST_SRC_DIR)/*$(SRC_EXT))
+TEST_OBJS = $(patsubst $(TEST_SRC_DIR)/%, $(TEST_BUILD_DIR)/%, $(TEST_SRCS:$(SRC_EXT)=.o))
+TEST_OBJS += $(filter-out $(BUILD_DIR)/cuIBM.o, $(OBJS))
+TEST_BIN = $(BIN_DIR)/tests/$(lastword $(subst /, , $(TEST_SRC_DIR)))
 
-unittests: convectionTerm_test diffusionTerm_test
+tests: testConvectionTerm testDiffusionTerm
 
-convectionTerm_test: export TEST_DIR=$(UNITTESTS_DIR)/convectionTerm
-convectionTerm_test:
+testConvectionTerm: export TEST_SRC_DIR=$(TESTS_DIR)/convectionTerm
+testConvectionTerm: export TEST_BUILD_DIR=$(BUILD_DIR)/tests/convectionTerm
+testConvectionTerm:
 	$(MAKE) unittest
+	$(TEST_BIN) -directory tests/cases/6
+	$(TEST_BIN) -directory tests/cases/12
+	$(TEST_BIN) -directory tests/cases/24
+	$(TEST_BIN) -directory tests/cases/48
 
-diffusionTerm_test: export TEST_DIR=$(UNITTESTS_DIR)/diffusionTerm
-diffusionTerm_test:
+testDiffusionTerm: export TEST_SRC_DIR=$(TESTS_DIR)/diffusionTerm
+testDiffusionTerm: export TEST_BUILD_DIR=$(BUILD_DIR)/tests/diffusionTerm
+testDiffusionTerm:
 	$(MAKE) unittest
+	$(TEST_BIN) -directory tests/cases/6
+	$(TEST_BIN) -directory tests/cases/12
+	$(TEST_BIN) -directory tests/cases/24
+	$(TEST_BIN) -directory tests/cases/48
 
 unittest: $(TEST_OBJS) $(EXT_LIBS)
-	@echo "\nUnit-test: $(TEST_DIR) ..."
-	@mkdir -p $(BIN_DIR)/unittests
+	@echo "\nTest: $(TEST_DIR) ..."
+	@mkdir -p $(BIN_DIR)/tests
 	$(CC) $^ -o $(TEST_BIN)
 
-%.o: %$(SRC_EXT)
-	$(CC) $(CCFLAGS) $(INC) -I $(TEST_DIR) -c $< -o $@
+$(TEST_BUILD_DIR)/%.o: $(TEST_SRC_DIR)/%$(SRC_EXT)
+	@mkdir -p $(@D)
+	$(CC) $(CCFLAGS) $(INC) -I $(TEST_SRC_DIR) -c $< -o $@
 
 ################################################################################
 
@@ -105,7 +117,7 @@ doc:
 
 ################################################################################
 
-.PHONY: clean cleanexternal cleanunittests cleanall
+.PHONY: clean cleanexternal cleantests cleanall
 
 clean:
 	@echo "\nCleaning cuIBM ..."
@@ -115,27 +127,12 @@ cleanexternal:
 	@echo "\nCleaning external YAML ..."
 	cd external; $(MAKE) $(MFLAGS) clean
 
-cleanunittests:
-	@echo "\nCleaning unitTests ..."
-	find $(UNITTESTS_DIR) -type f -name *.o -delete
-	$(RM) -rf $(BIN_DIR)/unittests
+cleantests:
+	@echo "\nCleaning tests ..."
+	$(RM) -rf $(BIN_DIR)/tests
+	$(RM) -rf $(BUILD_DIR)/tests
 
-cleanall: clean cleanexternal cleanunittests
-
-################################################################################
-
-# commands to run unit-tests
-
-testConvection:
-	bin/unittests/convectionTerm -directory unittests/cases/6
-	bin/unittests/convectionTerm -directory unittests/cases/12
-	bin/unittests/convectionTerm -directory unittests/cases/24
-
-testDiffusion:
-	bin/unittests/diffusionTerm -directory unittests/cases/6
-	bin/unittests/diffusionTerm -directory unittests/cases/12
-	bin/unittests/diffusionTerm -directory unittests/cases/24
-	bin/unittests/diffusionTerm -directory unittests/cases/48
+cleanall: clean cleanexternal cleantests
 
 ################################################################################
 
