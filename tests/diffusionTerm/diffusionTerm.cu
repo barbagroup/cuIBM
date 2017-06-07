@@ -172,7 +172,7 @@ void diffusionTerm<memoryType>::writeData()
 	cusp::blas::axpby(rny, rnExacty, errory, -1.0, 1.0);
 
 	real errorxNorm  = cusp::blas::nrm2(errorx),
-	     erroryNorm  = cusp::blas::nrm2(errorx),
+	     erroryNorm  = cusp::blas::nrm2(errory),
 	     rnExactxNorm = cusp::blas::nrm2(rnExactx),
 	     rnExactyNorm = cusp::blas::nrm2(rnExacty);
 	std::cout << std::setw(11) << nx << " x " << ny << " Relative L-2 Error in rnx: " << errorxNorm/rnExactxNorm << std::endl;

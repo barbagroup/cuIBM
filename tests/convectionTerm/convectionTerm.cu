@@ -159,7 +159,7 @@ void convectionTerm<memoryType>::writeData()
 	cusp::blas::axpby(Hy, HExacty, errory, -1.0, 1.0);
 
 	real errorxNorm  = cusp::blas::nrm2(errorx),
-	     erroryNorm  = cusp::blas::nrm2(errorx),
+	     erroryNorm  = cusp::blas::nrm2(errory),
 	     HExactxNorm = cusp::blas::nrm2(HExactx),
 	     HExactyNorm = cusp::blas::nrm2(HExacty);
 	std::cout << std::setw(11) << nx << " x " << ny << " Relative L-2 Error in Hx: " << errorxNorm/HExactxNorm << std::endl;
