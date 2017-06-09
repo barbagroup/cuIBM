@@ -1,0 +1,6 @@
+<map id="DFModifiedSolver&lt; memoryType &gt;" name="DFModifiedSolver&lt; memoryType &gt;">
+<area shape="rect" id="node5" href="$classFadlunEtAlSolver.html" title="Direct forcing method proposed by Fadlun et al (2000). " alt="" coords="12,339,196,377"/>
+<area shape="rect" id="node2" href="$classDirectForcingSolver.html" title="A fully discrete formulation of the direct forcing method. " alt="" coords="35,165,173,204"/>
+<area shape="rect" id="node3" href="$classNSWithBody.html" title="Generic Navier&#45;Stokes solver in the presence of immersed boundaries. " alt="" coords="5,92,202,117"/>
+<area shape="rect" id="node4" href="$classNavierStokesSolver.html" title="Solves the Navier&#45;Stokes equations in a rectangular domain. " alt="" coords="35,5,173,44"/>
+</map>

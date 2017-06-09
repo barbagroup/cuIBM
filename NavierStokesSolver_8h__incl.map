@@ -1,0 +1,12 @@
+<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/NavierStokesSolver.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/NavierStokesSolver.h">
+<area shape="rect" id="node2" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="1258,405,1367,431"/>
+<area shape="rect" id="node22" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="1445,252,1566,277"/>
+<area shape="rect" id="node23" href="$integrationScheme_8h.html" title="Definition of the class integrationScheme. " alt="" coords="1278,105,1466,131"/>
+<area shape="rect" id="node24" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="1911,252,2068,277"/>
+<area shape="rect" id="node28" href="$preconditioner_8h.html" title="Definition of the class preconditioner. " alt="" coords="911,325,1071,351"/>
+<area shape="rect" id="node34" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="1625,105,1682,131"/>
+<area shape="rect" id="node18" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="1897,485,1965,511"/>
+<area shape="rect" id="node27" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="2171,325,2315,351"/>
+<area shape="rect" id="node36" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="1643,179,1760,204"/>
+<area shape="rect" id="node37" href="$body_8h.html" title="Definition of the class body. " alt="" coords="1671,252,1732,277"/>
+</map>

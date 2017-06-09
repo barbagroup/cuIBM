@@ -1,0 +1,6 @@
+<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateQT.cu" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateQT.cu">
+<area shape="rect" id="node2" href="$generateQT_8h.html" title="Declaration of the kernels to generate gradient matrix and interpolation matrix. " alt="" coords="788,105,891,131"/>
+<area shape="rect" id="node3" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="785,252,894,277"/>
+<area shape="rect" id="node23" href="$helpers_8h.html" title="Declaration of the discrete delta function. " alt="" coords="829,179,949,204"/>
+<area shape="rect" id="node19" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="1926,325,1995,351"/>
+</map>

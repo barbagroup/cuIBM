@@ -1,0 +1,14 @@
+<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/DirectForcingSolver.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/DirectForcingSolver.h">
+<area shape="rect" id="node2" href="$NSWithBody_8h.html" title="Declaration of the class NSWithBody. " alt="" coords="560,105,667,131"/>
+<area shape="rect" id="node3" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="778,179,926,204"/>
+<area shape="rect" id="node38" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="515,325,631,351"/>
+<area shape="rect" id="node4" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="939,552,1048,577"/>
+<area shape="rect" id="node24" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="788,399,908,424"/>
+<area shape="rect" id="node25" href="$integrationScheme_8h.html" title="Definition of the class integrationScheme. " alt="" coords="983,252,1171,277"/>
+<area shape="rect" id="node26" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="194,399,350,424"/>
+<area shape="rect" id="node30" href="$preconditioner_8h.html" title="Definition of the class preconditioner. " alt="" coords="1277,472,1438,497"/>
+<area shape="rect" id="node36" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="689,252,746,277"/>
+<area shape="rect" id="node20" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="368,632,437,657"/>
+<area shape="rect" id="node29" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="200,472,344,497"/>
+<area shape="rect" id="node39" href="$body_8h.html" title="Definition of the class body. " alt="" coords="543,399,603,424"/>
+</map>

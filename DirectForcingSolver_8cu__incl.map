@@ -1,0 +1,24 @@
+<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/DirectForcingSolver.cu" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/DirectForcingSolver.cu">
+<area shape="rect" id="node5" href="$DirectForcingSolver_8h.html" title="Declaration of the class DirectForcingSolver. " alt="" coords="1403,105,1552,131"/>
+<area shape="rect" id="node42" href="$tagPoints_8inl.html" title="Implementation of the methods of the class DirectForcingSolver to tag points near the immersed bounda..." alt="" coords="724,105,901,131"/>
+<area shape="rect" id="node43" href="$DirectForcing_2generateL_8inl.html" title="DirectForcing/generateL.inl" alt="" coords="924,105,1106,131"/>
+<area shape="rect" id="node44" href="$DirectForcing_2generateA_8inl.html" title="DirectForcing/generateA.inl" alt="" coords="755,179,938,204"/>
+<area shape="rect" id="node46" href="$updateRHS1_8inl.html" title="Implementation of the methods of the class DirectForcingSolver to update the right hand&#45;side of the s..." alt="" coords="1181,179,1379,204"/>
+<area shape="rect" id="node48" href="$DirectForcing_2generateQT_8inl.html" title="DirectForcing/generateQT.inl" alt="" coords="1006,325,1197,351"/>
+<area shape="rect" id="node6" href="$NSWithBody_8h.html" title="Declaration of the class NSWithBody. " alt="" coords="1507,179,1614,204"/>
+<area shape="rect" id="node7" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="1486,252,1635,277"/>
+<area shape="rect" id="node40" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="1689,399,1805,424"/>
+<area shape="rect" id="node8" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="1115,625,1224,651"/>
+<area shape="rect" id="node27" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="1560,472,1681,497"/>
+<area shape="rect" id="node28" href="$integrationScheme_8h.html" title="Definition of the class integrationScheme. " alt="" coords="1374,325,1562,351"/>
+<area shape="rect" id="node29" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="1982,472,2138,497"/>
+<area shape="rect" id="node33" href="$preconditioner_8h.html" title="Definition of the class preconditioner. " alt="" coords="708,545,869,571"/>
+<area shape="rect" id="node39" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="1637,325,1694,351"/>
+<area shape="rect" id="node24" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="1895,705,1964,731"/>
+<area shape="rect" id="node32" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="1988,545,2132,571"/>
+<area shape="rect" id="node41" href="$body_8h.html" title="Definition of the class body. " alt="" coords="1717,472,1777,497"/>
+<area shape="rect" id="node45" href="$generateA_8h.html" title="Declaration of the kernels to generate the matrix resulting from the implicit terms in the momentum e..." alt="" coords="834,252,1020,277"/>
+<area shape="rect" id="node47" href="$updateRHS1_8h.html" title="Declaration of the kernels to update the right hand&#45;side of the intermediate velocity flux solver..." alt="" coords="1181,252,1382,277"/>
+<area shape="rect" id="node49" href="$generateQT_8h.html" title="Declaration of the kernels to generate gradient matrix and interpolation matrix. " alt="" coords="1004,472,1199,497"/>
+<area shape="rect" id="node50" href="$helpers_8h.html" title="Declaration of the discrete delta function. " alt="" coords="1079,545,1199,571"/>
+</map>

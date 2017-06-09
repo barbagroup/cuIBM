@@ -1,0 +1,5 @@
+<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/updateRHS1.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/updateRHS1.h">
+<area shape="rect" id="node2" href="$updateRHS1_8inl.html" title="Implementation of the methods of the class DirectForcingSolver to update the right hand&#45;side of the s..." alt="" coords="30,105,186,171"/>
+<area shape="rect" id="node4" href="$updateRHS1_8cu.html" title="Implementation of the kernels to update the right hand&#45;side of the intermediate velocity flux solver..." alt="" coords="210,112,422,164"/>
+<area shape="rect" id="node3" href="$DirectForcingSolver_8cu.html" title="Implementation of the methods of the class DirectForcingSolver. " alt="" coords="5,219,210,271"/>
+</map>

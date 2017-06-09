@@ -1,0 +1,18 @@
+<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/DFImprovedSolver.cu" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/DFImprovedSolver.cu">
+<area shape="rect" id="node4" href="$DFImprovedSolver_8h.html" title="Definition of the class DFImprovedSolver. " alt="" coords="1118,105,1261,131"/>
+<area shape="rect" id="node43" href="$generateQT_8h.html" title="Declaration of the kernels to generate gradient matrix and interpolation matrix. " alt="" coords="998,545,1193,571"/>
+<area shape="rect" id="node5" href="$DirectForcingSolver_8h.html" title="Declaration of the class DirectForcingSolver. " alt="" coords="1216,179,1365,204"/>
+<area shape="rect" id="node6" href="$NSWithBody_8h.html" title="Declaration of the class NSWithBody. " alt="" coords="1337,252,1444,277"/>
+<area shape="rect" id="node7" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="1316,325,1465,351"/>
+<area shape="rect" id="node41" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="1624,472,1741,497"/>
+<area shape="rect" id="node8" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="1245,699,1354,724"/>
+<area shape="rect" id="node27" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="1429,545,1549,571"/>
+<area shape="rect" id="node28" href="$integrationScheme_8h.html" title="Definition of the class integrationScheme. " alt="" coords="1502,399,1690,424"/>
+<area shape="rect" id="node29" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="1890,545,2046,571"/>
+<area shape="rect" id="node33" href="$preconditioner_8h.html" title="Definition of the class preconditioner. " alt="" coords="833,619,993,644"/>
+<area shape="rect" id="node39" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="1421,399,1478,424"/>
+<area shape="rect" id="node23" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="1844,779,1913,804"/>
+<area shape="rect" id="node32" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="2005,619,2149,644"/>
+<area shape="rect" id="node42" href="$body_8h.html" title="Definition of the class body. " alt="" coords="1652,545,1713,571"/>
+<area shape="rect" id="node44" href="$helpers_8h.html" title="Declaration of the discrete delta function. " alt="" coords="1133,619,1253,644"/>
+</map>

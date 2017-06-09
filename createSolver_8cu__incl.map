@@ -1,0 +1,21 @@
+<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/createSolver.cu" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/createSolver.cu">
+<area shape="rect" id="node2" href="$createSolver_8h.html" title="Declaration of the function that creates the Navier&#45;Stokes solver. " alt="" coords="1554,105,1661,131"/>
+<area shape="rect" id="node3" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="1300,472,1449,497"/>
+<area shape="rect" id="node40" href="$DirectForcingSolver_8h.html" title="Declaration of the class DirectForcingSolver. " alt="" coords="1585,325,1734,351"/>
+<area shape="rect" id="node42" href="$FadlunEtAlSolver_8h.html" title="Declaration of the classes FadlunEtAlSolver and FEAModifiedSolver. " alt="" coords="1540,179,1675,204"/>
+<area shape="rect" id="node43" href="$DFModifiedSolver_8h.html" title="Definition of the class DFModifiedSolver. " alt="" coords="1591,252,1728,277"/>
+<area shape="rect" id="node44" href="$TairaColoniusSolver_8h.html" title="Declaration of the class TairaColoniusSolver. " alt="" coords="1411,325,1561,351"/>
+<area shape="rect" id="node45" href="$DiffusionSolver_8h.html" title="Declaration of the class DiffusionSolver. " alt="" coords="1752,252,1873,277"/>
+<area shape="rect" id="node46" href="$DFImprovedSolver_8h.html" title="Definition of the class DFImprovedSolver. " alt="" coords="1897,252,2040,277"/>
+<area shape="rect" id="node4" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="1144,845,1253,871"/>
+<area shape="rect" id="node24" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="1195,692,1316,717"/>
+<area shape="rect" id="node25" href="$integrationScheme_8h.html" title="Definition of the class integrationScheme. " alt="" coords="1061,545,1250,571"/>
+<area shape="rect" id="node26" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="1555,692,1711,717"/>
+<area shape="rect" id="node30" href="$preconditioner_8h.html" title="Definition of the class preconditioner. " alt="" coords="2172,765,2333,791"/>
+<area shape="rect" id="node36" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="1354,545,1411,571"/>
+<area shape="rect" id="node20" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="1748,925,1817,951"/>
+<area shape="rect" id="node29" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="1561,765,1705,791"/>
+<area shape="rect" id="node38" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="1428,619,1544,644"/>
+<area shape="rect" id="node39" href="$body_8h.html" title="Definition of the class body. " alt="" coords="1456,692,1516,717"/>
+<area shape="rect" id="node41" href="$NSWithBody_8h.html" title="Declaration of the class NSWithBody. " alt="" coords="1433,399,1540,424"/>
+</map>

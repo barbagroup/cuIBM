@@ -1,0 +1,6 @@
+<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/calculateForce.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/calculateForce.h">
+<area shape="rect" id="node2" href="$calculateForce_8cu.html" title="Implementation of the kernels to calculate the forces acting on a body using a control&#45;volume approac..." alt="" coords="5,112,227,164"/>
+<area shape="rect" id="node3" href="$NSWithBody_8cu.html" title="Implementation of the methods of the class NSWithBody. " alt="" coords="252,112,415,164"/>
+<area shape="rect" id="node4" href="$calculateForce_8inl.html" title="Implementation of the methods of the class TairaColoniusSolver to calculate forces acting on each imm..." alt="" coords="440,105,596,171"/>
+<area shape="rect" id="node5" href="$TairaColoniusSolver_8cu.html" title="Implementation of the methods of the class TairaColoniusSolver. " alt="" coords="414,219,621,271"/>
+</map>

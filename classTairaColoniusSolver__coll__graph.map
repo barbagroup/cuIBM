@@ -1,0 +1,8 @@
+<map id="TairaColoniusSolver&lt; memoryType &gt;" name="TairaColoniusSolver&lt; memoryType &gt;">
+<area shape="rect" id="node2" href="$classNSWithBody.html" title="Generic Navier&#45;Stokes solver in the presence of immersed boundaries. " alt="" coords="453,107,650,132"/>
+<area shape="rect" id="node3" href="$classNavierStokesSolver.html" title="Solves the Navier&#45;Stokes equations in a rectangular domain. " alt="" coords="265,100,404,139"/>
+<area shape="rect" id="node4" href="$classpreconditioner.html" title="preconditioner\&lt; cusp\l::coo_matrix\&lt; int, real,\l memoryType \&gt; \&gt;" alt="" coords="5,5,158,57"/>
+<area shape="rect" id="node5" href="$classdomain.html" title="Stores information about the computational grid. " alt="" coords="49,81,114,107"/>
+<area shape="rect" id="node6" href="$classLogger.html" title="Monitors the time spent to achieve a certain task. " alt="" coords="50,131,113,156"/>
+<area shape="rect" id="node7" href="$classintegrationScheme.html" title="Specifies the time&#45;integration scheme used. " alt="" coords="16,180,148,205"/>
+</map>

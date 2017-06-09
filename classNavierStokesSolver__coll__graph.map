@@ -1,0 +1,6 @@
+<map id="NavierStokesSolver&lt; memoryType &gt;" name="NavierStokesSolver&lt; memoryType &gt;">
+<area shape="rect" id="node2" href="$classpreconditioner.html" title="preconditioner\&lt; cusp\l::coo_matrix\&lt; int, real,\l memoryType \&gt; \&gt;" alt="" coords="5,5,158,57"/>
+<area shape="rect" id="node3" href="$classdomain.html" title="Stores information about the computational grid. " alt="" coords="49,81,114,107"/>
+<area shape="rect" id="node4" href="$classLogger.html" title="Monitors the time spent to achieve a certain task. " alt="" coords="50,131,113,156"/>
+<area shape="rect" id="node5" href="$classintegrationScheme.html" title="Specifies the time&#45;integration scheme used. " alt="" coords="16,180,148,205"/>
+</map>

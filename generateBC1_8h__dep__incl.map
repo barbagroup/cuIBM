@@ -1,0 +1,5 @@
+<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateBC1.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateBC1.h">
+<area shape="rect" id="node2" href="$generateBC1_8cu.html" title="Implementation of the kernels to generate right hand&#45;side terms of the intermediate velocity flux sol..." alt="" coords="5,112,219,164"/>
+<area shape="rect" id="node3" href="$generateBC1_8inl.html" title="Implementation of the methods to generate inhomogeneous boundary conditions from the discrete Laplaci..." alt="" coords="244,105,400,171"/>
+<area shape="rect" id="node4" href="$NavierStokesSolver_8cu.html" title="Implementation of the methods of the class NavierStokesSolver. " alt="" coords="219,219,424,271"/>
+</map>

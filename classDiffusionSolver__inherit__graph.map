@@ -1,0 +1,5 @@
+<map id="DiffusionSolver&lt; memoryType &gt;" name="DiffusionSolver&lt; memoryType &gt;">
+<area shape="rect" id="node2" href="$classDirectForcingSolver.html" title="A fully discrete formulation of the direct forcing method. " alt="" coords="42,165,180,204"/>
+<area shape="rect" id="node3" href="$classNSWithBody.html" title="Generic Navier&#45;Stokes solver in the presence of immersed boundaries. " alt="" coords="12,92,209,117"/>
+<area shape="rect" id="node4" href="$classNavierStokesSolver.html" title="Solves the Navier&#45;Stokes equations in a rectangular domain. " alt="" coords="42,5,180,44"/>
+</map>

@@ -1,0 +1,22 @@
+<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/cuIBM.cu" name="/Users/mesnardo/git/barbagroup/cuIBM/src/cuIBM.cu">
+<area shape="rect" id="node2" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="1026,845,1135,871"/>
+<area shape="rect" id="node22" href="$helpers_8h.html" title="Declaration of the discrete delta function. " alt="" coords="795,179,915,204"/>
+<area shape="rect" id="node23" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="1335,692,1455,717"/>
+<area shape="rect" id="node24" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="1601,545,1658,571"/>
+<area shape="rect" id="node32" href="$createSolver_8h.html" title="Declaration of the function that creates the Navier&#45;Stokes solver. " alt="" coords="1148,105,1300,131"/>
+<area shape="rect" id="node18" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="1897,925,1965,951"/>
+<area shape="rect" id="node26" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="1879,692,2036,717"/>
+<area shape="rect" id="node30" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="1483,619,1600,644"/>
+<area shape="rect" id="node29" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="2045,765,2190,791"/>
+<area shape="rect" id="node31" href="$body_8h.html" title="Definition of the class body. " alt="" coords="1511,692,1572,717"/>
+<area shape="rect" id="node33" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="1178,472,1327,497"/>
+<area shape="rect" id="node41" href="$DirectForcingSolver_8h.html" title="Declaration of the class DirectForcingSolver. " alt="" coords="1158,325,1307,351"/>
+<area shape="rect" id="node43" href="$FadlunEtAlSolver_8h.html" title="Declaration of the classes FadlunEtAlSolver and FEAModifiedSolver. " alt="" coords="993,179,1128,204"/>
+<area shape="rect" id="node44" href="$DFModifiedSolver_8h.html" title="Definition of the class DFModifiedSolver. " alt="" coords="991,252,1129,277"/>
+<area shape="rect" id="node45" href="$TairaColoniusSolver_8h.html" title="Declaration of the class TairaColoniusSolver. " alt="" coords="1340,325,1490,351"/>
+<area shape="rect" id="node46" href="$DiffusionSolver_8h.html" title="Declaration of the class DiffusionSolver. " alt="" coords="1320,252,1441,277"/>
+<area shape="rect" id="node47" href="$DFImprovedSolver_8h.html" title="Definition of the class DFImprovedSolver. " alt="" coords="1153,252,1296,277"/>
+<area shape="rect" id="node34" href="$integrationScheme_8h.html" title="Definition of the class integrationScheme. " alt="" coords="1118,545,1306,571"/>
+<area shape="rect" id="node35" href="$preconditioner_8h.html" title="Definition of the class preconditioner. " alt="" coords="611,765,771,791"/>
+<area shape="rect" id="node42" href="$NSWithBody_8h.html" title="Declaration of the class NSWithBody. " alt="" coords="1240,399,1347,424"/>
+</map>
