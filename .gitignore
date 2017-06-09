@@ -8,20 +8,28 @@
 massFlux
 
 # folders
-data/*
 html/*
 latex/*
 0*
 *.plt
 cases/convergence/cavityRe100/*/T*
-doc/*
+doc/html
 
 # files
-bin/cuIBM
+bin/cuibm
+bin/tests
+external/lib
 forces
 iterations
 run.info
 grid
 scripts/python/*.bdy
 *.txt
-!validation-data/*.txt
+
+# backup files of VIM
+.*.swp
+.*\~
+*\~
+
+# ignore Ruby script to generate metadata file codemeta.json
+generate_codemeta.rb

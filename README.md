@@ -1,37 +1,27 @@
-cuIBM - A GPU-based Immersed Boundary Method code
-=================================================
+# cuIBM - A GPU-based Immersed Boundary Method code
 
+cuIBM solves the 2D incompressible Navier-Stokes equations with an immersed-boundary method on a single CUDA-capable GPU device with the [CUSP](https://github.com/cusplibrary/cusplibrary) library.
 
-Currently, cuIBM runs only on Unix-based systems and has been tested on 
-Ubuntu 12.04. It is not supported on Windows.
+Currently, cuIBM runs only on Unix-based systems (no support on Windows) and was last tested on Ubuntu 16.04.
 
-Installation instructions
--------------------------
+---
 
-### Dependencies
+## Installation
 
-Please ensure that the following dependencies are installed before compiling 
-cuIBM:
+### Dependencies (last tested)
 
-* Git distributed version control system (`git`)
-* GNU C++ Compiler(`g++`)
-* NVIDIA's CUDA Compiler (`nvcc`)
-* CUSP Library (available [here](https://github.com/cusplibrary/cusplibrary))
+* GNU C++ Compiler(`g++-5.4`)
+* NVIDIA's CUDA Compiler (`nvcc-8.0`)
+* [CUSP](https://github.com/cusplibrary/cusplibrary) (`0.5.1`)
+* [Boost](https://www.boost.org) (`1.64.0`)
 
-#### Git (`git`)
-
-Install `git`. On Ubuntu, this can be done via the Terminal using the following 
-command:
-
-    > sudo apt-get install git-core
-
-#### GNU C++ Compiler (`g++`)
+#### GNU C++ Compiler
 
 Install `g++` using the following command:
 
     > sudo apt-get install g++
 
-Check the version of G++ installed:
+Check the version of g++ installed:
 
     > g++ --version
 
@@ -41,7 +31,7 @@ instructions under Step 1 in the
 on the Ubuntu Community Help Wiki. Software developers will find it useful to 
 install all of them.
 
-#### NVIDIA's CUDA Compiler (`nvcc`)
+#### NVIDIA's CUDA Compiler
 
 [Download and install](https://developer.nvidia.com/cuda-downloads) the CUDA 
 Toolkit.
@@ -49,11 +39,6 @@ Toolkit.
 Check the version of NVCC installed:
 
     > nvcc --version
-
-cuIBM has been compiled and tested with NVCC versions 4.1 to 6.0.
-
-**IMPORTANT**: `nvcc-4.1` is compatible only with G++ version 4.5 (`g++-4.5`) 
-or below. `nvcc-4.2` and above are compatible with `g++-4.6` and below.
 
 #### CUSP Library
 
@@ -63,159 +48,169 @@ programming language and runs code on compatible NVIDIA GPUs.
 
 CUSP is currently hosted on 
 [GitHub](https://github.com/cusplibrary/cusplibrary). cuIBM has been tested 
-and works with version 0.4.0, available for download 
-[here](https://github.com/cusplibrary/cusplibrary/archive/0.4.0.zip).
+and works with version 0.5.1, available for download 
+[here](https://github.com/cusplibrary/cusplibrary/archive/v0.5.1.tar.gz).
 
-The instructions here assume that the CUSP library is to be installed in the 
-folder `$HOME/lib`, but any other folder with write permissions can be used. 
-Create a local copy of the CUSP library using the following commands:
+    > export CUSP_DIR=$HOME/software/cusp/0.5.1
+    > mkdir -p $CUSP_DIR
+    > wget https://github.com/cusplibrary/cusplibrary/archive/v0.5.1.tar.gz
+    > tar -xvf v0.5.1.tar.gz -C $CUSP_DIR --strip-components=1
+    > rm -f v0.5.1.tar.gz
 
-    > mkdir -p $HOME/lib
-    > cd $HOME/lib
-    > wget https://github.com/cusplibrary/cusplibrary/archive/0.4.0.zip
-    > unzip 0.4.0.zip
+#### Boost library
 
-The folder `$HOME/lib/cusplibrary-0.4.0` is now created.
+In cuIBM, we use the parser [YAML-CPP](https://github.com/jbeder/yaml-cpp) (version `0.5.1` bundled in cuIBM) that requires header files from the Boost library.
 
-If you wish to use to latest version of CUSP, it can be cloned from the GitHub 
-repository.
+    > export BOOST_DIR=$HOME/software/boost/1.64.0
+    > mkdir -p $BOOST_DIR
+    > wget https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.tar.gz
+    > tar -xvf boost_1_64_0.tar.gz -C $BOOST_DIR --strip-components=1
+    > rm -f boost_1_64_0.tar.gz
 
-    > cd $HOME/lib
-    > git clone https://github.com/cusplibrary/cusplibrary.git
-
-which creates the folder `$HOME/lib/cusplibrary`.
 
 ### Compiling cuIBM
 
-Run the following commands to create a local copy of the repository in the 
-folder `$HOME/src` (or any other folder with appropriate read/write/execute 
-permissions):
+Clone cuIBM:
 
-    > mkdir -p $HOME/src
-    > cd $HOME/src
+    > mkdir -p $HOME/software
+    > cd $HOME/software
     > git clone https://github.com/barbagroup/cuIBM.git
 
-To compile, set the environment variable `CUSP_DIR` to point to the directory 
-with the CUSP library. For a `bash` shell, add the following line to the file 
-`~/.bashrc` or `~/.bash_profile`:
+To compile cuIBM, make sure you have set correctly the environment variables `CUSP_DIR` and `BOOST_DIR` to point to their respective folder:
 
-    export CUSP_DIR=/path/to/cusp/folder
-
-which for the present case would be `$HOME/lib/cusplibrary-0.4.0`.
+    > export CUSP_DIR=$HOME/software/cusp/0.5.1
+    > export BOOST_DIR=$HOME/software/boost/1.64.0
 
 We also recommend setting the environment variable `CUIBM_DIR` to point to the 
 location of the cuIBM folder. While the code can be compiled and run without 
 setting this variable, some of the validation scripts provided make use of it.
 
-    export CUIBM_DIR=/path/to/cuIBM/folder
-    
-which is `$HOME/src/cuIBM`, as per the above instructions.
+    > export CUIBM_DIR=$HOME/software/cuIBM
 
-Reload the file:
+To compile cuIBM, navigate to the cuIBM directory:
 
-    > source ~/.bashrc
+    > cd $HOME/software/cuIBM
 
-Switch to the cuIBM directory:
-
-    > cd $HOME/src/cuIBM
-
-or if you've set the environment variable,
+or
 
     > cd $CUIBM_DIR
 
-Compile all the files:
-    
+then, run make:
+
     > make
 
-Run the test:
-    
-    > bin/cuIBM
-    
-**IMPORTANT**: If your NVIDIA card supports only compute capability 1.3, then 
-edit Line 13 of the file `Makefile.inc` in the cuIBM root directory before 
-compiling: replace `compute_20` with `compute_13`.
+Note: the current Makefile compiles cuIBM with the flag `-arch=sm_35` (compute capability of 3.5). You should adapt the Makefile if your NVidia card has a different compute capability.
 
-Numerical schemes
------------------
+Run an example (2D flow around cylinder at Re=40) to check that cuIBM has been built correctly:
 
-### Temporal discretisation
+    > bin/cuibm -directory examples/cylinder/Re40
 
-The following schemes have been tested for the available solvers:
+Finally, you can add cuIBM to your path:
 
-* Convection
-    - `EULER_EXPLICIT`: First-order Explicit Euler
-    - `ADAMS_BASHFORTH_2`: Second-order Adams-Bashforth
+    > export PATH="$HOME/software/cuIBM/bin:$PATH"
 
-* Diffusion
-    - `EULER_EXPLICIT`: First-order explicit Euler
-    - `EULER_IMPLICIT`: First order implicit Euler
-    - `CRANK_NICOLSON`: Crank-Nicolson
+Users-documentation is available in the Wiki pages of the GitHub repository.
 
-### Spatial discretisation 
 
-The convection terms are calculated using a conservative symmetric 
-finite-difference scheme, and the diffusion terms are calculated using a 
-second-order central difference scheme.
+### Post-processing
 
-Examples
---------
+To post-process the numerical solution from cuIBM, we provide Python scripts (present in each case in the folder `examples`).
+They make use of the package [`snake`](https://github.com/mesnardo/snake) that is bundled in the `external` folder of cuIBM (version `0.3`).
 
-The following are available in the default installation:
+To install `snake`:
 
-* `lidDrivenCavityRe100`: Flow in a lid-driven cavity with Reynolds number 
-100.
-* `lidDrivenCavityRe1000`: Flow in a lid-driven cavity with Reynolds number 
-1000.
-* `cylinderRe40`: Flow over a circular cylinder at Reynolds number 40. The 
-flow eventually reaches a steady state.
-* `cylinderRe75`: Flow over a circular cylinder at Reynolds number 75. The 
+    > cd $CUIBM_DIR/external/snake-0.3
+    > python setup.py install
+
+`snake` requires Python (2.7 or 3.5), Matplotlib, Scipy, and Pandas.
+
+---
+
+## Example: Flow over impulsively started cylinder (Re=550)
+
+To run the example:
+
+    > cd $CUIBM_DIR/examples/cylinder/Re550
+    > cuibm
+
+To plot the instantaneous drag coefficient and the vorticity field at saved time steps:
+
+    > python scripts/plotDragCoefficient.py
+    > python scripts/plotVorticity.py
+
+Figures are saved in the folder `images` of the simulation directory.
+
+We also provide a detailed description for several examples:
+* [Lid-driven cavity flow](doc/lidDrivenCavity.md);
+* [Flow around an impulsively started cylinder](doc/cylinder.md);
+* [Flow generated by a flapping wing](doc/flapping.md);
+
+with comparison to experimental and computational results from other studies.
+
+---
+
+## List of examples
+
+* `lidDrivenCavityRe100`: lid-driven cavity flow at Reynolds number 100.
+* `lidDrivenCavityRe1000`: lid-driven cavity flow at Reynolds number 1000.
+* `lidDrivenCavityRe3200`: lid-driven cavity flow at Reynolds number 3200.
+* `lidDrivenCavityRe5000`: lid-driven cavity flow at Reynolds number 5000.
+* `cylinderRe40`: flow over a circular cylinder at Reynolds number 40.
+* `cylinderRe100`: flow over a circular cylinder at Reynolds number 100. The 
 initial flow field has an asymmetric perturbation that triggers instability in 
 the flow and vortex shedding is observed in the wake.
-* `cylinderRe100`: Flow over a circular cylinder at Reynolds number 100. The 
+* `cylinderRe150`: flow over a circular cylinder at Reynolds number 150. The 
 initial flow field has an asymmetric perturbation that triggers instability in 
 the flow and vortex shedding is observed in the wake.
-* `cylinderRe150`: Flow over a circular cylinder at Reynolds number 150. The 
+* `cylinderRe200`: flow over a circular cylinder at Reynolds number 150. The 
 initial flow field has an asymmetric perturbation that triggers instability in 
 the flow and vortex shedding is observed in the wake.
-* `cylinderRe550`: Initial flow over an impulsively started cylinder at 
+* `cylinderRe550`: initial flow over an impulsively started cylinder at 
 Reynolds number 550.
-* `cylinderRe3000`: Initial flow over an impulsively started cylinder at 
+* `cylinderRe3000`: initial flow over an impulsively started cylinder at 
 Reynolds number 3000.
-* `flappingRe75`: Flow around a flapping airfoil.
-* `oscillatingCylinders`: Flow across two oscillating cylinders.
-
-### Run the tests
+* `flappingRe75`: flow around a flapping foil at Reynolds number 75.
+* `heavingRe500`: flow around heaving foil at Reynolds number 500.
+* `oscillatingCylindersRe100`: flow across two oscillating cylinders at Reynolds number 100.
+* `snakeRe1000AoA30`: flow around the cross-section of a gliding snake forming a 30-degree angle of attack with the freestream at Reynolds number 1000.
+* `snakeRe1000AoA35`: flow around the cross-section of a gliding snake forming a 35-degree angle of attack with the freestream at Reynolds number 1000.
+* `snakeRe1000AoA30`: flow around the cross-section of a gliding snake forming a 30-degree angle of attack with the freestream at Reynolds number 2000.
+* `snakeRe1000AoA35`: flow around the cross-section of a gliding snake forming a 35-degree angle of attack with the freestream at Reynolds number 2000.
     
-To run any of the examples:
+To run any of the examples listed above:
 
+    > cd $CUIBM_DIR
     > make <examplename>
 
-The biggest case (`cylinderRe3000`) requires a graphics card with 2GB of memory.
+or change directory to the corresponding example's folder and
 
-Post-processing
----------------
+    > cuibm
 
-Post-processing scripts are available in th directory 
-`$CUIBM_DIR/scripts/python`. The command-line argument `--help` will display 
-the list of options for the script executed. 
+The biggest cases (for the gliding snake) requires a GPU device with at least 4GB of memory.
 
-For example, `plotVorticity.py` plots the contour of the vorticity field of the 
-flow. To display its list of all the command-line options, run:
+---
 
-    > python $CUIBM_DIR/scripts/python/plotVorticity.py --help
+## Papers published using cuIBM
 
-Known issues
-------------
+* Layton, S. K., Krishnan, A., Barba, L. A. (2011). "cuIBM--a GPU-accelerated immersed boundary method," unpublished. Preprint on arXiv: https://arxiv.org/abs/1109.3524v1
+* Krishnan, A., Barba, L. A. (2013). "Validation of the cuIBM code for Navier-Stokes equations with immersed boundary methods," Figshare: https://doi.org/10.6084/m9.figshare.92789.v3
+* Krishnan, A., Socha, J. J., Vlachos, P. V., Barba, L. A. (2014). "Lift and wakes of flying snakes," _Physics of Fluids_, __26__:031901, [10.1063/1.4866444](https://dx.doi.org/10.1063/1.4866444). Preprint on arXiv: https://arxiv.org/abs/1309.2969
+* Mesnard, O., Barba, L. A. (2017). "Reproducible and replicable computational fluid dynamics: it's harder than you think," _IEEE/AIP Computing in Science and Engineering_, in press. Preprint on arXiv: https://arxiv.org/abs/1605.04339
+
+---
+
+## Known issues
 
 * CPU routines do not work.
-* Cannot specify which Krylov solver to use for solving the linear systems.
-* TairaColoniusSolver and DirectForcingSolver fail if no body is present.
 * DirectForcingSolver has not been tested for cases with multiple or moving 
 bodies.
 
-Contact
--------
+---
+
+## Contact
 
 Please e-mail [Anush Krishnan](mailto:k.anush@gmail.com), 
 or [Olivier Mesnard](mailto:mesnardo@gwu.edu), if you have any 
 questions, suggestions or feedback.
+
+To report bugs, please use the GitHub issue tracking system. We are also open to pull-requests.

@@ -1,6 +1,5 @@
-/***************************************************************************//**
+/**
  * \file io.h
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Declaration of the functions of the namespace \c io.
  */
 
@@ -8,10 +7,11 @@
 #pragma once
 
 #include <vector>
-#include <types.h>
-#include <domain.h>
-#include <parameterDB.h>
-#include <bodies.h>
+
+#include "utilities/types.h"
+#include "utilities/domain.h"
+#include "utilities/parameterDB.h"
+#include "utilities/bodies.h"
 
 
 /**
@@ -29,7 +29,7 @@ namespace io
 	// read data inputs from the command-line and the simulation files
 	void readInputs(int argc, char **argv, parameterDB &DB, domain &D); 
 
-    // parse the \a domain file and generate the computational grid
+	// parse the \a domain file and generate the computational grid
 	void parseDomainFile(std::string &domFile, domain &D);
 	
 	// parse the \a flow file and store the parameters in the database
@@ -39,7 +39,7 @@ namespace io
 	void parseSimulationFile(std::string &simFile, parameterDB &DB);
 	
 	// parse the \a bodies file and store information about the immersed bodies
-	void parseBodiesFile(parameterDB &DB);
+	void parseBodiesFile(std::string &bodiesFile, parameterDB &DB);
 
 	// initialize the database with default values
 	void initialiseDefaultDB(parameterDB &DB);
@@ -55,9 +55,6 @@ namespace io
 
 	// print the time spent to execute tasks
 	void printTimingInfo(Logger &logger);
-	
-	// write information about the run into the file run.info
-	void writeInfoFile(parameterDB &DB, domain &D);
 
 	// write grid-points coordinates into the file grid
 	void writeGrid(std::string &caseFolder, domain &D);
@@ -70,5 +67,6 @@ namespace io
 	void readData(std::string &caseFolder, int timeStep, real *x, std::string name);
 
 	// print device memory usage
-	void printDeviceMemoryUsage(char *label);
-}
+	void printDeviceMemoryUsage(std::string label);
+
+} // End of namespace io

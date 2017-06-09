@@ -1,0 +1,2 @@
+# ignore all .png files in the folder tests
+*.png

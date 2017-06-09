@@ -1,0 +1,53 @@
+# file: snakeReproducibility.mplstyle
+# author: Olivier Mesnard (mesnardo@gwu.edu)
+# description: style sheet for Matplotlib figures.
+
+
+font.family : serif
+font.style : normal
+font.weight : normal
+font.size : 12
+
+text.color : black
+text.usetex : False
+
+axes.facecolor : f1eef6
+axes.edgecolor : black
+axes.labelsize : 12
+axes.labelcolor : black
+axes.linewidth : 0.0
+axes.titlesize : 12
+axes.prop_cycle : cycler('color', ['348ABD', '7A68A6', 'A60628', '467821', 'CF4457', '188487', 'E24A33'])
+
+lines.linewidth : 1.0
+lines.linestyle : -
+lines.markersize : 6
+lines.markeredgewidth : 0.0
+
+patch.edgecolor : white
+
+xtick.color : black
+xtick.direction : in
+xtick.labelsize : 12
+
+ytick.color : black
+ytick.direction : in
+ytick.labelsize : 12
+
+grid.color : white
+grid.linestyle : -
+grid.linewidth : 1.0
+
+figure.figsize : 6, 8 
+figure.facecolor : white
+figure.edgecolor : black
+figure.dpi : 100
+figure.autolayout : True
+
+legend.fancybox : True
+legend.frameon : False
+legend.fontsize : 10
+legend.facecolor: f1eef6
+legend.loc : best
+
+savefig.dpi : 100

@@ -1,0 +1,22 @@
+# simParams.yaml
+
+- dt: 0.0004
+  scaleCV: 5.0
+  nt: 100
+  nsave: 100
+  startStep: 0
+  timeScheme: [ADAMS_BASHFORTH_2, CRANK_NICOLSON]
+  ibmScheme: TAIRA_COLONIUS
+  linearSolvers:
+    - system: velocity
+      solver: BICGSTAB
+      preconditioner: DIAGONAL
+      relTolerance: 1.0E-05
+      absTolerance: 0.0
+      maxIterations: 10000
+    - system: Poisson
+      solver: CG
+      preconditioner: SMOOTHED_AGGREGATION
+      relTolerance: 1.0E-05
+      absTolerance: 0.0
+      maxIterations: 20000

@@ -7,9 +7,7 @@
 CC = nvcc $(OSXOPTS)
 
 # compiler options
-# -arch=compute_20: compile to use double precision on GPU
-# -O3: optimization flag
-CCFLAGS = -arch=compute_20 -O3
+CCFLAGS = -arch=sm_35 -O3
 
 # variables
 RM = rm
@@ -34,27 +32,27 @@ BIN_DIR = $(PROJ_ROOT)/bin
 SRC_EXT = .cu
 
 # cuIBM executable
-TARGET = bin/cuIBM
+TARGET = bin/cuibm
 
 # list all source files in the source directory
 SRCS = $(shell find $(SRC_DIR) -type f -name *$(SRC_EXT))
 # absolute path of all object files to be created
 OBJS = $(patsubst $(SRC_DIR)/%, $(BUILD_DIR)/%, $(SRCS:$(SRC_EXT)=.o))
 
-# include header files from cuIBM and CUSP library
-INC = -I $(SRC_DIR) -I $(CUSP_DIR)
+# include header files from cuIBM, CUSP library, and Boost library
+INC = -I$(SRC_DIR) -I$(CUSP_DIR) -I$(BOOST_DIR)
 
 # path of the YAML static library
 EXT_LIBS = $(PROJ_ROOT)/external/lib/libyaml-cpp.a
 # include YAML header files
-INC += -I $(PROJ_ROOT)/external/yaml-cpp/include
+INC += -I $(PROJ_ROOT)/external/yaml-cpp-0.5.3/include
 
 
 .PHONY: all
 
 all: $(TARGET)
 
-$(TARGET): $(OBJS) $(EXT_LIBS)
+$(TARGET): $(EXT_LIBS) $(OBJS)
 	@echo "\nLinking ..."
 	@mkdir -p $(BIN_DIR)
 	$(CC) $^ -o $@
@@ -69,30 +67,48 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%$(SRC_EXT)
 
 ################################################################################
 
-.PHONY: unittests unittest
+.PHONY: tests testConvectionTerm testDiffusionTerm unittest
 
-UNITTESTS_DIR = $(PROJ_ROOT)/unitTests
-TEST_SRCS = $(wildcard $(TEST_DIR)/*$(SRC_EXT))
-TEST_OBJS = $(TEST_SRCS:$(SRC_EXT)=.o) $(filter-out $(BUILD_DIR)/cuIBM.o, $(OBJS))
-TEST_BIN = $(BIN_DIR)/unitTests/$(lastword $(subst /, , $(TEST_DIR)))
+TESTS_DIR = $(PROJ_ROOT)/tests
+TEST_SRCS = $(wildcard $(TEST_SRC_DIR)/*$(SRC_EXT))
+TEST_OBJS = $(patsubst $(TEST_SRC_DIR)/%, $(TEST_BUILD_DIR)/%, $(TEST_SRCS:$(SRC_EXT)=.o))
+TEST_OBJS += $(filter-out $(BUILD_DIR)/cuIBM.o, $(OBJS))
+TEST_BIN = $(BIN_DIR)/tests/$(lastword $(subst /, , $(TEST_SRC_DIR)))
 
-unittests: convectionTerm_test diffusionTerm_test
+tests: testConvectionTerm testDiffusionTerm
 
-convectionTerm_test:  export TEST_DIR = $(UNITTESTS_DIR)/convectionTerm
-convectionTerm_test: 
+testConvectionTerm: export TEST_SRC_DIR=$(TESTS_DIR)/convectionTerm
+testConvectionTerm: export TEST_BUILD_DIR=$(BUILD_DIR)/tests/convectionTerm
+testConvectionTerm:
 	$(MAKE) unittest
+	@echo "" > data.txt
+	$(TEST_BIN) -directory tests/cases/6
+	$(TEST_BIN) -directory tests/cases/12
+	$(TEST_BIN) -directory tests/cases/24
+	$(TEST_BIN) -directory tests/cases/48
+	@python $(TESTS_DIR)/convergence.py --filepath data.txt
+	@$(RM) data.txt
 
-diffusionTerm_test: export TEST_DIR = $(UNITTESTS_DIR)/diffusionTerm
-diffusionTerm_test:
+testDiffusionTerm: export TEST_SRC_DIR=$(TESTS_DIR)/diffusionTerm
+testDiffusionTerm: export TEST_BUILD_DIR=$(BUILD_DIR)/tests/diffusionTerm
+testDiffusionTerm:
 	$(MAKE) unittest
+	@echo "" > data.txt
+	$(TEST_BIN) -directory tests/cases/6
+	$(TEST_BIN) -directory tests/cases/12
+	$(TEST_BIN) -directory tests/cases/24
+	$(TEST_BIN) -directory tests/cases/48
+	@python $(TESTS_DIR)/convergence.py --filepath data.txt
+	@$(RM) data.txt
 
 unittest: $(TEST_OBJS) $(EXT_LIBS)
-	@echo "\nUnit-test: $(TEST_DIR) ..."
-	@mkdir -p $(BIN_DIR)/unitTests
+	@echo "\nTest: $(TEST_DIR) ..."
+	@mkdir -p $(BIN_DIR)/tests
 	$(CC) $^ -o $(TEST_BIN)
 
-%.o: %$(SRC_EXT)
-	$(CC) $(CCFLAGS) $(INC) -I $(TEST_DIR) -c $< -o $@
+$(TEST_BUILD_DIR)/%.o: $(TEST_SRC_DIR)/%$(SRC_EXT)
+	@mkdir -p $(@D)
+	$(CC) $(CCFLAGS) $(INC) -I $(TEST_SRC_DIR) -c $< -o $@
 
 ################################################################################
 
@@ -107,7 +123,7 @@ doc:
 
 ################################################################################
 
-.PHONY: clean cleanexternal cleanunittests cleandoc cleanall
+.PHONY: clean cleanexternal cleantests cleanall
 
 clean:
 	@echo "\nCleaning cuIBM ..."
@@ -117,81 +133,70 @@ cleanexternal:
 	@echo "\nCleaning external YAML ..."
 	cd external; $(MAKE) $(MFLAGS) clean
 
-cleanunittests:
-	@echo "\nCleaning unitTests ..."
-	find $(UNITTESTS_DIR) -type f -name *.o -delete
-	$(RM) -rf $(BIN_DIR)/unitTests
+cleantests:
+	@echo "\nCleaning tests ..."
+	$(RM) -rf $(BIN_DIR)/tests
+	$(RM) -rf $(BUILD_DIR)/tests
 
-cleandoc:
-	@echo "\nCleaning documentation ..."
-	find $(DOC_DIR) ! -name 'Doxyfile' -type f -delete
-	find $(DOC_DIR)/* ! -name 'Doxyfile' -type d -delete
-
-cleanall: clean cleanexternal cleanunittests cleandoc
-
-################################################################################
-
-# commands to run unit-tests
-
-testConvection:
-	bin/unitTests/convectionTerm -caseFolder cases/unitTests/convectionTerm/6
-	bin/unitTests/convectionTerm -caseFolder cases/unitTests/convectionTerm/12
-	bin/unitTests/convectionTerm -caseFolder cases/unitTests/convectionTerm/24
-
-testDiffusion:
-	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/6
-	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/12
-	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/24
-	bin/unitTests/diffusionTerm -caseFolder cases/unitTests/convectionTerm/48
+cleanall: clean cleanexternal cleantests
 
 ################################################################################
 
 # commands to run cuIBM simulations
 
 lidDrivenCavityRe100:
-	bin/cuIBM -caseFolder cases/lidDrivenCavity/Re100
+	bin/cuibm -directory examples/lidDrivenCavity/Re100
 
 lidDrivenCavityRe1000:
-	bin/cuIBM -caseFolder cases/lidDrivenCavity/Re1000
+	bin/cuibm -directory examples/lidDrivenCavity/Re1000
 
-cylinder:
-	bin/cuIBM -caseFolder cases/cylinder/test
+lidDrivenCavityRe3200:
+	bin/cuibm -directory examples/lidDrivenCavity/Re3200
+
+lidDrivenCavityRe5000:
+	bin/cuibm -directory examples/lidDrivenCavity/Re5000
 
 cylinderRe40:
-	bin/cuIBM -caseFolder cases/cylinder/Re40
+	bin/cuibm -directory examples/cylinder/Re40
 
 cylinderRe550:
-	bin/cuIBM -caseFolder cases/cylinder/Re550
+	bin/cuibm -directory examples/cylinder/Re550
 
 cylinderRe3000:
-	bin/cuIBM -caseFolder cases/cylinder/Re3000
-
-cylinderRe75:
-	bin/cuIBM -caseFolder cases/cylinder/Re75
+	bin/cuibm -directory examples/cylinder/Re3000
 
 cylinderRe100:
-	bin/cuIBM -caseFolder cases/cylinder/Re100
+	bin/cuibm -directory examples/cylinder/Re100
 
 cylinderRe150:
-	bin/cuIBM -caseFolder cases/cylinder/Re150
+	bin/cuibm -directory examples/cylinder/Re150
+
+cylinderRe200:
+	bin/cuibm -directory examples/cylinder/Re200
 
 cylinderDirectForcing:
-	bin/cuIBM -caseFolder cases/cylinder/Re40 -ibmScheme DirectForcing
+	bin/cuibm -directory examples/cylinder/Re40 -ibmScheme DirectForcing
 
 snakeRe1000AOA30:
-	time bin/cuIBM -caseFolder cases/flyingSnake/Re1000_AoA30
+	bin/cuibm -directory examples/flyingSnake/Re1000AoA30
 
 snakeRe1000AOA35:
-	time bin/cuIBM -caseFolder cases/flyingSnake/Re1000_AoA35
+	bin/cuibm -directory examples/flyingSnake/Re1000AoA35
 
 snakeRe2000AOA30:
-	time bin/cuIBM -caseFolder cases/flyingSnake/Re2000_AoA30
+	bin/cuibm -directory examples/flyingSnake/Re2000AoA30
 
 snakeRe2000AOA35:
-	time bin/cuIBM -caseFolder cases/flyingSnake/Re2000_AoA35
+	bin/cuibm -directory examples/flyingSnake/Re2000AoA35
 
 flappingRe75:
-	time bin/cuIBM -caseFolder cases/flappingRe75
+	bin/cuibm -directory examples/flapping/Re75
 
-oscillatingCylinders:
-	time bin/cuIBM -caseFolder cases/oscillatingCylinders
+heavingRe500:
+	bin/cuibm -directory examples/heaving/Re500
+
+oscillatingCylindersRe100:
+	bin/cuibm -directory examples/oscillatingCylinders/Re100
+
+convergence:
+	cd examples/convergence/lidDrivenCavityRe100; $(MAKE) all

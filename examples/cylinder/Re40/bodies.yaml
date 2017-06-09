@@ -1,0 +1,4 @@
+# bodies.yaml
+
+- type: circle
+  circleOptions: [0.0, 0.0, 0.5, 158]
