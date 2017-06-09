@@ -1,0 +1,27 @@
+# domain.yaml
+# 1610x1124 = 1809640
+
+- direction: x
+  start: -10.0
+  subDomains:
+  - cells: 505
+    end: -0.6
+    stretchRatio: 0.99304865938431
+  - cells: 600
+    end: 0.6
+    stretchRatio: 1.0
+  - cells: 505
+    end: 10.0
+    stretchRatio: 1.007
+- direction: y
+  start: -10.0
+  subDomains:
+  - cells: 512
+    end: -0.1
+    stretchRatio: 0.99304865938431
+  - cells: 100
+    end: 0.1
+    stretchRatio: 1.0
+  - cells: 512
+    end: 10.0
+    stretchRatio: 1.007

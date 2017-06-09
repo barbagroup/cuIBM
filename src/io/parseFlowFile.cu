@@ -1,14 +1,14 @@
-/***************************************************************************//**
+/**
  * \file parseFlowFile.cu
- * \author Anush Krishnan (anush@bu.edu)
  * \brief Parse the input file \a flow.yaml to get boundary and initial 
  *        conditions of the flow.
  */
 
 
-#include "io.h"
 #include <fstream>
-#include <yaml-cpp/yaml.h>
+
+#include "io.h"
+#include "yaml-cpp/yaml.h"
 
 
 /**
@@ -18,8 +18,6 @@
 namespace io
 {
 
-using std::string;
-
 /**
  * \brief Converts a string to a boundary location type.
  *
@@ -27,22 +25,23 @@ using std::string;
  *
  * \return a boundary location type
  */
-boundary boundaryFromString(string &s)
+boundary boundaryFromString(std::string s)
 {
-  if (s == "xMinus")
-    return XMINUS;
-  else if (s == "xPlus")
-    return XPLUS;
-  else if (s == "yMinus")
-    return YMINUS;
-  else if (s == "yPlus")
-    return YPLUS;
-  else
-  {
-    printf("[E]: invalid boundary condition location defined\n");
-    exit(0);
-  }
-}
+	if (s == "xMinus")
+		return XMINUS;
+	else if (s == "xPlus")
+		return XPLUS;
+	else if (s == "yMinus")
+		return YMINUS;
+	else if (s == "yPlus")
+		return YPLUS;
+	else
+	{
+		printf("Error: Unknown location '%s'!\n", s.c_str());
+		exit(-1);
+	}
+} // boundaryFromString
+
 
 /**
  * \brief Converts string to a boundary condition type.
@@ -51,24 +50,25 @@ boundary boundaryFromString(string &s)
  *
  * \return a boundary condition type
  */
-bcType bcTypeFromString(string &s)
+bcType bcTypeFromString(std::string s)
 {
-  if (s == "DIRICHLET")
-    return DIRICHLET;
-  else if (s == "NEUMANN")
-    return NEUMANN;
-  else if (s == "CONVECTIVE")
-    return CONVECTIVE;
-  else if (s == "PERIODIC")
-    return PERIODIC;
-  else if (s == "SPECIAL")
-    return SPECIAL;
-  else
-  {
-    printf("[E]: invalid boundary condition type specified\n");
-    exit(0);
-  }
-}
+	if (s == "DIRICHLET")
+		return DIRICHLET;
+	else if (s == "NEUMANN")
+		return NEUMANN;
+	else if (s == "CONVECTIVE")
+		return CONVECTIVE;
+	else if (s == "PERIODIC")
+		return PERIODIC;
+	else if (s == "SPECIAL")
+		return SPECIAL;
+	else
+	{
+		printf("Error: Unknown boundary type '%s'!\n", s.c_str());
+		exit(-1);
+	}
+} // bcTypeFromString
+
 
 /**
  * \brief Fills the database with the flow parameters.
@@ -78,53 +78,31 @@ bcType bcTypeFromString(string &s)
  */
 void parseFlow(const YAML::Node &node, parameterDB &DB)
 {
-	string dbKey = "flow";
-	real nu = 0.01, initialU = 1.0, initialV = 0.0;
-	real uPerturb = 0.0, vPerturb = 0.0;
-	node["nu"] >> nu;
-	node["initialVelocity"][0] >> initialU;
-	node["initialVelocity"][1] >> initialV;
-	try
-	{
-		node["initialPerturbation"][0] >> uPerturb;
-		node["initialPerturbation"][1] >> vPerturb;
-	}
-	catch(...)
-	{
-	}
-
-	DB[dbKey]["nu"].set<real>(nu);
-	DB[dbKey]["uInitial"].set<real>(initialU);
-	DB[dbKey]["vInitial"].set<real>(initialV);
-	DB[dbKey]["uPerturb"].set<real>(uPerturb);
-	DB[dbKey]["vPerturb"].set<real>(vPerturb);
+	std::string dbKey = "flow";
+	DB[dbKey]["nu"].set<real>(node["nu"].as<real>(0.01));
+	DB[dbKey]["uInitial"].set<real>(node["initialVelocity"][0].as<real>(1.0));
+	DB[dbKey]["vInitial"].set<real>(node["initialVelocity"][1].as<real>(0.0));
+	DB[dbKey]["uPerturb"].set<real>(node["initialPerturbation"][0].as<real>(0.0));
+	DB[dbKey]["vPerturb"].set<real>(node["initialPerturbation"][1].as<real>(0.0));
 
 	boundaryCondition **bc = 0;
 	bc = DB[dbKey]["boundaryConditions"].get<boundaryCondition **>();
-	
 	if (!bc)
 	{
-		printf("[E]: BoundaryConditions pointer not initialised\n");
+		printf("Error: BoundaryConditions pointer not initialized.\n");
 		exit(-1);
 	}
 	const YAML::Node &BCs = node["boundaryConditions"];
-	string location, uType, vType;
-	real   uVal, vVal;
 	for (unsigned int i=0; i<BCs.size(); i++)
 	{
-		BCs[i]["location"] >> location;
-		BCs[i]["u"][0] >> uType;
-		BCs[i]["v"][0] >> vType;
-		BCs[i]["u"][1] >> uVal;
-		BCs[i]["v"][1] >> vVal;
-
-		boundary loc = boundaryFromString(location);
-		bc[loc][0] = boundaryCondition(bcTypeFromString(uType), uVal);
-		bc[loc][1] = boundaryCondition(bcTypeFromString(vType), vVal);
-
-		// printf("%s: %s, %lg : %s, %lg\n",location.c_str(),uType.c_str(),uVal,vType.c_str(),vVal);
+		boundary loc = boundaryFromString(BCs[i]["location"].as<std::string>());
+		bc[loc][0] = boundaryCondition(
+			bcTypeFromString(BCs[i]["u"][0].as<std::string>()), BCs[i]["u"][1].as<real>());
+		bc[loc][1] = boundaryCondition(
+			bcTypeFromString(BCs[i]["v"][0].as<std::string>()), BCs[i]["v"][1].as<real>());
 	}
-}
+} // parseFlow
+
 
 /**
  * \brief Parses the \a flow file and stores the parameters in the database.
@@ -134,13 +112,10 @@ void parseFlow(const YAML::Node &node, parameterDB &DB)
  */
 void parseFlowFile(std::string &flowFile, parameterDB &DB)
 {
-	std::ifstream fin(flowFile.c_str());
-	YAML::Parser parser(fin);
-	YAML::Node doc;
-	parser.GetNextDocument(doc);
+	printf("Parsing YAML file with flow conditions ...\n");
+	YAML::Node nodes = YAML::LoadFile(flowFile);
+	for (unsigned int i=0; i<nodes.size(); i++)
+		parseFlow(nodes[i], DB);
+} // parseFlowFile
 
-	for (unsigned int i=0; i<doc.size(); i++)
-		parseFlow(doc[i], DB);
-}
-
-} // end namespace io
+} // End of namespace io

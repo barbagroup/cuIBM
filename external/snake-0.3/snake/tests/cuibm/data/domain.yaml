@@ -1,0 +1,14 @@
+# domain.yaml
+
+- direction: x
+  start: -1.0
+  subDomains:
+  - cells: 10
+    end: 1.0
+    stretchRatio: 1.0
+- direction: y
+  start: -1.1
+  subDomains:
+  - cells: 13
+    end: 1.1
+    stretchRatio: 1.0

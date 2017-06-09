@@ -1,26 +1,19 @@
-/***************************************************************************//**
- * \mainpage cuIBM
- *
- *		A GPU-based Immersed Boundary Method
- *
- * \author Anush Krishnan (anush@bu.edu)
- */
-
-
-/***************************************************************************//**
+/**
  * \file cuIBM.cu
- * \author Anush Krishnan (anush@bu.edu)
- * \brief Main source-file of \c cuIBM.
+ * \brief Main source file of \c cuIBM.
  */
 
 
-#include "types.h"
-#include "helpers.h"
-#include "domain.h"
+#include "utilities/types.h"
+#include "utilities/helpers.h"
+#include "utilities/domain.h"
 #include "io/io.h"
-#include "solvers/NavierStokes/createSolver.h"
+#include "solvers/createSolver.h"
 
 
+/**
+ * \brief Main function.
+ */
 int main(int argc, char **argv)
 {
 	// initialize the computational domain
@@ -38,9 +31,7 @@ int main(int argc, char **argv)
 	NavierStokesSolver<device_memory> *solver = createSolver<device_memory>(paramDB, dom_info);
 	solver->initialise();
 
-	io::printDeviceMemoryUsage("Initialisation complete");
-	
-	io::writeInfoFile(paramDB, dom_info);
+	io::printDeviceMemoryUsage(std::string("Initialization complete"));
 	
 	// time-step loop
 	while (!solver->finished())
@@ -50,4 +41,4 @@ int main(int argc, char **argv)
 	}
 
 	solver->shutDown();
-}
+} // main

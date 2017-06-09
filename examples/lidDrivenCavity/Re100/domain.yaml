@@ -1,0 +1,15 @@
+# domain.yaml
+# 32x32 = 1024
+
+- direction: x
+  start: 0.0
+  subDomains:
+  - cells: 32
+    end: 1.0
+    stretchRatio: 1.0
+- direction: y
+  start: 0.0
+  subDomains:
+  - cells: 32
+    end: 1.0
+    stretchRatio: 1.0
