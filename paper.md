@@ -17,7 +17,7 @@ authors:
 affiliations:
  - name: The George Washington University
    index: 1
-date: 14 July 2016
+date: 9 June 2017
 bibliography: paper.bib
 ---
 
@@ -28,10 +28,10 @@ The equations are spatially discretized with a finite-difference technique and t
 cuIBM implements various immersed-boundary techniques that fit into the framework of Perot's projection method.
 Among them, the immersed-boundary projection approach from @TairaColonius2007, the direct-forcing method from @FadlunEtAl2000, and a second-order accurate direct-forcing method (@Krishnan2015).
 
-cuIBM exploits NVIDIA GPU hardware by solving the linear systems and applying stencil operations on a single GPU device.
-For that purpose, we use [CUSP](https://github.com/cusplibrary/cusplibrary), an open-source C++ library for sparse linear algebra on CUDA-capable GPUs.
-cuIBM is written in C++ with CUDA kernels.
+cuIBM is written in C++ and exploits NVIDIA GPU hardware using CUDA and [CUSP](https://github.com/cusplibrary/cusplibrary), 
+an open-source C++ library for sparse linear algebra on CUDA-capable GPUs.
+cuIBM solves the linear systems of equations and applies stencil operations on a single GPU device.
 
-As an example, we used cuIBM to investigate the aerodynamics of an anatomically-accurate cross-section of the gliding snake, *Chrysopelea Paradisi* (@KrishnanEtAl2014).
+cuIBM generated the results published in @KrishnanEtAl2014, a sudy of gliding-snake aerodynamics using an anatomically-accurate cross-section of the snake *Chrysopelea Paradisi*.
 
 # References
