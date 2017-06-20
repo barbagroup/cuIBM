@@ -55,7 +55,7 @@ all: $(TARGET)
 $(TARGET): $(EXT_LIBS) $(OBJS)
 	@echo "\nLinking ..."
 	@mkdir -p $(BIN_DIR)
-	$(CC) $^ -o $@
+	$(CC) $(CCFLAGS) $^ -o $@
 
 $(EXT_LIBS):
 	@echo "\nCreating static library $@ ..."
