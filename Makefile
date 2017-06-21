@@ -45,7 +45,7 @@ INC = -I$(SRC_DIR) -I$(CUSP_DIR) -I$(BOOST_DIR)
 # path of the YAML static library
 EXT_LIBS = $(PROJ_ROOT)/external/lib/libyaml-cpp.a
 # include YAML header files
-INC += -I $(PROJ_ROOT)/external/yaml-cpp-0.5.3/include
+INC += -I $(PROJ_ROOT)/external/yaml-cpp-0.5.1/include
 
 
 .PHONY: all
@@ -55,7 +55,7 @@ all: $(TARGET)
 $(TARGET): $(EXT_LIBS) $(OBJS)
 	@echo "\nLinking ..."
 	@mkdir -p $(BIN_DIR)
-	$(CC) $^ -o $@
+	$(CC) $(CCFLAGS) $^ -o $@
 
 $(EXT_LIBS):
 	@echo "\nCreating static library $@ ..."

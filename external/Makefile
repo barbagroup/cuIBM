@@ -1,4 +1,4 @@
-YAMLCPP_DIR="yaml-cpp-0.5.3"
+YAMLCPP_DIR="yaml-cpp-0.5.1"
 
 .PHONY: libyaml-cpp
 
