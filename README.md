@@ -159,11 +159,11 @@ with comparison to experimental and computational results from other studies.
 
 ## List of examples
 
-* `lidDrivenCavityRe100`: lid-driven cavity flow at Reynolds number 100.
-* `lidDrivenCavityRe1000`: lid-driven cavity flow at Reynolds number 1000.
-* `lidDrivenCavityRe3200`: lid-driven cavity flow at Reynolds number 3200.
-* `lidDrivenCavityRe5000`: lid-driven cavity flow at Reynolds number 5000.
-* `cylinderRe40`: flow over a circular cylinder at Reynolds number 40.
+* `lidDrivenCavityRe100`: lid-driven cavity flow at Reynolds number 100. (~5 seconds on a K40 GPU.)
+* `lidDrivenCavityRe1000`: lid-driven cavity flow at Reynolds number 1000. (~81 seconds on a K40 GPU.)
+* `lidDrivenCavityRe3200`: lid-driven cavity flow at Reynolds number 3200. (~5 minutes on a K40 GPU.)
+* `lidDrivenCavityRe5000`: lid-driven cavity flow at Reynolds number 5000. (~11 minutes on a K40 GPU.)
+* `cylinderRe40`: flow over a circular cylinder at Reynolds number 40. (~4 minutes on a K40 GPU.)
 * `cylinderRe100`: flow over a circular cylinder at Reynolds number 100. The
 initial flow field has an asymmetric perturbation that triggers instability in
 the flow and vortex shedding is observed in the wake.
@@ -174,16 +174,16 @@ the flow and vortex shedding is observed in the wake.
 initial flow field has an asymmetric perturbation that triggers instability in
 the flow and vortex shedding is observed in the wake.
 * `cylinderRe550`: initial flow over an impulsively started cylinder at
-Reynolds number 550.
+Reynolds number 550. (~4 minutes on a K40 GPU.)
 * `cylinderRe3000`: initial flow over an impulsively started cylinder at
-Reynolds number 3000.
-* `flappingRe75`: flow around a flapping foil at Reynolds number 75.
+Reynolds number 3000. (~25 minutes on a K40 GPU.)
+* `flappingRe75`: flow around a flapping foil at Reynolds number 75. (~10 hours on a K20 GPU.)
 * `heavingRe500`: flow around heaving foil at Reynolds number 500.
-* `oscillatingCylindersRe100`: flow across two oscillating cylinders at Reynolds number 100.
-* `snakeRe1000AoA30`: flow around the cross-section of a gliding snake forming a 30-degree angle of attack with the freestream at Reynolds number 1000.
-* `snakeRe1000AoA35`: flow around the cross-section of a gliding snake forming a 35-degree angle of attack with the freestream at Reynolds number 1000.
-* `snakeRe1000AoA30`: flow around the cross-section of a gliding snake forming a 30-degree angle of attack with the freestream at Reynolds number 2000.
-* `snakeRe1000AoA35`: flow around the cross-section of a gliding snake forming a 35-degree angle of attack with the freestream at Reynolds number 2000.
+* `oscillatingCylindersRe100`: flow across two oscillating cylinders at Reynolds number 100. (~25 minutes on a K20 GPU.)
+* `snakeRe1000AoA30`: flow around the cross-section of a gliding snake forming a 30-degree angle of attack with the freestream at Reynolds number 1000. (~65 hours on a K20 GPU.)
+* `snakeRe1000AoA35`: flow around the cross-section of a gliding snake forming a 35-degree angle of attack with the freestream at Reynolds number 1000. (~65 hours on a K20 GPU.)
+* `snakeRe1000AoA30`: flow around the cross-section of a gliding snake forming a 30-degree angle of attack with the freestream at Reynolds number 2000. (~65 hours on a K20 GPU.)
+* `snakeRe1000AoA35`: flow around the cross-section of a gliding snake forming a 35-degree angle of attack with the freestream at Reynolds number 2000. (~65 hours on a K20 GPU.)
 
 To run any of the examples listed above:
 
@@ -195,6 +195,8 @@ or change directory to the corresponding example's folder and
     > cuibm
 
 The biggest cases (for the gliding snake) requires a GPU device with at least 4GB of memory.
+
+To test an example on a smaller number of time steps, you can change the value of the parameters `nt` in the input file `simParams.yaml` of the example directory. (Note that the flow solution is saved every `nsave` time steps which value can be changed in the same input file.)
 
 ---
 
