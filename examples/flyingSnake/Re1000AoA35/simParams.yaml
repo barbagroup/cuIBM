@@ -2,7 +2,7 @@
 
 - dt: 0.0004
   scaleCV: 5.0
-  nt: 10
+  nt: 200000
   nsave: 20000
   startStep: 0
   timeScheme: [ADAMS_BASHFORTH_2, CRANK_NICOLSON]
