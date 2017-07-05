@@ -6,6 +6,14 @@ Currently, cuIBM runs only on Unix-based systems (no support on Windows) and was
 
 ---
 
+## Documentation
+
+User's documentation is available on the [Wiki](https://github.com/barbagroup/cuIBM/wiki) pages of the cuIBM repository.
+
+Doxygen API documentation is available [here](http://barbagroup.github.io/cuIBM).
+
+---
+
 ## Installation
 
 ### Dependencies (last tested)
@@ -25,15 +33,15 @@ Check the version of g++ installed:
 
     > g++ --version
 
-Other development and version control tools can be installed by following the 
-instructions under Step 1 in the 
-[CompilingEasyHowTo](https://help.ubuntu.com/community/CompilingEasyHowTo) page 
-on the Ubuntu Community Help Wiki. Software developers will find it useful to 
+Other development and version control tools can be installed by following the
+instructions under Step 1 in the
+[CompilingEasyHowTo](https://help.ubuntu.com/community/CompilingEasyHowTo) page
+on the Ubuntu Community Help Wiki. Software developers will find it useful to
 install all of them.
 
 #### NVIDIA's CUDA Compiler
 
-[Download and install](https://developer.nvidia.com/cuda-downloads) the CUDA 
+[Download and install](https://developer.nvidia.com/cuda-downloads) the CUDA
 Toolkit.
 
 Check the version of NVCC installed:
@@ -42,13 +50,13 @@ Check the version of NVCC installed:
 
 #### CUSP Library
 
-CUSP is a library that provides routines to perform sparse linear algebra 
-computations on Graphics Processing Units. It is written using the CUDA 
-programming language and runs code on compatible NVIDIA GPUs. 
+CUSP is a library that provides routines to perform sparse linear algebra
+computations on Graphics Processing Units. It is written using the CUDA
+programming language and runs code on compatible NVIDIA GPUs.
 
-CUSP is currently hosted on 
-[GitHub](https://github.com/cusplibrary/cusplibrary). cuIBM has been tested 
-and works with version 0.5.1, available for download 
+CUSP is currently hosted on
+[GitHub](https://github.com/cusplibrary/cusplibrary). cuIBM has been tested
+and works with version 0.5.1, available for download
 [here](https://github.com/cusplibrary/cusplibrary/archive/v0.5.1.tar.gz).
 
     > export CUSP_DIR=$HOME/software/cusp/0.5.1
@@ -81,8 +89,8 @@ To compile cuIBM, make sure you have set correctly the environment variables `CU
     > export CUSP_DIR=$HOME/software/cusp/0.5.1
     > export BOOST_DIR=$HOME/software/boost/1.64.0
 
-We also recommend setting the environment variable `CUIBM_DIR` to point to the 
-location of the cuIBM folder. While the code can be compiled and run without 
+We also recommend setting the environment variable `CUIBM_DIR` to point to the
+location of the cuIBM folder. While the code can be compiled and run without
 setting this variable, some of the validation scripts provided make use of it.
 
     > export CUIBM_DIR=$HOME/software/cuIBM
@@ -156,18 +164,18 @@ with comparison to experimental and computational results from other studies.
 * `lidDrivenCavityRe3200`: lid-driven cavity flow at Reynolds number 3200.
 * `lidDrivenCavityRe5000`: lid-driven cavity flow at Reynolds number 5000.
 * `cylinderRe40`: flow over a circular cylinder at Reynolds number 40.
-* `cylinderRe100`: flow over a circular cylinder at Reynolds number 100. The 
-initial flow field has an asymmetric perturbation that triggers instability in 
+* `cylinderRe100`: flow over a circular cylinder at Reynolds number 100. The
+initial flow field has an asymmetric perturbation that triggers instability in
 the flow and vortex shedding is observed in the wake.
-* `cylinderRe150`: flow over a circular cylinder at Reynolds number 150. The 
-initial flow field has an asymmetric perturbation that triggers instability in 
+* `cylinderRe150`: flow over a circular cylinder at Reynolds number 150. The
+initial flow field has an asymmetric perturbation that triggers instability in
 the flow and vortex shedding is observed in the wake.
-* `cylinderRe200`: flow over a circular cylinder at Reynolds number 150. The 
-initial flow field has an asymmetric perturbation that triggers instability in 
+* `cylinderRe200`: flow over a circular cylinder at Reynolds number 150. The
+initial flow field has an asymmetric perturbation that triggers instability in
 the flow and vortex shedding is observed in the wake.
-* `cylinderRe550`: initial flow over an impulsively started cylinder at 
+* `cylinderRe550`: initial flow over an impulsively started cylinder at
 Reynolds number 550.
-* `cylinderRe3000`: initial flow over an impulsively started cylinder at 
+* `cylinderRe3000`: initial flow over an impulsively started cylinder at
 Reynolds number 3000.
 * `flappingRe75`: flow around a flapping foil at Reynolds number 75.
 * `heavingRe500`: flow around heaving foil at Reynolds number 500.
@@ -176,7 +184,7 @@ Reynolds number 3000.
 * `snakeRe1000AoA35`: flow around the cross-section of a gliding snake forming a 35-degree angle of attack with the freestream at Reynolds number 1000.
 * `snakeRe1000AoA30`: flow around the cross-section of a gliding snake forming a 30-degree angle of attack with the freestream at Reynolds number 2000.
 * `snakeRe1000AoA35`: flow around the cross-section of a gliding snake forming a 35-degree angle of attack with the freestream at Reynolds number 2000.
-    
+
 To run any of the examples listed above:
 
     > cd $CUIBM_DIR
@@ -202,15 +210,15 @@ The biggest cases (for the gliding snake) requires a GPU device with at least 4G
 ## Known issues
 
 * CPU routines do not work.
-* DirectForcingSolver has not been tested for cases with multiple or moving 
+* DirectForcingSolver has not been tested for cases with multiple or moving
 bodies.
 
 ---
 
 ## Contact
 
-Please e-mail [Anush Krishnan](mailto:k.anush@gmail.com), 
-or [Olivier Mesnard](mailto:mesnardo@gwu.edu), if you have any 
+Please e-mail [Anush Krishnan](mailto:k.anush@gmail.com),
+or [Olivier Mesnard](mailto:mesnardo@gwu.edu), if you have any
 questions, suggestions or feedback.
 
 To report bugs, please use the GitHub issue tracking system. We are also open to pull-requests.
