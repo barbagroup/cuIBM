@@ -24,9 +24,10 @@ bibliography: paper.bib
 # Summary
 
 cuIBM solves the two-dimensional Navier-Stokes equations with an immersed-boundary method on structured Cartesian grids.
-With this solution approach, we release the constraint for the mesh-grid to fit to the surface of a body immersed in the fluid and use simple and easy-to-generate fixed Cartesian grid.
-(Thus, we do not have to re-generate the grid when the body is moving.)
-The governing equations are modified to take into account the presence of the immersed boundary and solved over the extended domain.
+With this solution approach, we remove the constraint for the computational grid to fit to the surface of a body immersed in a fluid.
+This has the advantage of requiring simple and easy-to-generate fixed Cartesian grids.
+cuIBM can be used to simulate the flow around fixed or moving bodies without the need to re-generate grids.
+Example applications may include flapping airfoils for the study of animal flight or fish locomotion.
 The equations are spatially discretized with a finite-difference technique and temporally integrated via a projection approach seen as an approximate block-LU decomposition (@Perot1993).
 cuIBM implements various immersed-boundary techniques that fit into the framework of Perot's projection method.
 Among them are the immersed-boundary projection approach from @TairaColonius2007, the direct-forcing method from @FadlunEtAl2000, and a second-order accurate direct-forcing method (@Krishnan2015).
