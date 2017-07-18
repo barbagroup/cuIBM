@@ -62,5 +62,5 @@ void DiffusionSolver<memoryType>::projectionStep()
 } // projectionStep
 
 
-template class DiffusionSolver<host_memory>;
+// specialization of the class
 template class DiffusionSolver<device_memory>;

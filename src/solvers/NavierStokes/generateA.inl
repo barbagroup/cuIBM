@@ -10,7 +10,7 @@
 
 
 /**
- * \brief Assembles the matrix from implicit terms of momentum equation (device).
+ * \brief Assembles the matrix from implicit terms of momentum equation.
  * 
  * Generates the matrix A which solves the implicit velocity flux.
  * Calculated from the matrices M (which contains the term from the time derivative)
@@ -45,35 +45,4 @@ void NavierStokesSolver<device_memory>::generateA(real alpha)
 	dim3 dimBlock(blockSize, 1);
 	
 	kernels::generateA <<<dimGrid, dimBlock>>> (ARows, ACols, AVals, MVals, LRows, LCols, LVals, ASize, alpha);
-} // generateA
-
-
-/**
- * \brief Assembles the matrix from implicit terms of momentum equation (host).
- * 
- * Generates the matrix A which solves the implicit velocity flux.
- * Calculated from the matrices M (which contains the term from the time derivative)
- * and the matrix L, which is the implicit diffusion matrix.
- *
- * \param alpha implicit coefficient of the diffusive scheme
- */
-template <>
-void NavierStokesSolver<host_memory>::generateA(real alpha)
-{
-	int nx = domInfo->nx,
-	    ny = domInfo->ny;
-
-	int ASize = 5*( (nx-1)*ny + nx*(ny-1) ) - 4*(nx+ny) + 4,
-	    numUV = (nx-1)*ny + nx*(ny-1);
-
-	A.resize(numUV, numUV, ASize);
-
-	for(int i=0; i<ASize; i++)
-	{
-		A.row_indices[i] = L.row_indices[i];
-		A.column_indices[i] = L.column_indices[i];
-		A.values[i] = -alpha*L.values[i];
-		if(A.row_indices[i] == A.column_indices[i])
-			A.values[i] += M.values[A.row_indices[i]];
-	}
 } // generateA

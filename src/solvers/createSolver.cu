@@ -64,5 +64,4 @@ NavierStokesSolver<memoryType>* createSolver(parameterDB &paramDB, domain &domIn
 
 
 // specializations of the template function
-template NavierStokesSolver<host_memory>* createSolver(parameterDB &paramDB, domain &domInfo);
 template NavierStokesSolver<device_memory>* createSolver(parameterDB &paramDB, domain &domInfo);

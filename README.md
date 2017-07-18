@@ -209,17 +209,9 @@ To test an example on a smaller number of time steps, you can change the value o
 
 ---
 
-## Known issues
-
-* CPU routines do not work.
-* DirectForcingSolver has not been tested for cases with multiple or moving
-bodies.
-
----
-
 ## Contact
 
-Please e-mail [Anush Krishnan](mailto:k.anush@gmail.com),
+Please e-mail [Anush Krishnan](mailto:k.anush@gmail.com)
 or [Olivier Mesnard](mailto:mesnardo@gwu.edu), if you have any
 questions, suggestions or feedback.
 

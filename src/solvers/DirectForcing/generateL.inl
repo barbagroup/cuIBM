@@ -10,16 +10,6 @@
  *        Uses second order central differences on the non-uniform grid.
  */
 template <>
-void DirectForcingSolver<host_memory>::generateL() 
-{
-} // generateL
-
-
-/**
- * \brief Sets up the Laplacian matrix for the implicit diffusion term. 
- *        Uses second order central differences on the non-uniform grid.
- */
-template <>
 void DirectForcingSolver<device_memory>::generateL() 
 {
 #if 1

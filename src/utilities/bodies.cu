@@ -280,21 +280,6 @@ void bodies<memoryType>::update(parameterDB &db, domain &D, real Time)
 
 
 /**
- * \brief Writes body coordinates into a file (using data on the host).
- *
- * \param caseFolder directory of the simulation
- * \param timeStep time-step of the simulation
- */
-template <>
-void bodies<host_memory>::writeToFile(std::string &caseFolder, int timeStep)
-{
-	real *bx = thrust::raw_pointer_cast(&(x[0])),
-	     *by = thrust::raw_pointer_cast(&(y[0]));
-	writeToFile(bx, by, caseFolder, timeStep);
-} // writeToFile
-
-
-/**
  * \brief Writes body coordinates into a file (using data from the device).
  *
  * \param caseFolder directory of the simulation
@@ -336,5 +321,4 @@ void bodies<memoryType>::writeToFile(real *bx, real *by, std::string &caseFolder
 
 
 // specialization of the class bodies
-template class bodies<host_memory>;
 template class bodies<device_memory>;

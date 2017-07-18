@@ -35,16 +35,7 @@ void FadlunEtAlSolver<memoryType>::generateQT()
 
 
 /**
- * \brief The host function for updateG() is incomplete.
- */
-template <>
-void FadlunEtAlSolver<host_memory>::updateG()
-{
-} // updateG
-
-
-/**
- * \brief Update the gradient operator (device).
+ * \brief Update the gradient operator.
  *
  * Zeros rows of G that correspond to the forcing nodes.
  * Calls the function updateQ, but passes the matrix G to it.
@@ -100,7 +91,6 @@ void FadlunEtAlSolver<memoryType>::generateC()
 
 
 // specialization of the class
-template class FadlunEtAlSolver<host_memory>;
 template class FadlunEtAlSolver<device_memory>;
 
 
@@ -140,5 +130,5 @@ void FEAModifiedSolver<memoryType>::generateC()
 } // generateC
 
 
-template class FEAModifiedSolver<host_memory>;
+// specialization of the class
 template class FEAModifiedSolver<device_memory>;

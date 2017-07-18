@@ -8,65 +8,7 @@
 
 
 /**
- * \brief Generates the mass matrix and its inverse (on the host).
- *
- * The mass diagonal matrix is stored in a COO format. 
- * The time-increment value is included in the matrix.
- *
- */
-template <>
-void NavierStokesSolver<host_memory>::generateM()
-{
-	int nx = domInfo->nx,
-	    ny = domInfo->ny;
-	
-	int numU  = (nx-1)*ny;
-	int numUV = numU + nx*(ny-1);
-	int I;
-	real value;
-	real dt = (*paramDB)["simulation"]["dt"].get<real>();
-	
-	M.resize(numUV, numUV, numUV);
-	Minv.resize(numUV, numUV, numUV);
-	
-	for (int j=0; j < ny; j++)
-	{
-		for (int i=0; i < nx-1; i++)
-		{
-			I = j*(nx-1) + i;
-			value = 0.5*(domInfo->dx[i+1]+domInfo->dx[i]) / domInfo->dy[j] / dt;
-			
-			M.row_indices[I] = I;
-			M.column_indices[I] = I;
-			M.values[I] = value;
-			
-			Minv.row_indices[I] = I;
-			Minv.column_indices[I] = I;
-			Minv.values[I] = 1.0/value;
-		}
-	}
-	for (int j=0; j < ny-1; j++)
-	{
-		for (int i=0; i < nx; i++)
-		{
-			I = j*nx + i + numU;
-			
-			value  = 0.5*(domInfo->dy[j+1]+domInfo->dy[j]) / domInfo->dx[i] / dt;
-			
-			M.row_indices[I] = I;
-			M.column_indices[I] = I;
-			M.values[I] = value;
-			
-			Minv.row_indices[I] = I;
-			Minv.column_indices[I] = I;
-			Minv.values[I] = 1.0/value;
-		}
-	}
-} // generateM
-
-
-/**
- * \brief Generates the mass matrix and its inverse (on the device).
+ * \brief Generates the mass matrix and its inverse.
  *
  * The mass diagonal matrix is stored in a COO format. 
  * The time-increment value is included in the matrix.

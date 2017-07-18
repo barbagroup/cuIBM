@@ -35,10 +35,4 @@ void updateQT(int *QTRows, int *QTCols, real *QTVals,
               int nx, int ny, real *x, real *y, real *dx,
               int totalPoints, real *xB, real *yB, int *I, int *J);
 
-// update the QT matrix for the method by Taira & Colonius on the host
-void updateQTHost(int *QTRows, int *QTCols, real *QTVals,
-              int *ERows,  int *ECols,  real *EVals,
-              int nx, int ny, real *x, real *y, real *dx,
-              int totalPoints, real *xB, real *yB, int *I, int *J);
-
 } // End of namespace kernels

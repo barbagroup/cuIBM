@@ -136,21 +136,6 @@ void NavierStokesSolver<memoryType>::initialiseArrays(int numQ, int numLambda)
 
 
 /**
- * \brief Initializes velocity flux vectors (on the host).
- *
- * It creates a raw pointer before calling a method to initialize the flux vector.
- *
- */
-template <>
-void NavierStokesSolver<host_memory>::initialiseFluxes()
-{
-	real *q_r = thrust::raw_pointer_cast(&(q[0]));
-	initialiseFluxes(q_r);
-	qStar = q;
-} // initialiseFluxes
-
-
-/**
  * \brief Initializes velocity flux vectors (on the device).
  *
  * It creates a raw pointer before calling a method to initialize the flux vector.
@@ -401,7 +386,7 @@ void NavierStokesSolver<memoryType>::generateBN<3>()
 
 
 /**
- * \brief Generates the matrix of the Poisson solver (on the device).
+ * \brief Generates the matrix of the Poisson solver.
  */
 template <>
 void NavierStokesSolver<device_memory>::generateC()
@@ -411,24 +396,6 @@ void NavierStokesSolver<device_memory>::generateC()
 	cooD temp; // Should this temp matrix be created each time step?
 	cusp::multiply(QT, BN, temp);
 	cusp::multiply(temp, Q, C);
-	C.values[0] += C.values[0];
-	
-	logger.stopTimer("generateC");
-} // generateC
-
-
-/**
- * \brief Generates the matrix of the Poisson solver (on the host).
- */
-template <>
-void NavierStokesSolver<host_memory>::generateC()
-{
-	logger.startTimer("generateC");
-	
-	cooH temp;
-	cusp::multiply(QT, BN, temp);
-	cusp::multiply(temp, Q, C);
-	C.sort_by_row_and_column();
 	C.values[0] += C.values[0];
 	
 	logger.stopTimer("generateC");
@@ -639,5 +606,4 @@ void NavierStokesSolver<memoryType>::shutDown()
 
 
 // specialization of the class NavierStokesSolver
-template class NavierStokesSolver<host_memory>;
 template class NavierStokesSolver<device_memory>;

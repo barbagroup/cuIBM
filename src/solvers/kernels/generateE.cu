@@ -51,66 +51,6 @@ real deltaDeviceE(real x, real y, real h)
  */
 namespace kernels
 {
-	
-/**
- * \brief Generates the interpolation matrix (on the host).
- *
- * \param ERows row index of elements of the interpolation matrix
- * \param ECols column index of elements of the interpolation matrix
- * \param EVals value of elements of the interpolation matrix
- * \param nx number of cells in the x-direction
- * \param ny number of cells in the y-direction
- * \param x x-component of grid points
- * \param y y-component of grid points
- * \param dx cell-widths in the x-direction
- * \param totalPoints number of body points (all bodies included)
- * \param xB x-coordinate of body points (all bodies included)
- * \param yB y-coordinate of body points (all bodies included)
- * \param I x-index of the cells in which body points are located
- * \param J y-index of the cells in which body points are located
- */
-void generateEHost(int *ERows,  int *ECols,  real *EVals,
-                   int nx, int ny, real *x, real *y, real *dx,
-                   int totalPoints, real *xB, real *yB, int *I, int *J)
-{
-	for(int bodyIdx=0; bodyIdx<totalPoints; bodyIdx++)
-	{
-		int  Ib=I[bodyIdx],
-		     Jb=J[bodyIdx],
-		     EIdx  = bodyIdx*12,
-		     i, j;
-
-		real Dx = dx[Ib];
-	
-		// uB = integral (u * delta * dxdy)
-		// E = E_hat * R^-1 => divide E_hat by Dx
-	
-		// populate x-components
-		for(j=Jb-1; j<=Jb+1; j++)
-		{
-			for(i=Ib-2; i<=Ib+1; i++)
-			{
-				ERows[EIdx] = bodyIdx;
-				ECols[EIdx] = j*(nx-1) + i;
-				EVals[EIdx] = Dx*delta(x[i+1]-xB[bodyIdx], 0.5*(y[j]+y[j+1])-yB[bodyIdx], Dx);
-				EIdx++;
-			}
-		}
-
-		// populate y-components
-		for(j=Jb-2; j<=Jb+1; j++)
-		{
-			for(i=Ib-1; i<=Ib+1; i++)
-			{
-				ERows[EIdx+12*totalPoints-12] = bodyIdx + totalPoints;
-				ECols[EIdx+12*totalPoints-12] = j*nx + i + (nx-1)*ny;
-				EVals[EIdx+12*totalPoints-12] = Dx*delta(0.5*(x[i]+x[i+1])-xB[bodyIdx], y[j+1]-yB[bodyIdx], Dx);
-				EIdx++;
-			}
-		}
-	}
-} // generateEHost
-
 
 /**
  * \brief Computes elements of the interpolation matrix.

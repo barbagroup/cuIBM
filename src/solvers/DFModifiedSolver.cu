@@ -49,5 +49,5 @@ void DFModifiedSolver<memoryType>::projectionStep()
 } // projectionStep
 
 
-template class DFModifiedSolver<host_memory>;
+// specialization of the class
 template class DFModifiedSolver<device_memory>;

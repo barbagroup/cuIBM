@@ -117,5 +117,4 @@ void TairaColoniusSolver<memoryType>::updateSolverState()
 
 
 // specialization of the class TairaColoniusSolver
-template class TairaColoniusSolver<host_memory>;
 template class TairaColoniusSolver<device_memory>;

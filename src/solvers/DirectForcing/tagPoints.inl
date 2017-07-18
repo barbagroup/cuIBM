@@ -10,26 +10,6 @@
  *        which the velocity interpolation is performed.
  */
 template <>
-void DirectForcingSolver<host_memory>::tagPoints()
-{
-	logger.startTimer("tagPoints");
-
-	real *bx = thrust::raw_pointer_cast(&(B.x[0])),
-	     *by = thrust::raw_pointer_cast(&(B.y[0])),
-	     *uB = thrust::raw_pointer_cast(&(B.uB[0])),
-	     *vB = thrust::raw_pointer_cast(&(B.vB[0]));
-	     
-	tagPoints(bx, by, uB, vB);
-
-	logger.stopTimer("tagPoints");
-} // tagPoints
-
-
-/**
- * \brief Tags the forcing nodes among the velocity nodes, i.e. the nodes at 
- *        which the velocity interpolation is performed.
- */
-template <>
 void DirectForcingSolver<device_memory>::tagPoints()
 {
 	logger.startTimer("tagPoints");

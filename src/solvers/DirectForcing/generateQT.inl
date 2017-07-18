@@ -9,15 +9,6 @@
 
 
 /**
- * \brief Update the gradient operator.
- */
-template <>
-void DirectForcingSolver<host_memory>::updateQ()
-{
-} // updateQ
-
-
-/**
  * \brief Update the gradient operator (device).
  * 
  * After the Q matrix has been set up for the entire grid, this function

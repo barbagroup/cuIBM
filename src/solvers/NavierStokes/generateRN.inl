@@ -22,7 +22,7 @@ void NavierStokesSolver<memoryType>::calculateExplicitLambdaTerms()
 
 
 /**
- * \brief Generates explicit terms that arise from the velocity fluxes (device).
+ * \brief Generates explicit terms that arise from the velocity fluxes.
  *
  * Includes the time derivative, convection and diffusion terms.
  */
@@ -79,104 +79,6 @@ void NavierStokesSolver<device_memory>::calculateExplicitQTerms()
 	// calculate convection terms for the columns adjoining the left and right boundaries
 	kernels::convectionTermULeftRight <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, nu, xminus, xplus);
 	kernels::convectionTermVLeftRight <<<dimGridbc, dimBlockbc>>> (rn_r, H_r, q_r, nx, ny, dxD, dyD, dt, gamma, zeta, alpha, nu, yminus, yplus, xminus, xplus);
-} // calculateExplicitQTerms
-
-
-/**
- * \brief Generates explicit terms that arise from the velocity fluxes (host).
- *
- * Includes the time derivative, convection and diffusion terms.
- * Currently incomplete. Need to fill in the diffusion terms.
- */
-template <>
-void NavierStokesSolver<host_memory>::calculateExplicitQTerms()
-{
-	real gamma = intgSchm.gamma[subStep],
-	     zeta = intgSchm.zeta[subStep],
-	     alpha = intgSchm.alphaExplicit[subStep];
-	      
-	int nx = domInfo->nx,
-	    ny = domInfo->ny;
-	     
-	int numU = (nx-1)*ny;
-	int Iu = 0, Iv = 0;
-	real east = 0, west = 0, north = 0, south = 0, Hn = 0, cTerm = 0, dTerm = 0, u = 0, v = 0;
-
-	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
-	     *dy = thrust::raw_pointer_cast(&(domInfo->dy[0]));
-	     
-	real *xminus = thrust::raw_pointer_cast(&(bc[XMINUS][0])),
-	     *xplus  = thrust::raw_pointer_cast(&(bc[XPLUS][0])),
-	     *yminus = thrust::raw_pointer_cast(&(bc[YMINUS][0])),
-	     *yplus  = thrust::raw_pointer_cast(&(bc[YPLUS][0]));
-	     
-	real dt = (*paramDB)["simulation"]["dt"].get<real>();
-	
-	for(int j=0; j<ny; j++)
-	{
-		// convection terms for the x-momentum equation
-		for(int i=0; i<nx-1; i++)
-		{
-			Iu = j*(nx-1)+i;
-			Iv = j*nx + i + numU;
-			Hn = H[Iu];
-			u  = q[Iu]/dy[j];
-			if(i==0)
-				west = (xminus[j] + u)/2.0 * (xminus[j] + u)/2.0;
-			else
-				west = (q[Iu-1]/dy[j] + u)/2.0 * (q[Iu-1]/dy[j] + u)/2.0;
-			if(i==nx-2)
-				east = (u + xplus[j])/2.0 * (u + xplus[j])/2.0;
-			else
-				east = (u + q[Iu+1]/dy[j])/2.0 * (u + q[Iu+1]/dy[j])/2.0;
-			if(j==0)
-				south = yminus[i] * (yminus[i+(nx-1)]+yminus[i+1+(nx-1)])/2.0;
-			else
-				south = (q[Iu-(nx-1)]/dy[j-1] + u)/2.0 * (q[Iv-nx]/dx[i] + q[Iv-nx+1]/dx[i+1])/2.0;
-			if(j==ny-1)
-				north = yplus[i] * (yplus[i+(nx-1)]+yplus[i+1+(nx-1)])/2.0;
-			else
-				north = (u + q[Iu+(nx-1)]/dy[j+1])/2.0 * (q[Iv]/dx[i] + q[Iv+1]/dx[i+1])/2.0;
-				
-			H[Iu]  = -(east-west)/(0.5*(dx[i]+dx[i+1])) -(north-south)/dy[j];
-			cTerm = gamma*H[Iu] + zeta*Hn;
-			dTerm = alpha*0;
-			rn[Iu] = (u/dt + cTerm + dTerm) * 0.5*(dx[i]+dx[i+1]);
-		}
-	}
-	
-	// convection terms for the y-momentum equation
-	for(int j=0; j<ny-1; j++)
-	{
-		for(int i=0; i<nx; i++)
-		{
-			Iv = j*nx+i + numU;
-			Iu = j*(nx-1) + i;
-			Hn = H[Iv];
-			v  = q[Iv]/dx[i];
-			if(j==0)
-				south = (yminus[i+(nx-1)] + v)/2.0 * (yminus[i+(nx-1)] + v)/2.0;
-			else
-				south = (q[Iv-nx]/dx[i] + v)/2.0 * (q[Iv-nx]/dx[i] + v)/2.0;
-			if(j==ny-2)
-				north = (v + yplus[i+(nx-1)])/2.0 * (v + yplus[i+(nx-1)])/2.0;
-			else
-				north = (v + q[Iv+nx]/dx[i])/2.0 * (v + q[Iv+nx]/dx[i])/2.0;
-			if(i==0)
-				west = xminus[j+ny]*(xminus[j]+xminus[j+1])/2.0;
-			else
-				west = (q[Iv-1]/dx[i-1] + v)/2.0 * (q[Iu-1]/dy[j] + q[Iu-1+(nx-1)]/dy[j+1])/2.0;
-			if(i==nx-1)
-				east = xplus[j+ny]*(xplus[j]+xplus[j+1])/2.0;
-			else
-				east = (v + q[Iv+1]/dx[i+1])/2.0 * (q[Iu]/dy[j] + q[Iu+(nx-1)]/dy[j+1])/2.0;
-				
-			H[Iv]  = -(east-west)/dx[i] -(north-south)/(0.5*(dy[j]+dy[j+1]));
-			cTerm = gamma*H[Iv] +zeta*Hn;
-			dTerm = alpha*0;
-			rn[Iv] = (v/dt + cTerm + dTerm) * 0.5*(dy[j]+dy[j+1]);
-		}
-	}
 } // calculateExplicitQTerms
 
 

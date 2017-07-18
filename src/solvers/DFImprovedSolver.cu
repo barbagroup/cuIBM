@@ -590,5 +590,5 @@ void DFImprovedSolver<memoryType>::generateC()
 } // generateC
 */
 
-template class DFImprovedSolver<host_memory>;
+// specialization of the class
 template class DFImprovedSolver<device_memory>;

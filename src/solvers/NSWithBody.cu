@@ -56,16 +56,7 @@ void NSWithBody<memoryType>::updateBodies()
 
 
 /**
- * \brief Doing nothing (on the host).
- */
-template <>
-void NSWithBody<host_memory>::calculateForce()
-{
-} // calculateForce
-
-
-/**
- * \brief Calculates forces acting on an immersed body (on the device).
+ * \brief Calculates forces acting on an immersed body.
  *
  * Uses the control volume approach explained by Lai and Peskin (2000).
  * This is a general method that can be used with any immersed boundary method.
@@ -174,5 +165,4 @@ void NSWithBody<memoryType>::shutDown()
 
 
 // specialization of the class
-template class NSWithBody<host_memory>;
 template class NSWithBody<device_memory>;

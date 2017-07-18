@@ -9,58 +9,7 @@
 
 
 /**
- * \brief Generates the right hand-side of the Poisson system (on the host).
- *
- * It contains the inhomogeneous boundary conditions from the discrete divergence
- * operator, as well as the no-slip boundary condition at the body surface.
- *
- */
-template <>
-void TairaColoniusSolver<host_memory>::generateBC2()
-{
-	int nx = domInfo->nx,
-	    ny = domInfo->ny;
-	
-	real *dx = thrust::raw_pointer_cast(&(domInfo->dx[0])),
-	     *dy = thrust::raw_pointer_cast(&(domInfo->dy[0]));
-	
-	// rhs2 is of size np+2nb	
-	// boundary conditions are obtained from the continuity equations
-		
-	// initialise the values in bc2 to zero
-	cusp::blas::fill(bc2, 0.0);
-	
-	for(int i=0; i<nx; i++)
-	{
-		bc2[i] -= bc[YMINUS][i+nx-1]*dx[i]; // v[0][i+1]*dx;
-		bc2[(ny-1)*nx + i] += bc[YPLUS][i+nx-1]*dx[i]; // v[ny][i+1]*dx;
-	}
-
-	for(int j=0; j<ny; j++)
-	{
-		// left
-		bc2[j*nx] -= bc[XMINUS][j]*dy[j]; // u[j+1][0]*dy;
-		// right
-		bc2[j*nx+nx-1] += bc[XPLUS][j]*dy[j]; // u[j+1][nx]*dy;
-	}	
-
-	int	row = nx*ny;
-	/// no-slip condition on the body surface
-	for(int k=0; k<B.totalPoints; k++)
-	{
-		bc2[row] = B.uB[k];
-		row++;
-	}
-	for(int k=0; k<B.totalPoints; k++)
-	{
-		bc2[row] = B.vB[k];
-		row++;
-	}
-} // generateBC2
-
-
-/**
- * \brief Generates the right hand-side of the Poisson system (on the device).
+ * \brief Generates the right hand-side of the Poisson system.
  *
  * It contains the inhomogeneous boundary conditions from the discrete divergence
  * operator, as well as the no-slip boundary condition at the body surface.

@@ -42,34 +42,3 @@ void DirectForcingSolver  <device_memory>::generateA(real alpha)
 
 	kernels::generateADirectForcing <<<dimGrid, dimBlock>>> (ARows, ACols, AVals, MVals, LRows, LCols, LVals, ASize, alpha, tags_r);
 } // generateA
-
-
-/**
- * \brief Generates the matrix A on the host.
- *
- * \param alpha Coefficient of the implicit part of the diffusion term.
- *              1 for backward Euler, 0.5 for Crank-Nicolson and 0 for explicit Euler.
- */
-template <>
-void DirectForcingSolver<host_memory>::generateA(real alpha)
-{
-	int nx = domInfo->nx,
-	    ny = domInfo->ny;
-
-	int ASize = 5*( (nx-1)*ny + nx*(ny-1) ) - 4*(nx+ny) + 4,
-	    numUV = (nx-1)*ny + nx*(ny-1);
-
-	A.resize(numUV, numUV, ASize);
-
-	for(int i=0; i<ASize; i++)
-	{
-		A.row_indices[i] = L.row_indices[i];
-		A.column_indices[i] = L.column_indices[i];
-		if(tags[A.row_indices[i]]==-1)
-			A.values[i] = -alpha*L.values[i];
-		else
-			A.values[i] = -L.values[i];
-		if(A.row_indices[i] == A.column_indices[i])
-			A.values[i] += M.values[A.row_indices[i]];
-	}
-} // generateA

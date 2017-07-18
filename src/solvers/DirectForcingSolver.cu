@@ -233,5 +233,4 @@ void DirectForcingSolver<memoryType>::generateC()
 
 
 // specialization of the class
-template class DirectForcingSolver<host_memory>;
 template class DirectForcingSolver<device_memory>;

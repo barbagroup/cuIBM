@@ -9,7 +9,7 @@
 
 
 /**
- * \brief Update the RHS of the velocity system (device).
+ * \brief Update the RHS of the velocity system.
  *
  * The vector \a rhs1 is first set up as if it would have been in the 
  * absence of an immersed boundary. This function then changes values 
@@ -46,47 +46,4 @@ void DirectForcingSolver<device_memory>::updateRHS1()
 	//kernels::updateRHS1Y <<<dimGrid, dimBlock>>>(rhs1_r, nx, ny, dt, dy_r, tags_r, coeffs_r, uv_r);
 	kernels::updateRHS1X <<<dimGrid, dimBlock>>>(rhs1_r, nx, ny, dt, dx_r, tags_r, coeffs_r, coeffs2_r, uv_r);
 	kernels::updateRHS1Y <<<dimGrid, dimBlock>>>(rhs1_r, nx, ny, dt, dy_r, tags_r, coeffs_r, coeffs2_r, uv_r);
-} // updateRHS1
-
-
-/**
- * \brief Update the RHS of the velocity system (host).
- *
- * The vector \a rhs1 is first set up as if it would have been in the 
- * absence of an immersed boundary. This function then changes values 
- * in the vector that correspond to the forcing nodes on the grid, 
- * replacing them with the rhs values from the interpolation relations.
- */
-template <>
-void DirectForcingSolver<host_memory>::updateRHS1()
-{
-	int nx = domInfo->nx,
-	    ny = domInfo->ny;
-	
-	int numU  = (nx-1)*ny,
-	    I = 0;
-	
-	real dt = (*paramDB)["simulation"]["dt"].get<real>();
-	
-	for(int j=0; j<ny; j++)
-	{
-		for(int i=0; i<nx-1; i++)
-		{
-			I = j*(nx-1)+i;
-
-			rhs1[I] = (tags[I]==-1)*rhs1[I]
-			          + ((tags[I]!=-1)*(1.0-coeffs[I]-coeffs2[I])*uv[I]) * 0.5*(domInfo->dx[i+1]+domInfo->dx[i])/dt;
-		}
-	}
-	
-	for(int j=0; j<ny-1; j++)
-	{
-		for(int i=0; i<nx; i++)
-		{
-			I = numU + j*nx + i;
-		
-			rhs1[I] = (tags[I]==-1)*rhs1[I]
-			          + ((tags[I]!=-1)*((1.0-coeffs[I]-coeffs2[I])*uv[I])) * 0.5*(domInfo->dy[j+1]+domInfo->dy[j])/dt;
-		}
-	}
 } // updateRHS1
