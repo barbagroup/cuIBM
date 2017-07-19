@@ -1,8 +1,8 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/DFModifiedSolver.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/DFModifiedSolver.h">
-<area shape="rect" id="node2" href="$FadlunEtAlSolver_8h.html" title="Declaration of the classes FadlunEtAlSolver and FEAModifiedSolver. " alt="" coords="213,105,397,157"/>
-<area shape="rect" id="node3" href="$createSolver_8h.html" title="Declaration of the function that creates the Navier&#45;Stokes solver. " alt="" coords="97,205,254,257"/>
-<area shape="rect" id="node7" href="$DFModifiedSolver_8cu.html" title="Implementation of the methods of the class DFModifiedSolver. " alt="" coords="421,105,615,157"/>
-<area shape="rect" id="node6" href="$FadlunEtAlSolver_8cu.html" title="Implementation of the methods of the classes FadlunEtAlSolver and FEAModifiedSolver. " alt="" coords="277,205,468,257"/>
-<area shape="rect" id="node4" href="$cuIBM_8cu.html" title="Main source file of cuIBM. " alt="" coords="5,305,162,357"/>
-<area shape="rect" id="node5" href="$createSolver_8cu.html" title="Implementation of the function that creates the Navier&#45;Stokes solver. " alt="" coords="186,305,349,357"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/DFModifiedSolver.h" name="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/DFModifiedSolver.h">
+<area shape="rect" id="node2" href="$FadlunEtAlSolver_8h.html" title="Declaration of the classes FadlunEtAlSolver and FEAModifiedSolver. " alt="" coords="211,109,395,165"/>
+<area shape="rect" id="node3" href="$createSolver_8h.html" title="Declaration of the function that creates the Navier&#45;Stokes solver. " alt="" coords="95,213,251,269"/>
+<area shape="rect" id="node7" href="$DFModifiedSolver_8cu.html" title="Implementation of the methods of the class DFModifiedSolver. " alt="" coords="419,109,613,165"/>
+<area shape="rect" id="node6" href="$FadlunEtAlSolver_8cu.html" title="Implementation of the methods of the classes FadlunEtAlSolver and FEAModifiedSolver. " alt="" coords="275,213,466,269"/>
+<area shape="rect" id="node4" href="$cuIBM_8cu.html" title="Main source file of cuIBM. " alt="" coords="5,317,160,373"/>
+<area shape="rect" id="node5" href="$createSolver_8cu.html" title="Implementation of the function that creates the Navier&#45;Stokes solver. " alt="" coords="184,317,347,373"/>
 </map>

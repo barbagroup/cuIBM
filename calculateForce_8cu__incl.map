@@ -1,5 +1,5 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/calculateForce.cu" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/calculateForce.cu">
-<area shape="rect" id="node2" href="$calculateForce_8h.html" title="Declaration of the kernels to calculate the forces acting on a body The method is described in Lai &amp; ..." alt="" coords="780,105,899,131"/>
-<area shape="rect" id="node3" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="785,179,894,204"/>
-<area shape="rect" id="node19" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="1926,252,1995,277"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/calculateForce.cu" name="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/calculateForce.cu">
+<area shape="rect" id="node2" href="$calculateForce_8h.html" title="Declaration of the kernels to calculate the forces acting on a body The method is described in Lai &amp; ..." alt="" coords="783,109,902,136"/>
+<area shape="rect" id="node3" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="787,184,898,211"/>
+<area shape="rect" id="node19" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="1933,259,2001,285"/>
 </map>

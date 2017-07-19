@@ -1,8 +1,8 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/utilities/bodies.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/utilities/bodies.h">
-<area shape="rect" id="node2" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="940,179,1016,204"/>
-<area shape="rect" id="node23" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="1864,105,1976,131"/>
-<area shape="rect" id="node27" href="$body_8h.html" title="Definition of the class body. " alt="" coords="2001,105,2061,131"/>
-<area shape="rect" id="node3" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="1091,252,1155,277"/>
-<area shape="rect" id="node19" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="1945,325,2013,351"/>
-<area shape="rect" id="node26" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="1848,179,1993,204"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/utilities/bodies.h" name="/home/mesnardo/git/barbagroup/cuIBM/src/utilities/bodies.h">
+<area shape="rect" id="node2" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="946,184,1021,211"/>
+<area shape="rect" id="node23" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="1873,109,1984,136"/>
+<area shape="rect" id="node27" href="$body_8h.html" title="Definition of the class body. " alt="" coords="2009,109,2070,136"/>
+<area shape="rect" id="node3" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="1096,259,1161,285"/>
+<area shape="rect" id="node19" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="1952,333,2020,360"/>
+<area shape="rect" id="node26" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="1858,184,1999,211"/>
 </map>

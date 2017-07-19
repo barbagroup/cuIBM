@@ -1,5 +1,5 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateM.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateM.h">
-<area shape="rect" id="node2" href="$generateM_8cu.html" title="Implementation of the kernels to generate the mass matrix and its inverse. " alt="" coords="5,112,205,164"/>
-<area shape="rect" id="node3" href="$generateM_8inl.html" title="Implementation of the methods to generate the mass matrix and its inverse. " alt="" coords="228,105,384,171"/>
-<area shape="rect" id="node4" href="$NavierStokesSolver_8cu.html" title="Implementation of the methods of the class NavierStokesSolver. " alt="" coords="204,219,409,271"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateM.h" name="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateM.h">
+<area shape="rect" id="node2" href="$generateM_8cu.html" title="Implementation of the kernels to generate the mass matrix and its inverse. " alt="" coords="5,117,203,173"/>
+<area shape="rect" id="node3" href="$generateM_8inl.html" title="Implementation of the methods to generate the mass matrix and its inverse. " alt="" coords="227,109,381,180"/>
+<area shape="rect" id="node4" href="$NavierStokesSolver_8cu.html" title="Implementation of the methods of the class NavierStokesSolver. " alt="" coords="201,228,407,284"/>
 </map>

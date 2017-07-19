@@ -1,25 +1,25 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/NavierStokesSolver.cu" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/NavierStokesSolver.cu">
-<area shape="rect" id="node3" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="1024,105,1173,131"/>
-<area shape="rect" id="node35" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="873,185,930,211"/>
-<area shape="rect" id="node38" href="$generateM_8inl.html" title="Implementation of the methods to generate the mass matrix and its inverse. " alt="" coords="1354,265,1539,291"/>
-<area shape="rect" id="node40" href="$NavierStokes_2generateL_8inl.html" title="NavierStokes/generateL.inl" alt="" coords="1731,105,1912,131"/>
-<area shape="rect" id="node41" href="$NavierStokes_2generateA_8inl.html" title="NavierStokes/generateA.inl" alt="" coords="1563,265,1746,291"/>
-<area shape="rect" id="node43" href="$NavierStokes_2generateQT_8inl.html" title="NavierStokes/generateQT.inl" alt="" coords="433,185,624,211"/>
-<area shape="rect" id="node45" href="$generateRN_8inl.html" title="Implementation of the methods to generate the explicit terms of the momentum equation. " alt="" coords="1719,185,1913,211"/>
-<area shape="rect" id="node47" href="$generateBC1_8inl.html" title="Implementation of the methods to generate inhomogeneous boundary conditions from the discrete Laplaci..." alt="" coords="649,185,849,211"/>
-<area shape="rect" id="node49" href="$NavierStokes_2generateBC2_8inl.html" title="NavierStokes/generateBC2.inl" alt="" coords="1456,105,1656,131"/>
-<area shape="rect" id="node4" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="1080,505,1189,531"/>
-<area shape="rect" id="node23" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="938,339,1059,364"/>
-<area shape="rect" id="node24" href="$integrationScheme_8h.html" title="Definition of the class integrationScheme. " alt="" coords="1091,265,1279,291"/>
-<area shape="rect" id="node25" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="226,339,382,364"/>
-<area shape="rect" id="node29" href="$preconditioner_8h.html" title="Definition of the class preconditioner. " alt="" coords="1813,419,1974,444"/>
-<area shape="rect" id="node20" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="308,585,377,611"/>
-<area shape="rect" id="node28" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="72,419,216,444"/>
-<area shape="rect" id="node37" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="747,265,864,291"/>
-<area shape="rect" id="node39" href="$generateM_8h.html" title="Declaration of the kernels to generate the mass matrix and its inverse. " alt="" coords="1184,339,1373,364"/>
-<area shape="rect" id="node42" href="$generateA_8h.html" title="Declaration of the kernels to generate the matrix resulting from the implicit terms in the momentum e..." alt="" coords="1397,339,1584,364"/>
-<area shape="rect" id="node44" href="$generateQT_8h.html" title="Declaration of the kernels to generate gradient matrix and interpolation matrix. " alt="" coords="485,419,680,444"/>
-<area shape="rect" id="node46" href="$generateRN_8h.html" title="Declaration of the kernels to generate the explicit terms of the momentum equation. " alt="" coords="1659,339,1856,364"/>
-<area shape="rect" id="node48" href="$generateBC1_8h.html" title="Declaration of the kernels to generate right hand&#45;side terms of the intermediate velocity flux solver..." alt="" coords="705,412,871,451"/>
-<area shape="rect" id="node50" href="$generateBC2_8h.html" title="Declaration of the kernels to generate elements of the right hand&#45;side of the Poisson solver..." alt="" coords="1491,179,1658,217"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/NavierStokesSolver.cu" name="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/NavierStokesSolver.cu">
+<area shape="rect" id="node3" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="1021,109,1170,136"/>
+<area shape="rect" id="node35" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="870,191,927,218"/>
+<area shape="rect" id="node38" href="$generateM_8inl.html" title="Implementation of the methods to generate the mass matrix and its inverse. " alt="" coords="1350,273,1532,300"/>
+<area shape="rect" id="node40" href="$NavierStokes_2generateL_8inl.html" title="NavierStokes/generateL.inl" alt="" coords="1722,109,1901,136"/>
+<area shape="rect" id="node41" href="$NavierStokes_2generateA_8inl.html" title="NavierStokes/generateA.inl" alt="" coords="1557,273,1738,300"/>
+<area shape="rect" id="node43" href="$NavierStokes_2generateQT_8inl.html" title="NavierStokes/generateQT.inl" alt="" coords="428,191,619,218"/>
+<area shape="rect" id="node45" href="$generateRN_8inl.html" title="Implementation of the methods to generate the explicit terms of the momentum equation. " alt="" coords="1712,191,1904,218"/>
+<area shape="rect" id="node47" href="$generateBC1_8inl.html" title="Implementation of the methods to generate inhomogeneous boundary conditions from the discrete Laplaci..." alt="" coords="646,191,844,218"/>
+<area shape="rect" id="node49" href="$NavierStokes_2generateBC2_8inl.html" title="NavierStokes/generateBC2.inl" alt="" coords="1450,109,1648,136"/>
+<area shape="rect" id="node4" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="1080,519,1191,546"/>
+<area shape="rect" id="node23" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="936,348,1056,375"/>
+<area shape="rect" id="node24" href="$integrationScheme_8h.html" title="Definition of the class integrationScheme. " alt="" coords="1088,273,1274,300"/>
+<area shape="rect" id="node25" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="226,348,381,375"/>
+<area shape="rect" id="node29" href="$preconditioner_8h.html" title="Definition of the class preconditioner. " alt="" coords="1803,430,1962,457"/>
+<area shape="rect" id="node20" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="311,601,379,628"/>
+<area shape="rect" id="node28" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="74,430,216,457"/>
+<area shape="rect" id="node37" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="744,273,860,300"/>
+<area shape="rect" id="node39" href="$generateM_8h.html" title="Declaration of the kernels to generate the mass matrix and its inverse. " alt="" coords="1181,348,1368,375"/>
+<area shape="rect" id="node42" href="$generateA_8h.html" title="Declaration of the kernels to generate the matrix resulting from the implicit terms in the momentum e..." alt="" coords="1392,348,1576,375"/>
+<area shape="rect" id="node44" href="$generateQT_8h.html" title="Declaration of the kernels to generate gradient matrix and interpolation matrix. " alt="" coords="484,430,678,457"/>
+<area shape="rect" id="node46" href="$generateRN_8h.html" title="Declaration of the kernels to generate the explicit terms of the momentum equation. " alt="" coords="1650,348,1845,375"/>
+<area shape="rect" id="node48" href="$generateBC1_8h.html" title="Declaration of the kernels to generate right hand&#45;side terms of the intermediate velocity flux solver..." alt="" coords="702,423,866,464"/>
+<area shape="rect" id="node50" href="$generateBC2_8h.html" title="Declaration of the kernels to generate elements of the right hand&#45;side of the Poisson solver..." alt="" coords="1504,184,1668,225"/>
 </map>

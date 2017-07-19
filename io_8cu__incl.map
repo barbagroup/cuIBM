@@ -1,10 +1,10 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/io/io.cu" name="/Users/mesnardo/git/barbagroup/cuIBM/src/io/io.cu">
-<area shape="rect" id="node3" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="473,105,516,131"/>
-<area shape="rect" id="node5" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="985,399,1094,424"/>
-<area shape="rect" id="node29" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="35,325,180,351"/>
-<area shape="rect" id="node25" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="557,252,677,277"/>
-<area shape="rect" id="node26" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="247,252,403,277"/>
-<area shape="rect" id="node30" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="382,179,498,204"/>
-<area shape="rect" id="node21" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="356,472,425,497"/>
-<area shape="rect" id="node31" href="$body_8h.html" title="Definition of the class body. " alt="" coords="427,252,487,277"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/io/io.cu" name="/home/mesnardo/git/barbagroup/cuIBM/src/io/io.cu">
+<area shape="rect" id="node3" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="480,109,523,136"/>
+<area shape="rect" id="node5" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="983,408,1094,435"/>
+<area shape="rect" id="node29" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="36,333,177,360"/>
+<area shape="rect" id="node25" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="564,259,684,285"/>
+<area shape="rect" id="node26" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="245,259,400,285"/>
+<area shape="rect" id="node30" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="387,184,503,211"/>
+<area shape="rect" id="node21" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="354,483,422,509"/>
+<area shape="rect" id="node31" href="$body_8h.html" title="Definition of the class body. " alt="" coords="424,259,485,285"/>
 </map>

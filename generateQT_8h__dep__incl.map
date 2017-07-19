@@ -1,11 +1,11 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateQT.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateQT.h">
-<area shape="rect" id="node2" href="$DFImprovedSolver_8cu.html" title="Implementation of the methods of the class DFImprovedSolver. " alt="" coords="5,112,205,164"/>
-<area shape="rect" id="node3" href="$DirectForcing_2generateQT_8inl.html" title="/Users/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/DirectForcing\l/generateQT.inl" alt="" coords="228,105,384,171"/>
-<area shape="rect" id="node5" href="$FadlunEtAlSolver_8cu.html" title="Implementation of the methods of the classes FadlunEtAlSolver and FEAModifiedSolver. " alt="" coords="408,112,599,164"/>
-<area shape="rect" id="node6" href="$generateQT_8cu.html" title="Implementation of the kernels to generate the gradient matrix and interpolation matrix. " alt="" coords="624,112,829,164"/>
-<area shape="rect" id="node7" href="$NavierStokes_2generateQT_8inl.html" title="/Users/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/NavierStokes\l/generateQT.inl" alt="" coords="852,105,1008,171"/>
-<area shape="rect" id="node9" href="$TairaColonius_2generateQT_8inl.html" title="/Users/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/TairaColonius\l/generateQT.inl" alt="" coords="1056,105,1212,171"/>
-<area shape="rect" id="node4" href="$DirectForcingSolver_8cu.html" title="Implementation of the methods of the class DirectForcingSolver. " alt="" coords="204,219,409,271"/>
-<area shape="rect" id="node8" href="$NavierStokesSolver_8cu.html" title="Implementation of the methods of the class NavierStokesSolver. " alt="" coords="814,219,1019,271"/>
-<area shape="rect" id="node10" href="$TairaColoniusSolver_8cu.html" title="Implementation of the methods of the class TairaColoniusSolver. " alt="" coords="1043,219,1250,271"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateQT.h" name="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateQT.h">
+<area shape="rect" id="node2" href="$DFImprovedSolver_8cu.html" title="Implementation of the methods of the class DFImprovedSolver. " alt="" coords="5,117,204,173"/>
+<area shape="rect" id="node3" href="$DirectForcing_2generateQT_8inl.html" title="/home/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/DirectForcing\l/generateQT.inl" alt="" coords="227,109,382,180"/>
+<area shape="rect" id="node5" href="$FadlunEtAlSolver_8cu.html" title="Implementation of the methods of the classes FadlunEtAlSolver and FEAModifiedSolver. " alt="" coords="407,117,597,173"/>
+<area shape="rect" id="node6" href="$generateQT_8cu.html" title="Implementation of the kernels to generate the gradient matrix and interpolation matrix. " alt="" coords="621,117,825,173"/>
+<area shape="rect" id="node7" href="$NavierStokes_2generateQT_8inl.html" title="/home/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/NavierStokes\l/generateQT.inl" alt="" coords="850,109,1005,180"/>
+<area shape="rect" id="node9" href="$TairaColonius_2generateQT_8inl.html" title="/home/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/TairaColonius\l/generateQT.inl" alt="" coords="1042,109,1197,180"/>
+<area shape="rect" id="node4" href="$DirectForcingSolver_8cu.html" title="Implementation of the methods of the class DirectForcingSolver. " alt="" coords="202,228,407,284"/>
+<area shape="rect" id="node8" href="$NavierStokesSolver_8cu.html" title="Implementation of the methods of the class NavierStokesSolver. " alt="" coords="811,228,1017,284"/>
+<area shape="rect" id="node10" href="$TairaColoniusSolver_8cu.html" title="Implementation of the methods of the class TairaColoniusSolver. " alt="" coords="1041,228,1248,284"/>
 </map>

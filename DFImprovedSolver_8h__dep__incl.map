@@ -1,6 +1,6 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/DFImprovedSolver.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/DFImprovedSolver.h">
-<area shape="rect" id="node2" href="$createSolver_8h.html" title="Declaration of the function that creates the Navier&#45;Stokes solver. " alt="" coords="97,105,254,157"/>
-<area shape="rect" id="node5" href="$DFImprovedSolver_8cu.html" title="Implementation of the methods of the class DFImprovedSolver. " alt="" coords="277,105,476,157"/>
-<area shape="rect" id="node3" href="$cuIBM_8cu.html" title="Main source file of cuIBM. " alt="" coords="5,205,162,257"/>
-<area shape="rect" id="node4" href="$createSolver_8cu.html" title="Implementation of the function that creates the Navier&#45;Stokes solver. " alt="" coords="186,205,349,257"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/DFImprovedSolver.h" name="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/DFImprovedSolver.h">
+<area shape="rect" id="node2" href="$createSolver_8h.html" title="Declaration of the function that creates the Navier&#45;Stokes solver. " alt="" coords="95,109,251,165"/>
+<area shape="rect" id="node5" href="$DFImprovedSolver_8cu.html" title="Implementation of the methods of the class DFImprovedSolver. " alt="" coords="275,109,474,165"/>
+<area shape="rect" id="node3" href="$cuIBM_8cu.html" title="Main source file of cuIBM. " alt="" coords="5,213,160,269"/>
+<area shape="rect" id="node4" href="$createSolver_8cu.html" title="Implementation of the function that creates the Navier&#45;Stokes solver. " alt="" coords="184,213,347,269"/>
 </map>

@@ -1,5 +1,5 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateRN.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateRN.h">
-<area shape="rect" id="node2" href="$generateRN_8cu.html" title="Implementation of the kernels to generate the explicit terms of the momentum equation. " alt="" coords="5,112,213,164"/>
-<area shape="rect" id="node3" href="$generateRN_8inl.html" title="Implementation of the methods to generate the explicit terms of the momentum equation. " alt="" coords="236,105,392,171"/>
-<area shape="rect" id="node4" href="$NavierStokesSolver_8cu.html" title="Implementation of the methods of the class NavierStokesSolver. " alt="" coords="212,219,417,271"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateRN.h" name="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateRN.h">
+<area shape="rect" id="node2" href="$generateRN_8cu.html" title="Implementation of the kernels to generate the explicit terms of the momentum equation. " alt="" coords="5,117,212,173"/>
+<area shape="rect" id="node3" href="$generateRN_8inl.html" title="Implementation of the methods to generate the explicit terms of the momentum equation. " alt="" coords="237,109,391,180"/>
+<area shape="rect" id="node4" href="$NavierStokesSolver_8cu.html" title="Implementation of the methods of the class NavierStokesSolver. " alt="" coords="211,228,417,284"/>
 </map>

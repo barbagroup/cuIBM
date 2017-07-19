@@ -1,7 +1,7 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateBC2.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateBC2.h">
-<area shape="rect" id="node2" href="$generateBC2_8cu.html" title="Implementation of the kernels to generate elements of the right hand&#45;side of the Poisson solver..." alt="" coords="5,112,219,164"/>
-<area shape="rect" id="node3" href="$NavierStokes_2generateBC2_8inl.html" title="/Users/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/NavierStokes\l/generateBC2.inl" alt="" coords="244,105,400,171"/>
-<area shape="rect" id="node5" href="$TairaColonius_2generateBC2_8inl.html" title="/Users/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/TairaColonius\l/generateBC2.inl" alt="" coords="448,105,604,171"/>
-<area shape="rect" id="node4" href="$NavierStokesSolver_8cu.html" title="Implementation of the methods of the class NavierStokesSolver. " alt="" coords="206,219,411,271"/>
-<area shape="rect" id="node6" href="$TairaColoniusSolver_8cu.html" title="Implementation of the methods of the class TairaColoniusSolver. " alt="" coords="434,219,641,271"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateBC2.h" name="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/kernels/generateBC2.h">
+<area shape="rect" id="node2" href="$generateBC2_8cu.html" title="Implementation of the kernels to generate elements of the right hand&#45;side of the Poisson solver..." alt="" coords="5,117,217,173"/>
+<area shape="rect" id="node3" href="$NavierStokes_2generateBC2_8inl.html" title="/home/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/NavierStokes\l/generateBC2.inl" alt="" coords="241,109,395,180"/>
+<area shape="rect" id="node5" href="$TairaColonius_2generateBC2_8inl.html" title="/home/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/TairaColonius\l/generateBC2.inl" alt="" coords="445,109,599,180"/>
+<area shape="rect" id="node4" href="$NavierStokesSolver_8cu.html" title="Implementation of the methods of the class NavierStokesSolver. " alt="" coords="201,228,408,284"/>
+<area shape="rect" id="node6" href="$TairaColoniusSolver_8cu.html" title="Implementation of the methods of the class TairaColoniusSolver. " alt="" coords="432,228,639,284"/>
 </map>

@@ -9,5 +9,5 @@ var searchData=
   ['writemassfluxinfo',['writeMassFluxInfo',['../classDirectForcingSolver.html#a29506b55e76a699cda0517b24a15b6cf',1,'DirectForcingSolver']]],
   ['writetime',['writeTime',['../classLogger.html#a33d1da07ec7185f61cfa2a275ce3493b',1,'Logger']]],
   ['writetimestep',['writeTimeStep',['../classLogger.html#a3c97f0a6d77933bcf418984b8993c7c1',1,'Logger']]],
-  ['writetofile',['writeToFile',['../classbodies.html#ae3618032b26b49bc2789e257506323a5',1,'bodies::writeToFile(std::string &amp;caseFolder, int timeStep)'],['../classbodies.html#a639326eb542e1760beea4ebb76d22784',1,'bodies::writeToFile(real *bx, real *by, std::string &amp;caseFolder, int timeStep)'],['../classbodies.html#a338d759e8fe90788ee8898671a247855',1,'bodies::writeToFile(std::string &amp;caseFolder, int timeStep)'],['../classbodies.html#a99345d75a6f17d17fbe11a60075ee0fe',1,'bodies::writeToFile(std::string &amp;caseFolder, int timeStep)']]]
+  ['writetofile',['writeToFile',['../classbodies.html#ae3618032b26b49bc2789e257506323a5',1,'bodies::writeToFile(std::string &amp;caseFolder, int timeStep)'],['../classbodies.html#a639326eb542e1760beea4ebb76d22784',1,'bodies::writeToFile(real *bx, real *by, std::string &amp;caseFolder, int timeStep)'],['../classbodies.html#a99345d75a6f17d17fbe11a60075ee0fe',1,'bodies::writeToFile(std::string &amp;caseFolder, int timeStep)']]]
 ];

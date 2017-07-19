@@ -1,21 +1,21 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/utilities/preconditioner.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/utilities/preconditioner.h">
-<area shape="rect" id="node2" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="206,105,405,157"/>
-<area shape="rect" id="node3" href="$createSolver_8h.html" title="Declaration of the function that creates the Navier&#45;Stokes solver. " alt="" coords="511,605,667,657"/>
-<area shape="rect" id="node6" href="$NSWithBody_8h.html" title="Declaration of the class NSWithBody. " alt="" coords="227,205,384,257"/>
-<area shape="rect" id="node20" href="$NavierStokesSolver_8cu.html" title="Implementation of the methods of the class NavierStokesSolver. " alt="" coords="408,205,613,257"/>
-<area shape="rect" id="node4" href="$cuIBM_8cu.html" title="Main source file of cuIBM. " alt="" coords="419,705,575,757"/>
-<area shape="rect" id="node5" href="$createSolver_8cu.html" title="Implementation of the function that creates the Navier&#45;Stokes solver. " alt="" coords="600,705,763,757"/>
-<area shape="rect" id="node7" href="$DirectForcingSolver_8h.html" title="Declaration of the class DirectForcingSolver. " alt="" coords="571,305,770,357"/>
-<area shape="rect" id="node17" href="$TairaColoniusSolver_8h.html" title="Declaration of the class TairaColoniusSolver. " alt="" coords="103,305,303,357"/>
-<area shape="rect" id="node19" href="$NSWithBody_8cu.html" title="Implementation of the methods of the class NSWithBody. " alt="" coords="326,305,490,357"/>
-<area shape="rect" id="node8" href="$FadlunEtAlSolver_8h.html" title="Declaration of the classes FadlunEtAlSolver and FEAModifiedSolver. " alt="" coords="1170,505,1355,557"/>
-<area shape="rect" id="node10" href="$DFModifiedSolver_8h.html" title="Definition of the class DFModifiedSolver. " alt="" coords="1013,405,1200,457"/>
-<area shape="rect" id="node12" href="$DiffusionSolver_8h.html" title="Declaration of the class DiffusionSolver. " alt="" coords="373,405,544,457"/>
-<area shape="rect" id="node14" href="$DFImprovedSolver_8h.html" title="Definition of the class DFImprovedSolver. " alt="" coords="797,405,990,457"/>
-<area shape="rect" id="node16" href="$DirectForcingSolver_8cu.html" title="Implementation of the methods of the class DirectForcingSolver. " alt="" coords="568,405,773,457"/>
-<area shape="rect" id="node9" href="$FadlunEtAlSolver_8cu.html" title="Implementation of the methods of the classes FadlunEtAlSolver and FEAModifiedSolver. " alt="" coords="1167,605,1358,657"/>
-<area shape="rect" id="node11" href="$DFModifiedSolver_8cu.html" title="Implementation of the methods of the class DFModifiedSolver. " alt="" coords="952,505,1146,557"/>
-<area shape="rect" id="node13" href="$DiffusionSolver_8cu.html" title="Implementation of the methods of the class DiffusionSolver. " alt="" coords="374,505,551,557"/>
-<area shape="rect" id="node15" href="$DFImprovedSolver_8cu.html" title="Implementation of the methods of the class DFImprovedSolver. " alt="" coords="627,505,826,557"/>
-<area shape="rect" id="node18" href="$TairaColoniusSolver_8cu.html" title="Implementation of the methods of the class TairaColoniusSolver. " alt="" coords="42,405,249,457"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/utilities/preconditioner.h" name="/home/mesnardo/git/barbagroup/cuIBM/src/utilities/preconditioner.h">
+<area shape="rect" id="node2" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="207,109,406,165"/>
+<area shape="rect" id="node3" href="$createSolver_8h.html" title="Declaration of the function that creates the Navier&#45;Stokes solver. " alt="" coords="514,629,670,685"/>
+<area shape="rect" id="node6" href="$NSWithBody_8h.html" title="Declaration of the class NSWithBody. " alt="" coords="227,213,386,269"/>
+<area shape="rect" id="node20" href="$NavierStokesSolver_8cu.html" title="Implementation of the methods of the class NavierStokesSolver. " alt="" coords="410,213,617,269"/>
+<area shape="rect" id="node4" href="$cuIBM_8cu.html" title="Main source file of cuIBM. " alt="" coords="424,733,579,789"/>
+<area shape="rect" id="node5" href="$createSolver_8cu.html" title="Implementation of the function that creates the Navier&#45;Stokes solver. " alt="" coords="603,733,765,789"/>
+<area shape="rect" id="node7" href="$DirectForcingSolver_8h.html" title="Declaration of the class DirectForcingSolver. " alt="" coords="577,317,775,373"/>
+<area shape="rect" id="node17" href="$TairaColoniusSolver_8h.html" title="Declaration of the class TairaColoniusSolver. " alt="" coords="104,317,304,373"/>
+<area shape="rect" id="node19" href="$NSWithBody_8cu.html" title="Implementation of the methods of the class NSWithBody. " alt="" coords="327,317,494,373"/>
+<area shape="rect" id="node8" href="$FadlunEtAlSolver_8h.html" title="Declaration of the classes FadlunEtAlSolver and FEAModifiedSolver. " alt="" coords="1171,525,1355,581"/>
+<area shape="rect" id="node10" href="$DFModifiedSolver_8h.html" title="Definition of the class DFModifiedSolver. " alt="" coords="1019,421,1205,477"/>
+<area shape="rect" id="node12" href="$DiffusionSolver_8h.html" title="Declaration of the class DiffusionSolver. " alt="" coords="377,421,549,477"/>
+<area shape="rect" id="node14" href="$DFImprovedSolver_8h.html" title="Definition of the class DFImprovedSolver. " alt="" coords="803,421,995,477"/>
+<area shape="rect" id="node16" href="$DirectForcingSolver_8cu.html" title="Implementation of the methods of the class DirectForcingSolver. " alt="" coords="573,421,779,477"/>
+<area shape="rect" id="node9" href="$FadlunEtAlSolver_8cu.html" title="Implementation of the methods of the classes FadlunEtAlSolver and FEAModifiedSolver. " alt="" coords="1167,629,1358,685"/>
+<area shape="rect" id="node11" href="$DFModifiedSolver_8cu.html" title="Implementation of the methods of the class DFModifiedSolver. " alt="" coords="952,525,1147,581"/>
+<area shape="rect" id="node13" href="$DiffusionSolver_8cu.html" title="Implementation of the methods of the class DiffusionSolver. " alt="" coords="376,525,555,581"/>
+<area shape="rect" id="node15" href="$DFImprovedSolver_8cu.html" title="Implementation of the methods of the class DFImprovedSolver. " alt="" coords="629,525,827,581"/>
+<area shape="rect" id="node18" href="$TairaColoniusSolver_8cu.html" title="Implementation of the methods of the class TairaColoniusSolver. " alt="" coords="43,421,250,477"/>
 </map>

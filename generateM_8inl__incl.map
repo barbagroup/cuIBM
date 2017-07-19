@@ -1,5 +1,5 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/NavierStokes/generateM.inl" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/NavierStokes/generateM.inl">
-<area shape="rect" id="node2" href="$generateM_8h.html" title="Declaration of the kernels to generate the mass matrix and its inverse. " alt="" coords="745,119,934,144"/>
-<area shape="rect" id="node3" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="785,192,894,217"/>
-<area shape="rect" id="node19" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="1926,265,1995,291"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/NavierStokes/generateM.inl" name="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/NavierStokes/generateM.inl">
+<area shape="rect" id="node2" href="$generateM_8h.html" title="Declaration of the kernels to generate the mass matrix and its inverse. " alt="" coords="749,124,936,151"/>
+<area shape="rect" id="node3" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="787,199,898,225"/>
+<area shape="rect" id="node19" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="1933,273,2001,300"/>
 </map>

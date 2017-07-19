@@ -1,6 +1,6 @@
 <map id="FadlunEtAlSolver&lt; memoryType &gt;" name="FadlunEtAlSolver&lt; memoryType &gt;">
-<area shape="rect" id="node2" href="$classDFModifiedSolver.html" title="A fully discrete formulation of the direct forcing method, with an explicit pressure term in the inte..." alt="" coords="10,252,197,291"/>
-<area shape="rect" id="node3" href="$classDirectForcingSolver.html" title="A fully discrete formulation of the direct forcing method. " alt="" coords="35,165,173,204"/>
-<area shape="rect" id="node4" href="$classNSWithBody.html" title="Generic Navier&#45;Stokes solver in the presence of immersed boundaries. " alt="" coords="5,92,202,117"/>
-<area shape="rect" id="node5" href="$classNavierStokesSolver.html" title="Solves the Navier&#45;Stokes equations in a rectangular domain. " alt="" coords="35,5,173,44"/>
+<area shape="rect" id="node2" href="$classDFModifiedSolver.html" title="A fully discrete formulation of the direct forcing method, with an explicit pressure term in the inte..." alt="" coords="12,259,197,300"/>
+<area shape="rect" id="node3" href="$classDirectForcingSolver.html" title="A fully discrete formulation of the direct forcing method. " alt="" coords="36,169,173,211"/>
+<area shape="rect" id="node4" href="$classNSWithBody.html" title="Generic Navier&#45;Stokes solver in the presence of immersed boundaries. " alt="" coords="5,95,204,121"/>
+<area shape="rect" id="node5" href="$classNavierStokesSolver.html" title="Solves the Navier&#45;Stokes equations in a rectangular domain. " alt="" coords="35,5,174,47"/>
 </map>

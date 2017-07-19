@@ -1,16 +1,16 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/DiffusionSolver.cu" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/DiffusionSolver.cu">
-<area shape="rect" id="node3" href="$DiffusionSolver_8h.html" title="Declaration of the class DiffusionSolver. " alt="" coords="553,105,674,131"/>
-<area shape="rect" id="node4" href="$DirectForcingSolver_8h.html" title="Declaration of the class DirectForcingSolver. " alt="" coords="539,179,688,204"/>
-<area shape="rect" id="node5" href="$NSWithBody_8h.html" title="Declaration of the class NSWithBody. " alt="" coords="560,252,667,277"/>
-<area shape="rect" id="node6" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="778,325,926,351"/>
-<area shape="rect" id="node41" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="515,472,631,497"/>
-<area shape="rect" id="node7" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="939,699,1048,724"/>
-<area shape="rect" id="node27" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="788,545,908,571"/>
-<area shape="rect" id="node28" href="$integrationScheme_8h.html" title="Definition of the class integrationScheme. " alt="" coords="983,399,1171,424"/>
-<area shape="rect" id="node29" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="194,545,350,571"/>
-<area shape="rect" id="node33" href="$preconditioner_8h.html" title="Definition of the class preconditioner. " alt="" coords="1277,619,1438,644"/>
-<area shape="rect" id="node39" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="689,399,746,424"/>
-<area shape="rect" id="node23" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="368,779,437,804"/>
-<area shape="rect" id="node32" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="200,619,344,644"/>
-<area shape="rect" id="node42" href="$body_8h.html" title="Definition of the class body. " alt="" coords="543,545,603,571"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/DiffusionSolver.cu" name="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/DiffusionSolver.cu">
+<area shape="rect" id="node3" href="$DiffusionSolver_8h.html" title="Declaration of the class DiffusionSolver. " alt="" coords="553,109,676,136"/>
+<area shape="rect" id="node4" href="$DirectForcingSolver_8h.html" title="Declaration of the class DirectForcingSolver. " alt="" coords="540,184,688,211"/>
+<area shape="rect" id="node5" href="$NSWithBody_8h.html" title="Declaration of the class NSWithBody. " alt="" coords="560,259,669,285"/>
+<area shape="rect" id="node6" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="778,333,928,360"/>
+<area shape="rect" id="node41" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="515,483,631,509"/>
+<area shape="rect" id="node7" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="936,714,1047,741"/>
+<area shape="rect" id="node27" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="789,557,909,584"/>
+<area shape="rect" id="node28" href="$integrationScheme_8h.html" title="Definition of the class integrationScheme. " alt="" coords="984,408,1170,435"/>
+<area shape="rect" id="node29" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="194,557,349,584"/>
+<area shape="rect" id="node33" href="$preconditioner_8h.html" title="Definition of the class preconditioner. " alt="" coords="1278,632,1436,659"/>
+<area shape="rect" id="node39" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="690,408,747,435"/>
+<area shape="rect" id="node23" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="366,796,434,823"/>
+<area shape="rect" id="node32" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="201,632,342,659"/>
+<area shape="rect" id="node42" href="$body_8h.html" title="Definition of the class body. " alt="" coords="542,557,604,584"/>
 </map>

@@ -1,0 +1,3 @@
+\form#0:$ \hat{M} $
+\form#1:$ x_{i,m} = X^c_m + (X_{i,m} - X^0_m) \cos\theta - (Y_{i,m} - Y^0_m) \sin\theta $
+\form#2:$ y_{i,m} = Y^c_m + (X_{i,m} - X^0_m) \sin\theta + (Y_{i,m} - Y^0_m) \cos\theta $

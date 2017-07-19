@@ -1,51 +1,51 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/utilities/types.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/utilities/types.h">
-<area shape="rect" id="node2" href="$cuIBM_8cu.html" title="Main source file of cuIBM. " alt="" coords="485,645,641,697"/>
-<area shape="rect" id="node3" href="$helpers_8h.html" title="Declaration of the discrete delta function. " alt="" coords="1213,105,1369,157"/>
-<area shape="rect" id="node4" href="$generateE_8h.html" title="Declaration of the kernels to generate the interpolation matrix. " alt="" coords="882,212,1072,264"/>
-<area shape="rect" id="node6" href="$generateQT_8h.html" title="Declaration of the kernels to generate gradient matrix and interpolation matrix. " alt="" coords="1327,212,1526,264"/>
-<area shape="rect" id="node15" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="601,105,757,157"/>
-<area shape="rect" id="node16" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="714,325,870,377"/>
-<area shape="rect" id="node17" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="327,439,526,491"/>
-<area shape="rect" id="node21" href="$io_8cu.html" title="Implementation of the functions of the namespace io. " alt="" coords="3365,439,3521,491"/>
-<area shape="rect" id="node27" href="$calculateForce_8h.html" title="Declaration of the kernels to calculate the forces acting on a body The method is described in Lai &amp; ..." alt="" coords="3144,105,3360,157"/>
-<area shape="rect" id="node30" href="$generateA_8h.html" title="Declaration of the kernels to generate the matrix resulting from the implicit terms in the momentum e..." alt="" coords="1714,105,1904,157"/>
-<area shape="rect" id="node34" href="$generateBC1_8h.html" title="Declaration of the kernels to generate right hand&#45;side terms of the intermediate velocity flux solver..." alt="" coords="1928,105,2136,157"/>
-<area shape="rect" id="node37" href="$generateBC2_8h.html" title="Declaration of the kernels to generate elements of the right hand&#45;side of the Poisson solver..." alt="" coords="2370,105,2577,157"/>
-<area shape="rect" id="node41" href="$generateM_8h.html" title="Declaration of the kernels to generate the mass matrix and its inverse. " alt="" coords="2677,105,2870,157"/>
-<area shape="rect" id="node44" href="$generateRN_8h.html" title="Declaration of the kernels to generate the explicit terms of the momentum equation. " alt="" coords="3613,105,3814,157"/>
-<area shape="rect" id="node46" href="$generateVelB_8h.html" title="Declaration of the kernels required to generate body&#45;velocities. " alt="" coords="3838,105,4047,157"/>
-<area shape="rect" id="node47" href="$updateRHS1_8h.html" title="Declaration of the kernels to update the right hand&#45;side of the intermediate velocity flux solver..." alt="" coords="4071,105,4276,157"/>
-<area shape="rect" id="node48" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="3346,325,3539,377"/>
-<area shape="rect" id="node49" href="$integrationScheme_8h.html" title="Definition of the class integrationScheme. " alt="" coords="93,325,285,377"/>
-<area shape="rect" id="node50" href="$preconditioner_8h.html" title="Definition of the class preconditioner. " alt="" coords="310,325,474,377"/>
-<area shape="rect" id="node14" href="$helpers_8cu.html" title="Implementation of the discrete delta function. " alt="" coords="1097,212,1253,264"/>
-<area shape="rect" id="node5" href="$generateE_8cu.html" title="Implementation of the kernels to generate elements of the interpolation matrix. " alt="" coords="894,325,1090,377"/>
-<area shape="rect" id="node7" href="$DFImprovedSolver_8cu.html" title="Implementation of the methods of the class DFImprovedSolver. " alt="" coords="1216,325,1416,377"/>
-<area shape="rect" id="node8" href="$DirectForcing_2generateQT_8inl.html" title="/Users/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/DirectForcing\l/generateQT.inl" alt="" coords="1439,319,1595,384"/>
-<area shape="rect" id="node9" href="$FadlunEtAlSolver_8cu.html" title="Implementation of the methods of the classes FadlunEtAlSolver and FEAModifiedSolver. " alt="" coords="1619,325,1810,377"/>
-<area shape="rect" id="node10" href="$generateQT_8cu.html" title="Implementation of the kernels to generate the gradient matrix and interpolation matrix. " alt="" coords="1835,325,2040,377"/>
-<area shape="rect" id="node11" href="$NavierStokes_2generateQT_8inl.html" title="/Users/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/NavierStokes\l/generateQT.inl" alt="" coords="1706,432,1862,497"/>
-<area shape="rect" id="node13" href="$TairaColonius_2generateQT_8inl.html" title="/Users/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/TairaColonius\l/generateQT.inl" alt="" coords="2063,319,2219,384"/>
-<area shape="rect" id="node12" href="$NavierStokesSolver_8cu.html" title="Implementation of the methods of the class NavierStokesSolver. " alt="" coords="2025,545,2231,597"/>
-<area shape="rect" id="node26" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="601,212,757,264"/>
-<area shape="rect" id="node22" href="$parseBodiesFile_8cu.html" title="Parses the file bodies.yaml to get information about immersed bodies. " alt="" coords="950,439,1106,491"/>
-<area shape="rect" id="node23" href="$parseDomainFile_8cu.html" title="Parse the input file domain.yaml to obtain information about the computational grid. " alt="" coords="1130,439,1288,491"/>
-<area shape="rect" id="node24" href="$parseFlowFile_8cu.html" title="Parse the input file flow.yaml to get boundary and initial conditions of the flow. " alt="" coords="1313,439,1469,491"/>
-<area shape="rect" id="node25" href="$parseSimulationFile_8cu.html" title="Parses the file simParams.yaml and stores the numerical parameters used in the simulation. " alt="" coords="701,439,875,491"/>
-<area shape="rect" id="node18" href="$createSolver_8h.html" title="Declaration of the function that creates the Navier&#45;Stokes solver. " alt="" coords="359,545,515,597"/>
-<area shape="rect" id="node19" href="$NSWithBody_8h.html" title="Declaration of the class NSWithBody. " alt="" coords="600,545,757,597"/>
-<area shape="rect" id="node20" href="$NSWithBody_8cu.html" title="Implementation of the methods of the class NSWithBody. " alt="" coords="1946,645,2110,697"/>
-<area shape="rect" id="node28" href="$calculateForce_8cu.html" title="Implementation of the kernels to calculate the forces acting on a body using a control&#45;volume approac..." alt="" coords="3034,212,3256,264"/>
-<area shape="rect" id="node29" href="$calculateForce_8inl.html" title="Implementation of the methods of the class TairaColoniusSolver to calculate forces acting on each imm..." alt="" coords="3281,205,3437,271"/>
-<area shape="rect" id="node31" href="$DirectForcing_2generateA_8inl.html" title="/Users/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/DirectForcing\l/generateA.inl" alt="" coords="1550,205,1706,271"/>
-<area shape="rect" id="node32" href="$generateA_8cu.html" title="Implementation of the kernels required to generate the matrix resulting from the implicit terms in th..." alt="" coords="1730,212,1926,264"/>
-<area shape="rect" id="node33" href="$NavierStokes_2generateA_8inl.html" title="/Users/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/NavierStokes\l/generateA.inl" alt="" coords="2050,432,2206,497"/>
-<area shape="rect" id="node35" href="$generateBC1_8cu.html" title="Implementation of the kernels to generate right hand&#45;side terms of the intermediate velocity flux sol..." alt="" coords="2052,212,2266,264"/>
-<area shape="rect" id="node36" href="$generateBC1_8inl.html" title="Implementation of the methods to generate inhomogeneous boundary conditions from the discrete Laplaci..." alt="" coords="2230,432,2386,497"/>
-<area shape="rect" id="node38" href="$generateBC2_8cu.html" title="Implementation of the kernels to generate elements of the right hand&#45;side of the Poisson solver..." alt="" coords="2290,212,2504,264"/>
-<area shape="rect" id="node39" href="$NavierStokes_2generateBC2_8inl.html" title="/Users/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/NavierStokes\l/generateBC2.inl" alt="" coords="2526,432,2682,497"/>
-<area shape="rect" id="node40" href="$TairaColonius_2generateBC2_8inl.html" title="/Users/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/TairaColonius\l/generateBC2.inl" alt="" coords="2529,205,2685,271"/>
-<area shape="rect" id="node42" href="$generateM_8cu.html" title="Implementation of the kernels to generate the mass matrix and its inverse. " alt="" coords="2811,212,3010,264"/>
-<area shape="rect" id="node43" href="$generateM_8inl.html" title="Implementation of the methods to generate the mass matrix and its inverse. " alt="" coords="2761,319,2917,384"/>
-<area shape="rect" id="node45" href="$generateRN_8cu.html" title="Implementation of the kernels to generate the explicit terms of the momentum equation. " alt="" coords="3614,212,3821,264"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/utilities/types.h" name="/home/mesnardo/git/barbagroup/cuIBM/src/utilities/types.h">
+<area shape="rect" id="node2" href="$cuIBM_8cu.html" title="Main source file of cuIBM. " alt="" coords="483,673,637,729"/>
+<area shape="rect" id="node3" href="$helpers_8h.html" title="Declaration of the discrete delta function. " alt="" coords="1205,109,1360,165"/>
+<area shape="rect" id="node4" href="$generateE_8h.html" title="Declaration of the kernels to generate the interpolation matrix. " alt="" coords="878,221,1066,277"/>
+<area shape="rect" id="node6" href="$generateQT_8h.html" title="Declaration of the kernels to generate gradient matrix and interpolation matrix. " alt="" coords="1320,221,1517,277"/>
+<area shape="rect" id="node15" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="597,109,752,165"/>
+<area shape="rect" id="node16" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="711,339,865,395"/>
+<area shape="rect" id="node17" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="325,458,523,514"/>
+<area shape="rect" id="node21" href="$io_8cu.html" title="Implementation of the functions of the namespace io. " alt="" coords="3340,458,3495,514"/>
+<area shape="rect" id="node27" href="$calculateForce_8h.html" title="Declaration of the kernels to calculate the forces acting on a body The method is described in Lai &amp; ..." alt="" coords="3122,109,3337,165"/>
+<area shape="rect" id="node30" href="$generateA_8h.html" title="Declaration of the kernels to generate the matrix resulting from the implicit terms in the momentum e..." alt="" coords="1705,109,1893,165"/>
+<area shape="rect" id="node34" href="$generateBC1_8h.html" title="Declaration of the kernels to generate right hand&#45;side terms of the intermediate velocity flux solver..." alt="" coords="1917,109,2123,165"/>
+<area shape="rect" id="node37" href="$generateBC2_8h.html" title="Declaration of the kernels to generate elements of the right hand&#45;side of the Poisson solver..." alt="" coords="2353,109,2559,165"/>
+<area shape="rect" id="node41" href="$generateM_8h.html" title="Declaration of the kernels to generate the mass matrix and its inverse. " alt="" coords="2658,109,2849,165"/>
+<area shape="rect" id="node44" href="$generateRN_8h.html" title="Declaration of the kernels to generate the explicit terms of the momentum equation. " alt="" coords="3587,109,3786,165"/>
+<area shape="rect" id="node46" href="$generateVelB_8h.html" title="Declaration of the kernels required to generate body&#45;velocities. " alt="" coords="3810,109,4017,165"/>
+<area shape="rect" id="node47" href="$updateRHS1_8h.html" title="Declaration of the kernels to update the right hand&#45;side of the intermediate velocity flux solver..." alt="" coords="4041,109,4245,165"/>
+<area shape="rect" id="node48" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="3322,339,3513,395"/>
+<area shape="rect" id="node49" href="$integrationScheme_8h.html" title="Definition of the class integrationScheme. " alt="" coords="94,339,285,395"/>
+<area shape="rect" id="node50" href="$preconditioner_8h.html" title="Definition of the class preconditioner. " alt="" coords="309,339,472,395"/>
+<area shape="rect" id="node14" href="$helpers_8cu.html" title="Implementation of the discrete delta function. " alt="" coords="1091,221,1245,277"/>
+<area shape="rect" id="node5" href="$generateE_8cu.html" title="Implementation of the kernels to generate elements of the interpolation matrix. " alt="" coords="889,339,1084,395"/>
+<area shape="rect" id="node7" href="$DFImprovedSolver_8cu.html" title="Implementation of the methods of the class DFImprovedSolver. " alt="" coords="1209,339,1407,395"/>
+<area shape="rect" id="node8" href="$DirectForcing_2generateQT_8inl.html" title="/home/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/DirectForcing\l/generateQT.inl" alt="" coords="1431,332,1585,403"/>
+<area shape="rect" id="node9" href="$FadlunEtAlSolver_8cu.html" title="Implementation of the methods of the classes FadlunEtAlSolver and FEAModifiedSolver. " alt="" coords="1610,339,1801,395"/>
+<area shape="rect" id="node10" href="$generateQT_8cu.html" title="Implementation of the kernels to generate the gradient matrix and interpolation matrix. " alt="" coords="1825,339,2029,395"/>
+<area shape="rect" id="node11" href="$NavierStokes_2generateQT_8inl.html" title="/home/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/NavierStokes\l/generateQT.inl" alt="" coords="1699,451,1853,521"/>
+<area shape="rect" id="node13" href="$TairaColonius_2generateQT_8inl.html" title="/home/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/TairaColonius\l/generateQT.inl" alt="" coords="2053,332,2208,403"/>
+<area shape="rect" id="node12" href="$NavierStokesSolver_8cu.html" title="Implementation of the methods of the class NavierStokesSolver. " alt="" coords="2014,569,2221,625"/>
+<area shape="rect" id="node26" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="597,221,752,277"/>
+<area shape="rect" id="node22" href="$parseBodiesFile_8cu.html" title="Parses the file bodies.yaml to get information about immersed bodies. " alt="" coords="947,458,1101,514"/>
+<area shape="rect" id="node23" href="$parseDomainFile_8cu.html" title="Parse the input file domain.yaml to obtain information about the computational grid. " alt="" coords="1126,458,1282,514"/>
+<area shape="rect" id="node24" href="$parseFlowFile_8cu.html" title="Parse the input file flow.yaml to get boundary and initial conditions of the flow. " alt="" coords="1307,458,1461,514"/>
+<area shape="rect" id="node25" href="$parseSimulationFile_8cu.html" title="Parses the file simParams.yaml and stores the numerical parameters used in the simulation. " alt="" coords="699,458,871,514"/>
+<area shape="rect" id="node18" href="$createSolver_8h.html" title="Declaration of the function that creates the Navier&#45;Stokes solver. " alt="" coords="357,569,513,625"/>
+<area shape="rect" id="node19" href="$NSWithBody_8h.html" title="Declaration of the class NSWithBody. " alt="" coords="598,569,757,625"/>
+<area shape="rect" id="node20" href="$NSWithBody_8cu.html" title="Implementation of the methods of the class NSWithBody. " alt="" coords="1931,673,2098,729"/>
+<area shape="rect" id="node28" href="$calculateForce_8cu.html" title="Implementation of the kernels to calculate the forces acting on a body using a control&#45;volume approac..." alt="" coords="3012,221,3233,277"/>
+<area shape="rect" id="node29" href="$calculateForce_8inl.html" title="Implementation of the methods of the class TairaColoniusSolver to calculate forces acting on each imm..." alt="" coords="3257,213,3412,284"/>
+<area shape="rect" id="node31" href="$DirectForcing_2generateA_8inl.html" title="/home/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/DirectForcing\l/generateA.inl" alt="" coords="1541,213,1696,284"/>
+<area shape="rect" id="node32" href="$generateA_8cu.html" title="Implementation of the kernels required to generate the matrix resulting from the implicit terms in th..." alt="" coords="1720,221,1915,277"/>
+<area shape="rect" id="node33" href="$NavierStokes_2generateA_8inl.html" title="/home/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/NavierStokes\l/generateA.inl" alt="" coords="2040,451,2195,521"/>
+<area shape="rect" id="node35" href="$generateBC1_8cu.html" title="Implementation of the kernels to generate right hand&#45;side terms of the intermediate velocity flux sol..." alt="" coords="2039,221,2251,277"/>
+<area shape="rect" id="node36" href="$generateBC1_8inl.html" title="Implementation of the methods to generate inhomogeneous boundary conditions from the discrete Laplaci..." alt="" coords="2219,451,2373,521"/>
+<area shape="rect" id="node38" href="$generateBC2_8cu.html" title="Implementation of the kernels to generate elements of the right hand&#45;side of the Poisson solver..." alt="" coords="2275,221,2487,277"/>
+<area shape="rect" id="node39" href="$NavierStokes_2generateBC2_8inl.html" title="/home/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/NavierStokes\l/generateBC2.inl" alt="" coords="2512,451,2667,521"/>
+<area shape="rect" id="node40" href="$TairaColonius_2generateBC2_8inl.html" title="/home/mesnardo/git\l/barbagroup/cuIBM/src\l/solvers/TairaColonius\l/generateBC2.inl" alt="" coords="2511,213,2665,284"/>
+<area shape="rect" id="node42" href="$generateM_8cu.html" title="Implementation of the kernels to generate the mass matrix and its inverse. " alt="" coords="2791,221,2988,277"/>
+<area shape="rect" id="node43" href="$generateM_8inl.html" title="Implementation of the methods to generate the mass matrix and its inverse. " alt="" coords="2740,332,2895,403"/>
+<area shape="rect" id="node45" href="$generateRN_8cu.html" title="Implementation of the kernels to generate the explicit terms of the momentum equation. " alt="" coords="3589,221,3795,277"/>
 </map>

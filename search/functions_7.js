@@ -7,6 +7,6 @@ var searchData=
   ['initialiseboundaryarrays',['initialiseBoundaryArrays',['../classNavierStokesSolver.html#a5f58901cfbb23d7210ae64051804009e',1,'NavierStokesSolver']]],
   ['initialisecommon',['initialiseCommon',['../classNavierStokesSolver.html#af9fa09d0940ade667bb346d231f010be',1,'NavierStokesSolver']]],
   ['initialisedefaultdb',['initialiseDefaultDB',['../namespaceio.html#a0a4d22fdc1c5250429366e912889eb66',1,'io']]],
-  ['initialisefluxes',['initialiseFluxes',['../classNavierStokesSolver.html#abc3f054b2ab9f9678d312cef5757128c',1,'NavierStokesSolver::initialiseFluxes()'],['../classNavierStokesSolver.html#ab4f171247ec96df111902029006e65ef',1,'NavierStokesSolver::initialiseFluxes(real *q)'],['../classNavierStokesSolver.html#a5c4929aa0ac15a9f5da9f0b47bc2e348',1,'NavierStokesSolver::initialiseFluxes()'],['../classNavierStokesSolver.html#a0573129d16c441a38c513cd2c64862c6',1,'NavierStokesSolver::initialiseFluxes()']]],
+  ['initialisefluxes',['initialiseFluxes',['../classNavierStokesSolver.html#abc3f054b2ab9f9678d312cef5757128c',1,'NavierStokesSolver::initialiseFluxes()'],['../classNavierStokesSolver.html#ab4f171247ec96df111902029006e65ef',1,'NavierStokesSolver::initialiseFluxes(real *q)'],['../classNavierStokesSolver.html#a0573129d16c441a38c513cd2c64862c6',1,'NavierStokesSolver::initialiseFluxes()']]],
   ['interpolationtypefromstring',['interpolationTypeFromString',['../namespaceio.html#a69c50d28fc59224c1413e3de7d509b32',1,'io']]]
 ];

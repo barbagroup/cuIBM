@@ -1,13 +1,13 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/NSWithBody.h" name="/Users/mesnardo/git/barbagroup/cuIBM/src/solvers/NSWithBody.h">
-<area shape="rect" id="node2" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="778,105,926,131"/>
-<area shape="rect" id="node37" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="515,252,631,277"/>
-<area shape="rect" id="node3" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="939,479,1048,504"/>
-<area shape="rect" id="node23" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="788,325,908,351"/>
-<area shape="rect" id="node24" href="$integrationScheme_8h.html" title="Definition of the class integrationScheme. " alt="" coords="983,179,1171,204"/>
-<area shape="rect" id="node25" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="194,325,350,351"/>
-<area shape="rect" id="node29" href="$preconditioner_8h.html" title="Definition of the class preconditioner. " alt="" coords="1277,399,1438,424"/>
-<area shape="rect" id="node35" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="689,179,746,204"/>
-<area shape="rect" id="node19" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="368,559,437,584"/>
-<area shape="rect" id="node28" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="200,399,344,424"/>
-<area shape="rect" id="node38" href="$body_8h.html" title="Definition of the class body. " alt="" coords="543,325,603,351"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/NSWithBody.h" name="/home/mesnardo/git/barbagroup/cuIBM/src/solvers/NSWithBody.h">
+<area shape="rect" id="node2" href="$NavierStokesSolver_8h.html" title="Declaration of the class NavierStokesSolver. " alt="" coords="778,109,928,136"/>
+<area shape="rect" id="node37" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="515,259,631,285"/>
+<area shape="rect" id="node3" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="936,490,1047,517"/>
+<area shape="rect" id="node23" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="789,333,909,360"/>
+<area shape="rect" id="node24" href="$integrationScheme_8h.html" title="Definition of the class integrationScheme. " alt="" coords="984,184,1170,211"/>
+<area shape="rect" id="node25" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="194,333,349,360"/>
+<area shape="rect" id="node29" href="$preconditioner_8h.html" title="Definition of the class preconditioner. " alt="" coords="1278,408,1436,435"/>
+<area shape="rect" id="node35" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="690,184,747,211"/>
+<area shape="rect" id="node19" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="366,572,434,599"/>
+<area shape="rect" id="node28" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="201,408,342,435"/>
+<area shape="rect" id="node38" href="$body_8h.html" title="Definition of the class body. " alt="" coords="542,333,604,360"/>
 </map>

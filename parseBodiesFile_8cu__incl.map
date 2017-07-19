@@ -1,10 +1,10 @@
-<map id="/Users/mesnardo/git/barbagroup/cuIBM/src/io/parseBodiesFile.cu" name="/Users/mesnardo/git/barbagroup/cuIBM/src/io/parseBodiesFile.cu">
-<area shape="rect" id="node4" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="1666,105,1709,131"/>
-<area shape="rect" id="node30" href="$body_8h.html" title="Definition of the class body. " alt="" coords="1991,252,2051,277"/>
-<area shape="rect" id="node5" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="1195,399,1303,424"/>
-<area shape="rect" id="node24" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="1666,252,1787,277"/>
-<area shape="rect" id="node25" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="1811,252,1967,277"/>
-<area shape="rect" id="node29" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="1725,179,1842,204"/>
-<area shape="rect" id="node20" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="1897,472,1966,497"/>
-<area shape="rect" id="node28" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="1977,325,2121,351"/>
+<map id="/home/mesnardo/git/barbagroup/cuIBM/src/io/parseBodiesFile.cu" name="/home/mesnardo/git/barbagroup/cuIBM/src/io/parseBodiesFile.cu">
+<area shape="rect" id="node4" href="$io_8h.html" title="Declaration of the functions of the namespace io. " alt="" coords="1676,109,1719,136"/>
+<area shape="rect" id="node30" href="$body_8h.html" title="Definition of the class body. " alt="" coords="1999,259,2060,285"/>
+<area shape="rect" id="node5" href="$types_8h.html" title="Definition of custom types required by the code. " alt="" coords="1198,408,1309,435"/>
+<area shape="rect" id="node24" href="$domain_8h.html" title="Definition of the class domain. " alt="" coords="1676,259,1796,285"/>
+<area shape="rect" id="node25" href="$parameterDB_8h.html" title="Declaration of the class property. " alt="" coords="1820,259,1975,285"/>
+<area shape="rect" id="node29" href="$bodies_8h.html" title="Declaration of the class bodies. " alt="" coords="1735,184,1851,211"/>
+<area shape="rect" id="node20" href="$logger_8h.html" title="Definition of the class Logger. " alt="" coords="1903,483,1971,509"/>
+<area shape="rect" id="node28" href="$boundaryCondition_8h.html" title="Definition of the class boundaryCondition. " alt="" coords="1985,333,2127,360"/>
 </map>
