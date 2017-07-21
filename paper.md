@@ -7,7 +7,7 @@ tags:
   - CUSP library
 authors:
  - name: Anush Krishnan
-   affiliation: nuTonomy Inc. (previously at Boston University)
+   affiliation: 2
  - name: Olivier Mesnard
    orcid:  0000-0001-5335-7853
    affiliation: 1
@@ -17,6 +17,8 @@ authors:
 affiliations:
  - name: The George Washington University
    index: 1
+ - name: nuTonomy Inc. (previously at Boston University)
+   index: 2
 date: 9 June 2017
 bibliography: paper.bib
 ---
@@ -32,7 +34,7 @@ The equations are spatially discretized with a finite-difference technique and t
 cuIBM implements various immersed-boundary techniques that fit into the framework of Perot's projection method.
 Among them are the immersed-boundary projection approach from @TairaColonius2007, the direct-forcing method from @FadlunEtAl2000, and a second-order accurate direct-forcing method (@Krishnan2015).
 
-cuIBM is written in C++ and exploits NVIDIA GPU hardware using CUDA and [CUSP](https://github.com/cusplibrary/cusplibrary), 
+cuIBM is written in C++ and exploits NVIDIA GPU hardware using CUDA and [CUSP](https://github.com/cusplibrary/cusplibrary),
 an open-source C++ library for sparse linear algebra on CUDA-capable GPUs.
 cuIBM solves the linear systems of equations and applies stencil operations on a single GPU device.
 
