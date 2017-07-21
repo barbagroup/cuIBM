@@ -1,5 +1,8 @@
 # cuIBM - A GPU-based Immersed Boundary Method code
 
+[![DOI_JOSS](http://joss.theoj.org/papers/10.21105/joss.00301/status.svg)](http://dx.doi.org/10.21105/joss.00301)
+[![CITE_BIB](https://img.shields.io/badge/Cite%20cuIBM-bibtex-blue.svg)](http://www.doi2bib.org/#/doi/10.21105/joss.00301)
+
 cuIBM solves the 2D incompressible Navier-Stokes equations with an immersed-boundary method on a single CUDA-capable GPU device with the [CUSP](https://github.com/cusplibrary/cusplibrary) library.
 
 Currently, cuIBM runs only on Unix-based systems (no support on Windows) and was last tested on Ubuntu 16.04.
